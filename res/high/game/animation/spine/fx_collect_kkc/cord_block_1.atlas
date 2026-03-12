@@ -1,0 +1,48 @@
+
+cord_block_1.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cord1
+  rotate: false
+  xy: 2, 15
+  size: 67, 105
+  orig: 67, 105
+  offset: 0, 0
+  index: -1
+cord1L
+  rotate: false
+  xy: 71, 82
+  size: 30, 38
+  orig: 30, 38
+  offset: 0, 0
+  index: -1
+cord1N
+  rotate: true
+  xy: 2, 2
+  size: 11, 57
+  orig: 11, 57
+  offset: 0, 0
+  index: -1
+cord1R
+  rotate: false
+  xy: 71, 41
+  size: 28, 39
+  orig: 28, 39
+  offset: 0, 0
+  index: -1
+nail1
+  rotate: true
+  xy: 103, 104
+  size: 16, 23
+  orig: 16, 23
+  offset: 0, 0
+  index: -1
+nail2
+  rotate: true
+  xy: 103, 86
+  size: 16, 23
+  orig: 16, 23
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,75 @@
+{
+  "init_cfg": {
+    "isLandscape": true,
+    "isWindowTop": false,
+    "name": "GameJS",
+    "width": 800,
+    "height": 480,
+    "entry": "main.js",
+    "consolePort": 6050,
+    "uploadPort": 6060,
+    "debugPort": 5086,
+    "forwardConsolePort": 10088,
+    "forwardDebugPort": 10086,
+    "forwardUploadPort": 10090
+  },
+  "game_cfg" : {
+    "resolution" : {
+      "width" : 800,
+      "height" : 480,
+      "policy" : 3
+    },
+    "service_url" : "https://web.service.zingplay.com/mobile/version.php",
+    "update_folder" : "zingplay",
+    "search_path_priority" : [
+      "/res",
+      "/res/common",
+      "/res/Lobby",
+      "/res/Other",
+      "/res/Board",
+      "/src"
+    ],
+    "search_path_js" : [
+      "res"
+    ],
+    "font" : {
+      "name" :  "res/fonts/tahoma.ttf",
+      "color" : [203, 204, 206, 255],
+      "size" : 26
+    },
+    "loading" : {
+      "bg" : "res/Loading/bgLoading.png",
+      "bar" : "res/Loading/barLoading.png",
+      "bgBar" : "res/Loading/bgBar.png",
+      "bgBot": "res/Loading/bgBot.png",
+      "girl": "res/Loading/girl.png",
+      "barHeight" : 0.05,
+      "bgBotHeight" : 0.062
+    },
+    "dialog" : {
+      "bg" : "res/Lobby/Dialog/table.png",
+      "title" : "res/Lobby/Dialog/dialogTitle.png",
+      "textColor" : [132,140,220,255],
+      "btnOK" : "res/Lobby/Common/buttonOK.png",
+      "btnCancel" : "res/Lobby/Common/btnCancel.png"
+    },
+    "intro" : {
+      "key" : "run",
+      "scale" : 1,
+      "timePlay" : 4,
+      "timeHide" : 0.5,
+      "bgAnim" : "res/Armatures/ZpBrand/bgAnim.png",
+      "borderAnim" : "res/Armatures/ZpBrand/borderAnim.png",
+      "json" : "res/Armatures/ZpBrand/zp_ident.json",
+      "atlas" : "res/Armatures/ZpBrand/zp_ident.atlas",
+      "sound" : "res/Armatures/ZpBrand/zp_ident.mp3"
+    }
+  },
+  "simulator_screen_size": [
+    {
+      "title": "Phone",
+      "width": 1200,
+      "height": 700
+    }
+  ]
+}

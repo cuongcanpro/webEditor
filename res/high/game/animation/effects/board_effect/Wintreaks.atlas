@@ -1,0 +1,55 @@
+
+Wintreaks.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+101_up
+  rotate: false
+  xy: 778, 347
+  size: 66, 72
+  orig: 66, 72
+  offset: 0, 0
+  index: -1
+icon_103
+  rotate: false
+  xy: 2, 72
+  size: 80, 79
+  orig: 80, 79
+  offset: 0, 0
+  index: -1
+icon_104
+  rotate: false
+  xy: 84, 87
+  size: 62, 64
+  orig: 62, 64
+  offset: 0, 0
+  index: -1
+pressure_cooker1
+  rotate: false
+  xy: 2, 153
+  size: 261, 266
+  orig: 261, 266
+  offset: 0, 0
+  index: -1
+pressure_cooker2
+  rotate: false
+  xy: 265, 153
+  size: 261, 266
+  orig: 261, 266
+  offset: 0, 0
+  index: -1
+rocket
+  rotate: false
+  xy: 2, 2
+  size: 65, 68
+  orig: 65, 68
+  offset: 0, 0
+  index: -1
+shadow_cooker
+  rotate: false
+  xy: 528, 171
+  size: 248, 248
+  orig: 248, 248
+  offset: 0, 0
+  index: -1

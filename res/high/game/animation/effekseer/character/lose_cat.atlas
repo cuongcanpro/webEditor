@@ -1,0 +1,139 @@
+
+lose_cat.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Layer 2
+  rotate: true
+  xy: 707, 111
+  size: 128, 304
+  orig: 128, 304
+  offset: 0, 0
+  index: -1
+bell
+  rotate: true
+  xy: 858, 9
+  size: 35, 40
+  orig: 35, 40
+  offset: 0, 0
+  index: -1
+body
+  rotate: false
+  xy: 707, 241
+  size: 304, 269
+  orig: 304, 269
+  offset: 0, 0
+  index: -1
+eyeL
+  rotate: false
+  xy: 549, 4
+  size: 35, 26
+  orig: 35, 26
+  offset: 0, 0
+  index: -1
+eyeR
+  rotate: false
+  xy: 655, 115
+  size: 29, 24
+  orig: 29, 24
+  offset: 0, 0
+  index: -1
+eye_closeL
+  rotate: false
+  xy: 815, 14
+  size: 41, 35
+  orig: 41, 35
+  offset: 0, 0
+  index: -1
+eye_closeR
+  rotate: false
+  xy: 900, 12
+  size: 36, 32
+  orig: 36, 32
+  offset: 0, 0
+  index: -1
+eyebrowL
+  rotate: true
+  xy: 1013, 496
+  size: 14, 9
+  orig: 14, 9
+  offset: 0, 0
+  index: -1
+eyebrowR
+  rotate: false
+  xy: 900, 2
+  size: 13, 8
+  orig: 13, 8
+  offset: 0, 0
+  index: -1
+flag
+  rotate: true
+  xy: 876, 46
+  size: 63, 87
+  orig: 63, 87
+  offset: 0, 0
+  index: -1
+handL
+  rotate: false
+  xy: 549, 32
+  size: 104, 107
+  orig: 104, 107
+  offset: 0, 0
+  index: -1
+handR
+  rotate: true
+  xy: 655, 24
+  size: 85, 108
+  orig: 85, 108
+  offset: 0, 0
+  index: -1
+hat2
+  rotate: true
+  xy: 765, 51
+  size: 58, 109
+  orig: 58, 109
+  offset: 0, 0
+  index: -1
+mustacheL
+  rotate: true
+  xy: 965, 57
+  size: 52, 34
+  orig: 52, 34
+  offset: 0, 0
+  index: -1
+mustacheR
+  rotate: false
+  xy: 765, 17
+  size: 48, 32
+  orig: 48, 32
+  offset: 0, 0
+  index: -1
+shadow_B
+  rotate: false
+  xy: 2, 141
+  size: 703, 369
+  orig: 703, 369
+  offset: 0, 0
+  index: -1
+shadow_F
+  rotate: false
+  xy: 2, 3
+  size: 545, 136
+  orig: 545, 136
+  offset: 0, 0
+  index: -1
+tearL
+  rotate: false
+  xy: 1001, 99
+  size: 21, 10
+  orig: 21, 10
+  offset: 0, 0
+  index: -1
+tearR
+  rotate: false
+  xy: 586, 20
+  size: 15, 10
+  orig: 15, 10
+  offset: 0, 0
+  index: -1

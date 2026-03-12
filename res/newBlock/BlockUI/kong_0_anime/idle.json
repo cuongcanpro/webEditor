@@ -1,0 +1,22 @@
+{
+  "Content": {
+    "Content": {
+      "Animation": {
+        "ActivedAnimationName": "idle",
+        "Duration": "80",
+        "Speed": "1.0",
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [
+        {
+          "EndIndex": "80",
+          "Name": "default",
+          "StartIndex": "0",
+          "ctype": "AnimationInfoData"
+        }
+      ]
+    }
+  },
+  "Version": "2.3.4"
+}

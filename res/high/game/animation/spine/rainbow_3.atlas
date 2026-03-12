@@ -1,0 +1,20 @@
+
+rainbow_3.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/cricle_flare_2
+  rotate: false
+  xy: 2, 124
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+imgs/hexa
+  rotate: false
+  xy: 2, 2
+  size: 120, 120
+  orig: 128, 128
+  offset: 4, 4
+  index: -1

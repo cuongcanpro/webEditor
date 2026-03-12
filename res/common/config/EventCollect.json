@@ -1,0 +1,412 @@
+{
+	"1" : {
+		"startLevel": 4,
+		"finishLevel": 100000,
+		"duration": 48,
+		"collectType": [3],
+		"reward": [
+			{
+				"score": 100,
+				"heart_free": 15
+			},
+			{
+				"score": 200,
+				"pack": 1
+			},
+			{
+				"score": 400,
+				"bom_phao_free": 30
+			},
+			{
+				"score": 800,
+				"pack": 2
+			},
+			{
+				"score": 1200,
+				"may_bay_free": 15
+			},
+			{
+				"score": 100,
+				"hat5_free": 15
+			},
+			{
+				"score": 200,
+				"pack": 1
+			},
+			{
+				"score": 400,
+				"gold": 100
+			},
+			{
+				"score": 800,
+				"heart_free": 30
+			},
+			{
+				"score": 1200,
+				"pack": 2
+			},
+			{
+				"score": 100,
+				"heart_free": 15
+			},
+			{
+				"score": 200,
+				"bom_phao_free": 15
+			},
+			{
+				"score": 400,
+				"pack": 1
+			},
+			{
+				"score": 800,
+				"gold": 200
+			},
+			{
+				"score": 1200,
+				"pack": 2
+			}
+		]
+	},
+	"2" : {
+		"startLevel": 4,
+		"finishLevel": 100000,
+		"duration": 48,
+		"collectType": [102],
+		"reward": [
+			{
+				"score": 10,
+				"heart_free": 15
+			},
+			{
+				"score": 20,
+				"bom_phao_free": 30
+			},
+			{
+				"score": 40,
+				"pack": 1
+			},
+			{
+				"score": 80,
+				"hat5_free": 15
+			},
+			{
+				"score": 120,
+				"pack": 3
+			},
+			{
+				"score": 10,
+				"hat5_free": 15
+			},
+			{
+				"score": 20,
+				"pack": 1
+			},
+			{
+				"score": 40,
+				"gold": 200
+			},
+			{
+				"score": 80,
+				"heart_free": 30
+			},
+			{
+				"score": 120,
+				"pack": 3
+			},
+			{
+				"score": 10,
+				"heart_free": 30
+			},
+			{
+				"score": 20,
+				"bom_phao_free": 15
+			},
+			{
+				"score": 40,
+				"pack": 1
+			},
+			{
+				"score": 80,
+				"hat5_free": 15
+			},
+			{
+				"score": 120,
+				"pack": 3
+			}
+		]
+	},
+	"3" : {
+		"startLevel": 4,
+		"finishLevel": 100000,
+		"duration": 48,
+		"collectType": [104, 105],
+		"reward": [
+			{
+				"score": 10,
+				"heart_free": 15
+			},
+			{
+				"score": 20,
+				"bom_phao_free": 30
+			},
+			{
+				"score": 40,
+				"pack": 1
+			},
+			{
+				"score": 80,
+				"hat5_free": 15
+			},
+			{
+				"score": 120,
+				"pack": 3
+			},
+			{
+				"score": 10,
+				"hat5_free": 15
+			},
+			{
+				"score": 20,
+				"pack": 1
+			},
+			{
+				"score": 40,
+				"gold": 200
+			},
+			{
+				"score": 80,
+				"heart_free": 30
+			},
+			{
+				"score": 120,
+				"pack": 3
+			},
+			{
+				"score": 10,
+				"heart_free": 30
+			},
+			{
+				"score": 20,
+				"bom_phao_free": 15
+			},
+			{
+				"score": 40,
+				"pack": 1
+			},
+			{
+				"score": 80,
+				"hat5_free": 15
+			},
+			{
+				"score": 120,
+				"pack": 3
+			}
+		]
+	},
+	"4" : {
+		"startLevel": 4,
+		"finishLevel": 100000,
+		"duration": 48,
+		"collectType": [1],
+		"reward": [
+			{
+				"score": 100,
+				"heart_free": 15
+			},
+			{
+				"score": 200,
+				"pack": 1
+			},
+			{
+				"score": 400,
+				"bom_phao_free": 30
+			},
+			{
+				"score": 800,
+				"pack": 2
+			},
+			{
+				"score": 1200,
+				"may_bay_free": 15
+			},
+			{
+				"score": 100,
+				"hat5_free": 15
+			},
+			{
+				"score": 200,
+				"pack": 1
+			},
+			{
+				"score": 400,
+				"gold": 100
+			},
+			{
+				"score": 800,
+				"heart_free": 30
+			},
+			{
+				"score": 1200,
+				"pack": 2
+			},
+			{
+				"score": 100,
+				"heart_free": 15
+			},
+			{
+				"score": 200,
+				"bom_phao_free": 15
+			},
+			{
+				"score": 400,
+				"pack": 1
+			},
+			{
+				"score": 800,
+				"gold": 200
+			},
+			{
+				"score": 1200,
+				"pack": 2
+			}
+		]
+	},
+	"5" : {
+		"startLevel": 4,
+		"finishLevel": 100000,
+		"duration": 48,
+		"collectType": [101, 106],
+		"reward": [
+			{
+				"score": 10,
+				"heart_free": 15
+			},
+			{
+				"score": 20,
+				"bom_phao_free": 30
+			},
+			{
+				"score": 40,
+				"pack": 1
+			},
+			{
+				"score": 80,
+				"hat5_free": 15
+			},
+			{
+				"score": 120,
+				"pack": 3
+			},
+			{
+				"score": 10,
+				"hat5_free": 15
+			},
+			{
+				"score": 20,
+				"pack": 1
+			},
+			{
+				"score": 40,
+				"gold": 200
+			},
+			{
+				"score": 80,
+				"heart_free": 30
+			},
+			{
+				"score": 120,
+				"pack": 3
+			},
+			{
+				"score": 10,
+				"heart_free": 30
+			},
+			{
+				"score": 20,
+				"bom_phao_free": 15
+			},
+			{
+				"score": 40,
+				"pack": 1
+			},
+			{
+				"score": 80,
+				"hat5_free": 15
+			},
+			{
+				"score": 120,
+				"pack": 3
+			}
+		]
+	},
+	"6" : {
+		"startLevel": 4,
+		"finishLevel": 100000,
+		"duration": 48,
+		"collectType": [103],
+		"reward": [
+			{
+				"score": 5,
+				"heart_free": 15
+			},
+			{
+				"score": 10,
+				"pack": 2
+			},
+			{
+				"score": 20,
+				"may_bay_free": 15
+			},
+			{
+				"score": 40,
+				"pack": 3
+			},
+			{
+				"score": 80,
+				"bom_phao_free": 30
+			},
+			{
+				"score": 50,
+				"pack": 1
+			},
+			{
+				"score": 10,
+				"hat5_free": 15
+			},
+			{
+				"score": 20,
+				"pack": 2
+			},
+			{
+				"score": 40,
+				"heart_free": 30
+			},
+			{
+				"score": 80,
+				"bua_ta": 2
+			},
+			{
+				"score": 5,
+				"heart_free": 15
+			},
+			{
+				"score": 10,
+				"bom_phao_free": 15
+			},
+			{
+				"score": 20,
+				"pack": 2
+			},
+			{
+				"score": 40,
+				"hat5_free": 30
+			},
+			{
+				"score": 80,
+				"pack": 4
+			}
+		]
+	},
+	"maxCollectType" : 6,
+	"maxCollectionLevel": 15
+}

@@ -1,0 +1,83 @@
+
+icon_offer_120.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Flare4
+  rotate: false
+  xy: 376, 74
+  size: 51, 50
+  orig: 51, 50
+  offset: 0, 0
+  index: -1
+bg
+  rotate: false
+  xy: 2, 2
+  size: 122, 122
+  orig: 122, 122
+  offset: 0, 0
+  index: -1
+coin
+  rotate: false
+  xy: 310, 78
+  size: 64, 46
+  orig: 64, 46
+  offset: 0, 0
+  index: -1
+coin1
+  rotate: false
+  xy: 236, 36
+  size: 36, 26
+  orig: 36, 26
+  offset: 0, 0
+  index: -1
+grass
+  rotate: false
+  xy: 126, 68
+  size: 108, 56
+  orig: 108, 56
+  offset: 0, 0
+  index: -1
+head1
+  rotate: false
+  xy: 274, 26
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+head2
+  rotate: false
+  xy: 209, 40
+  size: 25, 26
+  orig: 25, 26
+  offset: 0, 0
+  index: -1
+headB
+  rotate: false
+  xy: 126, 14
+  size: 81, 52
+  orig: 81, 52
+  offset: 0, 0
+  index: -1
+rocket
+  rotate: false
+  xy: 473, 84
+  size: 34, 40
+  orig: 34, 40
+  offset: 0, 0
+  index: -1
+rocket2
+  rotate: false
+  xy: 429, 81
+  size: 42, 43
+  orig: 42, 43
+  offset: 0, 0
+  index: -1
+water
+  rotate: false
+  xy: 236, 64
+  size: 72, 60
+  orig: 72, 60
+  offset: 0, 0
+  index: -1

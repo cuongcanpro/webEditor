@@ -1,0 +1,167 @@
+
+bom.png
+size: 2048,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1
+  rotate: false
+  xy: 1668, 60
+  size: 52, 50
+  orig: 52, 50
+  offset: 0, 0
+  index: -1
+2
+  rotate: false
+  xy: 1722, 60
+  size: 52, 50
+  orig: 52, 50
+  offset: 0, 0
+  index: -1
+3
+  rotate: false
+  xy: 1776, 60
+  size: 52, 50
+  orig: 52, 50
+  offset: 0, 0
+  index: -1
+Bom_may_blue_74x74
+  rotate: false
+  xy: 856, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+Bom_may_green_74x74
+  rotate: false
+  xy: 932, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+Bom_may_orange_74x74
+  rotate: false
+  xy: 1236, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+Bom_may_pink_74x74
+  rotate: false
+  xy: 1008, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+Bom_may_red_74x74
+  rotate: false
+  xy: 1084, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+Bom_may_yellow_74x74
+  rotate: false
+  xy: 1160, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+breakglass4_03
+  rotate: false
+  xy: 551, 12
+  size: 91, 98
+  orig: 91, 98
+  offset: 0, 0
+  index: -1
+cirlce 50 25
+  rotate: false
+  xy: 738, 26
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: -1
+flash1
+  rotate: false
+  xy: 1312, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+flash2
+  rotate: false
+  xy: 1388, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+flash3
+  rotate: false
+  xy: 1464, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+flash4
+  rotate: false
+  xy: 1540, 36
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+png-flare
+  rotate: false
+  xy: 2, 2
+  size: 192, 108
+  orig: 192, 108
+  offset: 0, 0
+  index: -1
+s1
+  rotate: false
+  xy: 1830, 67
+  size: 49, 43
+  orig: 49, 43
+  offset: 0, 0
+  index: -1
+s2
+  rotate: false
+  xy: 644, 15
+  size: 92, 95
+  orig: 92, 95
+  offset: 0, 0
+  index: -1
+s3
+  rotate: false
+  xy: 442, 10
+  size: 107, 100
+  orig: 107, 100
+  offset: 0, 0
+  index: -1
+s4
+  rotate: false
+  xy: 324, 6
+  size: 116, 104
+  orig: 116, 104
+  offset: 0, 0
+  index: -1
+s5
+  rotate: false
+  xy: 196, 9
+  size: 126, 101
+  orig: 126, 101
+  offset: 0, 0
+  index: -1
+s6
+  rotate: false
+  xy: 738, 53
+  size: 116, 57
+  orig: 116, 57
+  offset: 0, 0
+  index: -1
+saot
+  rotate: false
+  xy: 1616, 52
+  size: 50, 58
+  orig: 50, 58
+  offset: 0, 0
+  index: -1

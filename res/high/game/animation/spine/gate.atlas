@@ -1,0 +1,41 @@
+
+gate.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fx1_gate
+  rotate: false
+  xy: 159, 79
+  size: 73, 29
+  orig: 73, 29
+  offset: 0, 0
+  index: -1
+fx2_gate
+  rotate: false
+  xy: 75, 2
+  size: 59, 29
+  orig: 59, 29
+  offset: 0, 0
+  index: -1
+fx_motion
+  rotate: false
+  xy: 2, 13
+  size: 71, 95
+  orig: 71, 95
+  offset: 0, 0
+  index: -1
+gate
+  rotate: false
+  xy: 159, 46
+  size: 70, 31
+  orig: 70, 31
+  offset: 0, 0
+  index: -1
+growfx
+  rotate: false
+  xy: 75, 33
+  size: 82, 75
+  orig: 82, 75
+  offset: 0, 0
+  index: -1

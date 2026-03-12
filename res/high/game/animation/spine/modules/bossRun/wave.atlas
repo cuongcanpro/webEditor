@@ -1,0 +1,90 @@
+
+wave.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+wave1
+  rotate: true
+  xy: 582, 9
+  size: 104, 120
+  orig: 104, 120
+  offset: 0, 0
+  index: -1
+wave10
+  rotate: false
+  xy: 1861, 52
+  size: 164, 201
+  orig: 164, 201
+  offset: 0, 0
+  index: -1
+wave11
+  rotate: true
+  xy: 704, 9
+  size: 104, 120
+  orig: 104, 120
+  offset: 0, 0
+  index: -1
+wave12
+  rotate: false
+  xy: 2, 25
+  size: 578, 113
+  orig: 578, 113
+  offset: 0, 0
+  index: -1
+wave2
+  rotate: false
+  xy: 1695, 52
+  size: 164, 201
+  orig: 164, 201
+  offset: 0, 0
+  index: -1
+wave3
+  rotate: true
+  xy: 50, 2
+  size: 21, 29
+  orig: 21, 29
+  offset: 0, 0
+  index: -1
+wave4
+  rotate: true
+  xy: 1392, 128
+  size: 125, 301
+  orig: 125, 301
+  offset: 0, 0
+  index: -1
+wave5
+  rotate: false
+  xy: 2, 2
+  size: 46, 21
+  orig: 46, 21
+  offset: 0, 0
+  index: -1
+wave6
+  rotate: true
+  xy: 826, 33
+  size: 80, 72
+  orig: 80, 72
+  offset: 0, 0
+  index: -1
+wave7
+  rotate: true
+  xy: 582, 115
+  size: 138, 403
+  orig: 138, 403
+  offset: 0, 0
+  index: -1
+wave8
+  rotate: false
+  xy: 2, 140
+  size: 578, 113
+  orig: 578, 113
+  offset: 0, 0
+  index: -1
+wave9
+  rotate: true
+  xy: 987, 115
+  size: 138, 403
+  orig: 138, 403
+  offset: 0, 0
+  index: -1

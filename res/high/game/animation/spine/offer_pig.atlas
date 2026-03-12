@@ -1,0 +1,160 @@
+
+offer_pig.png
+size: 1024,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+G
+  rotate: false
+  xy: 222, 34
+  size: 34, 33
+  orig: 34, 33
+  offset: 0, 0
+  index: -1
+bg3
+  rotate: false
+  xy: 2, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+coin_P
+  rotate: false
+  xy: 124, 11
+  size: 27, 16
+  orig: 27, 16
+  offset: 0, 0
+  index: -1
+idle0000.png
+  rotate: false
+  xy: 403, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0001.png
+  rotate: false
+  xy: 258, 34
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0002.png
+  rotate: false
+  xy: 438, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0003.png
+  rotate: false
+  xy: 473, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0004.png
+  rotate: false
+  xy: 508, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0005.png
+  rotate: false
+  xy: 543, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0006.png
+  rotate: false
+  xy: 578, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0007.png
+  rotate: false
+  xy: 613, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0008.png
+  rotate: false
+  xy: 648, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0009.png
+  rotate: false
+  xy: 683, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0010.png
+  rotate: false
+  xy: 718, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0011.png
+  rotate: false
+  xy: 753, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0012.png
+  rotate: false
+  xy: 788, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0013.png
+  rotate: false
+  xy: 823, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0014.png
+  rotate: false
+  xy: 858, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+idle0015.png
+  rotate: false
+  xy: 893, 89
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+pig
+  rotate: false
+  xy: 321, 55
+  size: 80, 67
+  orig: 80, 67
+  offset: 0, 0
+  index: -1
+pillow3
+  rotate: false
+  xy: 222, 69
+  size: 97, 53
+  orig: 97, 53
+  offset: 0, 0
+  index: -1
+sd_pig
+  rotate: false
+  xy: 124, 29
+  size: 96, 93
+  orig: 96, 93
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,139 @@
+
+fx_hammer_2.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fire_1
+  rotate: true
+  xy: 946, 390
+  size: 88, 332
+  orig: 88, 332
+  offset: 0, 0
+  index: -1
+fire_10
+  rotate: true
+  xy: 1524, 235
+  size: 78, 299
+  orig: 78, 299
+  offset: 0, 0
+  index: -1
+fire_11
+  rotate: true
+  xy: 1214, 305
+  size: 77, 308
+  orig: 77, 308
+  offset: 0, 0
+  index: -1
+fire_12
+  rotate: true
+  xy: 1608, 315
+  size: 69, 300
+  orig: 69, 300
+  offset: 0, 0
+  index: -1
+fire_2
+  rotate: true
+  xy: 610, 384
+  size: 94, 334
+  orig: 94, 334
+  offset: 0, 0
+  index: -1
+fire_3
+  rotate: true
+  xy: 2, 2
+  size: 95, 333
+  orig: 95, 333
+  offset: 0, 0
+  index: -1
+fire_4
+  rotate: true
+  xy: 1280, 384
+  size: 94, 326
+  orig: 94, 326
+  offset: 0, 0
+  index: -1
+fire_5
+  rotate: true
+  xy: 1608, 386
+  size: 92, 325
+  orig: 92, 325
+  offset: 0, 0
+  index: -1
+fire_6
+  rotate: false
+  xy: 868, 73
+  size: 86, 309
+  orig: 86, 309
+  offset: 0, 0
+  index: -1
+fire_7
+  rotate: false
+  xy: 518, 54
+  size: 90, 301
+  orig: 90, 301
+  offset: 0, 0
+  index: -1
+fire_8
+  rotate: true
+  xy: 1214, 214
+  size: 89, 294
+  orig: 89, 294
+  offset: 0, 0
+  index: -1
+fire_9
+  rotate: true
+  xy: 1214, 128
+  size: 84, 299
+  orig: 84, 299
+  offset: 0, 0
+  index: -1
+glow1
+  rotate: false
+  xy: 2, 357
+  size: 606, 121
+  orig: 606, 121
+  offset: 0, 0
+  index: -1
+glow122
+  rotate: false
+  xy: 2, 99
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+glow125
+  rotate: false
+  xy: 260, 99
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+glow130
+  rotate: false
+  xy: 610, 126
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+glow_Yellow
+  rotate: true
+  xy: 337, 33
+  size: 64, 128
+  orig: 64, 128
+  offset: 0, 0
+  index: -1
+ground10
+  rotate: false
+  xy: 956, 132
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+particle65
+  rotate: false
+  xy: 1515, 105
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

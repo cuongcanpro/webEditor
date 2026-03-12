@@ -1,0 +1,69 @@
+
+icon_offer_130.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ball
+  rotate: false
+  xy: 354, 87
+  size: 37, 37
+  orig: 37, 37
+  offset: 0, 0
+  index: -1
+bg
+  rotate: false
+  xy: 2, 2
+  size: 122, 122
+  orig: 122, 122
+  offset: 0, 0
+  index: -1
+boom
+  rotate: true
+  xy: 238, 29
+  size: 36, 43
+  orig: 36, 43
+  offset: 0, 0
+  index: -1
+bua
+  rotate: false
+  xy: 238, 67
+  size: 53, 57
+  orig: 53, 57
+  offset: 0, 0
+  index: -1
+grass
+  rotate: false
+  xy: 126, 26
+  size: 110, 98
+  orig: 110, 98
+  offset: 0, 0
+  index: -1
+hand
+  rotate: false
+  xy: 432, 92
+  size: 36, 32
+  orig: 36, 32
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 393, 92
+  size: 37, 32
+  orig: 37, 32
+  offset: 0, 0
+  index: -1
+light
+  rotate: true
+  xy: 293, 84
+  size: 40, 59
+  orig: 40, 59
+  offset: 0, 0
+  index: -1
+rocket
+  rotate: false
+  xy: 470, 94
+  size: 34, 30
+  orig: 34, 30
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,382 @@
+{
+  "ID": "99088e57-9844-45c2-a933-eb3e33c0a3b6",
+  "Version": "3.10.0.0",
+  "Name": "TabActionDefSelector",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "ClipAble": false,
+        "ComboBoxIndex": 1,
+        "SingleColor": {
+          "R": 51,
+          "G": 204,
+          "B": 102
+        },
+        "FirstColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0
+        },
+        "EndColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0
+        },
+        "ColorVector": {
+          "ScaleX": 1.0
+        },
+        "TouchEnable": true,
+        "StretchWidthEnable": true,
+        "StretchHeightEnable": true,
+        "AnchorPoint": {
+          "ScaleX": 0.5,
+          "ScaleY": 0.5
+        },
+        "Position": {
+          "X": 350.0,
+          "Y": 555.0
+        },
+        "Scale": {
+          "ScaleX": 1.0,
+          "ScaleY": 1.0
+        },
+        "CColor": {},
+        "IconVisible": false,
+        "PrePosition": {
+          "X": 0.5,
+          "Y": 0.4625
+        },
+        "PreSize": {
+          "X": 1.0,
+          "Y": 0.925
+        },
+        "HorizontalEdge": "BothEdge",
+        "VerticalEdge": "BothEdge",
+        "TopMargin": 90.0,
+        "Children": [
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 128,
+            "ComboBoxIndex": 1,
+            "SingleColor": {
+              "R": 26,
+              "G": 26,
+              "B": 26
+            },
+            "FirstColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0
+            },
+            "EndColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0
+            },
+            "ColorVector": {
+              "ScaleX": 1.0
+            },
+            "TouchEnable": true,
+            "StretchWidthEnable": true,
+            "StretchHeightEnable": true,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 350.0,
+              "Y": 555.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PreSize": {
+              "X": 0.9914,
+              "Y": 0.9946
+            },
+            "HorizontalEdge": "BothEdge",
+            "VerticalEdge": "BothEdge",
+            "LeftMargin": 3.0,
+            "RightMargin": 3.0,
+            "TopMargin": 3.0,
+            "BottomMargin": 3.0,
+            "Children": [
+              {
+                "ItemMargin": 5,
+                "DirectionType": "Vertical",
+                "IsBounceEnabled": true,
+                "ScrollDirectionType": 0,
+                "ClipAble": false,
+                "BackColorAlpha": 0,
+                "SingleColor": {},
+                "FirstColor": {
+                  "R": 0,
+                  "G": 0,
+                  "B": 0
+                },
+                "EndColor": {
+                  "R": 0,
+                  "G": 0,
+                  "B": 0
+                },
+                "ColorVector": {
+                  "ScaleX": 1.0
+                },
+                "StretchWidthEnable": true,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 347.0,
+                  "Y": 850.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.7699
+                },
+                "PreSize": {
+                  "X": 0.9769,
+                  "Y": 0.4457
+                },
+                "HorizontalEdge": "BothEdge",
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": 8.0,
+                "RightMargin": 8.0,
+                "TopMargin": 8.0,
+                "BottomMargin": 604.0,
+                "Children": [
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "backup/actionSelector.json",
+                      "Plist": ""
+                    },
+                    "StretchWidthEnable": false,
+                    "StretchHeightEnable": false,
+                    "InnerActionSpeed": 0.0,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 349.0,
+                      "Y": 457.5
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.5147,
+                      "Y": 0.9299
+                    },
+                    "PreSize": {
+                      "X": 1.0295,
+                      "Y": 0.1402
+                    },
+                    "HorizontalEdge": "LeftEdge",
+                    "VerticalEdge": "TopEdge",
+                    "RightMargin": -20.0,
+                    "BottomMargin": 423.0,
+                    "Children": [],
+                    "ActionTag": 587618819,
+                    "Size": {
+                      "X": 698.0,
+                      "Y": 69.0
+                    },
+                    "Name": "Action1",
+                    "ctype": "ProjectNodeObjectData"
+                  },
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "backup/actionSelector.json",
+                      "Plist": ""
+                    },
+                    "StretchWidthEnable": false,
+                    "StretchHeightEnable": false,
+                    "InnerActionSpeed": 0.0,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 349.0,
+                      "Y": 383.5
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.5147,
+                      "Y": 0.7795
+                    },
+                    "PreSize": {
+                      "X": 1.0295,
+                      "Y": 0.1402
+                    },
+                    "HorizontalEdge": "LeftEdge",
+                    "VerticalEdge": "TopEdge",
+                    "RightMargin": -20.0,
+                    "TopMargin": 74.0,
+                    "BottomMargin": 349.0,
+                    "Children": [],
+                    "ActionTag": 587618820,
+                    "Size": {
+                      "X": 698.0,
+                      "Y": 69.0
+                    },
+                    "Name": "Action2",
+                    "ctype": "ProjectNodeObjectData"
+                  },
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "backup/actionSelector.json",
+                      "Plist": ""
+                    },
+                    "StretchWidthEnable": false,
+                    "StretchHeightEnable": false,
+                    "InnerActionSpeed": 0.0,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 349.0,
+                      "Y": 309.5
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.5147,
+                      "Y": 0.6291
+                    },
+                    "PreSize": {
+                      "X": 1.0295,
+                      "Y": 0.1402
+                    },
+                    "HorizontalEdge": "LeftEdge",
+                    "VerticalEdge": "TopEdge",
+                    "RightMargin": -20.0,
+                    "TopMargin": 148.0,
+                    "BottomMargin": 275.0,
+                    "Children": [],
+                    "ActionTag": 587618821,
+                    "Size": {
+                      "X": 698.0,
+                      "Y": 69.0
+                    },
+                    "Name": "Action3",
+                    "ctype": "ProjectNodeObjectData"
+                  },
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "backup/actionSelector.json",
+                      "Plist": ""
+                    },
+                    "StretchWidthEnable": false,
+                    "StretchHeightEnable": false,
+                    "InnerActionSpeed": 0.0,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 349.0,
+                      "Y": 235.5
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.5147,
+                      "Y": 0.4787
+                    },
+                    "PreSize": {
+                      "X": 1.0295,
+                      "Y": 0.1402
+                    },
+                    "HorizontalEdge": "LeftEdge",
+                    "VerticalEdge": "TopEdge",
+                    "RightMargin": -20.0,
+                    "TopMargin": 222.0,
+                    "BottomMargin": 201.0,
+                    "Children": [],
+                    "ActionTag": 587618822,
+                    "Size": {
+                      "X": 698.0,
+                      "Y": 69.0
+                    },
+                    "Name": "Action4",
+                    "ctype": "ProjectNodeObjectData"
+                  }
+                ],
+                "ActionTag": 34453414,
+                "Size": {
+                  "X": 678.0,
+                  "Y": 492.0
+                },
+                "Name": "ActionList",
+                "ctype": "ListViewObjectData"
+              }
+            ],
+            "ActionTag": 861590620,
+            "Size": {
+              "X": 694.0,
+              "Y": 1104.0
+            },
+            "Name": "ScrollContent",
+            "ctype": "PanelObjectData"
+          }
+        ],
+        "ActionTag": 403447347,
+        "Size": {
+          "X": 700.0,
+          "Y": 1110.0
+        },
+        "Name": "ScrollBorder",
+        "ctype": "PanelObjectData"
+      },
+      "UsedResources": [
+        "actionSelector.json"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

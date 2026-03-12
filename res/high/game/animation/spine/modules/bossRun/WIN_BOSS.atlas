@@ -1,0 +1,181 @@
+
+WIN_BOSS.png
+size: 2048,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+af
+  rotate: false
+  xy: 1027, 83
+  size: 40, 55
+  orig: 40, 55
+  offset: 0, 0
+  index: -1
+board
+  rotate: false
+  xy: 712, 361
+  size: 414, 149
+  orig: 414, 149
+  offset: 0, 0
+  index: -1
+c
+  rotate: false
+  xy: 1027, 37
+  size: 40, 44
+  orig: 40, 44
+  offset: 0, 0
+  index: -1
+g
+  rotate: true
+  xy: 1752, 469
+  size: 41, 44
+  orig: 41, 44
+  offset: 0, 0
+  index: -1
+grow_bg1
+  rotate: false
+  xy: 2, 32
+  size: 360, 263
+  orig: 360, 263
+  offset: 0, 0
+  index: -1
+growbg2
+  rotate: false
+  xy: 364, 51
+  size: 346, 244
+  orig: 346, 244
+  offset: 0, 0
+  index: -1
+h
+  rotate: true
+  xy: 1081, 259
+  size: 44, 43
+  orig: 44, 43
+  offset: 0, 0
+  index: -1
+leaf
+  rotate: false
+  xy: 937, 2
+  size: 88, 136
+  orig: 88, 136
+  offset: 0, 0
+  index: -1
+lightBB1
+  rotate: true
+  xy: 1128, 456
+  size: 54, 311
+  orig: 54, 311
+  offset: 0, 0
+  index: -1
+lightBS1
+  rotate: true
+  xy: 2, 7
+  size: 23, 273
+  orig: 23, 273
+  offset: 0, 0
+  index: -1
+n
+  rotate: false
+  xy: 1705, 467
+  size: 45, 43
+  orig: 45, 43
+  offset: 0, 0
+  index: -1
+oh
+  rotate: false
+  xy: 1081, 305
+  size: 43, 54
+  orig: 43, 54
+  offset: 0, 0
+  index: -1
+ruybang
+  rotate: false
+  xy: 712, 82
+  size: 223, 163
+  orig: 223, 163
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 2, 297
+  size: 708, 213
+  orig: 708, 213
+  offset: 0, 0
+  index: -1
+star1
+  rotate: false
+  xy: 1249, 359
+  size: 96, 95
+  orig: 96, 95
+  offset: 0, 0
+  index: -1
+star2
+  rotate: false
+  xy: 1347, 374
+  size: 77, 80
+  orig: 77, 80
+  offset: 0, 0
+  index: -1
+star3
+  rotate: false
+  xy: 1579, 448
+  size: 63, 62
+  orig: 63, 62
+  offset: 0, 0
+  index: -1
+star4
+  rotate: false
+  xy: 1513, 446
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+star5
+  rotate: false
+  xy: 1644, 450
+  size: 59, 60
+  orig: 59, 60
+  offset: 0, 0
+  index: -1
+star6
+  rotate: false
+  xy: 1441, 442
+  size: 70, 68
+  orig: 70, 68
+  offset: 0, 0
+  index: -1
+star_dot
+  rotate: true
+  xy: 277, 2
+  size: 28, 27
+  orig: 28, 27
+  offset: 0, 0
+  index: -1
+t
+  rotate: true
+  xy: 1798, 473
+  size: 37, 44
+  orig: 37, 44
+  offset: 0, 0
+  index: -1
+text_boss
+  rotate: false
+  xy: 712, 247
+  size: 367, 112
+  orig: 367, 112
+  offset: 0, 0
+  index: -1
+trumpet1
+  rotate: false
+  xy: 937, 140
+  size: 132, 105
+  orig: 132, 105
+  offset: 0, 0
+  index: -1
+trumpet2
+  rotate: false
+  xy: 1128, 373
+  size: 119, 81
+  orig: 119, 81
+  offset: 0, 0
+  index: -1

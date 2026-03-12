@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "storeType": 1,
+  "widthDesign": 720,
+  "heightDesign": 1280,
+  "minScreenRatio": 1.5,
+  "selectScale": 0.5,
+  "resources": [
+    {
+      "folder": "res/high",
+      "scale": 1
+    }
+  ],
+  "searchPaths": [
+    "res",
+    "res/common"
+  ]
+}

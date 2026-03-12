@@ -1,0 +1,231 @@
+{
+  "ID": "99088e57-9844-45c2-a933-eb3e33c0a3b6",
+  "Version": "3.10.0.0",
+  "Name": "inputValue",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "ClipAble": false,
+        "ComboBoxIndex": 1,
+        "SingleColor": {
+          "R": 51,
+          "G": 128,
+          "B": 230
+        },
+        "FirstColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0
+        },
+        "EndColor": {
+          "R": 0,
+          "G": 0,
+          "B": 0
+        },
+        "ColorVector": {
+          "ScaleX": 1.0
+        },
+        "Scale9Width": 1,
+        "Scale9Height": 1,
+        "TouchEnable": true,
+        "AnchorPoint": {
+          "ScaleX": 0.5,
+          "ScaleY": 0.5
+        },
+        "Position": {
+          "X": 349.0,
+          "Y": 1165.5
+        },
+        "Scale": {
+          "ScaleX": 1.0,
+          "ScaleY": 1.0
+        },
+        "CColor": {},
+        "IconVisible": false,
+        "PrePosition": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "PreSize": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "HorizontalEdge": "LeftEdge",
+        "VerticalEdge": "TopEdge",
+        "RightMargin": -698.0,
+        "TopMargin": -1200.0,
+        "BottomMargin": 1131.0,
+        "Children": [
+          {
+            "IsCustomSize": true,
+            "FontSize": 22,
+            "LabelText": "Action 1: Tap (Blue)",
+            "OutlineColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0
+            },
+            "ShadowColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0
+            },
+            "ShadowOffsetX": 2.0,
+            "ShadowOffsetY": -2.0,
+            "StretchHeightEnable": true,
+            "AnchorPoint": {
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 11.8862,
+              "Y": 31.3601
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.017,
+              "Y": 0.4545
+            },
+            "PreSize": {
+              "X": 0.5932,
+              "Y": 0.7541
+            },
+            "VerticalEdge": "BothEdge",
+            "LeftMargin": 11.8862,
+            "RightMargin": 272.0272,
+            "TopMargin": 11.6237,
+            "BottomMargin": 5.344,
+            "ActionTag": 54007341,
+            "Size": {
+              "X": 414.0865,
+              "Y": 52.0323
+            },
+            "Name": "name",
+            "ctype": "TextObjectData"
+          },
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 121,
+            "ComboBoxIndex": 1,
+            "SingleColor": {
+              "B": 0
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
+            "TouchEnable": true,
+            "AnchorPoint": {},
+            "Position": {
+              "X": 460.698,
+              "Y": -0.8796
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.66,
+              "Y": -0.0127
+            },
+            "PreSize": {
+              "X": 0.2182,
+              "Y": 1.0132
+            },
+            "LeftMargin": 460.698,
+            "RightMargin": 84.9915,
+            "TopMargin": -0.0294,
+            "BottomMargin": -0.8796,
+            "Tag": 218,
+            "Children": [
+              {
+                "FontSize": 24,
+                "IsCustomSize": true,
+                "LabelText": "1",
+                "PlaceHolderText": "width",
+                "MaxLengthText": 10,
+                "TouchEnable": true,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 76.1553,
+                  "Y": 34.9546
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PercentWidthEnable": true,
+                "PercentHeightEnable": true,
+                "PercentWidthEnabled": true,
+                "PercentHeightEnabled": true,
+                "PreSize": {
+                  "X": 0.8962,
+                  "Y": 0.8797
+                },
+                "LeftMargin": 7.9049,
+                "RightMargin": 7.9049,
+                "TopMargin": 4.2049,
+                "BottomMargin": 4.2051,
+                "Tag": 219,
+                "ActionTag": -481961911,
+                "Size": {
+                  "X": 136.5007,
+                  "Y": 61.4989
+                },
+                "Name": "value",
+                "ctype": "TextFieldObjectData"
+              }
+            ],
+            "ActionTag": -1530795698,
+            "Size": {
+              "X": 152.3106,
+              "Y": 69.9089
+            },
+            "Name": "Panel_3_2",
+            "ctype": "PanelObjectData"
+          }
+        ],
+        "ActionTag": 594100557,
+        "Size": {
+          "X": 698.0,
+          "Y": 69.0
+        },
+        "Name": "Action1",
+        "ctype": "PanelObjectData"
+      },
+      "UsedResources": [],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

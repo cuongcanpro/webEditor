@@ -1,0 +1,56 @@
+{
+  "1": {
+    "artifacts": {
+      "1": {
+        "triggerCondition": 10800,
+        "product": {
+          "type": 33,
+          "amount": 15
+        },
+        "remainTime": 5,
+        "energyRecharge": 5,
+        "energyMax": 5,
+        "amountCard": 10,
+        "name": "Xe Bus 2 Tầng",
+        "description": "Nhận bom pháo không giới hạn mỗi 3h",
+        "activeTime": "Số lần dùng: 5 lần",
+        "flavorText": "Đặc trưng của London, bạn có thể thấy nó ở khắp mọi nơi",
+        "activeByTime": true
+      },
+      "2": {
+        "triggerCondition": 0,
+        "product": {
+          "type": 4,
+          "amount": 5
+        },
+        "remainTime": 21600,
+        "energyRecharge": 21600,
+        "energyMax": 21600,
+        "amountCard": 10,
+        "name": "Big Ben",
+        "description": "Giảm thời gian hồi tim đi 5p",
+        "activeTime": "Thời gian dùng: 6 giờ",
+        "flavorText": "Cái này là cái gì thế?",
+        "activeByTime": false
+      },
+      "3": {
+        "triggerCondition": 10800,
+        "product": {
+          "type": 0,
+          "amount": 50
+        },
+        "remainTime": 43200,
+        "energyRecharge": 43200,
+        "energyMax": 43200,
+        "amountCard": 10,
+        "name": "Tàu Ngầm",
+        "description": "Nhận 50 vàng mỗi 3h",
+        "activeTime": "Thời gian dùng: 12 giờ",
+        "flavorText": "Cái này là cái gì thế?",
+        "activeByTime": false
+      }
+    },
+    "numberArtifactType": 3
+  },
+  "numberArtifactType": 3
+}

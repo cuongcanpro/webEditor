@@ -1,0 +1,157 @@
+{
+  "Content": {
+    "Content": {
+      "Animation": {
+        "ActivedAnimationName": "sideMatch",
+        "Duration": "29",
+        "Speed": "1.0",
+        "Timelines": [
+          {
+            "ActionTag": 74107385,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0,
+                "X": 0.0,
+                "Y": 0.0
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 4,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 7,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 10,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 13,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 15,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 19,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 22,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 25,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 27,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              }
+            ],
+            "Property": "RotationSkew",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 74107385,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 27,
+                "X": 1.0,
+                "Y": 1.0
+              }
+            ],
+            "Property": "Scale",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 74107385,
+            "Frames": [
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0
+              }
+            ],
+            "Property": "CColor",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 74107385,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0,
+                "Value": 255
+              }
+            ],
+            "Property": "Alpha",
+            "ctype": "TimelineData"
+          }
+        ],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [
+        {
+          "EndIndex": "29",
+          "Name": "default",
+          "StartIndex": "0",
+          "ctype": "AnimationInfoData"
+        }
+      ]
+    }
+  },
+  "Version": "2.3.4"
+}

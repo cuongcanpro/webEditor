@@ -1,0 +1,174 @@
+
+cloud_blocker.png
+size: 2048,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+B_2A_00
+  rotate: false
+  xy: 2, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+B_2A_01
+  rotate: false
+  xy: 104, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+B_2A_02
+  rotate: false
+  xy: 206, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+B_2A_03
+  rotate: false
+  xy: 308, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+B_2A_04
+  rotate: false
+  xy: 410, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+B_2A_05
+  rotate: false
+  xy: 512, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+B_2A_06
+  rotate: false
+  xy: 614, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+B_2A_07
+  rotate: false
+  xy: 716, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+B_2A_08
+  rotate: false
+  xy: 818, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+B_2A_09
+  rotate: false
+  xy: 920, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+cloud_appeare_00
+  rotate: false
+  xy: 1022, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_01
+  rotate: false
+  xy: 1094, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_02
+  rotate: false
+  xy: 1166, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_03
+  rotate: false
+  xy: 1238, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_04
+  rotate: false
+  xy: 1310, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_05
+  rotate: false
+  xy: 1382, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_06
+  rotate: false
+  xy: 1454, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_07
+  rotate: false
+  xy: 1526, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_08
+  rotate: false
+  xy: 1598, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_09
+  rotate: false
+  xy: 1670, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_10
+  rotate: false
+  xy: 1742, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+cloud_appeare_11
+  rotate: false
+  xy: 1814, 32
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+clound_blk
+  rotate: false
+  xy: 1948, 55
+  size: 47, 47
+  orig: 47, 47
+  offset: 0, 0
+  index: -1
+clound_blk_blur
+  rotate: false
+  xy: 1886, 42
+  size: 60, 60
+  orig: 60, 60
+  offset: 0, 0
+  index: -1

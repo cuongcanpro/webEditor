@@ -1,0 +1,13 @@
+
+pus_bullet_2.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+pus_bullet_2
+  rotate: false
+  xy: 2, 2
+  size: 110, 117
+  orig: 128, 128
+  offset: 2, 9
+  index: -1

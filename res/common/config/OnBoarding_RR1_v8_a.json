@@ -1,0 +1,233 @@
+{
+  "before": {
+    "script": [
+      [
+        {
+          "action": "FORCE_SHOW_BOSS_RUN_WELCOME"
+        }
+      ]
+    ]
+  },
+  "after": {
+    "script": [
+      [
+        {
+          "action": "WAIT",
+          "param1": 0.5,
+          "clearSelfOnFinish": true
+        }
+      ],
+      [
+        {
+          "action": "NPC_TALK",
+          "param1": "Cheese",
+          "param2": "lang_onboarding_text_13",
+          "isFinishOnDone":  true,
+          "isKeepOverStep": true,
+          "param3": "bottom"
+        },
+        {
+          "action": "FORCE_CLICK_BUTTON",
+          "param1": "part",
+          "param2": 2,
+          "param3": 1
+        },
+        {
+          "action": "BLOCK_SWITCH_TAB",
+          "param1": true
+        }
+      ],
+      [
+        {
+          "action": "CLEAR_NPC_TALK"
+        },
+        {
+          "action": "WAIT",
+          "param1": 0.2,
+          "clearSelfOnFinish": true
+        }
+      ],
+      [
+        {
+          "action": "NPC_TALK",
+          "param1": "Cheese",
+          "param2": "lang_onboarding_text_14",
+          "param3": "bottom",
+          "isKeepOverStep": true,
+          "isFinishOnDone": true
+        },
+        {
+          "action": "FORCE_CLICK_BUTTON",
+          "param1": "btnOpen"
+        }
+      ],
+      [
+        {
+          "action": "CLEAR_NPC_TALK"
+        },
+        {
+          "action": "HIDE_INSTRUMENT_TEXT"
+        },
+        {
+          "action": "NPC_TALK",
+          "param1": "Cheese",
+          "param2": "lang_onboarding_text_17",
+          "param3": "bottom",
+          "isKeepOverStep": true,
+          "isFinishOnDone":  true
+        },
+        {
+          "action": "FORCE_CLICK_BUTTON",
+          "param1": "btnMission"
+        }
+      ],
+      [
+        {
+          "action": "CLEAR_NPC_TALK"
+        },
+        {
+          "action": "WAIT",
+          "param1": 0.2,
+          "clearSelfOnFinish": true
+        }
+      ],
+      [
+        {
+          "action": "FORCE_CLICK_BUTTON",
+          "param1": "guiMetaMission.btnOK"
+        }
+      ],
+      [
+        {
+          "action": "WAIT",
+          "param1": 0.5,
+          "clearSelfOnFinish": true
+        }
+      ],
+      [
+        {
+          "action": "BLOCK_SWITCH_TAB",
+          "param1": false
+        },
+        {
+          "action": "FORCE_CLICK_BUTTON",
+          "param1": "lobby.btnTabHome"
+        },
+        {
+          "action": "FORCE_CLICK_BUTTON",
+          "param1": "lobby.imgTabHome"
+        },
+        {
+          "action": "NPC_TALK",
+          "param1": "Cheese",
+          "param2": "lang_onboarding_text_22",
+          "param3": "center",
+          "isKeepOverStep": true,
+          "isFinishOnDone":  true
+        }
+      ],
+      [
+        {
+          "action": "CLEAR_NPC_TALK"
+        },
+        {
+          "action": "WAIT",
+          "param1": 0.5,
+          "clearSelfOnFinish": true
+        }
+      ]
+    ]
+  },
+  "final": {
+    "script": [
+      [
+        {
+          "action": "NPC_TALK",
+          "param1": "Mac",
+          "param2": "lang_onboarding_text_19",
+          "param3": "bottom",
+          "isKeepOverStep": true
+        }
+      ],
+      [
+        {
+          "action": "CLEAR_NPC_TALK"
+        },
+        {
+          "action": "HIDE_INSTRUMENT_TEXT"
+        }
+      ]
+    ]
+  },
+  "star2": {
+    "script": [
+      [
+        {
+          "action": "WAIT",
+          "param1": 3,
+          "clearSelfOnFinish": true
+        }
+      ],
+      [
+        {
+          "action": "NPC_TALK",
+          "param1": "Mac",
+          "param2": "lang_onboarding_text_21",
+          "param3": "bottom",
+          "isKeepOverStep": true
+        },
+        {
+          "action": "SHOW_INSTRUMENT_TEXT",
+          "param1": "lang_touch_to_continue",
+          "isKeepOverStep": true
+        }
+      ],
+      [
+        {
+          "action": "CLEAR_NPC_TALK"
+        },
+        {
+          "action": "HIDE_INSTRUMENT_TEXT"
+        },
+        {
+          "action": "WAIT",
+          "param1": 0.1,
+          "clearSelfOnFinish": true
+        }
+      ],
+      [
+        {
+          "action": "FORCE_CLICK_BUTTON",
+          "param1": "btnOnBoardingStar2"
+        }
+      ]
+    ]
+  },
+  "star1": {
+    "script": [
+      [
+        {
+          "action": "WAIT",
+          "param1": 0.5,
+          "clearSelfOnFinish": true
+        }
+      ],
+      [
+        {
+          "action": "NPC_TALK",
+          "param1": "Cheese",
+          "param2": "lang_onboarding_text_13",
+          "isFinishOnDone":  true,
+          "isKeepOverStep": true,
+          "param3": "bottom"
+        },
+        {
+          "action": "FORCE_CLICK_BUTTON",
+          "param1": "part",
+          "param2": 1,
+          "param3": 1
+        }
+      ]
+    ]
+  }
+}

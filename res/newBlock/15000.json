@@ -1,0 +1,28 @@
+{
+    "baseAction": [
+        "MATCH"
+    ],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [],
+        "match": [
+            "TakeDamageAction"
+        ],
+        "action_0": []
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_monkey_0.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "maxHP": 5,
+        "hitPoints": 1
+    }
+}

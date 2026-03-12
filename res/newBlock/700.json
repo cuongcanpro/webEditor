@@ -1,0 +1,21 @@
+{
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ]
+    },
+    "visual": {
+        "path": "res/high/game/element/705.png",
+        "type": 0
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "maxHP": 5,
+        "hitPoints": 1
+    }
+}

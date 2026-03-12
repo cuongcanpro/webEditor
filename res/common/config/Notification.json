@@ -1,0 +1,4 @@
+{
+  "maxDayNotify": 4,
+  "hourNotify": [12, 20]
+}

@@ -1,0 +1,20 @@
+
+process.png
+size: 512,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+thanh_mau
+  rotate: false
+  xy: 156, 9
+  size: 144, 43
+  orig: 144, 43
+  offset: 0, 0
+  index: -1
+thanh_mau_grow
+  rotate: false
+  xy: 2, 2
+  size: 152, 50
+  orig: 152, 50
+  offset: 0, 0
+  index: -1

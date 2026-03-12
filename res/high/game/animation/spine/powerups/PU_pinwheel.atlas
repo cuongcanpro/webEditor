@@ -1,0 +1,69 @@
+
+PU_pinwheel.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+pin_center
+  rotate: false
+  xy: 186, 41
+  size: 39, 41
+  orig: 300, 300
+  offset: 130, 129
+  index: -1
+pin_center_blur
+  rotate: false
+  xy: 186, 84
+  size: 42, 42
+  orig: 300, 300
+  offset: 129, 129
+  index: -1
+pinwheel
+  rotate: false
+  xy: 2, 11
+  size: 119, 119
+  orig: 300, 300
+  offset: 91, 90
+  index: -1
+pinwheel_shadow
+  rotate: false
+  xy: 2, 132
+  size: 122, 122
+  orig: 300, 300
+  offset: 89, 84
+  index: -1
+wheel_02
+  rotate: false
+  xy: 191, 193
+  size: 61, 61
+  orig: 77, 77
+  offset: 8, 8
+  index: -1
+wheel_03
+  rotate: false
+  xy: 126, 128
+  size: 61, 61
+  orig: 77, 77
+  offset: 8, 8
+  index: -1
+wheel_04
+  rotate: false
+  xy: 123, 65
+  size: 61, 61
+  orig: 77, 77
+  offset: 8, 8
+  index: -1
+wheel_05
+  rotate: false
+  xy: 123, 2
+  size: 61, 61
+  orig: 77, 77
+  offset: 8, 8
+  index: -1
+wheel_06
+  rotate: false
+  xy: 126, 191
+  size: 63, 63
+  orig: 77, 77
+  offset: 7, 7
+  index: -1

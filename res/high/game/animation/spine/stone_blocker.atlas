@@ -1,0 +1,118 @@
+
+stone_blocker.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/blocker/stone_box_003A
+  rotate: false
+  xy: 2, 40
+  size: 73, 68
+  orig: 94, 94
+  offset: 10, 11
+  index: -1
+imgs/blocker/stone_box_003B
+  rotate: false
+  xy: 160, 186
+  size: 69, 68
+  orig: 94, 94
+  offset: 16, 11
+  index: -1
+imgs/blocker/stone_box_003rockpice
+  rotate: false
+  xy: 191, 82
+  size: 39, 53
+  orig: 39, 53
+  offset: 0, 0
+  index: -1
+imgs/blocker/stone_box_003rockpice_2
+  rotate: true
+  xy: 231, 222
+  size: 32, 23
+  orig: 32, 23
+  offset: 0, 0
+  index: -1
+imgs/blocker/stone_box_crack
+  rotate: true
+  xy: 140, 89
+  size: 46, 49
+  orig: 94, 94
+  offset: 17, 18
+  index: -1
+imgs/mosh_01
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+imgs/mosh_02
+  rotate: false
+  xy: 36, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+imgs/moss_a
+  rotate: true
+  xy: 159, 137
+  size: 47, 60
+  orig: 47, 60
+  offset: 0, 0
+  index: -1
+imgs/moss_b
+  rotate: false
+  xy: 83, 143
+  size: 74, 41
+  orig: 74, 41
+  offset: 0, 0
+  index: -1
+imgs/moss_c
+  rotate: true
+  xy: 79, 88
+  size: 53, 59
+  orig: 53, 59
+  offset: 0, 0
+  index: -1
+imgs/rock_01
+  rotate: true
+  xy: 134, 38
+  size: 48, 38
+  orig: 64, 64
+  offset: 8, 13
+  index: -1
+imgs/rock_02
+  rotate: false
+  xy: 174, 41
+  size: 45, 39
+  orig: 72, 64
+  offset: 16, 13
+  index: -1
+imgs/rock_03
+  rotate: true
+  xy: 77, 36
+  size: 50, 55
+  orig: 64, 64
+  offset: 5, 0
+  index: -1
+imgs/stone_box_001
+  rotate: false
+  xy: 2, 180
+  size: 79, 74
+  orig: 94, 94
+  offset: 9, 8
+  index: -1
+imgs/stone_box_002
+  rotate: false
+  xy: 2, 110
+  size: 75, 68
+  orig: 94, 94
+  offset: 10, 11
+  index: -1
+imgs/stone_box_003
+  rotate: false
+  xy: 83, 186
+  size: 75, 68
+  orig: 94, 94
+  offset: 10, 11
+  index: -1

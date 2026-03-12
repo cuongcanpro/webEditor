@@ -1,0 +1,43 @@
+{
+  "Content": {
+    "Content": {
+      "Animation": {
+        "ActivedAnimationName": "idle",
+        "Duration": "240",
+        "Speed": "1.0",
+        "Timelines": [
+          {
+            "ActionTag": 1053168121,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "Value": "{\"args\":[0, \"anim7_box\", false],\"method\":\"setAnimation\"}"
+              }
+            ],
+            "Property": "FrameEvent",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 2132787284,
+            "Frames": [],
+            "Property": "Position",
+            "ctype": "TimelineData"
+          }
+        ],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [
+        {
+          "EndIndex": "240",
+          "Name": "default",
+          "StartIndex": "0",
+          "ctype": "AnimationInfoData"
+        }
+      ]
+    }
+  },
+  "Version": "2.3.4"
+}

@@ -1,0 +1,20 @@
+
+springs_blocker.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/blocker/springs_box_001
+  rotate: false
+  xy: 2, 2
+  size: 73, 75
+  orig: 94, 94
+  offset: 12, 7
+  index: -1
+imgs/blocker/springs_box_002
+  rotate: false
+  xy: 2, 79
+  size: 73, 76
+  orig: 94, 94
+  offset: 12, 7
+  index: -1

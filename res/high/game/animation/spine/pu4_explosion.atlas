@@ -1,0 +1,27 @@
+
+pu4_explosion.png
+size: 256,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bullet_sp
+  rotate: false
+  xy: 65, 10
+  size: 62, 51
+  orig: 65, 64
+  offset: 0, 6
+  index: -1
+ring_01
+  rotate: false
+  xy: 129, 11
+  size: 54, 50
+  orig: 64, 64
+  offset: 6, 6
+  index: -1
+ring_02
+  rotate: true
+  xy: 2, 2
+  size: 59, 61
+  orig: 64, 64
+  offset: 4, 0
+  index: -1

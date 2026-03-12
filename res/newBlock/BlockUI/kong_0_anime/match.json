@@ -1,0 +1,51 @@
+{
+  "Content": {
+    "Content": {
+      "Animation": {
+        "ActivedAnimationName": "match",
+        "Duration": "41",
+        "Speed": "1.0",
+        "Timelines": [
+          {
+            "ActionTag": 464673105,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "Value": "{\"args\":[0, \"anim6_hurt\", false],\"method\":\"setAnimation\"}"
+              }
+            ],
+            "Property": "FrameEvent",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 19862956,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 35,
+                "Value": false
+              }
+            ],
+            "Property": "VisibleForFrame",
+            "ctype": "TimelineData"
+          }
+        ],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [
+        {
+          "EndIndex": "41",
+          "Name": "default",
+          "StartIndex": "0",
+          "ctype": "AnimationInfoData"
+        }
+      ]
+    }
+  },
+  "Version": "2.3.4"
+}

@@ -1,0 +1,34 @@
+
+lamp.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+den_giaothong
+  rotate: true
+  xy: 2, 31
+  size: 71, 146
+  orig: 71, 146
+  offset: 0, 0
+  index: -1
+den_giaothong2
+  rotate: false
+  xy: 2, 2
+  size: 44, 27
+  orig: 44, 27
+  offset: 0, 0
+  index: -1
+gow_lamp
+  rotate: false
+  xy: 225, 46
+  size: 63, 56
+  orig: 63, 56
+  offset: 0, 0
+  index: -1
+gow_light
+  rotate: false
+  xy: 150, 29
+  size: 73, 73
+  orig: 73, 73
+  offset: 0, 0
+  index: -1

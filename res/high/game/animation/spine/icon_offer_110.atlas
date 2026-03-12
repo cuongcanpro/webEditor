@@ -1,0 +1,111 @@
+
+icon_offer_110.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BG
+  rotate: false
+  xy: 2, 4
+  size: 122, 122
+  orig: 122, 122
+  offset: 0, 0
+  index: -1
+Flare4
+  rotate: false
+  xy: 336, 33
+  size: 51, 50
+  orig: 51, 50
+  offset: 0, 0
+  index: -1
+SD
+  rotate: false
+  xy: 126, 21
+  size: 103, 105
+  orig: 103, 105
+  offset: 0, 0
+  index: -1
+ball
+  rotate: false
+  xy: 442, 29
+  size: 44, 45
+  orig: 44, 45
+  offset: 0, 0
+  index: -1
+boom
+  rotate: true
+  xy: 413, 76
+  size: 50, 52
+  orig: 50, 52
+  offset: 0, 0
+  index: -1
+coin1
+  rotate: true
+  xy: 467, 82
+  size: 44, 27
+  orig: 44, 27
+  offset: 0, 0
+  index: -1
+coin2
+  rotate: false
+  xy: 231, 10
+  size: 44, 27
+  orig: 44, 27
+  offset: 0, 0
+  index: -1
+coin3
+  rotate: true
+  xy: 301, 42
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
+coin4
+  rotate: false
+  xy: 442, 2
+  size: 28, 25
+  orig: 28, 25
+  offset: 0, 0
+  index: -1
+coin5
+  rotate: false
+  xy: 277, 2
+  size: 30, 29
+  orig: 30, 29
+  offset: 0, 0
+  index: -1
+coin6
+  rotate: true
+  xy: 309, 3
+  size: 37, 23
+  orig: 37, 23
+  offset: 0, 0
+  index: -1
+coin7
+  rotate: false
+  xy: 342, 85
+  size: 69, 41
+  orig: 69, 41
+  offset: 0, 0
+  index: -1
+coin8
+  rotate: false
+  xy: 389, 25
+  size: 51, 49
+  orig: 51, 49
+  offset: 0, 0
+  index: -1
+grass
+  rotate: false
+  xy: 231, 89
+  size: 109, 37
+  orig: 109, 37
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: true
+  xy: 231, 39
+  size: 48, 68
+  orig: 48, 68
+  offset: 0, 0
+  index: -1

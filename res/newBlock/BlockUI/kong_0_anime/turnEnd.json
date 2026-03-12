@@ -1,0 +1,37 @@
+{
+  "Content": {
+    "Content": {
+      "Animation": {
+        "ActivedAnimationName": "turnEnd",
+        "Duration": "60",
+        "Speed": "1.0",
+        "Timelines": [
+          {
+            "ActionTag": 464673105,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "Value": "{\"args\":[0, \"anim3_attack\", false],\"method\":\"setAnimation\"}"
+              }
+            ],
+            "Property": "FrameEvent",
+            "ctype": "TimelineData"
+          }
+        ],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [
+        {
+          "EndIndex": "60",
+          "Name": "default",
+          "StartIndex": "0",
+          "ctype": "AnimationInfoData"
+        }
+      ]
+    }
+  },
+  "Version": "2.3.4"
+}

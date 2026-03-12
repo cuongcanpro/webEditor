@@ -1,0 +1,141 @@
+{
+  "ID": "99088e57-9844-45c2-a933-eb3e33c0a3b6",
+  "Version": "3.10.0.0",
+  "Name": "block_monkey_0",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "AnchorPoint": {},
+        "Position": {
+          "X": -91.0,
+          "Y": 42.0
+        },
+        "Scale": {
+          "ScaleX": 1.0,
+          "ScaleY": 1.0
+        },
+        "CColor": {},
+        "IconVisible": false,
+        "PrePosition": {
+          "X": -0.1264,
+          "Y": 0.0328
+        },
+        "PreSize": {
+          "X": 0.0014,
+          "Y": 0.0008
+        },
+        "HorizontalEdge": "LeftEdge",
+        "VerticalEdge": "BottomEdge",
+        "LeftMargin": -91.0,
+        "RightMargin": 810.0,
+        "TopMargin": 1238.0,
+        "BottomMargin": 41.0,
+        "UserData": "{\"animations\":{\"RESET\":\"block_monkey_0_anime/RESET.json\",\"idle\":\"block_monkey_0_anime/idle.json\",\"match\":\"block_monkey_0_anime/match.json\",\"remove\":\"block_monkey_0_anime/remove.json\",\"sideMatch\":\"block_monkey_0_anime/sideMatch.json\",\"spawn\":\"block_monkey_0_anime/spawn.json\"}}",
+        "Children": [
+          {
+            "AnchorPoint": {},
+            "Position": {
+              "X": 91.0,
+              "Y": -92.0
+            },
+            "Scale": {
+              "ScaleX": 0.1,
+              "ScaleY": 0.1
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "LeftMargin": 91.0,
+            "RightMargin": -92.0,
+            "TopMargin": 92.0,
+            "BottomMargin": -93.0,
+            "CustomClassName": "SpineSprite",
+            "UserData": "spine/monkey_anim/monkey_anim",
+            "Children": [],
+            "ActionTag": 629216574,
+            "Size": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Name": "ccSpine",
+            "ctype": "SingleNodeObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "HPBar1.json",
+              "Plist": ""
+            },
+            "StretchWidthEnable": false,
+            "StretchHeightEnable": false,
+            "InnerActionSpeed": 0.0,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 91.0,
+              "Y": -104.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "LeftMargin": 18.0,
+            "RightMargin": -164.0,
+            "TopMargin": 85.0,
+            "BottomMargin": -123.0,
+            "Children": [],
+            "ActionTag": 1108516934,
+            "Size": {
+              "X": 146.0,
+              "Y": 38.0
+            },
+            "Name": "Sprite2D",
+            "ctype": "ProjectNodeObjectData"
+          }
+        ],
+        "ActionTag": 1047832826,
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node2D",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "HPBar1.json"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

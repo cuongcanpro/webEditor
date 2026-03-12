@@ -1,0 +1,137 @@
+{
+  "ID": "99088e57-9844-45c2-a933-eb3e33c0a3b6",
+  "Version": "3.10.0.0",
+  "Name": "demo_4",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "AnchorPoint": {},
+        "Position": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Scale": {
+          "ScaleX": 1.0,
+          "ScaleY": 1.0
+        },
+        "CColor": {},
+        "IconVisible": false,
+        "PrePosition": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "PreSize": {
+          "X": 0.0014,
+          "Y": 0.0008
+        },
+        "HorizontalEdge": "LeftEdge",
+        "VerticalEdge": "BottomEdge",
+        "RightMargin": 699.0,
+        "TopMargin": 1200.0,
+        "BottomMargin": -1.0,
+        "UserData": "{\"animations\":{\"RESET\":\"demo_4_anime/RESET.json\",\"match\":\"demo_4_anime/match.json\",\"remove\":\"demo_4_anime/remove.json\",\"sideMatch\":\"demo_4_anime/sideMatch.json\"}}",
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "img/3200.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 5.5,
+              "Y": -9.5
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "LeftMargin": -39.0,
+            "RightMargin": -50.0,
+            "TopMargin": -35.0,
+            "BottomMargin": -54.0,
+            "ActionTag": 2028419834,
+            "Size": {
+              "X": 89.0,
+              "Y": 89.0
+            },
+            "Name": "302",
+            "ctype": "SpriteObjectData"
+          },
+          {
+            "AnchorPoint": {},
+            "Position": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 5.0,
+              "ScaleY": 5.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "RightMargin": -1.0,
+            "BottomMargin": -1.0,
+            "CustomClassName": "EffekSeer",
+            "UserData": "effekseer/test.efk",
+            "ActionTag": 118371461,
+            "Size": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Name": "EffekseerEmitter2D",
+            "ctype": "SingleNodeObjectData"
+          }
+        ],
+        "ActionTag": 1234335174,
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node2D",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "img/3200.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

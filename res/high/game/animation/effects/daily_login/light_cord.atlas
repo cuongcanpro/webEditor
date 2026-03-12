@@ -1,0 +1,41 @@
+
+light_cord.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cord
+  rotate: false
+  xy: 2, 74
+  size: 349, 21
+  orig: 349, 21
+  offset: 0, 0
+  index: -1
+grow_light
+  rotate: false
+  xy: 2, 2
+  size: 70, 70
+  orig: 70, 70
+  offset: 0, 0
+  index: -1
+light_Green
+  rotate: false
+  xy: 123, 8
+  size: 43, 64
+  orig: 43, 64
+  offset: 0, 0
+  index: -1
+light_Orange
+  rotate: false
+  xy: 74, 8
+  size: 47, 64
+  orig: 47, 64
+  offset: 0, 0
+  index: -1
+light_Red
+  rotate: false
+  xy: 168, 9
+  size: 44, 63
+  orig: 44, 63
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,9 @@
+{
+  "UnlockFeature": {
+    "newPlayer": 1,
+    "booster": 9,
+    "tool": 11
+  },
+  "Note:": " bug when have 2 continuous actions using same data: FORCE_TOUCH_USING_TOOL/FORCE_TOUCH/FORCE_SWAP.",
+  "TutLevel": {}
+}

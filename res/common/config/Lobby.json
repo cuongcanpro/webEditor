@@ -1,0 +1,14 @@
+{
+    "General": {
+		"packet":"official",
+		"numMap": 270
+    },
+	"ListPacket": {
+		"official": {
+			"numMap": 56
+		},
+		"fresher": {
+			"numMap": 100
+		}
+	}
+}

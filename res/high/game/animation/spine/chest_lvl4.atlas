@@ -1,0 +1,111 @@
+
+chest_lvl4.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ElectricPoint_bl
+  rotate: false
+  xy: 737, 120
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+Electricity 014 Charge Radial_00
+  rotate: false
+  xy: 104, 31
+  size: 82, 90
+  orig: 82, 90
+  offset: 0, 0
+  index: -1
+Electricity 014 Charge Radial_02
+  rotate: false
+  xy: 737, 170
+  size: 101, 82
+  orig: 101, 82
+  offset: 0, 0
+  index: -1
+Electricity 014 Charge Radial_04
+  rotate: false
+  xy: 840, 178
+  size: 96, 74
+  orig: 96, 74
+  offset: 0, 0
+  index: -1
+RuongVang_03
+  rotate: false
+  xy: 2, 123
+  size: 150, 129
+  orig: 150, 129
+  offset: 0, 0
+  index: -1
+RuongVang_04
+  rotate: false
+  xy: 154, 123
+  size: 150, 129
+  orig: 150, 129
+  offset: 0, 0
+  index: -1
+RuongVang_05
+  rotate: false
+  xy: 306, 123
+  size: 150, 129
+  orig: 150, 129
+  offset: 0, 0
+  index: -1
+RuongVang_07
+  rotate: false
+  xy: 458, 123
+  size: 150, 129
+  orig: 150, 129
+  offset: 0, 0
+  index: -1
+banner_buy_gold70
+  rotate: false
+  xy: 188, 30
+  size: 51, 51
+  orig: 51, 51
+  offset: 0, 0
+  index: -1
+banner_ye_gold21
+  rotate: false
+  xy: 188, 83
+  size: 109, 38
+  orig: 109, 38
+  offset: 0, 0
+  index: -1
+chest4
+  rotate: false
+  xy: 2, 30
+  size: 100, 91
+  orig: 100, 91
+  offset: 0, 0
+  index: -1
+flare_00000_50
+  rotate: false
+  xy: 241, 31
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+hat sang
+  rotate: false
+  xy: 2, 2
+  size: 23, 26
+  orig: 23, 26
+  offset: 0, 0
+  index: -1
+ring_flare
+  rotate: false
+  xy: 610, 127
+  size: 125, 125
+  orig: 125, 125
+  offset: 0, 0
+  index: -1
+star-FX 80 (2)
+  rotate: false
+  xy: 938, 188
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1

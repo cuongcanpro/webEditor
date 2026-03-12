@@ -1,0 +1,160 @@
+
+chest_skyrace.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1a
+  rotate: true
+  xy: 2029, 234
+  size: 20, 15
+  orig: 20, 15
+  offset: 0, 0
+  index: -1
+body1
+  rotate: false
+  xy: 745, 134
+  size: 247, 120
+  orig: 247, 120
+  offset: 0, 0
+  index: -1
+body3
+  rotate: false
+  xy: 994, 134
+  size: 243, 120
+  orig: 243, 120
+  offset: 0, 0
+  index: -1
+body4
+  rotate: false
+  xy: 250, 2
+  size: 243, 119
+  orig: 243, 119
+  offset: 0, 0
+  index: -1
+close1
+  rotate: false
+  xy: 498, 123
+  size: 245, 131
+  orig: 245, 131
+  offset: 0, 0
+  index: -1
+cover3
+  rotate: false
+  xy: 2, 115
+  size: 246, 139
+  orig: 246, 139
+  offset: 0, 0
+  index: -1
+cover4
+  rotate: false
+  xy: 250, 123
+  size: 246, 131
+  orig: 246, 131
+  offset: 0, 0
+  index: -1
+fx_light_1
+  rotate: false
+  xy: 112, 55
+  size: 106, 58
+  orig: 108, 60
+  offset: 1, 1
+  index: -1
+fx_light_10
+  rotate: false
+  xy: 495, 2
+  size: 105, 59
+  orig: 107, 60
+  offset: 1, 0
+  index: -1
+fx_light_2
+  rotate: false
+  xy: 2, 55
+  size: 108, 58
+  orig: 110, 59
+  offset: 1, 0
+  index: -1
+fx_light_3
+  rotate: false
+  xy: 604, 63
+  size: 106, 58
+  orig: 108, 59
+  offset: 1, 0
+  index: -1
+fx_light_4
+  rotate: false
+  xy: 602, 3
+  size: 106, 58
+  orig: 108, 59
+  offset: 1, 0
+  index: -1
+fx_light_5
+  rotate: false
+  xy: 853, 74
+  size: 104, 58
+  orig: 106, 59
+  offset: 1, 0
+  index: -1
+fx_light_6
+  rotate: false
+  xy: 495, 63
+  size: 107, 58
+  orig: 109, 59
+  offset: 1, 0
+  index: -1
+fx_light_7
+  rotate: false
+  xy: 1920, 136
+  size: 106, 58
+  orig: 108, 59
+  offset: 1, 0
+  index: -1
+fx_light_8
+  rotate: false
+  xy: 745, 75
+  size: 106, 57
+  orig: 108, 59
+  offset: 1, 1
+  index: -1
+fx_light_9
+  rotate: false
+  xy: 1920, 196
+  size: 107, 58
+  orig: 109, 59
+  offset: 1, 0
+  index: -1
+light
+  rotate: true
+  xy: 2, 4
+  size: 49, 55
+  orig: 49, 55
+  offset: 0, 0
+  index: -1
+open1
+  rotate: false
+  xy: 1239, 131
+  size: 225, 123
+  orig: 225, 123
+  offset: 0, 0
+  index: -1
+open3
+  rotate: false
+  xy: 1466, 131
+  size: 225, 123
+  orig: 225, 123
+  offset: 0, 0
+  index: -1
+open4
+  rotate: false
+  xy: 1693, 131
+  size: 225, 123
+  orig: 225, 123
+  offset: 0, 0
+  index: -1
+spack
+  rotate: false
+  xy: 220, 102
+  size: 11, 11
+  orig: 11, 11
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,20 @@
+
+pus_pu_combine.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/04C
+  rotate: false
+  xy: 2, 2
+  size: 69, 73
+  orig: 74, 74
+  offset: 3, 0
+  index: -1
+imgs/PUS+PULT33
+  rotate: false
+  xy: 2, 77
+  size: 359, 339
+  orig: 534, 540
+  offset: 95, 93
+  index: -1

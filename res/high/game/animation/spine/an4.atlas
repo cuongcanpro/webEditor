@@ -1,0 +1,27 @@
+
+an4.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/flare_00_00_00
+  rotate: false
+  xy: 2, 118
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+imgs/ray_3
+  rotate: true
+  xy: 132, 122
+  size: 124, 55
+  orig: 128, 80
+  offset: 3, 12
+  index: -1
+imgs/slash_ray
+  rotate: false
+  xy: 2, 2
+  size: 129, 114
+  orig: 136, 128
+  offset: 7, 6
+  index: -1

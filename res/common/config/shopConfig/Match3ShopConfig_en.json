@@ -1,0 +1,415 @@
+{
+  "exchangeRate": {
+    "G": {
+      "amount": 1,
+      "VND": 100,
+      "gold": 5
+    }
+  },
+  "buyGold": {
+    "G": {
+      "100": {
+        "amountGold": 1000,
+        "bonus": {
+          "bom_phao": 1,
+          "hat5": 1
+        }
+      },
+      "500": {
+        "amountGold": 5000,
+        "bonus": {
+          "bom_phao": 1,
+          "hat5": 1,
+          "gang_tay": 1
+        }
+      },
+      "1000": {
+        "amountGold": 10000,
+        "bonus": {
+          "may_bay": 2,
+          "bom_phao": 2,
+          "hat5": 2,
+          "gang_tay": 2
+        }
+      },
+      "2000": {
+        "amountGold": 20000,
+        "bonus": {
+          "may_bay": 3,
+          "bom_phao": 3,
+          "hat5": 3,
+          "gang_tay": 3,
+          "bua": 3,
+          "bua_ta": 3
+        }
+      },
+      "5000": {
+        "amountGold": 50000,
+        "bonus": {
+          "may_bay": 9,
+          "bom_phao": 9,
+          "hat5": 9,
+          "gang_tay": 9,
+          "bua": 9,
+          "bua_ta": 9
+        }
+      }
+    }
+  },
+  "buyG": {
+    "SMS": {
+      "10": {
+        "amountG": 100,
+        "bonus": {}
+      },
+      "20": {
+        "amountG": 200,
+        "bonus": {
+          "hat5": 1
+        }
+      },
+      "30": {
+        "amountG": 300,
+        "bonus": {
+          "hat5": 1
+        }
+      },
+      "50": {
+        "amountG": 500,
+        "bonus": {
+          "bom_phao": 1,
+          "hat5": 1
+        }
+      },
+      "100": {
+        "amountG": 1000,
+        "bonus": {
+          "may_bay": 1,
+          "bom_phao": 1,
+          "hat5": 1
+        }
+      }
+    },
+    "ZingCard": {
+      "10": {
+        "amountG": 100,
+        "bonus": {}
+      },
+      "20": {
+        "amountG": 200,
+        "bonus": {
+          "hat5": 1
+        }
+      },
+      "50": {
+        "amountG": 500,
+        "bonus": {
+          "bom_phao": 1,
+          "hat5": 1
+        }
+      },
+      "100": {
+        "amountG": 1000,
+        "bonus": {
+          "may_bay": 1,
+          "bom_phao": 1,
+          "hat5": 1
+        }
+      },
+      "200": {
+        "amountG": 2000,
+        "bonus": {
+          "may_bay": 2,
+          "bom_phao": 2,
+          "hat5": 2
+        }
+      },
+      "500": {
+        "amountG": 5000,
+        "bonus": {
+          "may_bay": 2,
+          "bom_phao": 2,
+          "hat5": 2,
+          "gang_tay": 2,
+          "bua": 2,
+          "bua_ta": 2
+        }
+      },
+      "1000": {
+        "amountG": 10000,
+        "bonus": {
+          "may_bay": 5,
+          "bom_phao": 5,
+          "hat5": 5,
+          "gang_tay": 5,
+          "bua": 5,
+          "bua_ta": 5
+        }
+      }
+    },
+    "ATM": {
+      "50": {
+        "amountG": 500,
+        "bonus": {
+          "bom_phao": 1,
+          "hat5": 1
+        }
+      },
+      "100": {
+        "amountG": 1000,
+        "bonus": {
+          "may_bay": 1,
+          "bom_phao": 1,
+          "hat5": 1
+        }
+      },
+      "200": {
+        "amountG": 2000,
+        "bonus": {
+          "may_bay": 2,
+          "bom_phao": 2,
+          "hat5": 2
+        }
+      },
+      "300": {
+        "amountG": 3000,
+        "bonus": {
+          "may_bay": 2,
+          "bom_phao": 2,
+          "hat5": 2,
+          "gang_tay": 2
+        }
+      },
+      "500": {
+        "amountG": 5000,
+        "bonus": {
+          "may_bay": 2,
+          "bom_phao": 2,
+          "hat5": 2,
+          "gang_tay": 2,
+          "bua": 2,
+          "bua_ta": 2
+        }
+      },
+      "1000": {
+        "amountG": 10000,
+        "bonus": {
+          "may_bay": 5,
+          "bom_phao": 5,
+          "hat5": 5,
+          "gang_tay": 5,
+          "bua": 5,
+          "bua_ta": 5
+        }
+      }
+    },
+    "iap": {
+      "com.zps.match3.g1": {
+        "portalCode": "1A",
+        "price": 0.99,
+        "amountG": 200,
+        "bonus": {
+          "hat5": 1
+        }
+      },
+      "com.zps.match3.g2": {
+        "portalCode": "2A",
+        "price": 1.99,
+        "amountG": 400,
+        "bonus": {
+          "bom_phao": 1,
+          "hat5": 1
+        }
+      },
+      "com.zps.match3.g3": {
+        "portalCode": "5A",
+        "price": 4.99,
+        "amountG": 1100,
+        "bonus": {
+          "may_bay": 1,
+          "bom_phao": 1,
+          "hat5": 1
+        }
+      },
+      "com.zps.match3.g4": {
+        "portalCode": "10A",
+        "price": 9.99,
+        "amountG": 2200,
+        "bonus": {
+          "may_bay": 2,
+          "bom_phao": 2,
+          "hat5": 2
+        }
+      },
+      "com.zps.match3.g5": {
+        "portalCode": "20A",
+        "price": 19.99,
+        "amountG": 4500,
+        "bonus": {
+          "may_bay": 2,
+          "bom_phao": 2,
+          "hat5": 2,
+          "gang_tay": 2,
+          "bua_ta": 2
+        }
+      },
+      "com.zps.match3.g6": {
+        "portalCode": "50A",
+        "price": 49.99,
+        "amountG": 11400,
+        "bonus": {
+          "may_bay": 5,
+          "bom_phao": 5,
+          "hat5": 5,
+          "gang_tay": 5,
+          "bua": 5,
+          "bua_ta": 5
+        }
+      },
+      "com.zps.match3.g7": {
+        "portalCode": "100A",
+        "price": 99.99,
+        "amountG": 22900,
+        "bonus": {
+          "may_bay": 12,
+          "bom_phao": 12,
+          "hat5": 12,
+          "gang_tay": 12,
+          "bua": 12,
+          "bua_ta": 12
+        }
+      }
+    }
+  },
+  "buyTool": {
+    "bua": {
+      "G": {
+        "1": 50
+      }
+    },
+    "bua_ta": {
+      "G": {
+        "1": 120
+      }
+    },
+    "gang_tay": {
+      "G": {
+        "1": 80
+      }
+    }
+  },
+  "buyBooster": {
+    "bom_phao": {
+      "G": {
+        "1": 50
+      }
+    },
+    "hat5": {
+      "G": {
+        "1": 30
+      }
+    },
+    "may_bay": {
+      "G": {
+        "1": 70
+      }
+    }
+  },
+  "buyHeart": {
+    "G": {
+      "5": 100
+    }
+  },
+  "buyPack": {
+    "1": {
+      "item": {
+        "bua": 0,
+        "bua_ta": 0,
+        "gang_tay": 0,
+        "bom_phao": 1,
+        "hat5": 1,
+        "may_bay": 1,
+        "gold": 200,
+        "heart_free": 30
+      },
+      "price": {
+        "typeMoney": "G",
+        "price": 150
+      }
+    },
+    "2": {
+      "item": {
+        "bua": 0,
+        "bua_ta": 0,
+        "gang_tay": 0,
+        "bom_phao": 2,
+        "hat5": 2,
+        "may_bay": 2,
+        "gold": 1000,
+        "heart_free": 45
+      },
+      "price": {
+        "typeMoney": "G",
+        "price": 500
+      }
+    },
+    "3": {
+      "item": {
+        "bua": 1,
+        "bua_ta": 0,
+        "gang_tay": 0,
+        "bom_phao": 5,
+        "hat5": 5,
+        "may_bay": 5,
+        "gold": 2000,
+        "heart_free": 45
+      },
+      "price": {
+        "typeMoney": "G",
+        "price": 1000
+      }
+    },
+    "4": {
+      "item": {
+        "bua": 1,
+        "bua_ta": 0,
+        "gang_tay": 1,
+        "bom_phao": 8,
+        "hat5": 8,
+        "may_bay": 8,
+        "gold": 6000,
+        "heart_free": 60
+      },
+      "price": {
+        "typeMoney": "G",
+        "price": 2000
+      }
+    },
+    "5": {
+      "item": {
+        "bua": 13,
+        "bua_ta": 0,
+        "gang_tay": 13,
+        "bom_phao": 15,
+        "hat5": 15,
+        "may_bay": 15,
+        "gold": 10000,
+        "heart_free": 120
+      },
+      "price": {
+        "typeMoney": "G",
+        "price": 5000
+      }
+    }
+  },
+  "buyPackCard": {
+    "G": {
+      "50": 1
+    }
+  },
+  "buyCard": {
+    "G": {
+      "13": 1
+    }
+  }
+}

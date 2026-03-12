@@ -1,0 +1,62 @@
+
+so.png
+size: 1024,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bg_so
+  rotate: false
+  xy: 284, 2
+  size: 98, 34
+  orig: 98, 34
+  offset: 0, 0
+  index: -1
+gem2
+  rotate: false
+  xy: 711, 49
+  size: 80, 77
+  orig: 80, 77
+  offset: 0, 0
+  index: -1
+gem_grow
+  rotate: true
+  xy: 425, 2
+  size: 55, 53
+  orig: 55, 53
+  offset: 0, 0
+  index: -1
+so_U1
+  rotate: false
+  xy: 2, 19
+  size: 139, 107
+  orig: 139, 107
+  offset: 0, 0
+  index: -1
+so_bodyD
+  rotate: false
+  xy: 143, 33
+  size: 139, 93
+  orig: 139, 93
+  offset: 0, 0
+  index: -1
+so_bodyD2
+  rotate: false
+  xy: 284, 38
+  size: 139, 88
+  orig: 139, 88
+  offset: 0, 0
+  index: -1
+so_bodyU
+  rotate: false
+  xy: 425, 59
+  size: 143, 67
+  orig: 143, 67
+  offset: 0, 0
+  index: -1
+so_bodyU2
+  rotate: false
+  xy: 570, 58
+  size: 139, 68
+  orig: 139, 68
+  offset: 0, 0
+  index: -1

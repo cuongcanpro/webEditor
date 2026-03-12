@@ -1,0 +1,104 @@
+
+skeleton.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+2canh_trang
+  rotate: true
+  xy: 467, 142
+  size: 18, 83
+  orig: 18, 83
+  offset: 0, 0
+  index: -1
+2den_canh
+  rotate: false
+  xy: 296, 57
+  size: 23, 20
+  orig: 23, 20
+  offset: 0, 0
+  index: -1
+8_as
+  rotate: false
+  xy: 368, 162
+  size: 106, 92
+  orig: 106, 92
+  offset: 0, 0
+  index: -1
+8_as2
+  rotate: false
+  xy: 476, 162
+  size: 106, 92
+  orig: 106, 92
+  offset: 0, 0
+  index: -1
+as_chum
+  rotate: false
+  xy: 2, 79
+  size: 181, 175
+  orig: 181, 175
+  offset: 0, 0
+  index: -1
+blur_add
+  rotate: false
+  xy: 673, 218
+  size: 21, 21
+  orig: 21, 21
+  offset: 0, 0
+  index: -1
+cau_vong
+  rotate: false
+  xy: 185, 79
+  size: 181, 175
+  orig: 181, 175
+  offset: 0, 0
+  index: -1
+hat_flare_be
+  rotate: false
+  xy: 584, 162
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+hat_tron
+  rotate: false
+  xy: 467, 126
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+tia1
+  rotate: false
+  xy: 673, 241
+  size: 117, 13
+  orig: 117, 13
+  offset: 0, 0
+  index: -1
+tia_chum_ban
+  rotate: false
+  xy: 584, 178
+  size: 87, 76
+  orig: 87, 76
+  offset: 0, 0
+  index: -1
+vet
+  rotate: true
+  xy: 368, 90
+  size: 70, 97
+  orig: 70, 97
+  offset: 0, 0
+  index: -1
+vet_blur
+  rotate: true
+  xy: 2, 2
+  size: 75, 145
+  orig: 75, 145
+  offset: 0, 0
+  index: -1
+vet_trang
+  rotate: true
+  xy: 149, 2
+  size: 75, 145
+  orig: 75, 145
+  offset: 0, 0
+  index: -1

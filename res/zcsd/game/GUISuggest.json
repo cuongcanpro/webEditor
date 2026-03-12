@@ -1,0 +1,465 @@
+{
+  "ID": "6dd2792b-7658-46db-b32e-0bfa0a39281a",
+  "Version": "2.3.4",
+  "Name": "GUISuggest",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 85,
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "gui_background/bg_end_game.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -360.0,
+            "RightMargin": -360.0,
+            "TopMargin": -267.0,
+            "BottomMargin": -267.0,
+            "Tag": 124,
+            "Children": [
+              {
+                "IsCustomSize": true,
+                "FontSize": 40,
+                "LabelText": "lang_sugest_0",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "HorizontalAlignmentType": "HT_Center",
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineSize": 3,
+                "OutlineColor": {
+                  "R": 173,
+                  "G": 78,
+                  "B": 49
+                },
+                "OutlineEnabled": true,
+                "ShadowColor": {
+                  "R": 173,
+                  "G": 78,
+                  "B": 49
+                },
+                "ShadowOffsetX": 1.0,
+                "ShadowOffsetY": -1.0,
+                "ShadowEnabled": true,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 496.62
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.93
+                },
+                "PreSize": {
+                  "X": 0.3472,
+                  "Y": 0.1161
+                },
+                "LeftMargin": 235.0,
+                "RightMargin": 235.0,
+                "TopMargin": 6.38,
+                "BottomMargin": 465.62,
+                "Tag": 148,
+                "ActionTag": -1922706687,
+                "Size": {
+                  "X": 250.0,
+                  "Y": 62.0
+                },
+                "Name": "lblTutle",
+                "ctype": "TextObjectData"
+              },
+              {
+                "FontSize": 14,
+                "ButtonText": "",
+                "TextColor": {
+                  "R": 65,
+                  "G": 65,
+                  "B": 70
+                },
+                "DisabledFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_green.png",
+                  "Plist": ""
+                },
+                "PressedFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_green.png",
+                  "Plist": ""
+                },
+                "NormalFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_green.png",
+                  "Plist": ""
+                },
+                "Scale9Enable": true,
+                "Scale9OriginX": 15,
+                "Scale9OriginY": 11,
+                "Scale9Width": 326,
+                "Scale9Height": 82,
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "TouchEnable": true,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 117.48
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.22
+                },
+                "PreSize": {
+                  "X": 0.4944,
+                  "Y": 0.1948
+                },
+                "LeftMargin": 182.0,
+                "RightMargin": 182.0,
+                "TopMargin": 364.52,
+                "BottomMargin": 65.48,
+                "Tag": 129,
+                "Children": [
+                  {
+                    "IsCustomSize": true,
+                    "FontSize": 44,
+                    "LabelText": "lang_sugest_2",
+                    "FontResource": {
+                      "Type": "Normal",
+                      "Path": "font/BalooPaaji2-ExtraBold.ttf",
+                      "Plist": ""
+                    },
+                    "HorizontalAlignmentType": "HT_Center",
+                    "VerticalAlignmentType": "VT_Center",
+                    "OutlineSize": 3,
+                    "OutlineColor": {
+                      "R": 28,
+                      "G": 121,
+                      "B": 103
+                    },
+                    "OutlineEnabled": true,
+                    "ShadowColor": {
+                      "R": 110,
+                      "G": 110,
+                      "B": 110
+                    },
+                    "ShadowOffsetX": 2.0,
+                    "ShadowOffsetY": -2.0,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 178.0,
+                      "Y": 57.2
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PositionPercentXEnabled": true,
+                    "PositionPercentYEnabled": true,
+                    "PrePosition": {
+                      "X": 0.5,
+                      "Y": 0.55
+                    },
+                    "PreSize": {
+                      "X": 0.5618,
+                      "Y": 0.7692
+                    },
+                    "LeftMargin": 78.0,
+                    "RightMargin": 78.0,
+                    "TopMargin": 6.8,
+                    "BottomMargin": 17.2,
+                    "Tag": 130,
+                    "ActionTag": -1331932035,
+                    "Size": {
+                      "X": 200.0,
+                      "Y": 80.0
+                    },
+                    "Name": "lblOK",
+                    "ctype": "TextObjectData"
+                  }
+                ],
+                "ActionTag": -277088804,
+                "Size": {
+                  "X": 356.0,
+                  "Y": 104.0
+                },
+                "Name": "btnOK",
+                "ctype": "ButtonObjectData"
+              },
+              {
+                "FontSize": 14,
+                "ButtonText": "",
+                "TextColor": {
+                  "R": 65,
+                  "G": 65,
+                  "B": 70
+                },
+                "DisabledFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_close.png",
+                  "Plist": ""
+                },
+                "PressedFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_close.png",
+                  "Plist": ""
+                },
+                "NormalFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_close.png",
+                  "Plist": ""
+                },
+                "Scale9Enable": true,
+                "Scale9OriginX": 15,
+                "Scale9OriginY": 11,
+                "Scale9Width": 37,
+                "Scale9Height": 48,
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "TouchEnable": true,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 626.4,
+                  "Y": 507.3
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.87,
+                  "Y": 0.95
+                },
+                "PreSize": {
+                  "X": 0.0931,
+                  "Y": 0.1311
+                },
+                "LeftMargin": 592.9,
+                "RightMargin": 60.1,
+                "TopMargin": -8.3,
+                "BottomMargin": 472.3,
+                "UserData": "-press_action",
+                "Tag": 135,
+                "ActionTag": 1150582188,
+                "Size": {
+                  "X": 67.0,
+                  "Y": 70.0
+                },
+                "Name": "close",
+                "ctype": "ButtonObjectData"
+              },
+              {
+                "AnchorPoint": {},
+                "Position": {
+                  "X": 360.0,
+                  "Y": 373.8
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": true,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.7
+                },
+                "PreSize": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "LeftMargin": 360.0,
+                "RightMargin": 360.0,
+                "TopMargin": 160.2,
+                "BottomMargin": 373.8,
+                "Tag": 150,
+                "ActionTag": 69345758,
+                "Size": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "Name": "nodeGuide",
+                "ctype": "SingleNodeObjectData"
+              },
+              {
+                "IsCustomSize": true,
+                "FontSize": 28,
+                "LabelText": "lang_sugest_1",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "HorizontalAlignmentType": "HT_Center",
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 267.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {
+                  "R": 155,
+                  "G": 78,
+                  "B": 44
+                },
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PreSize": {
+                  "X": 0.6944,
+                  "Y": 0.2809
+                },
+                "LeftMargin": 110.0,
+                "RightMargin": 110.0,
+                "TopMargin": 192.0,
+                "BottomMargin": 192.0,
+                "Tag": 151,
+                "ActionTag": -1703416402,
+                "Size": {
+                  "X": 500.0,
+                  "Y": 150.0
+                },
+                "Name": "info",
+                "ctype": "TextObjectData"
+              }
+            ],
+            "ActionTag": -2079016952,
+            "Size": {
+              "X": 720.0,
+              "Y": 534.0
+            },
+            "Name": "bg",
+            "ctype": "SpriteObjectData"
+          }
+        ],
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "../../button/btn_close.png",
+        "../../button/btn_green.png",
+        "../../font/BalooPaaji2-Bold.ttf",
+        "../../font/BalooPaaji2-ExtraBold.ttf",
+        "../../gui_background/bg_end_game.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Node"
+}

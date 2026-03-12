@@ -1,0 +1,13 @@
+{
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {},
+    "visual": {
+        "path": "",
+        "type": 0
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE"
+}

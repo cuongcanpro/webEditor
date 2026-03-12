@@ -1,0 +1,20 @@
+
+rainbow_x2_1.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/ring_02
+  rotate: false
+  xy: 2, 2
+  size: 117, 121
+  orig: 128, 128
+  offset: 8, 0
+  index: -1
+imgs/ring_explosion
+  rotate: false
+  xy: 2, 125
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

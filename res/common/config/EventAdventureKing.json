@@ -1,0 +1,44 @@
+{
+  "levelStart": 40,
+  "pointPerWin": 1,
+  "rewardByRank": {
+    "1": {
+      "rw": {
+        "bom_phao": 3,
+        "hat5": 3,
+        "may_bay": 3,
+        "pack": 4,
+        "heart_free": 120
+      },
+      "chestId": 4
+    },
+    "2": {
+      "rw": {
+        "bom_phao": 2,
+        "hat5": 2,
+        "may_bay": 2,
+        "pack": 2,
+        "heart_free": 60
+      },
+      "chestId": 3
+    },
+    "3": {
+      "rw": {
+        "bom_phao": 1,
+        "hat5": 1,
+        "may_bay": 1,
+        "pack": 1,
+        "heart_free": 30
+      },
+      "chestId": 2
+    },
+    "4-10": {
+      "rw": {
+        "bom_phao": 1,
+        "hat5": 1,
+        "may_bay": 1
+      },
+      "chestId": 1
+    }
+  }
+}

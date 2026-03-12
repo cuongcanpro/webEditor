@@ -1,0 +1,20 @@
+
+grass_blocker.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/blocker/grass_box_001
+  rotate: false
+  xy: 2, 86
+  size: 82, 85
+  orig: 94, 94
+  offset: 6, 3
+  index: -1
+imgs/blocker/grass_box_002
+  rotate: false
+  xy: 2, 2
+  size: 82, 82
+  orig: 94, 94
+  offset: 6, 6
+  index: -1

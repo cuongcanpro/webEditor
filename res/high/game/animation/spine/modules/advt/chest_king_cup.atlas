@@ -1,0 +1,181 @@
+
+chest_king_cup.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+1a
+  rotate: false
+  xy: 1500, 109
+  size: 20, 15
+  orig: 20, 15
+  offset: 0, 0
+  index: -1
+body1
+  rotate: false
+  xy: 1522, 135
+  size: 243, 118
+  orig: 243, 118
+  offset: 0, 0
+  index: -1
+body3
+  rotate: false
+  xy: 269, 134
+  size: 251, 119
+  orig: 251, 119
+  offset: 0, 0
+  index: -1
+body4
+  rotate: false
+  xy: 522, 135
+  size: 251, 118
+  orig: 251, 118
+  offset: 0, 0
+  index: -1
+body5
+  rotate: false
+  xy: 2, 133
+  size: 265, 120
+  orig: 265, 120
+  offset: 0, 0
+  index: -1
+close1
+  rotate: false
+  xy: 775, 124
+  size: 248, 129
+  orig: 248, 129
+  offset: 0, 0
+  index: -1
+cover3
+  rotate: false
+  xy: 1273, 126
+  size: 247, 127
+  orig: 248, 127
+  offset: 1, 0
+  index: -1
+cover4
+  rotate: false
+  xy: 2, 2
+  size: 249, 129
+  orig: 249, 129
+  offset: 0, 0
+  index: -1
+cover5
+  rotate: false
+  xy: 1025, 120
+  size: 246, 133
+  orig: 246, 133
+  offset: 0, 0
+  index: -1
+fx_light_1
+  rotate: false
+  xy: 422, 74
+  size: 106, 58
+  orig: 108, 60
+  offset: 1, 1
+  index: -1
+fx_light_10
+  rotate: false
+  xy: 746, 63
+  size: 105, 59
+  orig: 107, 60
+  offset: 1, 0
+  index: -1
+fx_light_2
+  rotate: true
+  xy: 1979, 25
+  size: 108, 58
+  orig: 110, 59
+  offset: 1, 0
+  index: -1
+fx_light_3
+  rotate: false
+  xy: 530, 75
+  size: 106, 58
+  orig: 108, 59
+  offset: 1, 0
+  index: -1
+fx_light_4
+  rotate: false
+  xy: 638, 75
+  size: 106, 58
+  orig: 108, 59
+  offset: 1, 0
+  index: -1
+fx_light_5
+  rotate: false
+  xy: 853, 64
+  size: 104, 58
+  orig: 106, 59
+  offset: 1, 0
+  index: -1
+fx_light_6
+  rotate: true
+  xy: 253, 24
+  size: 107, 58
+  orig: 109, 59
+  offset: 1, 0
+  index: -1
+fx_light_7
+  rotate: false
+  xy: 313, 14
+  size: 106, 58
+  orig: 108, 59
+  offset: 1, 0
+  index: -1
+fx_light_8
+  rotate: false
+  xy: 421, 15
+  size: 106, 57
+  orig: 108, 59
+  offset: 1, 1
+  index: -1
+fx_light_9
+  rotate: false
+  xy: 313, 74
+  size: 107, 58
+  orig: 109, 59
+  offset: 1, 0
+  index: -1
+light
+  rotate: false
+  xy: 959, 67
+  size: 49, 55
+  orig: 49, 55
+  offset: 0, 0
+  index: -1
+open1
+  rotate: false
+  xy: 1752, 15
+  size: 225, 118
+  orig: 225, 118
+  offset: 0, 0
+  index: -1
+open3
+  rotate: false
+  xy: 1522, 15
+  size: 228, 118
+  orig: 228, 118
+  offset: 0, 0
+  index: -1
+open4
+  rotate: false
+  xy: 1767, 135
+  size: 229, 118
+  orig: 229, 118
+  offset: 0, 0
+  index: -1
+open5
+  rotate: false
+  xy: 1273, 6
+  size: 225, 118
+  orig: 225, 118
+  offset: 0, 0
+  index: -1
+spack
+  rotate: false
+  xy: 1998, 242
+  size: 11, 11
+  orig: 11, 11
+  offset: 0, 0
+  index: -1

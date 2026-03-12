@@ -1,0 +1,657 @@
+{
+  "UnlockFeature": {
+    "newPlayer": 1,
+    "booster": 9,
+    "tool": 11
+  },
+  "Note:": " bug when have 2 continuous actions using same data: FORCE_TOUCH_USING_TOOL/FORCE_TOUCH/FORCE_SWAP.",
+  "TutLevel": {
+    "Easy-First-1": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_26",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["MILK_CABINET"]
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_1_1"
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[1,3],[1,4],[1,5],[0,4]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1": [0, 4],
+            "param2": [1, 4]
+          }
+        ],
+        [
+          {
+            "action": "WAIT",
+            "param1" : 1.0
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_2_1"
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[5,2],[5,3],[5,4],[5,5],[4,4]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1": [4, 4],
+            "param2": [5, 4]
+          }
+        ],
+        [
+          {
+            "action": "WAIT",
+            "param1" : 2.5
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_2_2"
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[5,4],[5,3]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1": [5, 4],
+            "param2": [5, 3]
+          }
+        ]
+      ]
+    },
+    "7": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_7_1",
+            "param2" : true
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_7_2"
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[3,4],[4,4]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1": [3, 4],
+            "param2": [4, 4]
+          }
+        ]
+      ]
+    },
+    "11": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_11_1",
+            "param2" : true
+          }
+        ],
+        [
+          {
+            "action": "WAIT",
+            "param1" : 0.5
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_11_2",
+            "param2" : true
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_11_3"
+          },
+          {
+            "action": "ADD_FREE_TOOL",
+            "param1" : 0
+          },
+          {
+            "action": "FORCE_SELECT_TOOL",
+            "param1" : 0
+          }
+        ],
+        [
+          {
+            "action": "FORCE_TOUCH_USING_TOOL",
+            "param1" : [4,4]
+          }
+        ],
+        [
+          {
+            "action": "WAIT",
+            "param1" : 1.0
+          }
+        ],
+        [
+          {
+            "action": "FORCE_TOUCH_USING_TOOL",
+            "param1" : [5,4]
+          }
+        ]
+      ]
+    },
+    "12": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_12",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["GRASS"]
+          }
+        ]
+      ]
+    },
+    "14": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_14_1"
+          },
+          {
+            "action": "ADD_FREE_TOOL",
+            "param1" : 1
+          },
+          {
+            "action": "FORCE_SELECT_TOOL",
+            "param1" : 1
+          }
+        ],
+        [
+          {
+            "action": "FORCE_TOUCH_USING_TOOL",
+            "param1" : [2,6]
+          }
+        ]
+      ]
+    },
+    "16": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_16_1"
+          },
+          {
+            "action": "ADD_FREE_TOOL",
+            "param1" : 2
+          },
+          {
+            "action": "FORCE_SELECT_TOOL",
+            "param1" : 2
+          }
+        ],
+        [
+          {
+            "action": "FORCE_TOUCH_USING_TOOL",
+            "param1" : [4,4]
+          }
+        ]
+      ]
+    },
+    "21": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_21",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[0,2],[1,2],[2,2],[1,3],[0,6],[1,6],[2,6],[1,5]]
+          }
+        ]
+      ]
+    },
+    "31": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_31",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["DONUT","DONUT_PORT"]
+          }
+        ]
+      ]
+    },
+    "37": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_37",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["CLOUD"]
+          }
+        ]
+      ]
+    },
+    "43": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_43",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[4,3],[4,4],[4,5],[3,4]]
+          }
+        ]
+      ]
+    },
+    "51": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_51",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["COOKIE"]
+          }
+        ]
+      ]
+    },
+    "58": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_58_1",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["PUMP", "BALLOON"]
+          }
+        ],
+        [
+          {
+            "action": "WAIT",
+            "param1" : 0.5
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_58_2",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["PUMP", "BALLOON"]
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[3,4],[4,4],[4,3],[4,5]]
+          }
+        ]
+      ]
+    },
+    "73": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_73_1",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["TRAFFIC_LIGHT"]
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_73_2"
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[1,1],[1,2],[2,1],[2,2],[3,1],[3,2]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1": [1, 2],
+            "param2": [1, 1]
+          }
+        ]
+      ]
+    },
+    "102": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_102_1",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["WINDUP_CAR","GREEN"]
+          }
+        ],
+        [
+          {
+            "action": "WAIT",
+            "param1" : 0.5
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_102_2",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["WINDUP_CAR"]
+          }
+        ]
+      ]
+    },
+    "127": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_127_1",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["CLOUD_BOMB"]
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_127_2"
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[2,1],[2,2],[3,1],[3,2],[4,1],[4,2]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1": [4, 2],
+            "param2": [4, 1]
+          }
+        ],
+        [
+          {
+            "action": "WAIT",
+            "param1" : 3
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_127_3",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["CLOUD_BOMB"]
+          }
+        ]
+      ]
+    },
+    "151": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_151_1",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[0,4],[1,4],[2,4],[3,4],[4,4],[5,4],[6,4],[7,4]]
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["RAT","PROTECT_BALLOON","HOOK"]
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_151_2"
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["RAT","PROTECT_BALLOON","HOOK"]
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[1,5],[2,5],[3,5],[2,6]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1" : [2,6],
+            "param2" : [2,5]
+          }
+        ]
+      ]
+    },
+    "176": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_176",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["PINWHEEL"]
+          }
+        ]
+      ]
+    },
+    "199": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_199",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["VALI"]
+          }
+        ]
+      ]
+    },
+    "239": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_239_1"
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["SCALLOP"]
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[2,4]]
+          },
+          {
+            "action": "FORCE_TOUCH",
+            "param1" : [2,4]
+          }
+        ],
+        [
+          {
+            "action": "WAIT",
+            "param1" : 1.5
+          }
+        ],
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_239_2",
+            "param2": true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["SCALLOP"]
+          }
+        ]
+      ]
+    },
+    "279": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_279",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["KEY","CHEST_KEY","CHEST"]
+          }
+        ]
+      ]
+    },
+    "329": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_329",
+            "param2" : true
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["SOAP_PUMP"]
+          }
+        ]
+      ]
+    },
+    "379": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_379"
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["SAFE"]
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[1,3],[1,4],[0,4],[1,5]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1": [0, 4],
+            "param2": [1, 4]
+          }
+        ]
+      ]
+    },
+    "433": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_433"
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["COLLECT_BALLOON","BALLOON_ROPE"]
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[1,4],[2,3],[2,4],[3,4]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1": [2, 3],
+            "param2": [2, 4]
+          }
+        ]
+      ]
+    },
+    "484": {
+      "script": [
+        [
+          {
+            "action": "NPC_TALK",
+            "param1" : "lang_tut_play_484"
+          },
+          {
+            "action": "HIGHLIGHT_ELEMENT_TYPE",
+            "param1" : ["BUSH"]
+          },
+          {
+            "action": "HIGHLIGHT_SLOT",
+            "param1" : [[3,3],[3,4],[3,5],[2,4]]
+          },
+          {
+            "action": "HIGHLIGHT_SLOT_AREA",
+            "param1" : [[4,3],[5,4]]
+          },
+          {
+            "action": "FORCE_SWAP",
+            "param1": [2, 4],
+            "param2": [3, 4]
+          }
+        ]
+      ]
+    }
+  }
+}

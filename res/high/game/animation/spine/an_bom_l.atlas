@@ -1,0 +1,27 @@
+
+an_bom_l.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/L_type
+  rotate: false
+  xy: 126, 9
+  size: 119, 110
+  orig: 128, 128
+  offset: 8, 12
+  index: -1
+imgs/ray_3
+  rotate: false
+  xy: 247, 64
+  size: 124, 55
+  orig: 128, 80
+  offset: 3, 12
+  index: -1
+imgs/ringElectric_30b
+  rotate: false
+  xy: 2, 2
+  size: 122, 117
+  orig: 125, 125
+  offset: 1, 8
+  index: -1

@@ -1,0 +1,39 @@
+{
+  "defaultLanguageCode": "vi",
+  "list": [
+    {
+      "code": [
+        "vi"
+      ],
+      "name": "Vietnamese",
+      "folder": "vi"
+    },
+    {
+      "code": [
+        "en"
+      ],
+      "name": "English",
+      "folder": "en"
+    },
+    {
+      "code": ["ph"],
+      "name": "phil",
+      "folder": "ph"
+    },
+    {
+      "code": ["th"],
+      "name": "thai",
+      "folder": "th"
+    },
+    {
+      "code": ["id"],
+      "name": "indo",
+      "folder": "id"
+    },
+    {
+      "code": ["mm"],
+      "name": "myanmar",
+      "folder": "mm"
+    }
+  ]
+}

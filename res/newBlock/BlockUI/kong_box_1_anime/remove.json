@@ -1,0 +1,123 @@
+{
+  "Content": {
+    "Content": {
+      "Animation": {
+        "ActivedAnimationName": "remove",
+        "Duration": "168",
+        "Speed": "1.0",
+        "Timelines": [
+          {
+            "ActionTag": 237312889,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "Value": "{\"args\":[0, \"anim9_die\", false],\"method\":\"setAnimation\"}"
+              }
+            ],
+            "Property": "FrameEvent",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 1720249698,
+            "Frames": [
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1
+              },
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 31
+              },
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 59
+              },
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 169
+              }
+            ],
+            "Property": "CColor",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 1720249698,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "Value": 255
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 31,
+                "Value": 255
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 59,
+                "Value": 0
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 169,
+                "Value": 0
+              }
+            ],
+            "Property": "Alpha",
+            "ctype": "TimelineData"
+          }
+        ],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [
+        {
+          "EndIndex": "168",
+          "Name": "default",
+          "StartIndex": "0",
+          "ctype": "AnimationInfoData"
+        }
+      ]
+    }
+  },
+  "Version": "2.3.4"
+}

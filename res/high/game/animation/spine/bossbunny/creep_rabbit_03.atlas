@@ -1,0 +1,265 @@
+
+creep_rabbit_03.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm_L12
+  rotate: false
+  xy: 724, 233
+  size: 107, 165
+  orig: 108, 165
+  offset: 0, 0
+  index: -1
+arm_L_10
+  rotate: true
+  xy: 536, 280
+  size: 118, 186
+  orig: 119, 186
+  offset: 0, 0
+  index: -1
+body_back
+  rotate: false
+  xy: 2, 633
+  size: 242, 389
+  orig: 243, 390
+  offset: 0, 1
+  index: -1
+ear_L
+  rotate: false
+  xy: 2, 254
+  size: 175, 377
+  orig: 175, 378
+  offset: 0, 1
+  index: -1
+ear_R
+  rotate: false
+  xy: 179, 254
+  size: 132, 367
+  orig: 132, 367
+  offset: 0, 0
+  index: -1
+eye_tiwst
+  rotate: false
+  xy: 783, 415
+  size: 81, 73
+  orig: 81, 74
+  offset: 0, 1
+  index: -1
+eye_whiteL
+  rotate: false
+  xy: 805, 49
+  size: 105, 92
+  orig: 105, 93
+  offset: 0, 1
+  index: -1
+eye_whiteR
+  rotate: true
+  xy: 837, 143
+  size: 118, 106
+  orig: 118, 106
+  offset: 0, 0
+  index: -1
+eyebrow_L
+  rotate: false
+  xy: 712, 153
+  size: 123, 78
+  orig: 124, 79
+  offset: 0, 1
+  index: -1
+eyebrow_R
+  rotate: false
+  xy: 2, 2
+  size: 105, 66
+  orig: 106, 66
+  offset: 0, 0
+  index: -1
+eyeclose
+  rotate: true
+  xy: 912, 41
+  size: 100, 51
+  orig: 101, 51
+  offset: 0, 0
+  index: -1
+eyelightL
+  rotate: true
+  xy: 866, 419
+  size: 69, 47
+  orig: 70, 47
+  offset: 0, 0
+  index: -1
+eyelightR
+  rotate: false
+  xy: 926, 276
+  size: 78, 47
+  orig: 79, 47
+  offset: 0, 0
+  index: -1
+eyeris_L
+  rotate: false
+  xy: 567, 571
+  size: 43, 50
+  orig: 44, 51
+  offset: 0, 1
+  index: -1
+eyeris_R
+  rotate: false
+  xy: 984, 797
+  size: 38, 44
+  orig: 39, 44
+  offset: 0, 0
+  index: -1
+foot_L
+  rotate: false
+  xy: 267, 2
+  size: 146, 43
+  orig: 147, 43
+  offset: 0, 0
+  index: -1
+foot_R
+  rotate: true
+  xy: 939, 666
+  size: 175, 43
+  orig: 175, 44
+  offset: 0, 1
+  index: -1
+hair
+  rotate: false
+  xy: 313, 436
+  size: 252, 185
+  orig: 252, 186
+  offset: 0, 1
+  index: -1
+hand_L11
+  rotate: true
+  xy: 661, 40
+  size: 111, 142
+  orig: 112, 143
+  offset: 0, 1
+  index: -1
+hand_shield
+  rotate: false
+  xy: 926, 325
+  size: 70, 115
+  orig: 70, 115
+  offset: 0, 0
+  index: -1
+hat_iron
+  rotate: false
+  xy: 616, 843
+  size: 406, 179
+  orig: 406, 180
+  offset: 0, 1
+  index: -1
+hat_shadow
+  rotate: false
+  xy: 109, 11
+  size: 156, 57
+  orig: 156, 58
+  offset: 0, 1
+  index: -1
+head
+  rotate: false
+  xy: 246, 779
+  size: 368, 243
+  orig: 369, 243
+  offset: 0, 0
+  index: -1
+leg_L
+  rotate: true
+  xy: 487, 47
+  size: 114, 172
+  orig: 115, 172
+  offset: 0, 0
+  index: -1
+leg_R
+  rotate: true
+  xy: 523, 163
+  size: 115, 187
+  orig: 115, 188
+  offset: 0, 1
+  index: -1
+mouth
+  rotate: true
+  xy: 301, 81
+  size: 159, 184
+  orig: 159, 184
+  offset: 0, 0
+  index: -1
+neck
+  rotate: false
+  xy: 313, 280
+  size: 221, 154
+  orig: 221, 154
+  offset: 0, 0
+  index: -1
+nose
+  rotate: true
+  xy: 833, 263
+  size: 150, 91
+  orig: 150, 91
+  offset: 0, 0
+  index: -1
+pant_iron
+  rotate: true
+  xy: 2, 70
+  size: 182, 297
+  orig: 182, 298
+  offset: 0, 1
+  index: -1
+shadow
+  rotate: false
+  xy: 313, 242
+  size: 208, 36
+  orig: 209, 36
+  offset: 0, 0
+  index: -1
+shield_ironL
+  rotate: true
+  xy: 246, 623
+  size: 154, 369
+  orig: 154, 369
+  offset: 0, 0
+  index: -1
+shield_ironR
+  rotate: true
+  xy: 617, 656
+  size: 185, 320
+  orig: 186, 320
+  offset: 0, 0
+  index: -1
+shield_no_damage
+  rotate: true
+  xy: 567, 490
+  size: 67, 300
+  orig: 67, 301
+  offset: 0, 1
+  index: -1
+shield_no_damage2
+  rotate: true
+  xy: 617, 559
+  size: 95, 314
+  orig: 96, 315
+  offset: 0, 1
+  index: -1
+shoeL
+  rotate: false
+  xy: 567, 400
+  size: 214, 88
+  orig: 214, 89
+  offset: 0, 1
+  index: -1
+shoeR
+  rotate: true
+  xy: 933, 442
+  size: 212, 89
+  orig: 213, 89
+  offset: 0, 0
+  index: -1
+teeth
+  rotate: false
+  xy: 869, 490
+  size: 53, 67
+  orig: 53, 67
+  offset: 0, 0
+  index: -1

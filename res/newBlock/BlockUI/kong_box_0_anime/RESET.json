@@ -1,0 +1,116 @@
+{
+  "Content": {
+    "Content": {
+      "Animation": {
+        "ActivedAnimationName": "RESET",
+        "Duration": "1",
+        "Speed": "1.0",
+        "Timelines": [
+          {
+            "ActionTag": 1053168121,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "Value": "{\"args\":[0, \"anim3_2_attack\", false],\"method\":\"setAnimation\"}"
+              }
+            ],
+            "Property": "FrameEvent",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 2132787284,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "X": 0.399992942810059,
+                "Y": 38.7186279296875
+              }
+            ],
+            "Property": "Position",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 19539329,
+            "Frames": [
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1
+              }
+            ],
+            "Property": "CColor",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 19539329,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "Value": 255
+              }
+            ],
+            "Property": "Alpha",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 2132787284,
+            "Frames": [
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1
+              }
+            ],
+            "Property": "CColor",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 2132787284,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "Value": 255
+              }
+            ],
+            "Property": "Alpha",
+            "ctype": "TimelineData"
+          }
+        ],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [
+        {
+          "EndIndex": "1",
+          "Name": "default",
+          "StartIndex": "0",
+          "ctype": "AnimationInfoData"
+        }
+      ]
+    }
+  },
+  "Version": "2.3.4"
+}

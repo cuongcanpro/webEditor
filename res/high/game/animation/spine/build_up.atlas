@@ -1,0 +1,83 @@
+
+build_up.png
+size: 256,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+floor
+  rotate: false
+  xy: 63, 43
+  size: 75, 19
+  orig: 75, 19
+  offset: 0, 0
+  index: -1
+non
+  rotate: false
+  xy: 140, 31
+  size: 42, 31
+  orig: 42, 31
+  offset: 0, 0
+  index: -1
+smoke1
+  rotate: false
+  xy: 223, 7
+  size: 24, 23
+  orig: 24, 23
+  offset: 0, 0
+  index: -1
+smoke2
+  rotate: false
+  xy: 2, 5
+  size: 20, 19
+  orig: 20, 19
+  offset: 0, 0
+  index: -1
+smoke3
+  rotate: true
+  xy: 227, 32
+  size: 30, 26
+  orig: 30, 26
+  offset: 0, 0
+  index: -1
+smoke4
+  rotate: false
+  xy: 140, 5
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+smoke5
+  rotate: false
+  xy: 184, 2
+  size: 37, 29
+  orig: 37, 29
+  offset: 0, 0
+  index: -1
+smokeB1
+  rotate: false
+  xy: 2, 26
+  size: 59, 36
+  orig: 59, 36
+  offset: 0, 0
+  index: -1
+smokeB2
+  rotate: false
+  xy: 184, 33
+  size: 41, 29
+  orig: 41, 29
+  offset: 0, 0
+  index: -1
+tool_1
+  rotate: false
+  xy: 63, 5
+  size: 37, 36
+  orig: 37, 36
+  offset: 0, 0
+  index: -1
+tool_2
+  rotate: true
+  xy: 102, 4
+  size: 37, 36
+  orig: 37, 36
+  offset: 0, 0
+  index: -1

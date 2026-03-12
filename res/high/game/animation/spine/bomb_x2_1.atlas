@@ -1,0 +1,83 @@
+
+bomb_x2_1.png
+size: 1024,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+explosive_core_2
+  rotate: false
+  xy: 2, 6
+  size: 116, 120
+  orig: 128, 128
+  offset: 8, 5
+  index: -1
+lighting_ray_a_02
+  rotate: false
+  xy: 840, 33
+  size: 106, 42
+  orig: 128, 64
+  offset: 0, 14
+  index: -1
+lighting_ray_a_03
+  rotate: false
+  xy: 840, 77
+  size: 115, 49
+  orig: 128, 64
+  offset: 0, 10
+  index: -1
+lighting_ray_a_04
+  rotate: false
+  xy: 722, 68
+  size: 116, 58
+  orig: 128, 64
+  offset: 0, 3
+  index: -1
+lighting_ray_a_05
+  rotate: false
+  xy: 482, 70
+  size: 118, 56
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+lighting_ray_a_06
+  rotate: false
+  xy: 602, 70
+  size: 118, 56
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+lighting_ray_a_07
+  rotate: false
+  xy: 234, 65
+  size: 121, 61
+  orig: 128, 64
+  offset: 0, 2
+  index: -1
+lighting_ray_a_08
+  rotate: false
+  xy: 357, 69
+  size: 123, 57
+  orig: 128, 64
+  offset: 2, 0
+  index: -1
+merge_ring_01
+  rotate: false
+  xy: 120, 14
+  size: 112, 112
+  orig: 128, 128
+  offset: 8, 8
+  index: -1
+ring_02
+  rotate: false
+  xy: 234, 2
+  size: 59, 61
+  orig: 64, 64
+  offset: 4, 0
+  index: -1
+ring_explosion
+  rotate: false
+  xy: 957, 62
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1

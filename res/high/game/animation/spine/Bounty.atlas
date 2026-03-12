@@ -1,0 +1,307 @@
+
+Bounty.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+ElectricPoint1
+  rotate: false
+  xy: 67, 78
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+ElectricPoint_yeloow
+  rotate: false
+  xy: 117, 78
+  size: 48, 48
+  orig: 48, 48
+  offset: 0, 0
+  index: -1
+Flare_ZP
+  rotate: false
+  xy: 2, 62
+  size: 63, 64
+  orig: 63, 64
+  offset: 0, 0
+  index: -1
+Smoke Explosion 14_00021
+  rotate: true
+  xy: 67, 49
+  size: 27, 35
+  orig: 27, 35
+  offset: 0, 0
+  index: -1
+arm_left
+  rotate: false
+  xy: 139, 25
+  size: 18, 16
+  orig: 18, 16
+  offset: 0, 0
+  index: -1
+arm_right
+  rotate: false
+  xy: 170, 35
+  size: 18, 16
+  orig: 18, 16
+  offset: 0, 0
+  index: -1
+back/back_body
+  rotate: true
+  xy: 223, 86
+  size: 40, 50
+  orig: 40, 50
+  offset: 0, 0
+  index: -1
+back/back_ear
+  rotate: false
+  xy: 190, 34
+  size: 16, 17
+  orig: 16, 17
+  offset: 0, 0
+  index: -1
+back/back_foot
+  rotate: false
+  xy: 329, 76
+  size: 13, 13
+  orig: 13, 13
+  offset: 0, 0
+  index: -1
+back/back_hand
+  rotate: false
+  xy: 118, 30
+  size: 19, 15
+  orig: 19, 15
+  offset: 0, 0
+  index: -1
+back/back_head
+  rotate: false
+  xy: 275, 92
+  size: 56, 34
+  orig: 56, 34
+  offset: 0, 0
+  index: -1
+back/back_leg
+  rotate: false
+  xy: 227, 62
+  size: 23, 22
+  orig: 23, 22
+  offset: 0, 0
+  index: -1
+back/back_tail
+  rotate: false
+  xy: 484, 96
+  size: 26, 30
+  orig: 26, 30
+  offset: 0, 0
+  index: -1
+body_sit
+  rotate: false
+  xy: 437, 81
+  size: 45, 45
+  orig: 45, 45
+  offset: 0, 0
+  index: -1
+body_stand
+  rotate: true
+  xy: 167, 84
+  size: 42, 54
+  orig: 42, 54
+  offset: 0, 0
+  index: -1
+ear_left
+  rotate: false
+  xy: 208, 41
+  size: 15, 15
+  orig: 15, 15
+  offset: 0, 0
+  index: -1
+eye_close
+  rotate: false
+  xy: 45, 3
+  size: 13, 10
+  orig: 13, 10
+  offset: 0, 0
+  index: -1
+eyeball_cry
+  rotate: false
+  xy: 82, 2
+  size: 16, 14
+  orig: 16, 14
+  offset: 0, 0
+  index: -1
+eyeball_left
+  rotate: false
+  xy: 2, 2
+  size: 13, 11
+  orig: 13, 11
+  offset: 0, 0
+  index: -1
+eyeball_right
+  rotate: false
+  xy: 17, 2
+  size: 9, 11
+  orig: 9, 11
+  offset: 0, 0
+  index: -1
+eyeball_right_cry
+  rotate: false
+  xy: 344, 76
+  size: 12, 13
+  orig: 12, 13
+  offset: 0, 0
+  index: -1
+foot_left
+  rotate: true
+  xy: 275, 77
+  size: 13, 17
+  orig: 13, 17
+  offset: 0, 0
+  index: -1
+foot_left_stand
+  rotate: false
+  xy: 28, 3
+  size: 15, 10
+  orig: 15, 10
+  offset: 0, 0
+  index: -1
+foot_right_stand
+  rotate: false
+  xy: 28, 3
+  size: 15, 10
+  orig: 15, 10
+  offset: 0, 0
+  index: -1
+foot_right
+  rotate: true
+  xy: 294, 78
+  size: 12, 16
+  orig: 12, 16
+  offset: 0, 0
+  index: -1
+hand_left
+  rotate: false
+  xy: 63, 2
+  size: 17, 14
+  orig: 17, 14
+  offset: 0, 0
+  index: -1
+hand_right
+  rotate: false
+  xy: 312, 77
+  size: 15, 13
+  orig: 15, 13
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 333, 91
+  size: 52, 35
+  orig: 52, 35
+  offset: 0, 0
+  index: -1
+hurt1
+  rotate: true
+  xy: 63, 18
+  size: 29, 33
+  orig: 29, 33
+  offset: 0, 0
+  index: -1
+hurt2
+  rotate: false
+  xy: 139, 43
+  size: 29, 33
+  orig: 29, 33
+  offset: 0, 0
+  index: -1
+hurt3
+  rotate: true
+  xy: 104, 47
+  size: 29, 33
+  orig: 29, 33
+  offset: 0, 0
+  index: -1
+iris
+  rotate: true
+  xy: 98, 18
+  size: 7, 8
+  orig: 7, 8
+  offset: 0, 0
+  index: -1
+item
+  rotate: false
+  xy: 387, 80
+  size: 48, 46
+  orig: 48, 46
+  offset: 0, 0
+  index: -1
+leg_left
+  rotate: false
+  xy: 252, 64
+  size: 19, 20
+  orig: 19, 20
+  offset: 0, 0
+  index: -1
+leg_left_stand
+  rotate: false
+  xy: 201, 58
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+leg_right_stand
+  rotate: false
+  xy: 201, 58
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+leg_right
+  rotate: true
+  xy: 484, 77
+  size: 17, 21
+  orig: 17, 21
+  offset: 0, 0
+  index: -1
+mouth
+  rotate: false
+  xy: 358, 76
+  size: 12, 13
+  orig: 12, 13
+  offset: 0, 0
+  index: -1
+mouth_scared
+  rotate: false
+  xy: 273, 63
+  size: 14, 12
+  orig: 14, 12
+  offset: 0, 0
+  index: -1
+nose
+  rotate: false
+  xy: 98, 27
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+nose_t
+  rotate: false
+  xy: 159, 33
+  size: 7, 8
+  orig: 7, 8
+  offset: 0, 0
+  index: -1
+smoke_2
+  rotate: true
+  xy: 2, 15
+  size: 45, 59
+  orig: 45, 59
+  offset: 0, 0
+  index: -1
+tail
+  rotate: false
+  xy: 170, 53
+  size: 29, 29
+  orig: 29, 29
+  offset: 0, 0
+  index: -1

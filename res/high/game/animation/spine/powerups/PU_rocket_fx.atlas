@@ -1,0 +1,69 @@
+
+PU_rocket_fx.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fx_blast2
+  rotate: false
+  xy: 2, 135
+  size: 127, 116
+  orig: 128, 128
+  offset: 0, 12
+  index: -1
+ribbon/ribbon_1
+  rotate: false
+  xy: 2, 11
+  size: 35, 122
+  orig: 128, 128
+  offset: 46, 2
+  index: -1
+ribbon/ribbon_2
+  rotate: true
+  xy: 131, 216
+  size: 35, 122
+  orig: 128, 128
+  offset: 46, 2
+  index: -1
+ribbon/ribbon_3
+  rotate: false
+  xy: 39, 11
+  size: 35, 122
+  orig: 128, 128
+  offset: 46, 2
+  index: -1
+ribbon/ribbon_4
+  rotate: true
+  xy: 131, 180
+  size: 34, 122
+  orig: 128, 128
+  offset: 47, 2
+  index: -1
+ribbon/ribbon_5
+  rotate: false
+  xy: 76, 11
+  size: 34, 122
+  orig: 128, 128
+  offset: 47, 2
+  index: -1
+ribbon/ribbon_6
+  rotate: true
+  xy: 131, 144
+  size: 34, 122
+  orig: 128, 128
+  offset: 47, 2
+  index: -1
+ribbon/ribbon_7
+  rotate: false
+  xy: 112, 11
+  size: 34, 122
+  orig: 128, 128
+  offset: 47, 2
+  index: -1
+ribbon/ribbon_8
+  rotate: false
+  xy: 148, 25
+  size: 34, 117
+  orig: 128, 128
+  offset: 47, 6
+  index: -1

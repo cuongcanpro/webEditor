@@ -1,0 +1,41 @@
+
+KKC_block.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+KKC
+  rotate: false
+  xy: 2, 55
+  size: 77, 68
+  orig: 77, 68
+  offset: 0, 0
+  index: -1
+cabin
+  rotate: false
+  xy: 2, 15
+  size: 39, 38
+  orig: 39, 38
+  offset: 0, 0
+  index: -1
+card_KKc
+  rotate: false
+  xy: 159, 103
+  size: 11, 20
+  orig: 11, 20
+  offset: 0, 0
+  index: -1
+card_KKc1
+  rotate: true
+  xy: 2, 2
+  size: 11, 20
+  orig: 11, 20
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 81, 65
+  size: 76, 58
+  orig: 76, 58
+  offset: 0, 0
+  index: -1

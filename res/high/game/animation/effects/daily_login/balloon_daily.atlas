@@ -1,0 +1,76 @@
+
+balloon_daily.png
+size: 256,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+aura20
+  rotate: false
+  xy: 118, 111
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+balloon
+  rotate: false
+  xy: 2, 84
+  size: 114, 155
+  orig: 114, 155
+  offset: 0, 0
+  index: -1
+break_ball1
+  rotate: false
+  xy: 118, 29
+  size: 54, 41
+  orig: 54, 41
+  offset: 0, 0
+  index: -1
+break_ball2
+  rotate: false
+  xy: 49, 2
+  size: 45, 28
+  orig: 45, 28
+  offset: 0, 0
+  index: -1
+break_ball3
+  rotate: false
+  xy: 49, 32
+  size: 67, 50
+  orig: 67, 50
+  offset: 0, 0
+  index: -1
+break_ball4
+  rotate: false
+  xy: 186, 61
+  size: 49, 48
+  orig: 49, 48
+  offset: 0, 0
+  index: -1
+break_ball5
+  rotate: false
+  xy: 2, 5
+  size: 45, 77
+  orig: 45, 77
+  offset: 0, 0
+  index: -1
+ruybang
+  rotate: false
+  xy: 118, 72
+  size: 66, 37
+  orig: 66, 37
+  offset: 0, 0
+  index: -1
+ruybangL
+  rotate: false
+  xy: 237, 86
+  size: 17, 23
+  orig: 17, 23
+  offset: 0, 0
+  index: -1
+ruybangR
+  rotate: true
+  xy: 96, 7
+  size: 23, 20
+  orig: 23, 20
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,90 @@
+
+offer_suitcase_coins.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BG4
+  rotate: false
+  xy: 2, 2
+  size: 121, 121
+  orig: 121, 121
+  offset: 0, 0
+  index: -1
+Flare
+  rotate: false
+  xy: 225, 62
+  size: 62, 61
+  orig: 62, 61
+  offset: 0, 0
+  index: -1
+G2
+  rotate: false
+  xy: 360, 88
+  size: 59, 35
+  orig: 59, 35
+  offset: 0, 0
+  index: -1
+Layer 711 copy 3
+  rotate: false
+  xy: 421, 77
+  size: 50, 46
+  orig: 50, 46
+  offset: 0, 0
+  index: -1
+SD_G
+  rotate: false
+  xy: 289, 62
+  size: 64, 24
+  orig: 64, 24
+  offset: 0, 0
+  index: -1
+bagD
+  rotate: false
+  xy: 125, 2
+  size: 79, 67
+  orig: 79, 67
+  offset: 0, 0
+  index: -1
+bagU
+  rotate: false
+  xy: 289, 88
+  size: 69, 35
+  orig: 69, 35
+  offset: 0, 0
+  index: -1
+coin4
+  rotate: true
+  xy: 473, 79
+  size: 44, 29
+  orig: 44, 29
+  offset: 0, 0
+  index: -1
+coin5
+  rotate: false
+  xy: 305, 32
+  size: 42, 28
+  orig: 42, 28
+  offset: 0, 0
+  index: -1
+heart
+  rotate: false
+  xy: 206, 15
+  size: 50, 45
+  orig: 50, 45
+  offset: 0, 0
+  index: -1
+pillow4
+  rotate: false
+  xy: 125, 71
+  size: 98, 52
+  orig: 98, 52
+  offset: 0, 0
+  index: -1
+rocket
+  rotate: false
+  xy: 258, 22
+  size: 45, 38
+  orig: 45, 38
+  offset: 0, 0
+  index: -1

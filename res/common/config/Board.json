@@ -1,0 +1,142 @@
+{
+    "General": {
+		"numMap": 10,
+        "limitTime": 1500,
+        "limitTurn": 35,
+        "winReward": 0.9,
+        "hpPlayer": 100,
+        "deckSize": 6,
+        "destroySlotAtTurn" : 45,
+		"numTurnDestroy": 4,
+		"spellSize" :3,
+        "deckMax": 3,
+        "deckInit": 1,
+        "boardWidth": 8,
+        "boardHeight": 4,
+        "initSummon": 3
+    },
+    "ChampLevel": {
+        "1": {
+            "quantity": 4,
+            "hp": 5
+        },
+        "2": {
+            "quantity": 2,
+            "hp": 8
+        },
+        "3": {
+            "quantity": 2,
+            "hp": 12
+        },
+        "4": {
+            "quantity": 2,
+            "hp": 12
+        },
+        "5": {
+            "quantity": 1,
+            "hp": 16
+        },
+        "6": {
+            "quantity": 1,
+            "hp": 40
+        }
+    },
+    "Reward": {
+        "2": {
+            "1": {
+                "expWinRate": 1,
+                "goldWinRate": 0,
+                "expLoseRate": 1,
+                "goldLoseRate": 0
+            },
+            "2": {
+                "expWinRate": 1,
+                "goldWinRate": 0,
+                "expLoseRate": 1,
+                "goldLoseRate": 0
+            },
+            "3": {
+                "expWinRate": 2,
+                "goldWinRate": 1,
+                "expLoseRate": 1,
+                "goldLoseRate": 1
+            },
+            "4": {
+                "expWinRate": 3,
+                "goldWinRate": 2,
+                "expLoseRate": 1,
+                "goldLoseRate": 2
+            },
+            "5": {
+                "expWinRate": 3,
+                "goldWinRate": 2,
+                "expLoseRate": 1,
+                "goldLoseRate": 2
+            }
+        },
+        "3": {
+            "1": {
+                "expWinRate": 1,
+                "goldWinRate": 0,
+                "expLoseRate": 1,
+                "goldLoseRate": 0
+            },
+            "2": {
+                "expWinRate": 1,
+                "goldWinRate": 0,
+                "expLoseRate": 1,
+                "goldLoseRate": 0
+            },
+            "3": {
+                "expWinRate": 2,
+                "goldWinRate": 2,
+                "expLoseRate": 1,
+                "goldLoseRate": 1
+            },
+            "4": {
+                "expWinRate": 3,
+                "goldWinRate": 4,
+                "expLoseRate": 1,
+                "goldLoseRate": 2
+            },
+            "5": {
+                "expWinRate": 3,
+                "goldWinRate": 4,
+                "expLoseRate": 1,
+                "goldLoseRate": 2
+            }
+        },
+        "4": {
+            "1": {
+                "expWinRate": 1,
+                "goldWinRate": 0,
+                "expLoseRate": 1,
+                "goldLoseRate": 0
+            },
+            "2": {
+                "expWinRate": 1,
+                "goldWinRate": 0,
+                "expLoseRate": 1,
+                "goldLoseRate": 0
+            },
+            "3": {
+                "expWinRate": 2,
+                "goldWinRate": 3,
+                "expLoseRate": 1,
+                "goldLoseRate": 1
+            },
+            "4": {
+                "expWinRate": 3,
+                "goldWinRate": 6,
+                "expLoseRate": 1,
+                "goldLoseRate": 2
+            },
+            "5": {
+                "expWinRate": 3,
+                "goldWinRate": 6,
+                "expLoseRate": 1,
+                "goldLoseRate": 2
+            }
+        }
+    }
+}

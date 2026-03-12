@@ -1,0 +1,90 @@
+
+pinwheel_yellow.png
+size: 1024,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+buds
+  rotate: false
+  xy: 809, 81
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
+wings_yellowS_1
+  rotate: false
+  xy: 2, 2
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
+wings_yellowS_10
+  rotate: false
+  xy: 501, 39
+  size: 80, 66
+  orig: 80, 66
+  offset: 0, 0
+  index: -1
+wings_yellowS_11
+  rotate: false
+  xy: 583, 39
+  size: 80, 66
+  orig: 80, 66
+  offset: 0, 0
+  index: -1
+wings_yellowS_2
+  rotate: false
+  xy: 745, 43
+  size: 62, 62
+  orig: 62, 62
+  offset: 0, 0
+  index: -1
+wings_yellowS_3
+  rotate: false
+  xy: 665, 42
+  size: 78, 63
+  orig: 78, 63
+  offset: 0, 0
+  index: -1
+wings_yellowS_4
+  rotate: false
+  xy: 254, 42
+  size: 81, 63
+  orig: 81, 63
+  offset: 0, 0
+  index: -1
+wings_yellowS_5
+  rotate: false
+  xy: 170, 41
+  size: 82, 64
+  orig: 82, 64
+  offset: 0, 0
+  index: -1
+wings_yellowS_6
+  rotate: false
+  xy: 86, 38
+  size: 82, 67
+  orig: 82, 67
+  offset: 0, 0
+  index: -1
+wings_yellowS_7
+  rotate: false
+  xy: 2, 37
+  size: 82, 68
+  orig: 82, 68
+  offset: 0, 0
+  index: -1
+wings_yellowS_8
+  rotate: false
+  xy: 337, 39
+  size: 80, 66
+  orig: 80, 66
+  offset: 0, 0
+  index: -1
+wings_yellowS_9
+  rotate: false
+  xy: 419, 39
+  size: 80, 66
+  orig: 80, 66
+  offset: 0, 0
+  index: -1

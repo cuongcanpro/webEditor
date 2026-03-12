@@ -1,0 +1,13 @@
+
+PU_balloon_fx.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fx_blast2
+  rotate: false
+  xy: 0, 9
+  size: 127, 116
+  orig: 128, 128
+  offset: 0, 12
+  index: -1

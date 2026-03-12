@@ -1,0 +1,233 @@
+{
+  "ID": "99088e57-9844-45c2-a933-eb3e33c0a3b6",
+  "Version": "3.10.0.0",
+  "Name": "demo_2",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "AnchorPoint": {},
+        "Position": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Scale": {
+          "ScaleX": 1.0,
+          "ScaleY": 1.0
+        },
+        "CColor": {},
+        "IconVisible": false,
+        "PrePosition": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "PreSize": {
+          "X": 0.0014,
+          "Y": 0.0008
+        },
+        "HorizontalEdge": "LeftEdge",
+        "VerticalEdge": "BottomEdge",
+        "RightMargin": 699.0,
+        "TopMargin": 1200.0,
+        "BottomMargin": -1.0,
+        "UserData": "{\"animations\":{\"RESET\":\"demo_2_anime/RESET.json\",\"match\":\"demo_2_anime/match.json\",\"remove\":\"demo_2_anime/remove.json\",\"sideMatch\":\"demo_2_anime/sideMatch.json\"}}",
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "img/1900.png",
+              "Plist": ""
+            },
+            "Scale9Enable": true,
+            "Scale9OriginX": 3,
+            "Scale9OriginY": 51,
+            "Scale9Width": 81,
+            "Scale9Height": 34,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 5.5,
+              "Y": 7.5
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "LeftMargin": -39.0,
+            "RightMargin": -50.0,
+            "TopMargin": -35.0,
+            "BottomMargin": -20.0,
+            "ActionTag": 267278587,
+            "Size": {
+              "X": 89.0,
+              "Y": 55.0
+            },
+            "VisibleForFrame": false,
+            "Name": "304",
+            "ctype": "ImageViewObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "img/1900.png",
+              "Plist": ""
+            },
+            "Scale9Enable": true,
+            "Scale9OriginX": 5,
+            "Scale9OriginY": 8,
+            "Scale9Width": 77,
+            "Scale9Height": 44,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 5.5,
+              "Y": -35.5
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "LeftMargin": -39.0,
+            "RightMargin": -50.0,
+            "TopMargin": 13.0,
+            "BottomMargin": -58.0,
+            "ActionTag": 267278586,
+            "Size": {
+              "X": 89.0,
+              "Y": 45.0
+            },
+            "VisibleForFrame": false,
+            "Name": "303",
+            "ctype": "ImageViewObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "img/1900.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 5.5,
+              "Y": -9.5
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "LeftMargin": -39.0,
+            "RightMargin": -50.0,
+            "TopMargin": -35.0,
+            "BottomMargin": -54.0,
+            "ActionTag": 267278585,
+            "Size": {
+              "X": 89.0,
+              "Y": 89.0
+            },
+            "Name": "302",
+            "ctype": "SpriteObjectData"
+          },
+          {
+            "AnchorPoint": {},
+            "Position": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 5.0,
+              "ScaleY": 5.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "RightMargin": -1.0,
+            "BottomMargin": -1.0,
+            "CustomClassName": "EffekSeer",
+            "UserData": "effekseer/test.efk",
+            "ActionTag": 1765492419,
+            "Size": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Name": "EffekseerEmitter2D",
+            "ctype": "SingleNodeObjectData"
+          }
+        ],
+        "ActionTag": 1156064388,
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node2D",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "img/1900.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

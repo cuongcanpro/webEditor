@@ -1,0 +1,178 @@
+{
+  "Content": {
+    "Content": {
+      "Animation": {
+        "ActivedAnimationName": "play",
+        "Duration": "2",
+        "Speed": "1.0",
+        "Timelines": [
+          {
+            "ActionTag": 1964164990,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0,
+                "X": 0.0,
+                "Y": 0.0
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 4,
+                "X": 4.99999985454646,
+                "Y": 4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 7,
+                "X": -4.99999985454646,
+                "Y": -4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 10,
+                "X": 4.99999985454646,
+                "Y": 4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 13,
+                "X": -4.99999985454646,
+                "Y": -4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 15,
+                "X": 4.99999985454646,
+                "Y": 4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 19,
+                "X": -4.99999985454646,
+                "Y": -4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 22,
+                "X": 4.99999985454646,
+                "Y": 4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 25,
+                "X": -4.99999985454646,
+                "Y": -4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 27,
+                "X": 4.99999985454646,
+                "Y": 4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 30,
+                "X": -4.99999985454646,
+                "Y": -4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 34,
+                "X": 4.99999985454646,
+                "Y": 4.99999985454646
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 37,
+                "X": -4.99999985454646,
+                "Y": -4.99999985454646
+              }
+            ],
+            "Property": "RotationSkew",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 1964164990,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 27,
+                "X": 1.0,
+                "Y": 1.0
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 41,
+                "X": 2.0,
+                "Y": 2.0
+              }
+            ],
+            "Property": "Scale",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 672594972,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0,
+                "Value": false
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 28,
+                "Value": true
+              }
+            ],
+            "Property": "VisibleForFrame",
+            "ctype": "TimelineData"
+          }
+        ],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [
+        {
+          "EndIndex": "78",
+          "Name": "default",
+          "StartIndex": "0",
+          "ctype": "AnimationInfoData"
+        }
+      ]
+    }
+  },
+  "Version": "2.3.4"
+}

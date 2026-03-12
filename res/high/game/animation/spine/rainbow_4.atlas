@@ -1,0 +1,20 @@
+
+rainbow_4.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cross_flare
+  rotate: false
+  xy: 68, 5
+  size: 61, 61
+  orig: 64, 64
+  offset: 3, 2
+  index: -1
+ring_explosion
+  rotate: false
+  xy: 2, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,17 @@
+{
+    "numMinOfFreeHeartFirstTime": 30,
+    "mapSaga": {
+        "5": {
+            "levelConfig1st": ["Easy", "Easy", "Easy", "Easy", "Boss"],
+            "levelConfig": ["Easy", "Easy", "Medium", "Hard", "Boss"],
+            "reward": {
+                "bom_phao_free": 30,
+                "hat5_free": 30,
+                "may_bay_free": 30,
+                "bua": 1,
+                "gang_tay": 1,
+                "gold": 800
+            }
+        }
+    }
+}

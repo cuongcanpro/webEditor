@@ -1,0 +1,83 @@
+
+random_char.png
+size: 2048,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01
+  rotate: false
+  xy: 418, 601
+  size: 389, 416
+  orig: 389, 416
+  offset: 0, 0
+  index: -1
+02
+  rotate: true
+  xy: 809, 641
+  size: 376, 419
+  orig: 376, 419
+  offset: 0, 0
+  index: -1
+03
+  rotate: true
+  xy: 1230, 649
+  size: 368, 425
+  orig: 368, 425
+  offset: 0, 0
+  index: -1
+04
+  rotate: false
+  xy: 2, 126
+  size: 396, 418
+  orig: 396, 418
+  offset: 0, 0
+  index: -1
+05
+  rotate: false
+  xy: 1657, 651
+  size: 373, 366
+  orig: 373, 366
+  offset: 0, 0
+  index: -1
+06
+  rotate: false
+  xy: 2, 546
+  size: 414, 471
+  orig: 414, 471
+  offset: 0, 0
+  index: -1
+19a
+  rotate: false
+  xy: 418, 470
+  size: 200, 129
+  orig: 200, 129
+  offset: 0, 0
+  index: -1
+19b
+  rotate: false
+  xy: 2, 2
+  size: 198, 122
+  orig: 198, 122
+  offset: 0, 0
+  index: -1
+19c
+  rotate: false
+  xy: 620, 485
+  size: 200, 114
+  orig: 200, 114
+  offset: 0, 0
+  index: -1
+19d
+  rotate: false
+  xy: 202, 9
+  size: 198, 115
+  orig: 198, 115
+  offset: 0, 0
+  index: -1
+1a
+  rotate: false
+  xy: 400, 417
+  size: 43, 51
+  orig: 43, 51
+  offset: 0, 0
+  index: -1

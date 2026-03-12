@@ -1,0 +1,859 @@
+{
+  "ID": "ad6754fb-af4b-4caf-8254-c4c061b2804e",
+  "Version": "2.3.4",
+  "Name": "LayerMap",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 146,
+        "Children": [
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 102,
+            "SingleColor": {
+              "R": 150,
+              "G": 200
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
+            "TouchEnable": true,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 640.0
+            },
+            "Scale": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PercentWidthEnable": true,
+            "PercentHeightEnable": true,
+            "PercentWidthEnabled": true,
+            "PercentHeightEnabled": true,
+            "PreSize": {
+              "X": 1.9917,
+              "Y": 2.4445
+            },
+            "LeftMargin": -357.012,
+            "RightMargin": -357.012,
+            "TopMargin": -924.48,
+            "BottomMargin": -924.48,
+            "Tag": 235,
+            "Children": [
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "lobby/lobby_after_screen.png",
+                  "Plist": ""
+                },
+                "BlendFunc": {
+                  "Src": 1,
+                  "Dst": 771
+                },
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 717.012,
+                  "Y": 2050.0
+                },
+                "Scale": {
+                  "ScaleX": 2.0,
+                  "ScaleY": 2.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.6552
+                },
+                "PreSize": {
+                  "X": 0.5021,
+                  "Y": 0.3404
+                },
+                "LeftMargin": 357.012,
+                "RightMargin": 357.0121,
+                "TopMargin": 546.46,
+                "BottomMargin": 1517.5,
+                "Tag": 42,
+                "ActionTag": -1928931436,
+                "Size": {
+                  "X": 720.0,
+                  "Y": 1065.0
+                },
+                "Name": "bg",
+                "ctype": "SpriteObjectData"
+              },
+              {
+                "ClipAble": true,
+                "BackColorAlpha": 102,
+                "SingleColor": {
+                  "R": 150,
+                  "G": 200
+                },
+                "FirstColor": {
+                  "R": 150,
+                  "G": 200
+                },
+                "EndColor": {},
+                "ColorVector": {
+                  "ScaleY": 1.0
+                },
+                "Scale9Width": 1,
+                "Scale9Height": 1,
+                "TouchEnable": true,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 717.012,
+                  "Y": 1564.48
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PreSize": {
+                  "X": 1.0042,
+                  "Y": 0.8182
+                },
+                "LeftMargin": -2.988,
+                "RightMargin": -2.9879,
+                "TopMargin": 284.48,
+                "BottomMargin": 284.48,
+                "Tag": 236,
+                "Children": [
+                  {
+                    "AnchorPoint": {},
+                    "Position": {
+                      "X": 720.0,
+                      "Y": 1280.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": true,
+                    "PositionPercentXEnabled": true,
+                    "PositionPercentYEnabled": true,
+                    "PrePosition": {
+                      "X": 0.5,
+                      "Y": 0.5
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": 720.0,
+                    "RightMargin": 720.0,
+                    "TopMargin": 1280.0,
+                    "BottomMargin": 1280.0,
+                    "Tag": 11,
+                    "Children": [
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/A_Shadow.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": -684.2876,
+                          "Y": 662.4023
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -883.2876,
+                        "RightMargin": 485.2876,
+                        "TopMargin": -916.9023,
+                        "BottomMargin": 407.9023,
+                        "Tag": 13,
+                        "ActionTag": 305392953,
+                        "Size": {
+                          "X": 398.0,
+                          "Y": 509.0
+                        },
+                        "VisibleForFrame": false,
+                        "Alpha": 127,
+                        "Name": "cloudAShadow",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/A.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": -602.1672,
+                          "Y": 1144.1505
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -841.1672,
+                        "RightMargin": 363.1672,
+                        "TopMargin": -1438.1505,
+                        "BottomMargin": 850.1505,
+                        "Tag": 12,
+                        "ActionTag": 1574990419,
+                        "Size": {
+                          "X": 478.0,
+                          "Y": 588.0
+                        },
+                        "Name": "cloudA",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/B_Shadow.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 580.2922,
+                          "Y": 782.8405
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": 357.2922,
+                        "RightMargin": -803.2922,
+                        "TopMargin": -1068.8406,
+                        "BottomMargin": 496.8405,
+                        "Tag": 15,
+                        "ActionTag": -408832777,
+                        "Size": {
+                          "X": 446.0,
+                          "Y": 572.0
+                        },
+                        "VisibleForFrame": false,
+                        "Alpha": 127,
+                        "Name": "cloudBShadow",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/B.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 607.66,
+                          "Y": 1051.0909
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": 326.16,
+                        "RightMargin": -889.16,
+                        "TopMargin": -1368.5909,
+                        "BottomMargin": 733.5909,
+                        "Tag": 14,
+                        "ActionTag": 527146114,
+                        "Size": {
+                          "X": 563.0,
+                          "Y": 635.0
+                        },
+                        "Name": "cloudB",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/C_Shadow.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": -837.5808,
+                          "Y": -437.9471
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -958.0808,
+                        "RightMargin": 717.0808,
+                        "TopMargin": 249.9471,
+                        "BottomMargin": -625.9471,
+                        "Tag": 17,
+                        "ActionTag": 1871232156,
+                        "Size": {
+                          "X": 241.0,
+                          "Y": 376.0
+                        },
+                        "VisibleForFrame": false,
+                        "Alpha": 127,
+                        "Name": "cloudCShadow",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/C.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": -793.782,
+                          "Y": -224.4445
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -920.782,
+                        "RightMargin": 666.782,
+                        "TopMargin": 84.4445,
+                        "BottomMargin": -364.4445,
+                        "Tag": 16,
+                        "ActionTag": -1392597044,
+                        "Size": {
+                          "X": 254.0,
+                          "Y": 280.0
+                        },
+                        "Name": "cloudC",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/D_Shadow.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 717.1448,
+                          "Y": -531.0105
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": 641.6448,
+                        "RightMargin": -792.6448,
+                        "TopMargin": 434.5105,
+                        "BottomMargin": -627.5105,
+                        "Tag": 19,
+                        "ActionTag": 1800778478,
+                        "Size": {
+                          "X": 151.0,
+                          "Y": 193.0
+                        },
+                        "VisibleForFrame": false,
+                        "Alpha": 127,
+                        "Name": "cloudDShadow",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/D.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 689.7703,
+                          "Y": -372.2523
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": 600.2703,
+                        "RightMargin": -779.2703,
+                        "TopMargin": 263.7523,
+                        "BottomMargin": -480.7523,
+                        "Tag": 18,
+                        "ActionTag": -1362426921,
+                        "Size": {
+                          "X": 179.0,
+                          "Y": 217.0
+                        },
+                        "Name": "cloudD",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/E_Shadow.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 528.3975,
+                          "Y": -1483.4412
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": 215.8975,
+                        "RightMargin": -840.8975,
+                        "TopMargin": 1199.4412,
+                        "BottomMargin": -1767.4412,
+                        "Tag": 21,
+                        "ActionTag": 1386448443,
+                        "Size": {
+                          "X": 625.0,
+                          "Y": 568.0
+                        },
+                        "VisibleForFrame": false,
+                        "Alpha": 127,
+                        "Name": "cloudEShadow",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/E.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 531.0112,
+                          "Y": -963.4819
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": 188.0112,
+                        "RightMargin": -874.0112,
+                        "TopMargin": 649.9819,
+                        "BottomMargin": -1276.9819,
+                        "Tag": 20,
+                        "ActionTag": 784233795,
+                        "Size": {
+                          "X": 686.0,
+                          "Y": 627.0
+                        },
+                        "Name": "cloudE",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/F_Shadow.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": -748.6777,
+                          "Y": -1586.7258
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -949.6777,
+                        "RightMargin": 547.6777,
+                        "TopMargin": 1375.7258,
+                        "BottomMargin": -1797.7258,
+                        "Tag": 23,
+                        "ActionTag": -99877848,
+                        "Size": {
+                          "X": 402.0,
+                          "Y": 422.0
+                        },
+                        "VisibleForFrame": false,
+                        "Alpha": 127,
+                        "Name": "cloudFShadow",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/map/cloud_map/A/F.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": -760.9358,
+                          "Y": -1111.2844
+                        },
+                        "Scale": {
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -991.9358,
+                        "RightMargin": 529.9358,
+                        "TopMargin": 869.7844,
+                        "BottomMargin": -1352.7844,
+                        "Tag": 22,
+                        "ActionTag": -2141960601,
+                        "Size": {
+                          "X": 462.0,
+                          "Y": 483.0
+                        },
+                        "Name": "cloudF",
+                        "ctype": "SpriteObjectData"
+                      }
+                    ],
+                    "ActionTag": -231275546,
+                    "Size": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "Name": "cloud",
+                    "ctype": "SingleNodeObjectData"
+                  }
+                ],
+                "ActionTag": 1611582771,
+                "Size": {
+                  "X": 1440.0,
+                  "Y": 2560.0
+                },
+                "Name": "Panel_3",
+                "ctype": "PanelObjectData"
+              }
+            ],
+            "ActionTag": -65451211,
+            "Size": {
+              "X": 1434.024,
+              "Y": 3128.96
+            },
+            "Name": "bg",
+            "ctype": "PanelObjectData"
+          },
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 102,
+            "ComboBoxIndex": 1,
+            "SingleColor": {
+              "R": 127,
+              "G": 127,
+              "B": 127
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
+            "TouchEnable": true,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 640.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {
+              "R": 127,
+              "G": 127,
+              "B": 127
+            },
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PercentWidthEnable": true,
+            "PercentHeightEnable": true,
+            "PercentWidthEnabled": true,
+            "PercentHeightEnabled": true,
+            "PreSize": {
+              "X": 1.0,
+              "Y": 1.0
+            },
+            "Tag": 158,
+            "ActionTag": -550217254,
+            "Size": {
+              "X": 720.0,
+              "Y": 1280.0
+            },
+            "VisibleForFrame": false,
+            "Name": "topPanel",
+            "ctype": "PanelObjectData"
+          }
+        ],
+        "Size": {
+          "X": 720.0,
+          "Y": 1280.0
+        },
+        "Name": "Layer",
+        "ctype": "LayerObjectData"
+      },
+      "UsedResources": [
+        "../../game/map/cloud_map/A/A.png",
+        "../../game/map/cloud_map/A/A_Shadow.png",
+        "../../game/map/cloud_map/A/B.png",
+        "../../game/map/cloud_map/A/B_Shadow.png",
+        "../../game/map/cloud_map/A/C.png",
+        "../../game/map/cloud_map/A/C_Shadow.png",
+        "../../game/map/cloud_map/A/D.png",
+        "../../game/map/cloud_map/A/D_Shadow.png",
+        "../../game/map/cloud_map/A/E.png",
+        "../../game/map/cloud_map/A/E_Shadow.png",
+        "../../game/map/cloud_map/A/F.png",
+        "../../game/map/cloud_map/A/F_Shadow.png",
+        "../../lobby/lobby_after_screen.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

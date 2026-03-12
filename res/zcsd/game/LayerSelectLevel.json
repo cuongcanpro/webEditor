@@ -1,0 +1,821 @@
+{
+  "ID": "7087fdda-bef8-4e64-8708-070a33cc82dd",
+  "Version": "2.3.4",
+  "Name": "LayerSelectLevel",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 122,
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Default",
+              "Path": "Default/ImageFile.png",
+              "Plist": ""
+            },
+            "Scale9OriginX": -165,
+            "Scale9OriginY": -328,
+            "Scale9Width": 376,
+            "Scale9Height": 702,
+            "AnchorPoint": {},
+            "Position": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PercentWidthEnable": true,
+            "PercentHeightEnable": true,
+            "PercentWidthEnabled": true,
+            "PercentHeightEnabled": true,
+            "PreSize": {
+              "X": 1.0,
+              "Y": 1.0
+            },
+            "Tag": 136,
+            "ActionTag": -2095660993,
+            "Size": {
+              "X": 640.0,
+              "Y": 1136.0
+            },
+            "Name": "bg",
+            "ctype": "ImageViewObjectData"
+          },
+          {
+            "DirectionType": "Vertical",
+            "ScrollDirectionType": 0,
+            "ClipAble": true,
+            "BackColorAlpha": 102,
+            "ComboBoxIndex": 1,
+            "SingleColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 150
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
+            "TouchEnable": true,
+            "AnchorPoint": {},
+            "Position": {
+              "X": 0.0,
+              "Y": 150.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.132
+            },
+            "PreSize": {
+              "X": 1.0,
+              "Y": 0.868
+            },
+            "BottomMargin": 150.0,
+            "Tag": 135,
+            "ActionTag": -1438482582,
+            "Size": {
+              "X": 640.0,
+              "Y": 986.0
+            },
+            "Name": "lvMap",
+            "ctype": "ListViewObjectData"
+          },
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 102,
+            "ComboBoxIndex": 1,
+            "SingleColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
+            "TouchEnable": true,
+            "AnchorPoint": {},
+            "Position": {
+              "X": 935.44,
+              "Y": 441.5079
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 1.4616,
+              "Y": 0.3887
+            },
+            "PreSize": {
+              "X": 1.0,
+              "Y": 0.088
+            },
+            "LeftMargin": 935.44,
+            "RightMargin": -935.4399,
+            "TopMargin": 594.4921,
+            "BottomMargin": 441.5079,
+            "Tag": 130,
+            "Children": [
+              {
+                "ClipAble": false,
+                "BackColorAlpha": 102,
+                "ComboBoxIndex": 1,
+                "SingleColor": {
+                  "R": 191,
+                  "G": 191,
+                  "B": 191
+                },
+                "FirstColor": {
+                  "R": 150,
+                  "G": 200
+                },
+                "EndColor": {},
+                "ColorVector": {
+                  "ScaleY": 1.0
+                },
+                "Scale9Width": 1,
+                "Scale9Height": 1,
+                "TouchEnable": true,
+                "AnchorPoint": {},
+                "Position": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "PreSize": {
+                  "X": 1.0,
+                  "Y": 0.1
+                },
+                "TopMargin": 90.0,
+                "Tag": 90,
+                "ActionTag": -1937687632,
+                "Size": {
+                  "X": 640.0,
+                  "Y": 10.0
+                },
+                "Name": "sep",
+                "ctype": "PanelObjectData"
+              },
+              {
+                "IsCustomSize": true,
+                "FontSize": 20,
+                "LabelText": "Tên map",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "AnchorPoint": {
+                  "ScaleY": 0.531
+                },
+                "Position": {
+                  "X": 12.4756,
+                  "Y": 70.7813
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.0195,
+                  "Y": 0.7078
+                },
+                "PreSize": {
+                  "X": 0.7813,
+                  "Y": 0.35
+                },
+                "LeftMargin": 12.4756,
+                "RightMargin": 127.5244,
+                "TopMargin": 12.8037,
+                "BottomMargin": 52.1963,
+                "Tag": 131,
+                "ActionTag": 1851768550,
+                "Size": {
+                  "X": 500.0,
+                  "Y": 35.0
+                },
+                "Name": "lblMapName",
+                "ctype": "TextObjectData"
+              },
+              {
+                "IsCustomSize": true,
+                "FontSize": 20,
+                "LabelText": "Move: ",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "AnchorPoint": {
+                  "ScaleY": 0.531
+                },
+                "Position": {
+                  "X": 12.4756,
+                  "Y": 35.7885
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.0195,
+                  "Y": 0.3579
+                },
+                "PreSize": {
+                  "X": 0.3125,
+                  "Y": 0.35
+                },
+                "LeftMargin": 12.4756,
+                "RightMargin": 427.5244,
+                "TopMargin": 47.7965,
+                "BottomMargin": 17.2035,
+                "Tag": 132,
+                "ActionTag": -903578305,
+                "Size": {
+                  "X": 200.0,
+                  "Y": 35.0
+                },
+                "Name": "lblMove",
+                "ctype": "TextObjectData"
+              },
+              {
+                "IsCustomSize": true,
+                "FontSize": 20,
+                "LabelText": "Độ khó:",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "AnchorPoint": {
+                  "ScaleY": 0.531
+                },
+                "Position": {
+                  "X": 224.9282,
+                  "Y": 35.7885
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.3515,
+                  "Y": 0.3579
+                },
+                "PreSize": {
+                  "X": 0.3125,
+                  "Y": 0.35
+                },
+                "LeftMargin": 224.9282,
+                "RightMargin": 215.0718,
+                "TopMargin": 47.7965,
+                "BottomMargin": 17.2035,
+                "Tag": 133,
+                "ActionTag": -940905802,
+                "Size": {
+                  "X": 200.0,
+                  "Y": 35.0
+                },
+                "Name": "lblDiff",
+                "ctype": "TextObjectData"
+              },
+              {
+                "FontSize": 30,
+                "ButtonText": "Play",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "TextColor": {
+                  "R": 65,
+                  "G": 65,
+                  "B": 70
+                },
+                "DisabledFileData": {
+                  "Type": "Default",
+                  "Path": "Default/Button_Disable.png",
+                  "Plist": ""
+                },
+                "PressedFileData": {
+                  "Type": "Default",
+                  "Path": "Default/Button_Press.png",
+                  "Plist": ""
+                },
+                "NormalFileData": {
+                  "Type": "Default",
+                  "Path": "Default/Button_Normal.png",
+                  "Plist": ""
+                },
+                "Scale9Enable": true,
+                "Scale9OriginX": 15,
+                "Scale9OriginY": 11,
+                "Scale9Width": 16,
+                "Scale9Height": 14,
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "TouchEnable": true,
+                "AnchorPoint": {
+                  "ScaleY": 0.546
+                },
+                "Position": {
+                  "X": 522.7921,
+                  "Y": 55.39
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.8169,
+                  "Y": 0.5539
+                },
+                "PreSize": {
+                  "X": 0.1563,
+                  "Y": 0.45
+                },
+                "LeftMargin": 522.7921,
+                "RightMargin": 17.2079,
+                "TopMargin": 24.18,
+                "BottomMargin": 30.82,
+                "UserData": "-press_action",
+                "Tag": 134,
+                "ActionTag": 428012103,
+                "Size": {
+                  "X": 100.0,
+                  "Y": 45.0
+                },
+                "Name": "btnPlay",
+                "ctype": "ButtonObjectData"
+              },
+              {
+                "IsCustomSize": true,
+                "FontSize": 20,
+                "LabelText": "PASS",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "HorizontalAlignmentType": "HT_Center",
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "Scale": {
+                  "ScaleX": 1.03,
+                  "ScaleY": 1.0
+                },
+                "CColor": {
+                  "R": 0,
+                  "B": 0
+                },
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "PreSize": {
+                  "X": 0.1094,
+                  "Y": 0.35
+                },
+                "LeftMargin": -35.0,
+                "RightMargin": 605.0,
+                "TopMargin": 82.5,
+                "BottomMargin": -17.5,
+                "Tag": 129,
+                "Children": [
+                  {
+                    "ClipAble": false,
+                    "ComboBoxIndex": 1,
+                    "SingleColor": {
+                      "R": 0,
+                      "B": 0
+                    },
+                    "FirstColor": {
+                      "R": 150,
+                      "G": 200
+                    },
+                    "EndColor": {},
+                    "ColorVector": {
+                      "ScaleY": 1.0
+                    },
+                    "Scale9Width": 1,
+                    "Scale9Height": 1,
+                    "TouchEnable": true,
+                    "AnchorPoint": {},
+                    "Position": {
+                      "X": -11.0,
+                      "Y": -3.3941
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": -0.1571,
+                      "Y": -0.097
+                    },
+                    "PreSize": {
+                      "X": 0.0429,
+                      "Y": 1.1429
+                    },
+                    "LeftMargin": -11.0,
+                    "RightMargin": 78.0,
+                    "TopMargin": -1.6059,
+                    "BottomMargin": -3.3941,
+                    "Tag": 130,
+                    "ActionTag": -1432959528,
+                    "Size": {
+                      "X": 3.0,
+                      "Y": 40.0
+                    },
+                    "Name": "Panel_1",
+                    "ctype": "PanelObjectData"
+                  },
+                  {
+                    "ClipAble": false,
+                    "ComboBoxIndex": 1,
+                    "SingleColor": {
+                      "R": 0,
+                      "B": 0
+                    },
+                    "FirstColor": {
+                      "R": 150,
+                      "G": 200
+                    },
+                    "EndColor": {},
+                    "ColorVector": {
+                      "ScaleY": 1.0
+                    },
+                    "Scale9Width": 1,
+                    "Scale9Height": 1,
+                    "TouchEnable": true,
+                    "AnchorPoint": {},
+                    "Position": {
+                      "X": 76.0,
+                      "Y": -3.1105
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 1.0857,
+                      "Y": -0.0889
+                    },
+                    "PreSize": {
+                      "X": 0.0429,
+                      "Y": 1.1429
+                    },
+                    "LeftMargin": 76.0,
+                    "RightMargin": -9.0,
+                    "TopMargin": -1.8895,
+                    "BottomMargin": -3.1105,
+                    "Tag": 131,
+                    "ActionTag": 736295739,
+                    "Size": {
+                      "X": 3.0,
+                      "Y": 40.0
+                    },
+                    "Name": "Panel_1_0",
+                    "ctype": "PanelObjectData"
+                  },
+                  {
+                    "ClipAble": false,
+                    "ComboBoxIndex": 1,
+                    "SingleColor": {
+                      "R": 0,
+                      "B": 0
+                    },
+                    "FirstColor": {
+                      "R": 150,
+                      "G": 200
+                    },
+                    "EndColor": {},
+                    "ColorVector": {
+                      "ScaleY": 1.0
+                    },
+                    "Scale9Width": 1,
+                    "Scale9Height": 1,
+                    "TouchEnable": true,
+                    "AnchorPoint": {},
+                    "Position": {
+                      "X": -11.0,
+                      "Y": 36.0007
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": -0.1571,
+                      "Y": 1.0286
+                    },
+                    "PreSize": {
+                      "X": 1.2857,
+                      "Y": 0.0857
+                    },
+                    "LeftMargin": -11.0,
+                    "RightMargin": -9.0,
+                    "TopMargin": -4.0007,
+                    "BottomMargin": 36.0007,
+                    "Tag": 132,
+                    "ActionTag": -399320047,
+                    "Size": {
+                      "X": 90.0,
+                      "Y": 3.0
+                    },
+                    "Name": "Panel_1_0_0",
+                    "ctype": "PanelObjectData"
+                  },
+                  {
+                    "ClipAble": false,
+                    "ComboBoxIndex": 1,
+                    "SingleColor": {
+                      "R": 0,
+                      "B": 0
+                    },
+                    "FirstColor": {
+                      "R": 150,
+                      "G": 200
+                    },
+                    "EndColor": {},
+                    "ColorVector": {
+                      "ScaleY": 1.0
+                    },
+                    "Scale9Width": 1,
+                    "Scale9Height": 1,
+                    "TouchEnable": true,
+                    "AnchorPoint": {},
+                    "Position": {
+                      "X": -11.0,
+                      "Y": -4.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": -0.1571,
+                      "Y": -0.1143
+                    },
+                    "PreSize": {
+                      "X": 1.2857,
+                      "Y": 0.0857
+                    },
+                    "LeftMargin": -11.0,
+                    "RightMargin": -9.0,
+                    "TopMargin": 36.0,
+                    "BottomMargin": -4.0,
+                    "Tag": 133,
+                    "ActionTag": -1564434993,
+                    "Size": {
+                      "X": 90.0,
+                      "Y": 3.0
+                    },
+                    "Name": "Panel_1_0_0_0",
+                    "ctype": "PanelObjectData"
+                  }
+                ],
+                "ActionTag": 1364316025,
+                "Size": {
+                  "X": 70.0,
+                  "Y": 35.0
+                },
+                "VisibleForFrame": false,
+                "Name": "lbPass",
+                "ctype": "TextObjectData"
+              }
+            ],
+            "ActionTag": 1572123832,
+            "Size": {
+              "X": 640.0,
+              "Y": 100.0
+            },
+            "Name": "pnlItemMap",
+            "ctype": "PanelObjectData"
+          },
+          {
+            "FontSize": 36,
+            "ButtonText": "Back",
+            "FontResource": {
+              "Type": "Normal",
+              "Path": "font/BalooPaaji2-Bold.ttf",
+              "Plist": ""
+            },
+            "TextColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0
+            },
+            "DisabledFileData": {
+              "Type": "Default",
+              "Path": "Default/Button_Disable.png",
+              "Plist": ""
+            },
+            "PressedFileData": {
+              "Type": "Default",
+              "Path": "Default/Button_Press.png",
+              "Plist": ""
+            },
+            "NormalFileData": {
+              "Type": "Default",
+              "Path": "Default/Button_Normal.png",
+              "Plist": ""
+            },
+            "Scale9Enable": true,
+            "Scale9OriginX": 15,
+            "Scale9OriginY": 11,
+            "Scale9Width": 16,
+            "Scale9Height": 14,
+            "OutlineColor": {
+              "G": 0,
+              "B": 0
+            },
+            "ShadowColor": {
+              "R": 110,
+              "G": 110,
+              "B": 110
+            },
+            "ShadowOffsetX": 2.0,
+            "ShadowOffsetY": -2.0,
+            "TouchEnable": true,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 320.0,
+              "Y": 69.11
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.0608
+            },
+            "PreSize": {
+              "X": 0.2344,
+              "Y": 0.0616
+            },
+            "LeftMargin": 245.0,
+            "RightMargin": 245.0,
+            "TopMargin": 1031.89,
+            "BottomMargin": 34.11,
+            "UserData": "-press_action",
+            "Tag": 129,
+            "ActionTag": 606541293,
+            "Size": {
+              "X": 150.0,
+              "Y": 70.0
+            },
+            "Name": "btnBack",
+            "ctype": "ButtonObjectData"
+          }
+        ],
+        "Size": {
+          "X": 640.0,
+          "Y": 1136.0
+        },
+        "Name": "Layer",
+        "ctype": "LayerObjectData"
+      },
+      "UsedResources": [
+        "../../Default/Button_Disable.png",
+        "../../Default/Button_Normal.png",
+        "../../Default/Button_Press.png",
+        "../../Default/ImageFile.png",
+        "../../font/BalooPaaji2-Bold.ttf"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

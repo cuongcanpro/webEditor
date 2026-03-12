@@ -1,0 +1,69 @@
+
+jar_soap.png
+size: 256,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BB1
+  rotate: true
+  xy: 108, 3
+  size: 18, 17
+  orig: 18, 17
+  offset: 0, 0
+  index: -1
+BB2
+  rotate: false
+  xy: 79, 111
+  size: 13, 12
+  orig: 13, 12
+  offset: 0, 0
+  index: -1
+glass bottle
+  rotate: true
+  xy: 191, 53
+  size: 70, 63
+  orig: 70, 63
+  offset: 0, 0
+  index: -1
+head
+  rotate: true
+  xy: 126, 52
+  size: 71, 63
+  orig: 71, 63
+  offset: 0, 0
+  index: -1
+iron bar
+  rotate: true
+  xy: 2, 23
+  size: 23, 122
+  orig: 23, 122
+  offset: 0, 0
+  index: -1
+texture
+  rotate: false
+  xy: 2, 48
+  size: 75, 75
+  orig: 75, 75
+  offset: 0, 0
+  index: -1
+waterM
+  rotate: false
+  xy: 191, 2
+  size: 63, 49
+  orig: 63, 49
+  offset: 0, 0
+  index: -1
+water_D
+  rotate: false
+  xy: 2, 8
+  size: 51, 13
+  orig: 51, 13
+  offset: 0, 0
+  index: -1
+water_U
+  rotate: false
+  xy: 55, 12
+  size: 51, 9
+  orig: 51, 9
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,259 @@
+{
+  "ID": "99088e57-9844-45c2-a933-eb3e33c0a3b6",
+  "Version": "3.10.0.0",
+  "Name": "kong_1",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "AnchorPoint": {},
+        "Position": {
+          "X": 0.0,
+          "Y": 42.0
+        },
+        "Scale": {
+          "ScaleX": 1.0,
+          "ScaleY": 1.0
+        },
+        "CColor": {},
+        "IconVisible": false,
+        "PrePosition": {
+          "X": 0.0,
+          "Y": 0.0328
+        },
+        "PreSize": {
+          "X": 0.0014,
+          "Y": 0.0008
+        },
+        "HorizontalEdge": "LeftEdge",
+        "VerticalEdge": "BottomEdge",
+        "RightMargin": 719.0,
+        "TopMargin": 1238.0,
+        "BottomMargin": 41.0,
+        "UserData": "{\"animations\":{\"RESET\":\"kong_1_anime/RESET.json\",\"action_2\":\"kong_1_anime/action_2.json\",\"idle_0\":\"kong_1_anime/idle_0.json\",\"idle_1\":\"kong_1_anime/idle_1.json\",\"idle_2\":\"kong_1_anime/idle_2.json\",\"match\":\"kong_1_anime/match.json\",\"remove\":\"kong_1_anime/remove.json\",\"sideMatch\":\"kong_1_anime/sideMatch.json\",\"spawn\":\"kong_1_anime/spawn.json\"}}",
+        "Children": [
+          {
+            "AnchorPoint": {},
+            "Position": {
+              "X": 0.0,
+              "Y": -124.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "RightMargin": -1.0,
+            "TopMargin": 124.0,
+            "BottomMargin": -125.0,
+            "CustomClassName": "SpineSprite",
+            "UserData": "spine/gorilla_orange/gorilla_orange",
+            "Children": [
+              {
+                "AnchorPoint": {},
+                "Position": {
+                  "X": 0.4,
+                  "Y": 21.4268
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 0.9655
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "PreSize": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "HorizontalEdge": "LeftEdge",
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": 0.4,
+                "RightMargin": -1.4,
+                "TopMargin": -21.4268,
+                "BottomMargin": 20.4268,
+                "CustomClassName": "SpineBone",
+                "UserData": "marker",
+                "Children": [
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "img/1900.png",
+                      "Plist": ""
+                    },
+                    "BlendFunc": {
+                      "Src": 1,
+                      "Dst": 771
+                    },
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": -0.4,
+                      "Y": 1264.6903
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": -0.0006,
+                      "Y": 0.988
+                    },
+                    "PreSize": {
+                      "X": 0.1236,
+                      "Y": 0.0695
+                    },
+                    "HorizontalEdge": "BothEdge",
+                    "VerticalEdge": "BothEdge",
+                    "LeftMargin": -44.9,
+                    "RightMargin": 675.9,
+                    "TopMargin": -29.1903,
+                    "BottomMargin": 1220.1903,
+                    "ActionTag": 256492985,
+                    "Size": {
+                      "X": 89.0,
+                      "Y": 89.0
+                    },
+                    "Name": "ccSprite",
+                    "ctype": "SpriteObjectData"
+                  }
+                ],
+                "ActionTag": 1231336558,
+                "Size": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "Name": "spawnRoot",
+                "ctype": "SingleNodeObjectData"
+              }
+            ],
+            "ActionTag": 1796301522,
+            "Size": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Name": "ccSpine",
+            "ctype": "SingleNodeObjectData"
+          },
+          {
+            "AnchorPoint": {},
+            "Position": {
+              "X": -13.14,
+              "Y": 200.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "LeftMargin": -13.14,
+            "RightMargin": 12.14,
+            "TopMargin": -200.0,
+            "BottomMargin": 199.0,
+            "ActionTag": 1367902455,
+            "Size": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Name": "endPointSpawn",
+            "ctype": "SingleNodeObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "HPBar0.json",
+              "Plist": ""
+            },
+            "StretchWidthEnable": false,
+            "StretchHeightEnable": false,
+            "InnerActionSpeed": 0.0,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": -0.1667,
+              "Y": -144.3333
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "TopEdge",
+            "LeftMargin": -110.6667,
+            "RightMargin": -110.3333,
+            "TopMargin": 125.3333,
+            "BottomMargin": -163.3333,
+            "Children": [],
+            "ActionTag": 967614522,
+            "Size": {
+              "X": 221.0,
+              "Y": 38.0
+            },
+            "Name": "Sprite2D",
+            "ctype": "ProjectNodeObjectData"
+          }
+        ],
+        "ActionTag": 586376685,
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node2D",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "HPBar0.json",
+        "img/1900.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

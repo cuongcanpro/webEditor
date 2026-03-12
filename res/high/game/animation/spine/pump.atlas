@@ -1,0 +1,97 @@
+
+pump.png
+size: 1024,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body_B
+  rotate: false
+  xy: 263, 17
+  size: 47, 9
+  orig: 47, 9
+  offset: 0, 0
+  index: -1
+body_F
+  rotate: true
+  xy: 106, 14
+  size: 47, 87
+  orig: 47, 87
+  offset: 0, 0
+  index: -1
+leg
+  rotate: false
+  xy: 263, 28
+  size: 59, 33
+  orig: 59, 33
+  offset: 0, 0
+  index: -1
+line_sk
+  rotate: true
+  xy: 530, 32
+  size: 29, 34
+  orig: 29, 34
+  offset: 0, 0
+  index: -1
+line_sk2
+  rotate: false
+  xy: 378, 19
+  size: 45, 42
+  orig: 45, 42
+  offset: 0, 0
+  index: -1
+line_sk3
+  rotate: false
+  xy: 324, 26
+  size: 52, 35
+  orig: 52, 35
+  offset: 0, 0
+  index: -1
+piston
+  rotate: true
+  xy: 2, 9
+  size: 52, 102
+  orig: 52, 102
+  offset: 0, 0
+  index: -1
+smokeL1
+  rotate: false
+  xy: 497, 28
+  size: 31, 33
+  orig: 33, 35
+  offset: 1, 1
+  index: -1
+smokeL2
+  rotate: false
+  xy: 462, 28
+  size: 33, 33
+  orig: 35, 35
+  offset: 1, 1
+  index: -1
+smokeL3
+  rotate: false
+  xy: 425, 28
+  size: 35, 33
+  orig: 37, 35
+  offset: 1, 1
+  index: -1
+smokeL4
+  rotate: true
+  xy: 566, 30
+  size: 31, 32
+  orig: 33, 34
+  offset: 1, 1
+  index: -1
+smokeL5
+  rotate: true
+  xy: 600, 30
+  size: 31, 32
+  orig: 33, 34
+  offset: 1, 1
+  index: -1
+tube
+  rotate: false
+  xy: 195, 2
+  size: 66, 59
+  orig: 66, 59
+  offset: 0, 0
+  index: -1

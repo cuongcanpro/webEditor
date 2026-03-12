@@ -1,0 +1,69 @@
+
+icon_machine.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bg
+  rotate: false
+  xy: 2, 4
+  size: 122, 122
+  orig: 122, 122
+  offset: 0, 0
+  index: -1
+fx_Machine1
+  rotate: false
+  xy: 339, 91
+  size: 22, 35
+  orig: 22, 35
+  offset: 0, 0
+  index: -1
+fx_Machine2
+  rotate: false
+  xy: 363, 91
+  size: 22, 35
+  orig: 22, 35
+  offset: 0, 0
+  index: -1
+fx_Machine3
+  rotate: false
+  xy: 387, 91
+  size: 22, 35
+  orig: 22, 35
+  offset: 0, 0
+  index: -1
+fx_elec1
+  rotate: false
+  xy: 319, 57
+  size: 10, 21
+  orig: 10, 21
+  offset: 0, 0
+  index: -1
+fx_elec2
+  rotate: false
+  xy: 126, 2
+  size: 15, 23
+  orig: 15, 23
+  offset: 0, 0
+  index: -1
+machine
+  rotate: false
+  xy: 126, 27
+  size: 94, 99
+  orig: 94, 99
+  offset: 0, 0
+  index: -1
+napkin
+  rotate: false
+  xy: 222, 30
+  size: 95, 48
+  orig: 95, 48
+  offset: 0, 0
+  index: -1
+table
+  rotate: false
+  xy: 222, 80
+  size: 115, 46
+  orig: 115, 46
+  offset: 0, 0
+  index: -1

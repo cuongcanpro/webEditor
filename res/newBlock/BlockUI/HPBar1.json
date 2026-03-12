@@ -1,0 +1,154 @@
+{
+  "ID": "99088e57-9844-45c2-a933-eb3e33c0a3b6",
+  "Version": "3.10.0.0",
+  "Name": "HPBar1",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "FileData": {
+          "Type": "Normal",
+          "Path": "img/UI/bunny_progress_bar_bg.png",
+          "Plist": ""
+        },
+        "BlendFunc": {
+          "Src": 1,
+          "Dst": 771
+        },
+        "AnchorPoint": {
+          "ScaleX": 0.5,
+          "ScaleY": 0.5
+        },
+        "Position": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Scale": {
+          "ScaleX": 1.0,
+          "ScaleY": 1.0
+        },
+        "CColor": {},
+        "IconVisible": false,
+        "PrePosition": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "PreSize": {
+          "X": 0.2028,
+          "Y": 0.0297
+        },
+        "HorizontalEdge": "LeftEdge",
+        "VerticalEdge": "BottomEdge",
+        "LeftMargin": -73.0,
+        "RightMargin": 647.0,
+        "TopMargin": 1261.0,
+        "BottomMargin": -19.0,
+        "Children": [
+          {
+            "ProgressInfo": 100,
+            "ImageFileData": {
+              "Type": "Normal",
+              "Path": "img/UI/bunny_progress_bar.png",
+              "Plist": ""
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 73.0,
+              "Y": 19.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PreSize": {
+              "X": 1.0,
+              "Y": 1.0
+            },
+            "HorizontalEdge": "BothEdge",
+            "VerticalEdge": "BothEdge",
+            "ActionTag": 1607848792,
+            "Size": {
+              "X": 146.0,
+              "Y": 38.0
+            },
+            "Name": "hpBar",
+            "ctype": "LoadingBarObjectData"
+          },
+          {
+            "IsCustomSize": true,
+            "FontSize": 20,
+            "LabelText": "30",
+            "FontResource": {
+              "Type": "Normal",
+              "Path": "font/BalooPaaji2-SemiBold.ttf",
+              "Plist": ""
+            },
+            "HorizontalAlignmentType": "HT_Center",
+            "VerticalAlignmentType": "VT_Center",
+            "ShadowOffsetX": 2.0,
+            "ShadowOffsetY": -2.0,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 17.5,
+              "Y": 20.4999
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.1199,
+              "Y": 0.5395
+            },
+            "PreSize": {
+              "X": 0.1644,
+              "Y": 0.6579
+            },
+            "HorizontalEdge": "LeftEdge",
+            "VerticalEdge": "BothEdge",
+            "LeftMargin": 5.5,
+            "RightMargin": 116.5,
+            "TopMargin": 5.0001,
+            "BottomMargin": 7.9999,
+            "ActionTag": 1130371972,
+            "Size": {
+              "X": 24.0,
+              "Y": 25.0
+            },
+            "Name": "HPLabel",
+            "ctype": "TextObjectData"
+          }
+        ],
+        "ActionTag": 295904235,
+        "Size": {
+          "X": 146.0,
+          "Y": 38.0
+        },
+        "Name": "Sprite2D",
+        "ctype": "SpriteObjectData"
+      },
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

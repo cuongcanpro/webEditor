@@ -1,0 +1,69 @@
+
+fridge.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+door
+  rotate: false
+  xy: 149, 74
+  size: 146, 131
+  orig: 146, 131
+  offset: 0, 0
+  index: -1
+fridge
+  rotate: false
+  xy: 2, 54
+  size: 145, 151
+  orig: 145, 151
+  offset: 0, 0
+  index: -1
+grow
+  rotate: false
+  xy: 297, 89
+  size: 120, 116
+  orig: 120, 116
+  offset: 0, 0
+  index: -1
+milk1
+  rotate: false
+  xy: 2, 2
+  size: 34, 50
+  orig: 34, 50
+  offset: 0, 0
+  index: -1
+milk2
+  rotate: false
+  xy: 2, 2
+  size: 34, 50
+  orig: 34, 50
+  offset: 0, 0
+  index: -1
+milk3
+  rotate: false
+  xy: 2, 2
+  size: 34, 50
+  orig: 34, 50
+  offset: 0, 0
+  index: -1
+milk4
+  rotate: false
+  xy: 2, 2
+  size: 34, 50
+  orig: 34, 50
+  offset: 0, 0
+  index: -1
+milk5
+  rotate: false
+  xy: 2, 2
+  size: 34, 50
+  orig: 34, 50
+  offset: 0, 0
+  index: -1
+milk6
+  rotate: false
+  xy: 2, 2
+  size: 34, 50
+  orig: 34, 50
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,1054 @@
+{
+  "ID": "fb46e3b3-3bed-4e97-854b-43491259531e",
+  "Version": "2.3.4",
+  "Name": "NodePopupGUIEndGame",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 120,
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/end_game/talk_bubble.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.1667,
+              "ScaleY": 0.8677
+            },
+            "Position": {
+              "X": -196.9944,
+              "Y": 139.4187
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -296.0142,
+            "RightMargin": -297.9858,
+            "TopMargin": -189.4281,
+            "BottomMargin": -188.5719,
+            "Tag": 183,
+            "Children": [
+              {
+                "IsCustomSize": true,
+                "FontSize": 26,
+                "LabelText": "lang_lose_winstreak_end_game",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "HorizontalAlignmentType": "HT_Center",
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 297.0,
+                  "Y": 283.5
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {
+                  "R": 166,
+                  "G": 63,
+                  "B": 39
+                },
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.75
+                },
+                "PreSize": {
+                  "X": 0.8418,
+                  "Y": 0.1587
+                },
+                "LeftMargin": 47.0,
+                "RightMargin": 47.0,
+                "TopMargin": 64.5,
+                "BottomMargin": 253.5,
+                "Tag": 122,
+                "ActionTag": -1194696560,
+                "Size": {
+                  "X": 500.0,
+                  "Y": 60.0
+                },
+                "Name": "description",
+                "ctype": "TextObjectData"
+              },
+              {
+                "AnchorPoint": {},
+                "Position": {
+                  "X": 297.0,
+                  "Y": 189.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": true,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PreSize": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "LeftMargin": 297.0,
+                "RightMargin": 297.0,
+                "TopMargin": 189.0,
+                "BottomMargin": 189.0,
+                "Tag": 123,
+                "Children": [
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "winstreak/bottle_01.png",
+                      "Plist": ""
+                    },
+                    "BlendFunc": {
+                      "Src": 1,
+                      "Dst": 771
+                    },
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": -150.0,
+                      "Y": -40.0
+                    },
+                    "Scale": {
+                      "ScaleX": 0.8,
+                      "ScaleY": 0.8
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": -280.5,
+                    "RightMargin": 19.5,
+                    "TopMargin": -93.0,
+                    "BottomMargin": -173.0,
+                    "Tag": 124,
+                    "ActionTag": 1516386303,
+                    "Size": {
+                      "X": 261.0,
+                      "Y": 266.0
+                    },
+                    "Name": "bottle",
+                    "ctype": "SpriteObjectData"
+                  },
+                  {
+                    "AnchorPoint": {},
+                    "Position": {
+                      "X": -130.0,
+                      "Y": -50.0
+                    },
+                    "Scale": {
+                      "ScaleX": 0.8,
+                      "ScaleY": 0.8
+                    },
+                    "CColor": {},
+                    "IconVisible": true,
+                    "PrePosition": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": -130.0,
+                    "RightMargin": 130.0,
+                    "TopMargin": 50.0,
+                    "BottomMargin": -50.0,
+                    "Tag": 125,
+                    "Children": [
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "winstreak/102.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": -30.0,
+                          "Y": -10.0
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -62.5,
+                        "RightMargin": -2.5,
+                        "TopMargin": -24.0,
+                        "BottomMargin": -44.0,
+                        "Tag": 126,
+                        "ActionTag": 1512194191,
+                        "Size": {
+                          "X": 65.0,
+                          "Y": 68.0
+                        },
+                        "Name": "p0",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "winstreak/101.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 30.0,
+                          "Y": -10.0
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -3.0,
+                        "RightMargin": -63.0,
+                        "TopMargin": -26.0,
+                        "BottomMargin": -46.0,
+                        "Tag": 127,
+                        "ActionTag": 1702625567,
+                        "Size": {
+                          "X": 66.0,
+                          "Y": 72.0
+                        },
+                        "Name": "p1",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "winstreak/103.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 0.0,
+                          "Y": 20.0
+                        },
+                        "Scale": {
+                          "ScaleX": 0.8,
+                          "ScaleY": 0.8
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -40.0,
+                        "RightMargin": -40.0,
+                        "TopMargin": -59.5,
+                        "BottomMargin": -19.5,
+                        "Tag": 128,
+                        "ActionTag": 155419312,
+                        "Size": {
+                          "X": 80.0,
+                          "Y": 79.0
+                        },
+                        "Name": "p3",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "winstreak/104.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 0.0,
+                          "Y": -10.0
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -31.0,
+                        "RightMargin": -31.0,
+                        "TopMargin": -22.0,
+                        "BottomMargin": -42.0,
+                        "Tag": 129,
+                        "ActionTag": 9518763,
+                        "Size": {
+                          "X": 62.0,
+                          "Y": 64.0
+                        },
+                        "Name": "p2",
+                        "ctype": "SpriteObjectData"
+                      }
+                    ],
+                    "ActionTag": 1537408427,
+                    "Size": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "Name": "prize",
+                    "ctype": "SingleNodeObjectData"
+                  }
+                ],
+                "ActionTag": 1235881184,
+                "Size": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "Name": "winstreak",
+                "ctype": "SingleNodeObjectData"
+              },
+              {
+                "AnchorPoint": {},
+                "Position": {
+                  "X": 297.0,
+                  "Y": 189.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": true,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PreSize": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "LeftMargin": 297.0,
+                "RightMargin": 297.0,
+                "TopMargin": 189.0,
+                "BottomMargin": 189.0,
+                "Tag": 130,
+                "Children": [
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "game/element/3.png",
+                      "Plist": ""
+                    },
+                    "BlendFunc": {
+                      "Src": 1,
+                      "Dst": 771
+                    },
+                    "AnchorPoint": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": -5.0,
+                      "Y": 40.0
+                    },
+                    "Scale": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": -70.0,
+                    "RightMargin": 5.0,
+                    "TopMargin": -66.0,
+                    "BottomMargin": 14.0,
+                    "Tag": 131,
+                    "ActionTag": -412617746,
+                    "Size": {
+                      "X": 65.0,
+                      "Y": 52.0
+                    },
+                    "Name": "icon",
+                    "ctype": "SpriteObjectData"
+                  },
+                  {
+                    "IsCustomSize": true,
+                    "FontSize": 40,
+                    "LabelText": "x50",
+                    "FontResource": {
+                      "Type": "Normal",
+                      "Path": "font/BalooPaaji2-Bold.ttf",
+                      "Plist": ""
+                    },
+                    "VerticalAlignmentType": "VT_Center",
+                    "OutlineColor": {
+                      "G": 0,
+                      "B": 0
+                    },
+                    "ShadowColor": {
+                      "R": 110,
+                      "G": 110,
+                      "B": 110
+                    },
+                    "ShadowOffsetX": 2.0,
+                    "ShadowOffsetY": -2.0,
+                    "AnchorPoint": {
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 5.0,
+                      "Y": 40.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {
+                      "R": 166,
+                      "G": 63,
+                      "B": 39
+                    },
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": 5.0,
+                    "RightMargin": -105.0,
+                    "TopMargin": -90.0,
+                    "BottomMargin": -10.0,
+                    "Tag": 132,
+                    "ActionTag": -556854784,
+                    "Size": {
+                      "X": 100.0,
+                      "Y": 100.0
+                    },
+                    "Name": "amount",
+                    "ctype": "TextObjectData"
+                  },
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "game/gui/end_game/progress_bar_bg_1.png",
+                      "Plist": ""
+                    },
+                    "BlendFunc": {
+                      "Src": 1,
+                      "Dst": 771
+                    },
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 0.0,
+                      "Y": -25.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": -236.0,
+                    "RightMargin": -236.0,
+                    "TopMargin": -22.0,
+                    "BottomMargin": -72.0,
+                    "Tag": 133,
+                    "Children": [
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/element/3.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 41.9608,
+                          "Y": 44.5748
+                        },
+                        "Scale": {
+                          "ScaleX": 0.4,
+                          "ScaleY": 0.4
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PositionPercentXEnabled": true,
+                        "PositionPercentYEnabled": true,
+                        "PrePosition": {
+                          "X": 0.0889,
+                          "Y": 0.4742
+                        },
+                        "PreSize": {
+                          "X": 0.1377,
+                          "Y": 0.5532
+                        },
+                        "LeftMargin": 9.4608,
+                        "RightMargin": 397.5392,
+                        "TopMargin": 23.4252,
+                        "BottomMargin": 18.5748,
+                        "Tag": 134,
+                        "ActionTag": -1212222827,
+                        "Size": {
+                          "X": 65.0,
+                          "Y": 52.0
+                        },
+                        "Name": "icon",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/gui/tool/tool_2.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 429.1424,
+                          "Y": 56.1744
+                        },
+                        "Scale": {
+                          "ScaleX": 0.7,
+                          "ScaleY": 0.7
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PositionPercentXEnabled": true,
+                        "PositionPercentYEnabled": true,
+                        "PrePosition": {
+                          "X": 0.9092,
+                          "Y": 0.5976
+                        },
+                        "PreSize": {
+                          "X": 0.2331,
+                          "Y": 1.1702
+                        },
+                        "LeftMargin": 374.1424,
+                        "RightMargin": -12.1424,
+                        "TopMargin": -17.1744,
+                        "BottomMargin": 1.1744,
+                        "Tag": 135,
+                        "ActionTag": -1338393095,
+                        "Size": {
+                          "X": 110.0,
+                          "Y": 110.0
+                        },
+                        "Name": "reward",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "IsCustomSize": true,
+                        "FontSize": 29,
+                        "LabelText": "x15",
+                        "FontResource": {
+                          "Type": "Normal",
+                          "Path": "font/BalooPaaji2-Bold.ttf",
+                          "Plist": ""
+                        },
+                        "HorizontalAlignmentType": "HT_Center",
+                        "VerticalAlignmentType": "VT_Center",
+                        "OutlineColor": {
+                          "R": 28,
+                          "G": 52,
+                          "B": 58
+                        },
+                        "OutlineEnabled": true,
+                        "ShadowColor": {
+                          "R": 28,
+                          "G": 52,
+                          "B": 58
+                        },
+                        "ShadowOffsetX": -1.0,
+                        "ShadowOffsetY": -1.0,
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 427.868,
+                          "Y": 17.7848
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PositionPercentXEnabled": true,
+                        "PositionPercentYEnabled": true,
+                        "PrePosition": {
+                          "X": 0.9065,
+                          "Y": 0.1892
+                        },
+                        "PreSize": {
+                          "X": 0.1271,
+                          "Y": 0.5638
+                        },
+                        "LeftMargin": 397.868,
+                        "RightMargin": 14.132,
+                        "TopMargin": 49.7152,
+                        "BottomMargin": -8.7152,
+                        "Tag": 136,
+                        "ActionTag": -1853439883,
+                        "Size": {
+                          "X": 60.0,
+                          "Y": 53.0
+                        },
+                        "Name": "rewardAmount",
+                        "ctype": "TextObjectData"
+                      }
+                    ],
+                    "ActionTag": 682392835,
+                    "Size": {
+                      "X": 472.0,
+                      "Y": 94.0
+                    },
+                    "Name": "progressBar",
+                    "ctype": "SpriteObjectData"
+                  },
+                  {
+                    "FontSize": 24,
+                    "LabelText": "lang_lose_collection_end_game",
+                    "FontResource": {
+                      "Type": "Normal",
+                      "Path": "font/BalooPaaji2-Bold.ttf",
+                      "Plist": ""
+                    },
+                    "HorizontalAlignmentType": "HT_Center",
+                    "VerticalAlignmentType": "VT_Center",
+                    "OutlineColor": {
+                      "G": 0,
+                      "B": 0
+                    },
+                    "ShadowColor": {
+                      "R": 110,
+                      "G": 110,
+                      "B": 110
+                    },
+                    "ShadowOffsetX": 2.0,
+                    "ShadowOffsetY": -2.0,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 0.0,
+                      "Y": -115.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {
+                      "R": 166,
+                      "G": 63,
+                      "B": 39
+                    },
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": -176.5,
+                    "RightMargin": -176.5,
+                    "TopMargin": 100.0,
+                    "BottomMargin": -130.0,
+                    "Tag": 137,
+                    "ActionTag": 706221426,
+                    "Size": {
+                      "X": 353.0,
+                      "Y": 30.0
+                    },
+                    "Name": "lblDescription",
+                    "ctype": "TextObjectData"
+                  }
+                ],
+                "ActionTag": -387128255,
+                "Size": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "VisibleForFrame": false,
+                "Name": "collectEvent",
+                "ctype": "SingleNodeObjectData"
+              },
+              {
+                "AnchorPoint": {},
+                "Position": {
+                  "X": 297.0,
+                  "Y": 189.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": true,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PreSize": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "LeftMargin": 297.0,
+                "RightMargin": 297.0,
+                "TopMargin": 189.0,
+                "BottomMargin": 189.0,
+                "Tag": 72,
+                "Children": [
+                  {
+                    "IsCustomSize": true,
+                    "FontSize": 24,
+                    "LabelText": "lang_last_heart_end_game_1",
+                    "FontResource": {
+                      "Type": "Normal",
+                      "Path": "font/BalooPaaji2-Bold.ttf",
+                      "Plist": ""
+                    },
+                    "HorizontalAlignmentType": "HT_Center",
+                    "VerticalAlignmentType": "VT_Center",
+                    "OutlineColor": {
+                      "G": 0,
+                      "B": 0
+                    },
+                    "ShadowColor": {
+                      "R": 110,
+                      "G": 110,
+                      "B": 110
+                    },
+                    "ShadowOffsetX": 2.0,
+                    "ShadowOffsetY": -2.0,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 0.0,
+                      "Y": -109.9991
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {
+                      "R": 166,
+                      "G": 63,
+                      "B": 39
+                    },
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": -240.0,
+                    "RightMargin": -240.0,
+                    "TopMargin": 49.9991,
+                    "BottomMargin": -169.9991,
+                    "Tag": 73,
+                    "ActionTag": 576514986,
+                    "Size": {
+                      "X": 480.0,
+                      "Y": 120.0
+                    },
+                    "Name": "lblDescription",
+                    "ctype": "TextObjectData"
+                  },
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "lobby/icon_life.png",
+                      "Plist": ""
+                    },
+                    "BlendFunc": {
+                      "Src": 1,
+                      "Dst": 771
+                    },
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": -1.2145,
+                      "Y": -7.9555
+                    },
+                    "Scale": {
+                      "ScaleX": 2.3317,
+                      "ScaleY": 2.3317
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": -39.2145,
+                    "RightMargin": -36.7855,
+                    "TopMargin": -25.5445,
+                    "BottomMargin": -41.4555,
+                    "Tag": 75,
+                    "Children": [
+                      {
+                        "FontSize": 36,
+                        "LabelText": "1",
+                        "FontResource": {
+                          "Type": "Normal",
+                          "Path": "font/BalooPaaji2-Bold.ttf",
+                          "Plist": ""
+                        },
+                        "OutlineColor": {
+                          "G": 0,
+                          "B": 0
+                        },
+                        "ShadowColor": {
+                          "R": 110,
+                          "G": 110,
+                          "B": 110
+                        },
+                        "ShadowOffsetX": 2.0,
+                        "ShadowOffsetY": -2.0,
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 38.0,
+                          "Y": 33.5
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PositionPercentXEnabled": true,
+                        "PositionPercentYEnabled": true,
+                        "PrePosition": {
+                          "X": 0.5,
+                          "Y": 0.5
+                        },
+                        "PreSize": {
+                          "X": 0.1974,
+                          "Y": 0.6716
+                        },
+                        "LeftMargin": 30.5,
+                        "RightMargin": 30.5,
+                        "TopMargin": 11.0,
+                        "BottomMargin": 11.0,
+                        "Tag": 76,
+                        "ActionTag": 900300559,
+                        "Size": {
+                          "X": 15.0,
+                          "Y": 45.0
+                        },
+                        "Name": "Text_1",
+                        "ctype": "TextObjectData"
+                      }
+                    ],
+                    "ActionTag": -761524528,
+                    "Size": {
+                      "X": 76.0,
+                      "Y": 67.0
+                    },
+                    "Name": "icon_life_1",
+                    "ctype": "SpriteObjectData"
+                  }
+                ],
+                "ActionTag": 755019981,
+                "Size": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "Name": "lastHeart",
+                "ctype": "SingleNodeObjectData"
+              }
+            ],
+            "ActionTag": 1717033650,
+            "Size": {
+              "X": 594.0,
+              "Y": 378.0
+            },
+            "Name": "popup",
+            "ctype": "SpriteObjectData"
+          }
+        ],
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "../../font/BalooPaaji2-Bold.ttf",
+        "../../game/element/3.png",
+        "../../game/gui/end_game/progress_bar_bg_1.png",
+        "../../game/gui/end_game/talk_bubble.png",
+        "../../game/gui/tool/tool_2.png",
+        "../../lobby/icon_life.png",
+        "../../winstreak/101.png",
+        "../../winstreak/102.png",
+        "../../winstreak/103.png",
+        "../../winstreak/104.png",
+        "../../winstreak/bottle_01.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Node"
+}

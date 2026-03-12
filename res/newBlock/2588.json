@@ -1,0 +1,13 @@
+{
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {},
+    "visual": {
+        "path": "res/high/game/element/900.png",
+        "type": 0
+    },
+    "type": "DynamicBlocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "CONTENT"
+}

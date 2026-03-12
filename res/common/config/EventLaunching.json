@@ -1,0 +1,39 @@
+{
+  "levelStart": 1,
+  "levelStartDisplay": 3,
+  "maxDayEvent": 10,
+  "levelRequirePerStep": 10,
+  "mapStepReward": {
+    "1": {
+      "heart_free": 15,
+      "bom_phao": 1
+    },
+    "2": {
+      "bom_phao_free": 15,
+      "may_bay": 1
+    },
+    "3": {
+      "gang_tay": 1,
+      "gold": 100,
+      "bua": 1
+    },
+    "4": {
+      "hat5_free": 15,
+      "pack": 1
+    },
+    "5": {
+      "heart_free": 30,
+      "hat5": 1,
+      "gold": 200
+    },
+    "6": {
+      "may_bay_free": 15,
+      "bua_ta": 1
+    },
+    "7": {
+      "avatar_frame_2": 1,
+      "cheese_skin_2": 1,
+      "gold": 500
+    }
+  }
+}

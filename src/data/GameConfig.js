@@ -1,0 +1,10 @@
+var gv = gv || {};
+
+gv.PING_TIME = {
+    TIME: 10000,
+    SLOW_CONNECTION: 5000,
+    TIME_PING_SLOW_CONNECT: 1000,
+    TIME_OUT_DISCONNECT: 10000
+};
+
+

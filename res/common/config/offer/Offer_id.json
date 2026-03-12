@@ -1,0 +1,110 @@
+{
+  "100": {
+    "status": 1,
+    "name": "lang_offer_1",
+    "items": {
+      "G": 100,
+      "GOLD": 1000,
+      "BOM_PHAO": 2,
+      "HAT5": 2,
+      "GANG_TAY": 2,
+      "HEART_FREE": 30
+    },
+    "value": 162,
+    "price": {
+      "1": 10000
+    },
+    "bonusPercent": 500,
+    "conditions": [
+      {
+        "level": 20
+      },
+      {
+        "loseStreak": 3
+      }
+    ],
+    "timeShowOnLobby": 72,
+    "timeShowOnShop": "infinite"
+  },
+  "101": {
+    "status": 1,
+    "name": "lang_offer_2",
+    "items": {
+      "G": 500,
+      "GOLD": 5000,
+      "HAT5": 4,
+      "MAY_BAY": 4,
+      "BUA": 4,
+      "BOM_PHAO_FREE": 30
+    },
+    "value": 571,
+    "price": {
+      "1": 50000,
+      "3": 50000,
+      "4": "1.99|com.zps.match3.offer2|2C"
+    },
+    "bonusPercent": 600,
+    "conditions": [
+      {
+        "timePlayFromBuyOffer100": 2
+      }
+    ],
+    "timeShowOnLobby": 72,
+    "timeShowOnShop": "infinite"
+  },
+  "103": {
+    "status": 1,
+    "name1": "lang_offer_4",
+    "name": "Hành Trang Du Ký",
+    "items": {
+      "G": 100,
+      "GOLD": 1000,
+      "BOM_PHAO_FREE": 30,
+      "HAT5_FREE": 30,
+      "HEART_FREE": 60,
+      "BUA": 3
+    },
+    "value": 419,
+    "price": {
+      "1": 100000,
+      "5": "com.zps.match3.offer4"
+    },
+    "bonusPercent": 999,
+    "conditions": [
+      {
+        "neverBuyOffer": true,
+        "goldMin": 0,
+        "heartMin": 0
+      }
+    ],
+    "timeShowOnLobby": 12
+  },
+  "102": {
+    "status": 1,
+    "name": "lang_offer_3",
+    "items": {
+      "G": 1000,
+      "GOLD": 2000,
+      "HAT5": 4,
+      "MAY_BAY": 4,
+      "BUA": 4,
+      "BUA_TA": 4,
+      "HEART_FREE": 60
+    },
+    "value": 676,
+    "price": {
+      "1": 50000,
+      "3": 50000,
+      "4": "1.99|com.zps.match3.offer3|"
+    },
+    "bonusPercent": 600,
+    "conditions": [
+      {
+        "timePlayFromBuyOffer101": 2,
+        "heartMin": 0,
+        "gMin": 99
+      }
+    ],
+    "timeShowOnLobby": 24
+  }
+}

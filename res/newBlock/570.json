@@ -1,0 +1,29 @@
+{
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "remove": [
+            {
+                "name": "AroundSpawnElementAction",
+                "config": {
+                    "type": 500
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/high/game/element/4000.png",
+        "type": 0
+    },
+    "type": "Blocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "maxHP": 3,
+        "hitPoints": 1
+    }
+}

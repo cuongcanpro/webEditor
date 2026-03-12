@@ -1,0 +1,28 @@
+{
+  "Exchange": [
+    "com.zps.match3.g1",
+    "com.zps.match3.g2",
+    "com.zps.match3.g3",
+    "com.zps.match3.g4",
+    "com.zps.match3.g5",
+    "com.zps.match3.g6",
+    "com.zps.match3.g7",
+    "com.zps.match3.piggy1",
+    "com.zps.match3.piggy2",
+    "com.zps.match3.offer1",
+    "com.zps.match3.offer2",
+    "com.zps.match3.offer3",
+    "com.zps.match3.offer4"
+  ],
+  "Exchange_Portal": [
+    "1A",
+    "2A",
+    "2B",
+    "2C",
+    "5A",
+    "10A",
+    "20A",
+    "50A",
+    "100A"
+  ]
+}

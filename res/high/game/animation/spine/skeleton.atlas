@@ -1,0 +1,62 @@
+
+skeleton.png
+size: 512,64
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/Light_sequence/ligthing_sequence_01_001
+  rotate: false
+  xy: 364, 8
+  size: 56, 54
+  orig: 64, 64
+  offset: 4, 6
+  index: -1
+imgs/Light_sequence/ligthing_sequence_01_002
+  rotate: false
+  xy: 246, 5
+  size: 57, 57
+  orig: 64, 64
+  offset: 1, 6
+  index: -1
+imgs/Light_sequence/ligthing_sequence_01_003
+  rotate: false
+  xy: 2, 2
+  size: 60, 60
+  orig: 64, 64
+  offset: 0, 4
+  index: -1
+imgs/Light_sequence/ligthing_sequence_01_004
+  rotate: false
+  xy: 64, 2
+  size: 60, 60
+  orig: 64, 64
+  offset: 0, 4
+  index: -1
+imgs/Light_sequence/ligthing_sequence_01_005
+  rotate: false
+  xy: 305, 5
+  size: 57, 57
+  orig: 64, 64
+  offset: 3, 4
+  index: -1
+imgs/Light_sequence/ligthing_sequence_01_006
+  rotate: false
+  xy: 126, 4
+  size: 58, 58
+  orig: 64, 64
+  offset: 3, 3
+  index: -1
+imgs/Light_sequence/ligthing_sequence_01_007
+  rotate: false
+  xy: 186, 4
+  size: 58, 58
+  orig: 64, 64
+  offset: 1, 5
+  index: -1
+imgs/Light_sequence/ligthing_sequence_01_008
+  rotate: false
+  xy: 422, 9
+  size: 54, 53
+  orig: 64, 64
+  offset: 3, 8
+  index: -1

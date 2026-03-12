@@ -1,0 +1,62 @@
+
+sky.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+cloudB1
+  rotate: false
+  xy: 2, 29
+  size: 163, 95
+  orig: 163, 95
+  offset: 0, 0
+  index: -1
+cloudB3
+  rotate: false
+  xy: 262, 60
+  size: 111, 64
+  orig: 111, 64
+  offset: 0, 0
+  index: -1
+cord1
+  rotate: true
+  xy: 2, 23
+  size: 4, 130
+  orig: 4, 130
+  offset: 0, 0
+  index: -1
+dot1
+  rotate: false
+  xy: 262, 33
+  size: 25, 25
+  orig: 27, 27
+  offset: 1, 1
+  index: -1
+dot2
+  rotate: false
+  xy: 2, 2
+  size: 19, 19
+  orig: 21, 21
+  offset: 1, 1
+  index: -1
+dot3
+  rotate: false
+  xy: 375, 64
+  size: 19, 19
+  orig: 21, 21
+  offset: 1, 1
+  index: -1
+star1
+  rotate: false
+  xy: 167, 32
+  size: 93, 92
+  orig: 93, 92
+  offset: 0, 0
+  index: -1
+star2
+  rotate: false
+  xy: 375, 85
+  size: 41, 39
+  orig: 41, 39
+  offset: 0, 0
+  index: -1

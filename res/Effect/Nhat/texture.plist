@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>frames</key>
+        <dict>
+            <key>Symbol 1.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{135,2},{117,53}}</string>
+                <key>offset</key>
+                <string>{-1,1}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{3,0},{117,53}}</string>
+                <key>sourceSize</key>
+                <string>{125,55}</string>
+            </dict>
+            <key>Symbol 2.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{2,2},{131,104}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,2},{131,104}}</string>
+                <key>sourceSize</key>
+                <string>{131,108}</string>
+            </dict>
+            <key>sao.png</key>
+            <dict>
+                <key>frame</key>
+                <string>{{135,57},{106,106}}</string>
+                <key>offset</key>
+                <string>{-1,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{5,6},{106,106}}</string>
+                <key>sourceSize</key>
+                <string>{118,118}</string>
+            </dict>
+        </dict>
+        <key>metadata</key>
+        <dict>
+            <key>format</key>
+            <integer>2</integer>
+            <key>realTextureFileName</key>
+            <string>texture.png</string>
+            <key>size</key>
+            <string>{256,256}</string>
+            <key>smartupdate</key>
+            <string>$TexturePacker:SmartUpdate:3b46cd70f57bccbc57904e2738c609b3:1/1$</string>
+            <key>textureFileName</key>
+            <string>texture.png</string>
+        </dict>
+    </dict>
+</plist>

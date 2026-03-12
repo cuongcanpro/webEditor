@@ -1,0 +1,36 @@
+{
+    "isOpenPiggy": 1,
+    "Packs": {
+        "1": {
+            "price": 10000,
+            "buy": {
+                "1" : 10000,
+                "5" : "com.zps.match3.piggy1"
+            },
+            "initG": 50,
+            "validG": 250,
+            "maxG": 300,
+            "levelInit": 12,
+            "levelRequire": 12,
+            "win": 17,
+            "gPerWin": 15,
+            "existTime": -1
+        },
+        "2": {
+            "price": 50000,
+            "buy": {
+                "1" : 50000,
+                "3" : 50000,
+                "4" : "1.99|com.zps.match3.piggy2|2B"
+            },
+            "initG": 100,
+            "validG": 600,
+            "maxG": 1000,
+            "levelInit": -1,
+            "levelRequire": 24,
+            "win": 25,
+            "gPerWin": 36,
+            "existTime": -1
+        }
+    }
+}

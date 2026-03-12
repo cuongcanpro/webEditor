@@ -1,0 +1,69 @@
+
+box_daily.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bowB
+  rotate: true
+  xy: 132, 22
+  size: 108, 47
+  orig: 108, 47
+  offset: 0, 0
+  index: -1
+bowS
+  rotate: true
+  xy: 472, 207
+  size: 44, 24
+  orig: 44, 24
+  offset: 0, 0
+  index: -1
+box4
+  rotate: false
+  xy: 2, 132
+  size: 208, 119
+  orig: 208, 119
+  offset: 0, 0
+  index: -1
+boxU
+  rotate: false
+  xy: 342, 188
+  size: 128, 63
+  orig: 128, 63
+  offset: 0, 0
+  index: -1
+light_chest1
+  rotate: true
+  xy: 342, 157
+  size: 29, 122
+  orig: 29, 122
+  offset: 0, 0
+  index: -1
+light_chest2
+  rotate: false
+  xy: 181, 31
+  size: 24, 99
+  orig: 24, 99
+  offset: 0, 0
+  index: -1
+spack
+  rotate: false
+  xy: 132, 4
+  size: 15, 16
+  orig: 15, 16
+  offset: 0, 0
+  index: -1
+spark77
+  rotate: false
+  xy: 2, 2
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+texture7
+  rotate: false
+  xy: 212, 123
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

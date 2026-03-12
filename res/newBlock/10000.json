@@ -1,0 +1,114 @@
+{
+    "baseAction": [
+        "MATCH"
+    ],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "SetAttributeAction",
+                "config": {
+                    "fieldName": "cooldown",
+                    "value": 3
+                }
+            },
+            "TakeDamageAction",
+            {
+                "name": "ReplaceUIAction",
+                "config": {
+                    "path": "res/newBlock/BlockUI/kong_0.json",
+                    "defaultAnim": "action_2"
+                }
+            }
+        ],
+        "endTurn": [
+            {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "cooldown",
+                    "delta": -1,
+                    "defaultValue": 2
+                }
+            },
+            {
+                "name": "CheckAttributeAction1",
+                "config": {
+                    "fieldName": "cooldown",
+                    "targetValue": 1,
+                    "actionKey": "action_1"
+                }
+            },
+            {
+                "name": "CheckAttributeAction",
+                "config": {
+                    "fieldName": "cooldown",
+                    "targetValue": 0,
+                    "actionKey": "action_0"
+                }
+            }
+        ],
+        "match": [
+            {
+                "name": "SetAttributeAction",
+                "config": {
+                    "fieldName": "cooldown",
+                    "value": 3
+                }
+            },
+            "TakeDamageAction",
+            {
+                "name": "ReplaceUIAction",
+                "config": {
+                    "path": "res/newBlock/BlockUI/kong_0.json",
+                    "defaultAnim": "action_2"
+                }
+            }
+        ],
+        "action_0": [
+            {
+                "name": "RandomSpawnElementAction",
+                "config": {
+                    "type": 700,
+                    "numRandom": 3,
+                    "range": 1000
+                }
+            },
+            {
+                "name": "SetAttributeAction",
+                "config": {
+                    "fieldName": "cooldown",
+                    "value": 2
+                }
+            },
+            {
+                "name": "ReplaceUIAction",
+                "config": {
+                    "path": "res/newBlock/BlockUI/kong_0.json",
+                    "defaultAnim": "idle"
+                }
+            }
+        ],
+        "action_1": [
+            {
+                "name": "ReplaceUIAction",
+                "config": {
+                    "path": "res/newBlock/BlockUI/kong_box_0.json",
+                    "defaultAnim": "action_1"
+                }
+            }
+        ],
+        "action_2": []
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/kong_0.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 3,
+    "height": 3,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "maxHP": 10,
+        "hitPoints": 10
+    }
+}

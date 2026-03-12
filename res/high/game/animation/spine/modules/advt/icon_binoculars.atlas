@@ -1,0 +1,41 @@
+
+icon_binoculars.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+BG2
+  rotate: false
+  xy: 2, 2
+  size: 122, 123
+  orig: 122, 123
+  offset: 0, 0
+  index: -1
+SD_binoculars
+  rotate: false
+  xy: 315, 96
+  size: 76, 29
+  orig: 76, 29
+  offset: 0, 0
+  index: -1
+binoculars
+  rotate: false
+  xy: 236, 70
+  size: 77, 55
+  orig: 77, 55
+  offset: 0, 0
+  index: -1
+carpet2
+  rotate: false
+  xy: 126, 4
+  size: 95, 60
+  orig: 95, 60
+  offset: 0, 0
+  index: -1
+pillow2
+  rotate: false
+  xy: 126, 66
+  size: 108, 59
+  orig: 108, 59
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,27 @@
+
+an_t.png
+size: 512,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+imgs/angle_c
+  rotate: false
+  xy: 126, 2
+  size: 110, 117
+  orig: 128, 128
+  offset: 7, 6
+  index: -1
+imgs/ray_3
+  rotate: false
+  xy: 238, 64
+  size: 124, 55
+  orig: 128, 80
+  offset: 3, 12
+  index: -1
+imgs/ringElectric_30b
+  rotate: false
+  xy: 2, 2
+  size: 122, 117
+  orig: 125, 125
+  offset: 1, 8
+  index: -1

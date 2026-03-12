@@ -1,0 +1,104 @@
+
+booster.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Sparks_1
+  rotate: false
+  xy: 771, 38
+  size: 86, 62
+  orig: 86, 62
+  offset: 0, 0
+  index: -1
+Sparks_2
+  rotate: false
+  xy: 879, 75
+  size: 123, 76
+  orig: 123, 76
+  offset: 0, 0
+  index: -1
+Sparks_3
+  rotate: false
+  xy: 616, 10
+  size: 153, 90
+  orig: 153, 90
+  offset: 0, 0
+  index: -1
+Sparks_4
+  rotate: false
+  xy: 648, 153
+  size: 180, 101
+  orig: 180, 101
+  offset: 0, 0
+  index: -1
+Sparks_5
+  rotate: false
+  xy: 454, 148
+  size: 192, 106
+  orig: 192, 106
+  offset: 0, 0
+  index: -1
+Sparks_6
+  rotate: false
+  xy: 2, 15
+  size: 211, 115
+  orig: 211, 115
+  offset: 0, 0
+  index: -1
+Sparks_7
+  rotate: false
+  xy: 2, 132
+  size: 224, 122
+  orig: 224, 122
+  offset: 0, 0
+  index: -1
+Sparks_8
+  rotate: false
+  xy: 830, 153
+  size: 171, 101
+  orig: 171, 101
+  offset: 0, 0
+  index: -1
+Sparks_9
+  rotate: false
+  xy: 449, 60
+  size: 165, 86
+  orig: 165, 86
+  offset: 0, 0
+  index: -1
+grow0
+  rotate: true
+  xy: 648, 102
+  size: 49, 229
+  orig: 49, 229
+  offset: 0, 0
+  index: -1
+grow1
+  rotate: true
+  xy: 228, 161
+  size: 93, 224
+  orig: 93, 224
+  offset: 0, 0
+  index: -1
+grow_Org
+  rotate: true
+  xy: 215, 2
+  size: 128, 92
+  orig: 128, 92
+  offset: 0, 0
+  index: -1
+line
+  rotate: true
+  xy: 2, 3
+  size: 10, 122
+  orig: 10, 122
+  offset: 0, 0
+  index: -1
+round
+  rotate: false
+  xy: 309, 21
+  size: 138, 138
+  orig: 138, 138
+  offset: 0, 0
+  index: -1

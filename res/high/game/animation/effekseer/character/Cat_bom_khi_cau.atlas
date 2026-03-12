@@ -1,0 +1,265 @@
+
+Cat_bom_khi_cau.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Layer 2
+  rotate: false
+  xy: 243, 381
+  size: 233, 31
+  orig: 233, 31
+  offset: 0, 0
+  index: -1
+SD_handL
+  rotate: true
+  xy: 217, 34
+  size: 113, 61
+  orig: 113, 61
+  offset: 0, 0
+  index: -1
+armR
+  rotate: true
+  xy: 280, 14
+  size: 48, 55
+  orig: 48, 55
+  offset: 0, 0
+  index: -1
+bell
+  rotate: false
+  xy: 467, 79
+  size: 32, 35
+  orig: 32, 35
+  offset: 0, 0
+  index: -1
+bg_bom_bd
+  rotate: true
+  xy: 347, 52
+  size: 73, 11
+  orig: 73, 11
+  offset: 0, 0
+  index: -1
+bg_mouth
+  rotate: false
+  xy: 285, 127
+  size: 76, 41
+  orig: 76, 41
+  offset: 0, 0
+  index: -1
+body_bom
+  rotate: true
+  xy: 376, 208
+  size: 80, 128
+  orig: 80, 128
+  offset: 0, 0
+  index: -1
+body_cat
+  rotate: false
+  xy: 2, 288
+  size: 239, 222
+  orig: 239, 222
+  offset: 0, 0
+  index: -1
+cord_bom
+  rotate: false
+  xy: 243, 414
+  size: 262, 96
+  orig: 262, 96
+  offset: 0, 0
+  index: -1
+ear_L
+  rotate: false
+  xy: 360, 70
+  size: 45, 36
+  orig: 45, 36
+  offset: 0, 0
+  index: -1
+ear_R
+  rotate: false
+  xy: 388, 24
+  size: 39, 36
+  orig: 39, 36
+  offset: 0, 0
+  index: -1
+eyeR
+  rotate: false
+  xy: 459, 48
+  size: 33, 29
+  orig: 33, 29
+  offset: 0, 0
+  index: -1
+eye_L
+  rotate: true
+  xy: 470, 159
+  size: 47, 35
+  orig: 47, 35
+  offset: 0, 0
+  index: -1
+eye_browL
+  rotate: true
+  xy: 425, 2
+  size: 13, 12
+  orig: 13, 12
+  offset: 0, 0
+  index: -1
+eye_browR
+  rotate: true
+  xy: 255, 2
+  size: 10, 12
+  orig: 10, 12
+  offset: 0, 0
+  index: -1
+eye_closeL_fix
+  rotate: true
+  xy: 429, 17
+  size: 43, 28
+  orig: 43, 28
+  offset: 0, 0
+  index: -1
+eye_closeR_fix
+  rotate: true
+  xy: 478, 381
+  size: 31, 29
+  orig: 31, 29
+  offset: 0, 0
+  index: -1
+face
+  rotate: false
+  xy: 2, 139
+  size: 212, 147
+  orig: 212, 147
+  offset: 0, 0
+  index: -1
+glasses
+  rotate: true
+  xy: 149, 2
+  size: 135, 66
+  orig: 135, 66
+  offset: 0, 0
+  index: -1
+handR1
+  rotate: false
+  xy: 280, 64
+  size: 65, 61
+  orig: 65, 61
+  offset: 0, 0
+  index: -1
+handR2
+  rotate: false
+  xy: 337, 2
+  size: 49, 48
+  orig: 49, 48
+  offset: 0, 0
+  index: -1
+hand_L
+  rotate: true
+  xy: 216, 149
+  size: 137, 67
+  orig: 137, 67
+  offset: 0, 0
+  index: -1
+hand_bom
+  rotate: false
+  xy: 285, 170
+  size: 89, 120
+  orig: 89, 120
+  offset: 0, 0
+  index: -1
+hat_L
+  rotate: false
+  xy: 2, 4
+  size: 145, 133
+  orig: 145, 133
+  offset: 0, 0
+  index: -1
+hat_R
+  rotate: true
+  xy: 395, 290
+  size: 89, 115
+  orig: 89, 115
+  offset: 0, 0
+  index: -1
+irisR
+  rotate: false
+  xy: 459, 29
+  size: 17, 17
+  orig: 17, 17
+  offset: 0, 0
+  index: -1
+irsL
+  rotate: false
+  xy: 255, 14
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+legL
+  rotate: false
+  xy: 407, 62
+  size: 44, 24
+  orig: 44, 24
+  offset: 0, 0
+  index: -1
+legR
+  rotate: false
+  xy: 363, 108
+  size: 51, 18
+  orig: 51, 18
+  offset: 0, 0
+  index: -1
+leg_bom
+  rotate: false
+  xy: 376, 155
+  size: 92, 51
+  orig: 92, 51
+  offset: 0, 0
+  index: -1
+mustacheL
+  rotate: false
+  xy: 217, 2
+  size: 36, 30
+  orig: 36, 30
+  offset: 0, 0
+  index: -1
+mustacheR
+  rotate: true
+  xy: 464, 116
+  size: 37, 28
+  orig: 37, 28
+  offset: 0, 0
+  index: -1
+necklace
+  rotate: false
+  xy: 243, 292
+  size: 150, 87
+  orig: 150, 87
+  offset: 0, 0
+  index: -1
+sd_handR
+  rotate: false
+  xy: 416, 112
+  size: 46, 41
+  orig: 46, 41
+  offset: 0, 0
+  index: -1
+tear_sad
+  rotate: false
+  xy: 388, 2
+  size: 35, 20
+  orig: 35, 20
+  offset: 0, 0
+  index: -1
+tooth_D
+  rotate: false
+  xy: 416, 88
+  size: 49, 22
+  orig: 49, 22
+  offset: 0, 0
+  index: -1
+tooth_U
+  rotate: false
+  xy: 363, 128
+  size: 51, 25
+  orig: 51, 25
+  offset: 0, 0
+  index: -1

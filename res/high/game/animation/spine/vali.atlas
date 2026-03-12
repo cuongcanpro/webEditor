@@ -1,0 +1,209 @@
+
+vali.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+aura324
+  rotate: false
+  xy: 1629, 117
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+base_valiU
+  rotate: false
+  xy: 1759, 190
+  size: 145, 55
+  orig: 145, 55
+  offset: 0, 0
+  index: -1
+cord
+  rotate: true
+  xy: 1759, 149
+  size: 39, 135
+  orig: 39, 135
+  offset: 0, 0
+  index: -1
+cord2
+  rotate: true
+  xy: 1906, 209
+  size: 36, 107
+  orig: 36, 107
+  offset: 0, 0
+  index: -1
+cord_break1
+  rotate: true
+  xy: 252, 2
+  size: 43, 58
+  orig: 43, 58
+  offset: 0, 0
+  index: -1
+grow
+  rotate: false
+  xy: 2, 2
+  size: 142, 43
+  orig: 142, 43
+  offset: 0, 0
+  index: -1
+handle
+  rotate: false
+  xy: 146, 15
+  size: 104, 30
+  orig: 104, 30
+  offset: 0, 0
+  index: -1
+handle2
+  rotate: false
+  xy: 1759, 125
+  size: 71, 22
+  orig: 71, 22
+  offset: 0, 0
+  index: -1
+hinge1
+  rotate: false
+  xy: 1832, 132
+  size: 41, 15
+  orig: 41, 15
+  offset: 0, 0
+  index: -1
+hinge2
+  rotate: false
+  xy: 312, 30
+  size: 41, 15
+  orig: 41, 15
+  offset: 0, 0
+  index: -1
+hinge2R
+  rotate: false
+  xy: 1971, 193
+  size: 42, 14
+  orig: 42, 14
+  offset: 0, 0
+  index: -1
+light_1
+  rotate: false
+  xy: 2, 147
+  size: 166, 98
+  orig: 166, 98
+  offset: 0, 0
+  index: -1
+light_10
+  rotate: false
+  xy: 672, 49
+  size: 163, 97
+  orig: 163, 97
+  offset: 0, 0
+  index: -1
+light_11
+  rotate: false
+  xy: 838, 148
+  size: 163, 97
+  orig: 163, 97
+  offset: 0, 0
+  index: -1
+light_12
+  rotate: false
+  xy: 837, 49
+  size: 163, 97
+  orig: 163, 97
+  offset: 0, 0
+  index: -1
+light_13
+  rotate: false
+  xy: 1003, 148
+  size: 163, 97
+  orig: 163, 97
+  offset: 0, 0
+  index: -1
+light_14
+  rotate: false
+  xy: 1002, 49
+  size: 163, 97
+  orig: 163, 97
+  offset: 0, 0
+  index: -1
+light_15
+  rotate: false
+  xy: 1168, 149
+  size: 162, 96
+  orig: 162, 96
+  offset: 0, 0
+  index: -1
+light_2
+  rotate: false
+  xy: 2, 47
+  size: 166, 98
+  orig: 166, 98
+  offset: 0, 0
+  index: -1
+light_3
+  rotate: false
+  xy: 170, 147
+  size: 166, 98
+  orig: 166, 98
+  offset: 0, 0
+  index: -1
+light_4
+  rotate: false
+  xy: 170, 47
+  size: 166, 98
+  orig: 166, 98
+  offset: 0, 0
+  index: -1
+light_5
+  rotate: false
+  xy: 338, 147
+  size: 166, 98
+  orig: 166, 98
+  offset: 0, 0
+  index: -1
+light_6
+  rotate: false
+  xy: 338, 47
+  size: 166, 98
+  orig: 166, 98
+  offset: 0, 0
+  index: -1
+light_7
+  rotate: false
+  xy: 506, 148
+  size: 165, 97
+  orig: 165, 97
+  offset: 0, 0
+  index: -1
+light_8
+  rotate: false
+  xy: 506, 49
+  size: 164, 97
+  orig: 164, 97
+  offset: 0, 0
+  index: -1
+light_9
+  rotate: false
+  xy: 673, 148
+  size: 163, 97
+  orig: 163, 97
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: false
+  xy: 1332, 138
+  size: 148, 107
+  orig: 148, 107
+  offset: 0, 0
+  index: -1
+shadow_handle
+  rotate: false
+  xy: 1906, 191
+  size: 63, 16
+  orig: 63, 16
+  offset: 0, 0
+  index: -1
+vali bg
+  rotate: false
+  xy: 1482, 139
+  size: 145, 106
+  orig: 145, 106
+  offset: 0, 0
+  index: -1

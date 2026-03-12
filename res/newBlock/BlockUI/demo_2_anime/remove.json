@@ -1,0 +1,464 @@
+{
+  "Content": {
+    "Content": {
+      "Animation": {
+        "ActivedAnimationName": "remove",
+        "Duration": "78",
+        "Speed": "1.0",
+        "Timelines": [
+          {
+            "ActionTag": 267278585,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0,
+                "X": 0.0,
+                "Y": 0.0
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 4,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 7,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 10,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 13,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 15,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 19,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 22,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 25,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 27,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 30,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 34,
+                "X": 4.99999985104722,
+                "Y": 4.99999985104722
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 37,
+                "X": -4.99999985104722,
+                "Y": -4.99999985104722
+              }
+            ],
+            "Property": "RotationSkew",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278585,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 27,
+                "X": 1.0,
+                "Y": 1.0
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 41,
+                "X": 2.0,
+                "Y": 2.0
+              }
+            ],
+            "Property": "Scale",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278585,
+            "Frames": [
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0
+              },
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 27
+              },
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 41
+              }
+            ],
+            "Property": "CColor",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278585,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0,
+                "Value": 255
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 27,
+                "Value": 255
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 41,
+                "Value": 0
+              }
+            ],
+            "Property": "Alpha",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 1765492419,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 29,
+                "Value": "{\"args\":[],\"method\":\"play\"}"
+              }
+            ],
+            "Property": "FrameEvent",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278587,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0,
+                "Value": false
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 28,
+                "Value": true
+              }
+            ],
+            "Property": "VisibleForFrame",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278586,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0,
+                "Value": false
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 28,
+                "Value": true
+              }
+            ],
+            "Property": "VisibleForFrame",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278585,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 0,
+                "Value": true
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 28,
+                "Value": false
+              }
+            ],
+            "Property": "VisibleForFrame",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278586,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 28,
+                "X": 5.5,
+                "Y": -35.5000076293945
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 37,
+                "X": 4.5,
+                "Y": -44.5000076293945
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 78,
+                "X": 4.5,
+                "Y": -44.5000076293945
+              }
+            ],
+            "Property": "Position",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278587,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 28,
+                "X": 5.5,
+                "Y": 7.5
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 37,
+                "X": 4.5,
+                "Y": 35.5
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 78,
+                "X": 4.5,
+                "Y": 35.5
+              }
+            ],
+            "Property": "Position",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278586,
+            "Frames": [
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 29
+              },
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 45
+              }
+            ],
+            "Property": "CColor",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278586,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 29,
+                "Value": 255
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 45,
+                "Value": 0
+              }
+            ],
+            "Property": "Alpha",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278587,
+            "Frames": [
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 29
+              },
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 45
+              }
+            ],
+            "Property": "CColor",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 267278587,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 29,
+                "Value": 255
+              },
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 45,
+                "Value": 0
+              }
+            ],
+            "Property": "Alpha",
+            "ctype": "TimelineData"
+          }
+        ],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [
+        {
+          "EndIndex": "78",
+          "Name": "default",
+          "StartIndex": "0",
+          "ctype": "AnimationInfoData"
+        }
+      ]
+    }
+  },
+  "Version": "2.3.4"
+}

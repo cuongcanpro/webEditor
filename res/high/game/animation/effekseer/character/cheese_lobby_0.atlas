@@ -1,0 +1,167 @@
+
+cheese_lobby_0.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+SD
+  rotate: false
+  xy: 2, 28
+  size: 214, 27
+  orig: 214, 27
+  offset: 0, 0
+  index: -1
+armR
+  rotate: true
+  xy: 914, 208
+  size: 44, 65
+  orig: 44, 65
+  offset: 0, 0
+  index: -1
+bag
+  rotate: false
+  xy: 222, 68
+  size: 105, 184
+  orig: 105, 184
+  offset: 0, 0
+  index: -1
+bell
+  rotate: false
+  xy: 523, 76
+  size: 30, 33
+  orig: 30, 33
+  offset: 0, 0
+  index: -1
+body
+  rotate: false
+  xy: 2, 57
+  size: 218, 195
+  orig: 218, 195
+  offset: 0, 0
+  index: -1
+eyeL
+  rotate: false
+  xy: 981, 208
+  size: 28, 20
+  orig: 28, 20
+  offset: 0, 0
+  index: -1
+eyeR
+  rotate: false
+  xy: 605, 165
+  size: 23, 21
+  orig: 23, 21
+  offset: 0, 0
+  index: -1
+eye_closeL
+  rotate: true
+  xy: 576, 115
+  size: 29, 21
+  orig: 29, 21
+  offset: 0, 0
+  index: -1
+eye_closeR
+  rotate: false
+  xy: 523, 54
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+flag
+  rotate: true
+  xy: 419, 38
+  size: 77, 52
+  orig: 77, 52
+  offset: 0, 0
+  index: -1
+glasses
+  rotate: false
+  xy: 481, 188
+  size: 125, 64
+  orig: 125, 64
+  offset: 0, 0
+  index: -1
+handL
+  rotate: false
+  xy: 481, 111
+  size: 93, 75
+  orig: 93, 75
+  offset: 0, 0
+  index: -1
+handR
+  rotate: false
+  xy: 473, 48
+  size: 48, 61
+  orig: 48, 61
+  offset: 0, 0
+  index: -1
+hatL
+  rotate: true
+  xy: 729, 211
+  size: 41, 92
+  orig: 41, 92
+  offset: 0, 0
+  index: -1
+hatR
+  rotate: true
+  xy: 329, 33
+  size: 82, 88
+  orig: 82, 88
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 329, 117
+  size: 150, 135
+  orig: 150, 135
+  offset: 0, 0
+  index: -1
+legL
+  rotate: false
+  xy: 48, 2
+  size: 39, 24
+  orig: 39, 24
+  offset: 0, 0
+  index: -1
+legR
+  rotate: false
+  xy: 2, 3
+  size: 44, 23
+  orig: 44, 23
+  offset: 0, 0
+  index: -1
+mouth
+  rotate: true
+  xy: 608, 188
+  size: 20, 31
+  orig: 20, 31
+  offset: 0, 0
+  index: -1
+mustacheL
+  rotate: true
+  xy: 576, 146
+  size: 40, 27
+  orig: 40, 27
+  offset: 0, 0
+  index: -1
+mustacheR
+  rotate: false
+  xy: 981, 230
+  size: 41, 22
+  orig: 41, 22
+  offset: 0, 0
+  index: -1
+necklace
+  rotate: false
+  xy: 608, 210
+  size: 119, 42
+  orig: 119, 42
+  offset: 0, 0
+  index: -1
+stick
+  rotate: true
+  xy: 823, 215
+  size: 37, 89
+  orig: 37, 89
+  offset: 0, 0
+  index: -1
