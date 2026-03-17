@@ -3,7 +3,7 @@
  */
 var BenchDiffDialog = cc.LayerColor.extend({
     POPUP_W: 400,
-    POPUP_H: 450,
+    POPUP_H: 280,
     PAD: 30,
     ROW_H: 40,
 
@@ -48,14 +48,11 @@ var BenchDiffDialog = cc.LayerColor.extend({
         var startY = H - 100;
         var report = this._report;
 
+        var fmtMoves = function (v) { return v > 0 ? v.toFixed(1) : "-"; };
         var data = [
-            { label: "Difficulty:", value: report.difficulty.toFixed(3) },
-            { label: "Greedy Win Rate:", value: (report.greedy_win_rate * 100).toFixed(1) + "%" },
-            { label: "Random Win Rate:", value: (report.random_win_rate * 100).toFixed(1) + "%" },
-            { label: "Skill Gap:", value: report.skill_gap.toFixed(3) },
-            { label: "RNG Penalty:", value: report.rng_penalty.toFixed(3) },
-            { label: "Avg Fail Turn:", value: report.avg_fail_turn.toFixed(1) },
-            { label: "Flags:", value: (report.flags.length > 0 ? report.flags.join(", ") : "None") }
+            { label: "Win / Lose:", value: report.wins + " / " + report.losses + "  (" + report.num_episodes + " eps)" },
+            { label: "Win Rate:", value: (report.win_rate * 100).toFixed(1) + "%" },
+            { label: "Avg Win Moves:", value: fmtMoves(report.avg_win_moves) }
         ];
 
         for (var i = 0; i < data.length; i++) {

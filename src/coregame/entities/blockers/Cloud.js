@@ -79,7 +79,7 @@ CoreGame.Cloud.onTurnEnd = function (clouds, context) {
 
     if (potentialSlots.length > 0) {
         cc.log("Cloud create ======== ");
-        var targetSlot = potentialSlots[this.boardMgr.random.nextInt32Bound(potentialSlots.length)];
+        var targetSlot = potentialSlots[boardMgr.random.nextInt32Bound(potentialSlots.length)];
         targetSlot.clearElements();
 
         // Use addNewElement. Note: Ensure correct invalidation of "type" as hitPoints if necessary

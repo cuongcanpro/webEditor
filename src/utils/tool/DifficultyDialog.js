@@ -1,4 +1,95 @@
 ﻿/**
+ * SelectDialog - Generic popup for selecting a key from a list.
+ * Usage:
+ *   new SelectDialog("Title", ["KeyA", "KeyB"], function(key) { ... })
+ */
+var SelectDialog = cc.LayerColor.extend({
+    POPUP_W: 300,
+    POPUP_H: 400,
+    ITEM_H: 60,
+    PAD: 20,
+
+    ctor: function (title, items, onSelectCallback) {
+        this._super(cc.color(0, 0, 0, 180));
+        this.setContentSize(cc.winSize);
+        this._title = title || "Select";
+        this._items = items || [];
+        this._onSelectCallback = onSelectCallback;
+        this.POPUP_H = Math.max(200, this._items.length * (this.ITEM_H + 10) + 150);
+        this._build();
+
+        var self = this;
+        var listener = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function (touch, event) {
+                if (!self.isVisible()) return false;
+                var loc = self.popupBg.convertToNodeSpace(touch.getLocation());
+                var sz = self.popupBg.getContentSize();
+                if (loc.x < 0 || loc.x > sz.width || loc.y < 0 || loc.y > sz.height) {
+                    self.hide();
+                }
+                return true;
+            }
+        });
+        cc.eventManager.addListener(listener, this);
+    },
+
+    _build: function () {
+        var W = this.POPUP_W, H = this.POPUP_H, PAD = this.PAD;
+        this.popupBg = new ccui.Layout();
+        this.popupBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        this.popupBg.setBackGroundColor(cc.color(45, 45, 55));
+        this.popupBg.setContentSize(W, H);
+        this.popupBg.setPosition(cc.winSize.width / 2 - W / 2, cc.winSize.height / 2 - H / 2);
+        this.addChild(this.popupBg);
+
+        var title = new cc.LabelTTF(this._title, "Arial", 24);
+        title.setPosition(W / 2, H - 40);
+        title.setColor(cc.color(255, 200, 50));
+        this.popupBg.addChild(title);
+
+        var startY = H - 100;
+        for (var i = 0; i < this._items.length; i++) {
+            var key = this._items[i];
+            var btn = new ccui.Button();
+            btn.loadTextureNormal("res/tool/res/bgCell.png");
+            btn.setScale9Enabled(true);
+            btn.setContentSize(W - PAD * 2, this.ITEM_H);
+            btn.setTitleText(key);
+            btn.setTitleFontSize(20);
+            btn.setTitleColor(cc.color(255, 255, 255));
+            btn.setColor(cc.color(70, 70, 80));
+            btn.setPosition(W / 2, startY - i * (this.ITEM_H + 10));
+            btn.itemKey = key;
+            btn.addTouchEventListener(function (sender, type) {
+                if (type === ccui.Widget.TOUCH_ENDED) {
+                    if (this._onSelectCallback) this._onSelectCallback(sender.itemKey);
+                    this.hide();
+                }
+            }.bind(this));
+            this.popupBg.addChild(btn);
+        }
+
+        var btnCancel = new ccui.Button();
+        btnCancel.loadTextureNormal("res/tool/res/bgCell.png");
+        btnCancel.setScale9Enabled(true);
+        btnCancel.setContentSize(120, 40);
+        btnCancel.setTitleText("Cancel");
+        btnCancel.setTitleFontSize(18);
+        btnCancel.setColor(cc.color(120, 120, 130));
+        btnCancel.setPosition(W / 2, 40);
+        btnCancel.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) this.hide();
+        }.bind(this));
+        this.popupBg.addChild(btnCancel);
+    },
+
+    show: function () { this.setVisible(true); },
+    hide: function () { this.removeFromParent(); }
+});
+
+/**
  * DifficultyDialog - Popup UI for selecting difficulty
  */
 var DifficultyDialog = cc.LayerColor.extend({

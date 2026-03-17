@@ -47,15 +47,18 @@ CoreGame.BlockerMgr = cc.Class.extend({
             var elements = elementsByType[type];
             var firstElement = elements[0];
 
-            // If the element class has a static turn handler, call it
-            // var cls = CoreGame.ElementObject.map[type];
-            // if (cls && typeof cls.onTurnEnd === 'function') {
-            //     if (removedElementTypes.indexOf(firstElement.type) === -1)
-            //         cls.onTurnEnd(elements, context);
-            // }
+            if (removedElementTypes.indexOf(firstElement.type) !== -1) continue;
 
-            if (removedElementTypes.indexOf(firstElement.type) === -1)
+            // Prefer the static collective handler (cls.onTurnEnd) when defined —
+            // it receives all instances of the type at once and can make
+            // board-wide decisions (e.g. Cloud choosing a single expansion slot).
+            // Fall back to the per-instance onFinishTurn for other types.
+            var cls = CoreGame.ElementObject.map[type];
+            if (cls && typeof cls.onTurnEnd === 'function') {
+                cls.onTurnEnd(elements, context);
+            } else {
                 firstElement.onFinishTurn(elements, context);
+            }
         }
 
         // Reset turn-based flags

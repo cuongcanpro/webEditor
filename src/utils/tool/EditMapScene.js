@@ -527,9 +527,11 @@ var EditMapScene = cc.Layer.extend({
                 if (state.phase === "start") {
                     msg = "Starting (" + state.numEpisodes + " episodes each bot)";
                 } else if (state.phase === "episode") {
+                    var movesInfo = state.win
+                        ? "WIN in " + state.movesWin + " moves"
+                        : "lose (" + state.movesUsed + " moves)";
                     msg = state.bot + " ep " + state.episode + "/" + state.numEpisodes +
-                        " — " + (state.win ? "WIN" : "lose") +
-                        " (" + state.movesUsed + " moves)";
+                        " — " + movesInfo;
                 } else {
                     msg = "Done.";
                 }
@@ -543,6 +545,8 @@ var EditMapScene = cc.Layer.extend({
                 CoreGame.RemoteLog.log("Skill gap        : " + report.skill_gap.toFixed(3));
                 CoreGame.RemoteLog.log("RNG penalty      : " + report.rng_penalty.toFixed(3));
                 CoreGame.RemoteLog.log("Avg fail turn    : " + report.avg_fail_turn.toFixed(1));
+                CoreGame.RemoteLog.log("Avg win moves (G): " + (report.avg_win_moves_greedy > 0 ? report.avg_win_moves_greedy.toFixed(1) : "-"));
+                CoreGame.RemoteLog.log("Avg win moves (R): " + (report.avg_win_moves_random > 0 ? report.avg_win_moves_random.toFixed(1) : "-"));
                 CoreGame.RemoteLog.log("Flags            : " + (report.flags.length > 0 ? report.flags.join(", ") : "NONE"));
                 CoreGame.RemoteLog.log("=== END ===");
                 CoreGame.FakeUI.restore();

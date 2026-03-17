@@ -60,8 +60,12 @@ var EditMapSceneNew = cc.Layer.extend({
     _tfTPP: null,
     _spawnStrategyKey: "RandomSpawnStrategy",
     _btnSpawn: null,
-    _tfAgent: null,
+    _agentKey: "GreedyBot",
+    _btnAgent: null,
     _tfSaveName: null,
+
+    // Max moves used in the difficulty simulation (fixed safety cap)
+    MAX_SIM_MOVES: 100,
 
     // Undo / Redo history (snapshot-based, max MAX_UNDO_STEPS)
     MAX_UNDO_STEPS: 30,
@@ -627,12 +631,30 @@ var EditMapSceneNew = cc.Layer.extend({
         this._makeSectionHeader(panel, "RUN TEST");
 
         // Agent
+        var AGENT_KEYS = Object.keys(CoreGame.Bots || {});
         var y1 = H - HDR_H - 13;
         var lb1 = new ccui.Text("Agent:", "font/BalooPaaji2-Regular.ttf", 12);
         lb1.setColor(cc.color(170, 170, 190)); lb1.setAnchorPoint(cc.p(0, 0.5));
         lb1.setPosition(6, y1); panel.addChild(lb1, 1);
-        this._tfAgent = this._makeField(panel, "ObjectivePUAgent (v2)", TF_X, y1, TF_W, ROW);
-        this._tfAgent.setString("ObjectivePUAgent (v2)");
+        this._btnAgent = new ccui.Button();
+        this._btnAgent.loadTextureNormal("res/tool/res/bgTf.png");
+        this._btnAgent.setScale9Enabled(true);
+        this._btnAgent.setContentSize(TF_W, ROW);
+        this._btnAgent.setAnchorPoint(cc.p(0, 0.5));
+        this._btnAgent.setPosition(TF_X, y1);
+        this._btnAgent.setTitleText(this._agentKey);
+        this._btnAgent.setTitleFontSize(11);
+        this._btnAgent.setTitleColor(cc.color(220, 220, 255));
+        panel.addChild(this._btnAgent, 1);
+        this._btnAgent.addTouchEventListener(function (sender, type) {
+            if (type !== ccui.Widget.TOUCH_ENDED) return;
+            var dialog = new SelectDialog("Select Agent", AGENT_KEYS, function (key) {
+                self._agentKey = key;
+                self._btnAgent.setTitleText(key);
+            });
+            cc.director.getRunningScene().addChild(dialog, 999);
+            dialog.show();
+        });
 
         // Episodes
         var y2 = y1 - ROW - 5;
@@ -1008,7 +1030,7 @@ var EditMapSceneNew = cc.Layer.extend({
         mapData.numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "50") || 50;
         mapData.tpp = parseFloat(this._tfTPP ? this._tfTPP.getString() : "1.0") || 1.0;
         mapData.spawnStrategy = this._spawnStrategyKey || "";
-        mapData.agentType = this._tfAgent ? this._tfAgent.getString() : "";
+        mapData.agentType = this._agentKey || "GreedyBot";
 
         var jsonStr = JSON.stringify(mapData, null, 4);
         var filePath = "res/maps/" + mapName + ".json";
@@ -1114,7 +1136,10 @@ var EditMapSceneNew = cc.Layer.extend({
             this._spawnStrategyKey = data.spawnStrategy;
             if (this._btnSpawn) this._btnSpawn.setTitleText(data.spawnStrategy);
         }
-        if (this._tfAgent && data.agentType) this._tfAgent.setString(data.agentType);
+        if (data.agentType) {
+            this._agentKey = data.agentType;
+            if (this._btnAgent) this._btnAgent.setTitleText(data.agentType);
+        }
 
         if (this.boardInfoUI) {
             this.boardInfoUI.setInfo({
@@ -1155,14 +1180,26 @@ var EditMapSceneNew = cc.Layer.extend({
      * @param {boolean} landscape
      */
     _applyResolution: function (landscape) {
-        if (!cc.sys.isNative)
-            return;
         var cfg = fr.ClientConfig.getInstance();
         var designSize = cfg.getDesignResolutionSize();
+        var frameSize = cc.view.getFrameSize();
+        cc.log("Original design resolution:", designSize.width, "x", designSize.height);
+        cc.log("Original frame size:", frameSize.width, "x", frameSize.height);
 
         // Tính kích thước mục tiêu theo orientation
         var w = designSize.height > designSize.width ? designSize.height : designSize.width;
         var h = designSize.height > designSize.width ? designSize.width : designSize.height;
+
+        if (!cc.sys.isNative) {
+            if (landscape) {
+                // Landscape: swap width ↔ height so the wider dimension is horizontal
+                cc.view.setDesignResolutionSize(designSize.height, designSize.width, cc.ResolutionPolicy.FIXED_HEIGHT);
+            } else {
+                // Portrait: use standard game resolution (taller than wide)
+                cc.view.setDesignResolutionSize(designSize.width, designSize.height, cc.ResolutionPolicy.FIXED_HEIGHT);
+            }
+            return;
+        }
         var targetW = landscape ? w : h;
         var targetH = landscape ? h : w;
 
@@ -1204,8 +1241,11 @@ var EditMapSceneNew = cc.Layer.extend({
             boardMgr.dropMgr.setSpawnStrategy(new CoreGame.DropStrategy[stratKey]());
         }
 
+        var bot = (CoreGame.Bots && CoreGame.Bots[this._agentKey])
+            ? CoreGame.Bots[this._agentKey]
+            : CoreGame.Bots.GreedyBot;
+
         var numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "50") || 50;
-        var numMove = parseInt(this.tfMoves ? this.tfMoves.getString() : "30") || 30;
         var targetEntries = this.targetListUI ? this.targetListUI.getEntries() : [];
 
         CoreGame.DifficultyCalc.NUM_EPISODES = numTest;
@@ -1216,7 +1256,8 @@ var EditMapSceneNew = cc.Layer.extend({
         CoreGame.FakeUI.start();
         CoreGame.DifficultyCalc.calculate(
             boardMgr,
-            { maxMoves: numMove, targets: targets },
+            { maxMoves: self.MAX_SIM_MOVES, targets: targets },
+            bot,
             null,
             function (report) {
                 CoreGame.FakeUI.restore();
