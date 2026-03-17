@@ -925,12 +925,11 @@ CoreGame.BoardMgr = cc.Class.extend({
      * Called when turn finishes (all animations complete, board is idle)
      * Override this or set as callback
      */
-    /**
-     * Called when turn is finished - trigger turn-based actions
-     */
     onFinishTurn: function () {
-        // Trigger END_TURN actions on all elements
-        // This handles behaviors like Cloud spreading, etc.
+        // Trigger END_TURN actions on all elements via global event
+        CoreGame.EventMgr.emit("custom" + CoreGame.ElementObject.ACTION_TYPE.END_TURN, {
+            boardMgr: this
+        });
 
         // Track processed elements to avoid duplicates (multi-cell elements like Cloud)
         var processedElements = [];
@@ -951,10 +950,6 @@ CoreGame.BoardMgr = cc.Class.extend({
                     // Mark as processed
                     processedElements.push(element);
 
-                    // Trigger END_TURN actions
-                    element.doActionsType(CoreGame.ElementObject.ACTION_TYPE.END_TURN, {
-                        boardMgr: this
-                    });
                     if (element.cooldownSpawn > 0)
                         element.cooldownSpawn--;
                 }
@@ -1084,7 +1079,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         for (var r = 0; r < this.rows; r++) {
             for (var c = 0; c < this.cols; c++) {
                 var slot = this.mapGrid[r][c];
-                cc.log("Row " + r + " Col " + c);
+                //cc.log("Row " + r + " Col " + c);
                 if (slot) slot.clearElements();
             }
         }

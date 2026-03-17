@@ -54,6 +54,14 @@ var EditMapSceneNew = cc.Layer.extend({
     _lblSpawners: null,
     _lblBlockers: null,
     _lblTotalHP: null,
+    _lblDensity: null,
+
+    // Right-panel game config fields
+    _tfTPP: null,
+    _spawnStrategyKey: "RandomSpawnStrategy",
+    _btnSpawn: null,
+    _tfAgent: null,
+    _tfSaveName: null,
 
     // Undo / Redo history (snapshot-based, max MAX_UNDO_STEPS)
     MAX_UNDO_STEPS: 30,
@@ -71,6 +79,11 @@ var EditMapSceneNew = cc.Layer.extend({
         this._undoStack = [];
         this._redoStack = [];
         this.initUI();
+    },
+
+    onEnter: function () {
+        this._super();
+        this._applyResolution(true);
     },
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -109,11 +122,7 @@ var EditMapSceneNew = cc.Layer.extend({
             self.pRight = self.rootNode.getChildByName("pRight");
             self.pBottom = self.rootNode.getChildByName("pBottom");
 
-            if (self.pBottom) {
-                self.pTarget = self.pBottom.getChildByName("pTarget");
-                self.pMapNote = self.pBottom.getChildByName("pMapNote");
-                self.pMetric = self.pBottom.getChildByName("pMetric");
-            }
+            // pBottom removed — all sections now live in pRight (built programmatically)
 
             // Compute board offset from panel geometry
             self.computeLayout();
@@ -163,7 +172,7 @@ var EditMapSceneNew = cc.Layer.extend({
         var topH = this.pTop ? this.pTop.getContentSize().height : 50;
         var toolW = this.pTool ? this.pTool.getContentSize().width : 200;
         var rightW = this.pRight ? this.pRight.getContentSize().width : 200;
-        var botH = this.pBottom ? this.pBottom.getContentSize().height : 120;
+        var botH = this.pBottom ? this.pBottom.getContentSize().height : 0;
         cc.log("Right Width === " + rightW);
 
         // Available center rectangle (screen coords)
@@ -203,68 +212,71 @@ var EditMapSceneNew = cc.Layer.extend({
 
 
     // ─────────────────────────────────────────────────────────────────────────
-    // pTop — toolbar buttons + level name
+    // pTop — toolbar: title + New/Import/Export/Undo/Redo/Heatmap/Index/Play Test
     // ─────────────────────────────────────────────────────────────────────────
     setupToolbar: function () {
         var self = this;
-
         if (!this.pTop) return;
+
+        // "M3 Editor v2.3" title label on left
+        // var topH = this.pTop.getContentSize().height;
+        // var title = new cc.LabelTTF("M3 Editor v2.3", "font/BalooPaaji2-Regular.ttf", 13);
+        // title.setColor(cc.color(160, 180, 220));
+        // title.setAnchorPoint(cc.p(0, 0.5));
+        // title.setPosition(8, topH / 2);
+        // this.pTop.addChild(title, 3);
 
         var pFunc = this.pTop.getChildByName("pFunction");
         if (pFunc) {
-            var btnNew = UIUtils.seekWidgetByName(pFunc, "btnNew");
-            var btnLoad = UIUtils.seekWidgetByName(pFunc, "btnLoad");
-            var btnSave = UIUtils.seekWidgetByName(pFunc, "btnSave");
-            var btnPlay = UIUtils.seekWidgetByName(pFunc, "btnPlay");
+            var btnNew      = UIUtils.seekWidgetByName(pFunc, "btnNew");
+            var btnLoad     = UIUtils.seekWidgetByName(pFunc, "btnLoad");
+            var btnSave     = UIUtils.seekWidgetByName(pFunc, "btnSave");
+            var btnPlay     = UIUtils.seekWidgetByName(pFunc, "btnPlay");
             var btnPlayTest = UIUtils.seekWidgetByName(pFunc, "btnPlayTest");
+            var btnUndo     = UIUtils.seekWidgetByName(pFunc, "btnUndo");
+            var btnRedo     = UIUtils.seekWidgetByName(pFunc, "btnRedo");
 
+            // Visual styling
+            if (btnSave)     { btnSave.setColor(cc.color(40, 110, 220)); }
+            if (btnPlay)     { btnPlay.setColor(cc.color(35, 170, 75)); }
+
+            // Handlers
             if (btnNew) {
                 btnNew.addTouchEventListener(function (sender, type) {
                     if (type === ccui.Widget.TOUCH_ENDED) {
                         self.boardUI.removeAllElements();
                         self._targetEntries = [];
-                        self._refreshTargetList();
+                        if (self.targetListUI) self.targetListUI.setEntries([]);
                         self.updateMetrics();
-                        cc.log("New map");
                     }
                 });
             }
-
             if (btnLoad) {
                 btnLoad.addTouchEventListener(function (sender, type) {
                     if (type === ccui.Widget.TOUCH_ENDED) {
-                        if (self.levelSelector) self.levelSelector.show();
+                        if (!cc.sys.isNative) {
+                            self.loadMapFromFile();
+                        } else if (self.levelSelector) {
+                            self.levelSelector.show();
+                        }
                     }
                 });
             }
-
             if (btnSave) {
                 btnSave.addTouchEventListener(function (sender, type) {
-                    if (type === ccui.Widget.TOUCH_ENDED) {
-                        self.saveMap();
-                    }
+                    if (type === ccui.Widget.TOUCH_ENDED) { self.saveMap(); }
                 });
             }
-
             if (btnPlay) {
                 btnPlay.addTouchEventListener(function (sender, type) {
-                    if (type === ccui.Widget.TOUCH_ENDED) {
-                        self.testMap();
-                    }
+                    if (type === ccui.Widget.TOUCH_ENDED) { self.testMap(); }
                 });
             }
-
             if (btnPlayTest) {
                 btnPlayTest.addTouchEventListener(function (sender, type) {
-                    if (type === ccui.Widget.TOUCH_ENDED) {
-                        self.runDifficultyTest();
-                    }
+                    if (type === ccui.Widget.TOUCH_ENDED) { self.showHeatmap(); }
                 });
             }
-
-            var btnUndo = UIUtils.seekWidgetByName(pFunc, "btnUndo");
-            var btnRedo = UIUtils.seekWidgetByName(pFunc, "btnRedo");
-
             if (btnUndo) {
                 btnUndo.addTouchEventListener(function (sender, type) {
                     if (type === ccui.Widget.TOUCH_ENDED) self.undo();
@@ -275,12 +287,32 @@ var EditMapSceneNew = cc.Layer.extend({
                     if (type === ccui.Widget.TOUCH_ENDED) self.redo();
                 });
             }
+
+            // "Index" button — programmatic, placed after btnRedo
+            var redoPos = btnRedo ? btnRedo.getPosition() : cc.p(544, 25);
+            var btnIndex = new ccui.Button();
+            btnIndex.setScale9Enabled(true);
+            btnIndex.setContentSize(80, 50);
+            btnIndex.setTitleText("Index");
+            btnIndex.setTitleFontSize(14);
+            btnIndex.setTitleColor(cc.color(209, 209, 217));
+            btnIndex.setPosition(redoPos.x + 84, redoPos.y);
+            btnIndex.addTouchEventListener(function (sender, type) {
+                if (type === ccui.Widget.TOUCH_ENDED) {
+                    if (self.levelSelector) self.levelSelector.show();
+                }
+            });
+            pFunc.addChild(btnIndex);
         }
 
         var pName = this.pTop.getChildByName("pNameLevel");
         if (pName) {
             this.tfLevelName = UIUtils.seekWidgetByName(pName, "tfLevelName");
         }
+    },
+
+    showHeatmap: function () {
+        cc.log("[EditMap] Heatmap not yet implemented");
     },
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -356,131 +388,317 @@ var EditMapSceneNew = cc.Layer.extend({
     },
 
     // ─────────────────────────────────────────────────────────────────────────
-    // pRight — level info (Moves + more via BoardInfoUI overlay)
+    // pRight — full sidebar with 6 stacked sections (built programmatically)
     // ─────────────────────────────────────────────────────────────────────────
     setupRightPanel: function () {
         if (!this.pRight) return;
 
-        // tfMoves is already in JSON
-        this.tfMoves = UIUtils.seekWidgetByName(this.pRight, "tfMoves");
-        if (this.tfMoves) this.tfMoves.setString("30");
+        // Drop JSON-defined children and rebuild from scratch
+        this.pRight.removeAllChildren();
 
-        // Create BoardInfoUI as an overlay popup (still needed for targets etc.)
+        var W = this.pRight.getContentSize().width;
+        var H = this.pRight.getContentSize().height;
+        // pTop overlaps the top ~50px of pRight (higher z-order), so reserve that space
+        var topH = this.pTop ? this.pTop.getContentSize().height : 50;
+        var curY = H - topH; // start sections just below pTop
+
+        // ── 1. OBJECTIVE ─────────────────────────────────────────────────
+        var objH = 100;
+        curY -= objH;
+        var pObj = this._makeRightPanel(W, objH, curY);
+        this.pRight.addChild(pObj);
+        this.targetListUI = new TargetListUI(pObj);
+
+        // ── 2. GAME CONFIG (Turn / TPP / Spawn) ──────────────────────────
+        var cfgH = 92;
+        curY -= cfgH;
+        var pCfg = this._makeRightPanel(W, cfgH, curY, cc.color(25, 32, 58));
+        this.pRight.addChild(pCfg);
+        cc.log("Build game config section at y=" + curY);
+        this._buildGameConfigSection(pCfg);
+        cc.log("Build game config section done");
+
+        // ── 3. METRICS ────────────────────────────────────────────────────
+        var metH = 106;
+        curY -= metH;
+        var pMet = this._makeRightPanel(W, metH, curY);
+        this.pRight.addChild(pMet);
+        this._buildMetricsSection(pMet);
+
+        // ── 4. RUN TEST ───────────────────────────────────────────────────
+        var runH = 114;
+        curY -= runH;
+        var pRun = this._makeRightPanel(W, runH, curY);
+        this.pRight.addChild(pRun);
+        this._buildRunTestSection(pRun);
+
+        // ── 5. MAP NAME / NOTES ───────────────────────────────────────────
+        var noteH = 88;
+        curY -= noteH;
+        var pNote = this._makeRightPanel(W, noteH, curY, cc.color(25, 32, 58));
+        this.pRight.addChild(pNote);
+        this._buildMapNoteSection(pNote);
+
+        // ── 6. SAVE LEVEL ─────────────────────────────────────────────────
+        var saveH = 76;
+        curY -= saveH;
+        var pSave = this._makeRightPanel(W, saveH, curY, cc.color(25, 32, 58));
+        this.pRight.addChild(pSave);
+        this._buildSaveLevelSection(pSave);
+
+        // BoardInfoUI overlay kept for compatibility
         this.boardInfoUI = new BoardInfoUI(null);
         this.addChild(this.boardInfoUI, 101);
-
-        // ── Play Test count row ──────────────────────────────────────────
-        var pRightSize = this.pRight.getContentSize();
-        var W = pRightSize.width;
-
-        // tfNumTest is defined in JSON (pLevelInfo > lbNumTest > tfNumTest)
-        this.pLevelInfo = UIUtils.seekWidgetByName(this.pRight, "pLevelInfo");
-        this._tfPlayTest = UIUtils.seekWidgetByName(this.pRight, "tfNumTest");
-        if (this._tfPlayTest) this._tfPlayTest.setString("1");
-
     },
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // pBottom — 3 panels: pTarget, pMapNote, pMetric
-    // ─────────────────────────────────────────────────────────────────────────
-    setupBottomBar: function () {
-        this._setupTargetPanel();
-        this._setupMapNotePanel();
-        this._setupMetricPanel();
+    _makeRightPanel: function (w, h, y, bgColor) {
+        var panel = new ccui.Layout();
+        panel.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        panel.setBackGroundColor(bgColor || cc.color(21, 28, 53));
+        panel.setContentSize(w, h);
+        panel.setAnchorPoint(cc.p(0, 0));
+        panel.setPosition(0, y);
+        return panel;
     },
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // pBottom > pTarget — delegated to TargetListUI
-    // ─────────────────────────────────────────────────────────────────────────
-    _setupTargetPanel: function () {
-        if (!this.pTarget) return;
-        // TargetListUI injects itself into pTarget and manages its own layout
-        this.targetListUI = new TargetListUI(this.pTarget);
+    _makeSectionHeader: function (parent, title) {
+        var W = parent.getContentSize().width;
+        var HDR_H = 22;
+        var hdr = new ccui.Layout();
+        hdr.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        hdr.setBackGroundColor(cc.color(28, 35, 60));
+        hdr.setContentSize(W, HDR_H);
+        hdr.setAnchorPoint(cc.p(0, 1));
+        hdr.setPosition(0, parent.getContentSize().height);
+        parent.addChild(hdr, 1);
+
+        var lb = new cc.LabelTTF(title, "font/BalooPaaji2-Regular.ttf", 11);
+        lb.setColor(cc.color(160, 180, 220));
+        lb.setAnchorPoint(cc.p(0, 0.5));
+        lb.setPosition(6, HDR_H / 2);
+        hdr.addChild(lb);
+        return hdr;
     },
 
-    _setupMapNotePanel: function () {
-        if (!this.pMapNote) return;
-        var size = this.pMapNote.getContentSize();
-        var W = size.width;
-        var H = size.height;
+    _makeField: function (parent, placeholder, x, y, w, h) {
+        h = h || 20;
+        var bg = new ccui.Scale9Sprite("res/tool/res/bgTf.png");
+        bg.setContentSize(w, h);
+        bg.setAnchorPoint(cc.p(0, 0.5));
+        bg.setPosition(x, y);
+        parent.addChild(bg, 0);
 
-        // ── Header ────────────────────────────────────────────────────────
-        var lbHeader = new cc.LabelTTF("MAP NAME / NOTES", "font/BalooPaaji2-Regular.ttf", 11);
-        lbHeader.setColor(cc.color(160, 180, 220));
-        lbHeader.setAnchorPoint(cc.p(0, 1));
-        lbHeader.setPosition(5, H - 2);
-        this.pMapNote.addChild(lbHeader, 1);
-
-        // ── Map Name ──────────────────────────────────────────────────────
-        var bgTfName = new ccui.Scale9Sprite("res/tool/res/bgTf.png");
-        bgTfName.setContentSize(W - 10, 22);
-        bgTfName.setAnchorPoint(cc.p(0, 0.5));
-        bgTfName.setPosition(5, H - 24);
-        this.pMapNote.addChild(bgTfName, 0);
-
-        var tfMapName = new ccui.TextField("level_xxx", "font/BalooPaaji2-Regular.ttf", 13);
-        tfMapName.setContentSize(W - 10, 22);
-        tfMapName.setAnchorPoint(cc.p(0, 0.5));
-        tfMapName.setPosition(5, H - 24);
-        this.pMapNote.addChild(tfMapName, 1);
-        this._tfMapName = tfMapName;
-
-        // ── Notes (remaining height) ──────────────────────────────────────
-        var noteH = H - 50;
-        var bgTfNotes = new ccui.Scale9Sprite("res/tool/res/bgTf.png");
-        bgTfNotes.setContentSize(W - 10, noteH);
-        bgTfNotes.setAnchorPoint(cc.p(0, 0));
-        bgTfNotes.setPosition(5, 4);
-        this.pMapNote.addChild(bgTfNotes, 0);
-
-        var tfNotes = new ccui.TextField("Designer notes about this map...", "font/BalooPaaji2-Regular.ttf", 12);
-        tfNotes.setContentSize(W - 10, noteH);
-        tfNotes.setAnchorPoint(cc.p(0, 0));
-        tfNotes.setPosition(5, 4);
-        this.pMapNote.addChild(tfNotes, 1);
-        this._tfNotes = tfNotes;
+        var tf = new ccui.TextField(placeholder, "font/BalooPaaji2-Regular.ttf", 12);
+        tf.setContentSize(w, h);
+        tf.setAnchorPoint(cc.p(0, 0.5));
+        tf.setPosition(x, y);
+        parent.addChild(tf, 1);
+        return tf;
     },
 
+    _buildGameConfigSection: function (panel) {
+        var W = panel.getContentSize().width;
+        var H = panel.getContentSize().height;
+        var HDR_H = 22;
+        var LBL_W = 52;
+        var TF_X = LBL_W + 6;
+        var TF_W = W - TF_X - 6;
+        var ROW = 21;
 
+        this._makeSectionHeader(panel, "GAME CONFIG");
 
+        // Turn
+        var y1 = H - HDR_H - 13;
+        var lb1 = new cc.LabelTTF("Turn:", "font/BalooPaaji2-Regular.ttf", 12);
+        lb1.setColor(cc.color(170, 170, 190)); lb1.setAnchorPoint(cc.p(0, 0.5));
+        lb1.setPosition(6, y1); panel.addChild(lb1, 1);
+        this.tfMoves = this._makeField(panel, "30", TF_X, y1, TF_W, ROW);
+        this.tfMoves.setString("30");
 
-    _setupMetricPanel: function () {
-        if (!this.pMetric) return;
-        var size = this.pMetric.getContentSize();
+        // TPP
+        var y2 = y1 - ROW - 5;
+        var lb2 = new cc.LabelTTF("TPP:", "font/BalooPaaji2-Regular.ttf", 12);
+        lb2.setColor(cc.color(170, 170, 190)); lb2.setAnchorPoint(cc.p(0, 0.5));
+        lb2.setPosition(6, y2); panel.addChild(lb2, 1);
+        this._tfTPP = this._makeField(panel, "1.0", TF_X, y2, TF_W, ROW);
+        this._tfTPP.setString("1.0");
 
-        var lbHeader = new cc.LabelTTF("METRICS", "font/BalooPaaji2-Regular.ttf", 13);
-        lbHeader.setColor(cc.color(200, 200, 200));
-        lbHeader.setAnchorPoint(cc.p(0, 1));
-        lbHeader.setPosition(5, size.height - 3);
-        this.pMetric.addChild(lbHeader, 1);
+        // Spawn
+        var y3 = y2 - ROW - 5;
+        var lb3 = new cc.LabelTTF("Spawn:", "font/BalooPaaji2-Regular.ttf", 12);
+        lb3.setColor(cc.color(170, 170, 190)); lb3.setAnchorPoint(cc.p(0, 0.5));
+        lb3.setPosition(6, y3); panel.addChild(lb3, 1);
+        this._btnSpawn = new ccui.Button();
+        this._btnSpawn.loadTextureNormal("res/tool/res/bgTf.png");
+        this._btnSpawn.setScale9Enabled(true);
+        this._btnSpawn.setContentSize(TF_W, ROW);
+        this._btnSpawn.setAnchorPoint(cc.p(0, 0.5));
+        this._btnSpawn.setPosition(TF_X, y3);
+        this._btnSpawn.setTitleText(this._spawnStrategyKey);
+        this._btnSpawn.setTitleFontSize(11);
+        this._btnSpawn.setTitleColor(cc.color(220, 220, 255));
+        // this._btnSpawn.setTitleAlignment(cc.TEXT_ALIGNMENT_LEFT);
+        panel.addChild(this._btnSpawn, 1);
+        var self = this;
+        this._btnSpawn.addTouchEventListener(function (sender, type) {
+            if (type !== ccui.Widget.TOUCH_ENDED) return;
+            var dialog = new DifficultyDialog(function (key) {
+                self._spawnStrategyKey = key;
+                self._btnSpawn.setTitleText(key);
+            });
+            cc.director.getRunningScene().addChild(dialog, 999);
+            dialog.show();
+        });
+    },
+
+    _buildMetricsSection: function (panel) {
+        var W = panel.getContentSize().width;
+        var H = panel.getContentSize().height;
+        var HDR_H = 22;
+        var ROW = 18;
+
+        this._makeSectionHeader(panel, "METRICS");
 
         var lines = [
-            { key: "_lblActiveCells", label: "Active Cells:" },
-            { key: "_lblSpawners", label: "Spawners:" },
-            { key: "_lblBlockers", label: "Blockers:" },
-            { key: "_lblTotalHP", label: "Total HP:" }
+            { key: "_lblActiveCells", label: "Cells:",    yellow: false },
+            { key: "_lblBlockers",    label: "Blockers:", yellow: false },
+            { key: "_lblTotalHP",     label: "Total HP:", yellow: false },
+            { key: "_lblDensity",     label: "Density:",  yellow: true  }
         ];
 
         for (var i = 0; i < lines.length; i++) {
-            var yPos = size.height - 28 - i * 22;
+            var yPos = H - HDR_H - 14 - i * (ROW + 3);
 
             var lbKey = new cc.LabelTTF(lines[i].label, "font/BalooPaaji2-Regular.ttf", 12);
-            lbKey.setColor(cc.color(170, 170, 170));
+            lbKey.setColor(cc.color(170, 170, 180));
             lbKey.setAnchorPoint(cc.p(0, 0.5));
-            lbKey.setPosition(5, yPos);
-            this.pMetric.addChild(lbKey, 1);
+            lbKey.setPosition(6, yPos);
+            panel.addChild(lbKey, 1);
 
             var lbVal = new cc.LabelTTF("0", "font/BalooPaaji2-Regular.ttf", 12);
-            lbVal.setColor(cc.color(255, 220, 100));
+            lbVal.setColor(lines[i].yellow ? cc.color(255, 215, 70) : cc.color(255, 220, 100));
             lbVal.setAnchorPoint(cc.p(1, 0.5));
-            lbVal.setPosition(size.width - 5, yPos);
-            this.pMetric.addChild(lbVal, 1);
+            lbVal.setPosition(W - 5, yPos);
+            panel.addChild(lbVal, 1);
 
             this[lines[i].key] = lbVal;
         }
-
+        this._lblSpawners = null; // not shown in new layout
         this.updateMetrics();
     },
+
+    _buildMapNoteSection: function (panel) {
+        var W = panel.getContentSize().width;
+        var H = panel.getContentSize().height;
+        var HDR_H = 22;
+        var TF_W = W - 10;
+
+        this._makeSectionHeader(panel, "MAP NAME / NOTES");
+
+        var y1 = H - HDR_H - 13;
+        this._tfMapName = this._makeField(panel, "level_xxx", 5, y1, TF_W, 20);
+
+        var noteH = H - HDR_H - 38;
+        var bgNotes = new ccui.Scale9Sprite("res/tool/res/bgTf.png");
+        bgNotes.setContentSize(TF_W, noteH);
+        bgNotes.setAnchorPoint(cc.p(0, 0));
+        bgNotes.setPosition(5, 4);
+        panel.addChild(bgNotes, 0);
+
+        var tfNotes = new ccui.TextField("Designer notes...", "font/BalooPaaji2-Regular.ttf", 11);
+        tfNotes.setContentSize(TF_W, noteH);
+        tfNotes.setAnchorPoint(cc.p(0, 0));
+        tfNotes.setPosition(5, 4);
+        panel.addChild(tfNotes, 1);
+        this._tfNotes = tfNotes;
+    },
+
+    _buildRunTestSection: function (panel) {
+        var self = this;
+        var W = panel.getContentSize().width;
+        var H = panel.getContentSize().height;
+        var HDR_H = 22;
+        var LBL_W = 58;
+        var TF_X = LBL_W + 6;
+        var TF_W = W - TF_X - 6;
+        var ROW = 21;
+        var BTN_H = 26;
+
+        this._makeSectionHeader(panel, "RUN TEST");
+
+        // Agent
+        var y1 = H - HDR_H - 13;
+        var lb1 = new cc.LabelTTF("Agent:", "font/BalooPaaji2-Regular.ttf", 12);
+        lb1.setColor(cc.color(170, 170, 190)); lb1.setAnchorPoint(cc.p(0, 0.5));
+        lb1.setPosition(6, y1); panel.addChild(lb1, 1);
+        this._tfAgent = this._makeField(panel, "ObjectivePUAgent (v2)", TF_X, y1, TF_W, ROW);
+        this._tfAgent.setString("ObjectivePUAgent (v2)");
+
+        // Episodes
+        var y2 = y1 - ROW - 5;
+        var lb2 = new cc.LabelTTF("Episodes:", "font/BalooPaaji2-Regular.ttf", 12);
+        lb2.setColor(cc.color(170, 170, 190)); lb2.setAnchorPoint(cc.p(0, 0.5));
+        lb2.setPosition(6, y2); panel.addChild(lb2, 1);
+        this._tfPlayTest = this._makeField(panel, "1", TF_X, y2, TF_W, ROW);
+        this._tfPlayTest.setString("1");
+
+        // Run Test button
+        var btnY = y2 - ROW / 2 - BTN_H / 2 - 4;
+        var btnRun = new ccui.Button();
+        btnRun.setScale9Enabled(true);
+        btnRun.setContentSize(W - 12, BTN_H);
+        btnRun.setTitleText("Run Test");
+        btnRun.setTitleFontSize(13);
+        btnRun.setColor(cc.color(40, 100, 210));
+        btnRun.setAnchorPoint(cc.p(0, 0.5));
+        btnRun.setPosition(6, btnY);
+        btnRun.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) self.runDifficultyTest();
+        });
+        panel.addChild(btnRun, 1);
+    },
+
+    _buildSaveLevelSection: function (panel) {
+        var self = this;
+        var W = panel.getContentSize().width;
+        var H = panel.getContentSize().height;
+        var HDR_H = 22;
+        var BTN_H = 26;
+
+        this._makeSectionHeader(panel, "SAVE LEVEL");
+
+        // Filename + ".json" label
+        var jsonW = 36;
+        var tfW = W - 10 - jsonW - 2;
+        var y1 = H - HDR_H - 13;
+        this._tfSaveName = this._makeField(panel, "level_xxx", 5, y1, tfW, 20);
+
+        var lbJson = new cc.LabelTTF(".json", "font/BalooPaaji2-Regular.ttf", 11);
+        lbJson.setColor(cc.color(140, 145, 160));
+        lbJson.setAnchorPoint(cc.p(0, 0.5));
+        lbJson.setPosition(5 + tfW + 3, y1);
+        panel.addChild(lbJson, 1);
+
+        // Save button
+        var btnSave = new ccui.Button();
+        btnSave.setScale9Enabled(true);
+        btnSave.setContentSize(W - 12, BTN_H);
+        btnSave.setTitleText("Save to .json");
+        btnSave.setTitleFontSize(13);
+        btnSave.setColor(cc.color(40, 100, 210));
+        btnSave.setAnchorPoint(cc.p(0, 0.5));
+        btnSave.setPosition(6, BTN_H / 2 + 3);
+        btnSave.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) self.saveMap();
+        });
+        panel.addChild(btnSave, 1);
+    },
+
+    // pBottom removed — all sections now live in pRight (see setupRightPanel)
+    setupBottomBar: function () { },
+    _setupTargetPanel: function () { },
+    _setupMapNotePanel: function () { },
+    _setupMetricPanel: function () { },
 
     // ─────────────────────────────────────────────────────────────────────────
     // Element Selector — injected into a new ScrollView below pTool
@@ -490,13 +708,23 @@ var EditMapSceneNew = cc.Layer.extend({
         if (!this.pTool) return;
 
         var toolW = this.pTool.getContentSize().width;
-        var toolPos = this.pTool.getPosition(); // in rootNode local coords
-        var botH = this.pBottom ? this.pBottom.getContentSize().height : 120;
+        var toolPos = this.pTool.getPosition();
+        var botH = 0; // no bottom panel
         var topH = this.pTop ? this.pTop.getContentSize().height : 50;
-        var toolTopY = toolPos.y;                // top of pTool
-        var selectorH = toolTopY - botH - topH;         // available height below pTool top
+        var CREATE_BTN_H = 38;
+        var toolTopY = toolPos.y;
+        var selectorH = toolTopY - botH - topH - CREATE_BTN_H;
 
         var containerSize = cc.size(toolW, selectorH);
+
+        // SetElementConfigUI popup
+        this.setElementConfigUI = new SetElementConfigUI(function (hp) {
+            self.selectedHP = hp;
+            cc.log("HP changed to:", hp);
+        });
+        this.setElementConfigUI.setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
+        this.setElementConfigUI.setAnchorPoint(cc.p(0.5, 0.5));
+        this.addChild(this.setElementConfigUI, 1000);
 
         this.elementSelector = new ElementSelectorUI(
             containerSize,
@@ -509,14 +737,32 @@ var EditMapSceneNew = cc.Layer.extend({
                 self.slotMode = false;
                 self._syncModeButtons();
                 cc.log("Selected:", name, "type:", type);
+                if (self.setElementConfigUI) {
+                    self.setElementConfigUI.setElement(type);
+                }
             }
         );
 
-        // Position: left edge, from bottom of pTool downward
-        var selectorY = botH; // bottom of selector aligns to top of pBottom
+        var selectorY = botH + CREATE_BTN_H;
         this.elementSelector.setPosition(0, selectorY);
         this.elementSelector.setAnchorPoint(cc.p(0, 0));
         this.rootNode.addChild(this.elementSelector, 5);
+
+        // "+ Create Blocker / Monster" fixed button at bottom of left sidebar
+        var btnCreate = new ccui.Button();
+        btnCreate.setScale9Enabled(true);
+        btnCreate.setContentSize(toolW - 4, CREATE_BTN_H - 6);
+        btnCreate.setTitleText("+ Create Blocker / Monster");
+        btnCreate.setTitleFontSize(11);
+        btnCreate.setColor(cc.color(160, 35, 35));
+        btnCreate.setAnchorPoint(cc.p(0, 0));
+        btnCreate.setPosition(2, botH + 3);
+        btnCreate.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) {
+                cc.log("[EditMap] Create Blocker / Monster — not yet implemented");
+            }
+        });
+        this.rootNode.addChild(btnCreate, 5);
     },
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -614,6 +860,7 @@ var EditMapSceneNew = cc.Layer.extend({
                 this.boardUI.boardMgr.mapGrid[row][col];
             if (rawSlot2) {
                 this.boardUI.enableSlot(row, col, !rawSlot2.enable);
+                this.boardUI.refreshGrid();
             }
             this.updateMetrics();
             return;
@@ -660,6 +907,7 @@ var EditMapSceneNew = cc.Layer.extend({
                 this.boardUI.boardMgr.mapGrid[row][col];
             if (!rawSlot) return;
             this.boardUI.enableSlot(row, col, true);
+            this.boardUI.refreshGrid();
             slot = this.boardUI.boardMgr.getSlot(row, col);
             if (!slot) return;
         }
@@ -670,6 +918,7 @@ var EditMapSceneNew = cc.Layer.extend({
             slot.clearElements();
             this.activeDynamicBlocker.addCell({ r: row, c: col });
             this.boardUI.enableSlot(row, col, true);
+            this.boardUI.refreshGrid();
         } else {
             this.activeDynamicBlocker = this.boardUI.addElement(row, col, this.selectedType, this.selectedHP);
         }
@@ -712,14 +961,13 @@ var EditMapSceneNew = cc.Layer.extend({
         if (!this.boardUI || !this.boardUI.boardMgr) return;
 
         var bm = this.boardUI.boardMgr;
-        var active = 0, spawners = 0, blockers = 0, totalHP = 0;
+        var active = 0, blockers = 0, totalHP = 0;
 
         for (var r = 0; r < bm.rows; r++) {
             for (var c = 0; c < bm.cols; c++) {
                 var slot = bm.mapGrid[r] && bm.mapGrid[r][c];
                 if (!slot || !slot.enable) continue;
                 active++;
-                if (slot.canSpawn) spawners++;
                 for (var ei = 0; ei < slot.listElement.length; ei++) {
                     var el = slot.listElement[ei];
                     if (el && el.type > 7) {
@@ -731,39 +979,56 @@ var EditMapSceneNew = cc.Layer.extend({
         }
 
         if (this._lblActiveCells) this._lblActiveCells.setString("" + active);
-        if (this._lblSpawners) this._lblSpawners.setString("" + spawners);
         if (this._lblBlockers) this._lblBlockers.setString("" + blockers);
         if (this._lblTotalHP) this._lblTotalHP.setString("" + totalHP);
+        if (this._lblDensity) {
+            var density = active > 0 ? (totalHP / active).toFixed(1) : "0";
+            this._lblDensity.setString(totalHP + " (" + density + "/cell)");
+        }
     },
 
     // ─────────────────────────────────────────────────────────────────────────
     // Save / Load / Test
     // ─────────────────────────────────────────────────────────────────────────
     saveMap: function () {
-        var mapName = this._tfMapName ? this._tfMapName.getString().trim() : "";
+        var mapName = this._tfSaveName ? this._tfSaveName.getString().trim() : "";
+        if (!mapName || mapName === "level_xxx") {
+            mapName = this._tfMapName ? this._tfMapName.getString().trim() : "";
+        }
         if (!mapName || mapName === "level_xxx") {
             mapName = "map_" + Date.now();
         }
 
         var mapData = this.boardUI.getMapConfig();
 
-        // Attach moves from pRight
         var moves = parseInt(this.tfMoves ? this.tfMoves.getString() : "30") || 30;
         mapData.numMove = moves;
         mapData.targetElements = this.targetListUI ? this.targetListUI.getEntries() : [];
-
-        // Short description + notes
-        mapData.description = this._tfShortDesc ? this._tfShortDesc.getString() : "";
         mapData.notes = this._tfNotes ? this._tfNotes.getString() : "";
-
-        // numTest from pRight Play Test field
-        mapData.numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "1") || 1;
+        mapData.numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "50") || 50;
+        mapData.tpp = parseFloat(this._tfTPP ? this._tfTPP.getString() : "1.0") || 1.0;
+        mapData.spawnStrategy = this._spawnStrategyKey || "";
+        mapData.agentType = this._tfAgent ? this._tfAgent.getString() : "";
 
         var jsonStr = JSON.stringify(mapData, null, 4);
         var filePath = "res/maps/" + mapName + ".json";
         cc.log("SAVE_MAP_DATA: " + filePath + "\n" + jsonStr);
 
-        if (typeof jsb !== "undefined" && jsb.fileUtils) {
+        if (!cc.sys.isNative) {
+            // Web: Trigger file download
+            var blob = new Blob([jsonStr], { type: "application/json" });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.style.display = "none";
+            a.href = url;
+            a.download = mapName + ".json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            cc.log("SUCCESS: Download triggered for " + mapName + ".json");
+        } else if (typeof jsb !== "undefined" && jsb.fileUtils) {
+            // Native: Save to file system
             if (jsb.fileUtils.writeStringToFile(jsonStr, filePath)) {
                 cc.log("SUCCESS: Saved -> " + filePath);
                 this._addMapToList(mapName);
@@ -790,38 +1055,77 @@ var EditMapSceneNew = cc.Layer.extend({
 
     loadMapByName: function (levelName) {
         var self = this;
-        if (this._tfMapName) this._tfMapName.setString(levelName);
-
         cc.loader.loadJson("res/maps/" + levelName + ".json", function (err, data) {
             if (err || !data) { cc.log("Error loading map:", err); return; }
-
-            self.boardUI.loadMapConfig(data);
-
-            // Restore moves
-            if (self.tfMoves && data.numMove !== undefined) {
-                self.tfMoves.setString("" + data.numMove);
-            }
-
-            // Restore targets
-            if (self.targetListUI) self.targetListUI.setEntries(data.targetElements || []);
-
-            // Restore description + notes
-            if (self._tfNotes) self._tfNotes.setString(data.notes || "");
-
-            // Restore numTest
-            if (self._tfPlayTest) self._tfPlayTest.setString("" + (data.numTest || 1));
-            // Restore boardInfoUI
-            if (self.boardInfoUI) {
-                self.boardInfoUI.setInfo({
-                    numMove: data.numMove || 30,
-                    targetElements: data.targetElements || [],
-                    numTest: data.numTest || 1
-                });
-            }
-
-            self.updateMetrics();
-            cc.log("Loaded map:", levelName);
+            self._applyMapContent(data, levelName);
         });
+    },
+
+    /**
+     * Load map from a local JSON file (Web only)
+     */
+    loadMapFromFile: function () {
+        var self = this;
+        if (cc.sys.isNative) return;
+
+        var input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json";
+        input.onchange = function (event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var content = e.target.result;
+                try {
+                    var data = JSON.parse(content);
+                    var mapName = file.name.replace(".json", "");
+                    self._applyMapContent(data, mapName);
+                    cc.log("SUCCESS: Loaded " + file.name);
+                } catch (err) {
+                    cc.log("ERROR: Invalid JSON file");
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    },
+
+    /**
+     * Private helper to apply loaded map data to the UI
+     */
+    _applyMapContent: function (data, mapName) {
+        if (!data) return;
+
+        if (this._tfMapName) this._tfMapName.setString(mapName);
+        if (this._tfSaveName) this._tfSaveName.setString(mapName);
+
+        this.boardUI.loadMapConfig(data);
+
+        if (this.tfMoves && data.numMove !== undefined) {
+            this.tfMoves.setString("" + data.numMove);
+        }
+        if (this.targetListUI) this.targetListUI.setEntries(data.targetElements || []);
+        if (this._tfNotes) this._tfNotes.setString(data.notes || "");
+        if (this._tfPlayTest) this._tfPlayTest.setString("" + (data.numTest || 50));
+        if (this._tfTPP && data.tpp !== undefined) this._tfTPP.setString("" + data.tpp);
+        if (data.spawnStrategy) {
+            this._spawnStrategyKey = data.spawnStrategy;
+            if (this._btnSpawn) this._btnSpawn.setTitleText(data.spawnStrategy);
+        }
+        if (this._tfAgent && data.agentType) this._tfAgent.setString(data.agentType);
+
+        if (this.boardInfoUI) {
+            this.boardInfoUI.setInfo({
+                numMove: data.numMove || 30,
+                targetElements: data.targetElements || [],
+                numTest: data.numTest || 50
+            });
+        }
+
+        this.updateMetrics();
+        cc.log("Applied map content:", mapName);
     },
 
     testMap: function () {
@@ -831,6 +1135,7 @@ var EditMapSceneNew = cc.Layer.extend({
         mapData.targetElements = this.targetListUI ? this.targetListUI.getEntries() : [];
         mapData.levelId = 0;
         mapData.reward = 100;
+        mapData.spawnStrategy = this._spawnStrategyKey || "RandomSpawnStrategy";
 
         mapData.numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "1") || 1;
 
@@ -850,8 +1155,22 @@ var EditMapSceneNew = cc.Layer.extend({
      * @param {boolean} landscape
      */
     _applyResolution: function (landscape) {
+        if (!cc.sys.isNative)
+            return;
         var cfg = fr.ClientConfig.getInstance();
         var designSize = cfg.getDesignResolutionSize();
+
+        // Tính kích thước mục tiêu theo orientation
+        var w = designSize.height > designSize.width ? designSize.height : designSize.width;
+        var h = designSize.height > designSize.width ? designSize.width : designSize.height;
+        var targetW = landscape ? w : h;
+        var targetH = landscape ? h : w;
+
+        // Set lại FrameSize — hoạt động trên cả Simulator (Win32) và Web
+        // (tương đương chọn kích thước trong menu View > Device của Simulator)
+        cc.view.setFrameSize(targetW, targetH);
+
+        // Tính policy dựa trên frameSize mới (sau khi đã setFrameSize)
         var frameSize = cc.view.getFrameSize();
         var tabletRatio = 1.34;
 
@@ -877,21 +1196,27 @@ var EditMapSceneNew = cc.Layer.extend({
     },
 
     runDifficultyTest: function () {
-        if (!this.boardInfoUI) return;
-        var info = this.boardInfoUI.getInfo();
-
         var boardMgr = this.boardUI && this.boardUI.boardMgr;
         if (!boardMgr) { cc.log("[DiffCalc] No boardMgr"); return; }
 
-        CoreGame.DifficultyCalc.NUM_EPISODES = info.numTest || 5;
+        var stratKey = this._spawnStrategyKey || "RandomSpawnStrategy";
+        if (CoreGame.DropStrategy[stratKey] && boardMgr.dropMgr) {
+            boardMgr.dropMgr.setSpawnStrategy(new CoreGame.DropStrategy[stratKey]());
+        }
+
+        var numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "50") || 50;
+        var numMove = parseInt(this.tfMoves ? this.tfMoves.getString() : "30") || 30;
+        var targetEntries = this.targetListUI ? this.targetListUI.getEntries() : [];
+
+        CoreGame.DifficultyCalc.NUM_EPISODES = numTest;
         var targets = {};
-        (info.targetElements || []).forEach(function (t) { targets[t.id] = t.count; });
+        targetEntries.forEach(function (t) { targets[t.id] = t.count; });
 
         var self = this;
         CoreGame.FakeUI.start();
         CoreGame.DifficultyCalc.calculate(
             boardMgr,
-            { maxMoves: info.numMove || 30, targets: targets },
+            { maxMoves: numMove, targets: targets },
             null,
             function (report) {
                 CoreGame.FakeUI.restore();
@@ -907,17 +1232,19 @@ var EditMapSceneNew = cc.Layer.extend({
     // ─────────────────────────────────────────────────────────────────────────
     onExit: function () {
         this._super();
-        EditMapSceneNew.instance = null;
+        // EditMapSceneNew.instance.removeFromParent(true);
     }
 });
 
 EditMapSceneNew.instance = null;
 EditMapSceneNew.getInstance = function () {
     if (!EditMapSceneNew.instance) {
+        // Only create a new instance when there isn't one yet
         EditMapSceneNew.instance = new EditMapSceneNew();
         EditMapSceneNew.instance.retain();
-    } else if (EditMapSceneNew.instance.getParent()) {
-        EditMapSceneNew.instance.removeFromParent(false);
     }
+
+    // Do NOT call removeFromParent here — calling getInstance() while the scene
+    // is live (e.g. from TargetListUI) would silently detach the whole editor.
     return EditMapSceneNew.instance;
 };

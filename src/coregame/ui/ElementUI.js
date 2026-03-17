@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ElementUI - Visual representation of game elements
  * Wraps Cocos2d-JS Sprite for rendering
  * Part of Match-3 Core Game
@@ -342,6 +342,12 @@ CoreGame.ElementUI = cc.Node.extend({
     },
     setVisibleLbState: function (val) {
         this.lbState.setVisible(val);
+    },
+    onExit: function () {
+        this._super();
+        if (this.element && this.element.onExit) {
+            this.element.onExit();
+        }
     }
 });
 

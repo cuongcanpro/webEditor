@@ -351,7 +351,7 @@ CoreGame.GridSlot = cc.Class.extend({
      * Clear all elements
      */
     clearElements: function () {
-        cc.log("Lenght Element " + this.listElement.length);
+        //cc.log("Lenght Element " + this.listElement.length);
         for (var i = this.listElement.length - 1; i >= 0; i--) {
             this.listElement[i].remove();
         }

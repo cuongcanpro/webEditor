@@ -6,6 +6,8 @@
 var CoreGame = CoreGame || {};
 
 CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
+    _gridDrawNode: null,
+
     /**
      * Constructor
      * @param {Object} mapConfig - Map configuration from EditMapScene
@@ -17,6 +19,68 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
         this.editMapUI = editMapUI;
         cc.log("BoardEditUI initialized with mapConfig");
         return true;
+    },
+
+    onEnter: function () {
+        this._super();
+        this.drawGrid();
+    },
+
+    /**
+     * Draw a grid overlay showing all slot positions (enabled & disabled).
+     * Enabled slots  → dim blue-white fill + solid border
+     * Disabled slots → no fill + dashed-looking dim border
+     */
+    drawGrid: function () {
+        if (this._gridDrawNode) {
+            this._gridDrawNode.removeFromParent(true);
+        }
+
+        var draw = new cc.DrawNode();
+        var cs   = CoreGame.Config.CELL_SIZE;
+        var half = cs / 2 - 1;
+        var rows = this.boardMgr.rows;
+        var cols = this.boardMgr.cols;
+
+        var borderEnabled  = cc.color(180, 200, 255, 160);
+        var borderDisabled = cc.color(120, 120, 160, 60);
+        var fillDisabled   = cc.color(60,  60,  90,  25);
+
+        for (var r = 0; r < rows; r++) {
+            for (var c = 0; c < cols; c++) {
+                var pos  = this.boardMgr.gridToPixel(r, c);
+                var slot = this.boardMgr.mapGrid[r][c];
+                var enabled = slot && slot.enable;
+
+                if (enabled) {
+                    // Only draw the border for enabled slots (bg sprite already fills them)
+                    draw.drawRect(
+                        cc.p(pos.x - half, pos.y - half),
+                        cc.p(pos.x + half, pos.y + half),
+                        null,
+                        1, borderEnabled
+                    );
+                } else {
+                    // Dim fill + dim border for disabled slots so they're visible
+                    draw.drawRect(
+                        cc.p(pos.x - half, pos.y - half),
+                        cc.p(pos.x + half, pos.y + half),
+                        fillDisabled,
+                        1, borderDisabled
+                    );
+                }
+            }
+        }
+
+        this.addChild(draw, 1);
+        this._gridDrawNode = draw;
+    },
+
+    /**
+     * Refresh the grid overlay (call after slot enable states change).
+     */
+    refreshGrid: function () {
+        this.drawGrid();
     },
 
     /**
@@ -132,6 +196,7 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
         }
 
         this.renderBoardBorder();
+        this.refreshGrid();
 
         cc.log("Map configuration loaded successfully");
     },

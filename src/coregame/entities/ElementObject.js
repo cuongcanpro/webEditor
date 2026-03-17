@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ElementObject - Base class for all game elements
  * Part of Match-3 Core Game
  */
@@ -65,12 +65,19 @@ CoreGame.ElementObject = cc.Class.extend({
     addAction: function (key, action) {
         if (!this.actions[key]) {
             this.actions[key] = [];
-            CoreGame.EventMgr.on("custom" + key, this.doActionsType.bind(this, key));
+            CoreGame.EventMgr.on("custom" + key, this.doActionsType.bind(this, key), this);
         }
         this.actions[key].push(action);
         if (action.setTargetElement) {
             action.setTargetElement(this);
         }
+    },
+
+    clearAllEvents: function () {
+        CoreGame.EventMgr.offTarget(this);
+    },
+    onExit: function () {
+        this.clearAllEvents();
     },
 
     /**
@@ -356,7 +363,7 @@ CoreGame.ElementObject = cc.Class.extend({
      * Remove element from game
      */
     remove: function () {
-        cc.log("Remove Element === " + JSON.stringify(this.position) + " Name " + this.getTypeName());
+       // cc.log("Remove Element === " + JSON.stringify(this.position) + " Name " + this.getTypeName());
         this.setState(CoreGame.ElementState.REMOVING);
         var boardUI = this.boardMgr ? this.boardMgr.boardUI : null;
 

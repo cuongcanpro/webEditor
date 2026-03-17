@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ElementSelectorUI - Scrollable element selector for map editor
  * Displays gems and blockers in a grid layout (6 items per row)
  */
@@ -11,9 +11,9 @@ var ElementSelectorUI = cc.Node.extend({
 
     // Layout config
     ITEMS_PER_ROW: 6,
-    ITEM_WIDTH: 80,
-    ITEM_HEIGHT: 80,
-    ITEM_PADDING: 10,
+    ITEM_WIDTH: 60,
+    ITEM_HEIGHT: 60,
+    ITEM_PADDING: 5,
 
     /**
      * Constructor

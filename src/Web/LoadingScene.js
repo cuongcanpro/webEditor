@@ -48,7 +48,8 @@ cc.LoadingScene = cc.Scene.extend({
         label.setPosition(cc.director.getWinSize().width/2,cc.director.getWinSize().height/6+25);
         label.setColor(cc.color(180, 180, 180));
         self.addChild(label, 10);
-        label.setVisible(false);
+        // label.setVisible(false);
+        
         return true;
     },
 
@@ -91,7 +92,9 @@ cc.LoadingScene = cc.Scene.extend({
         var res = self.resources;
         cc.loader.load(res,
             function (result, count, loadedCount) {
-
+                var percent = (loadedCount / count * 100) | 0;
+                percent = Math.min(percent, 100);
+                self._label.setString("Đang tải... " + percent + "%");
             }, function () {
                 // self.lastTime = -1;
                 // if (Config.IS_FACEBOOK_INSTANT)

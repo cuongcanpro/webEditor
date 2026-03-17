@@ -1,4 +1,4 @@
-﻿/**
+/**
  * SpawnElementAction - Strategy to spawn elements
  * Part of Match-3 Core Game
  */
@@ -145,15 +145,12 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
     configData: {
         type: 0,
         numRandom: 3,
-        range: 1000
+        range: 1000,
+        priorityTarget: [] // List of element types to prioritize for spawning
     },
 
     ctor: function () {
         this._super();
-    },
-    setTargetElement: function (target) {
-        this._super(target);
-        this.targetElement.customData.spawnElementType = this.configData.type;
     },
     /**
      * Check if condition is met
@@ -184,36 +181,69 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
 
         var boardMgr = element.boardMgr;
         var numToSpawn = this.configData.numRandom || 3;
-        var typeToSpawn = this.configData.type;
+        var typeConfig = this.configData.type;
+        if (!Array.isArray(typeConfig)) {
+            typeConfig = [typeConfig];
+        }
 
-        // Collect all valid slots (containing GEM or PowerUP)
-        var validSlots = [];
+        var priorityTargets = this.configData.priorityTarget || [];
+        if (!Array.isArray(priorityTargets)) {
+            priorityTargets = [priorityTargets];
+        }
+
+        // Collect all valid slots
+        var prioritySlots = [];
+        var normalSlots = [];
+        
         for (var r = 0; r < boardMgr.rows; r++) {
             for (var c = 0; c < boardMgr.cols; c++) {
                 if (Math.abs(r - element.position.x) > this.configData.range || Math.abs(c - element.position.y) > this.configData.range)
                     continue;
                 var slot = boardMgr.getSlot(r, c);
                 if (!slot) continue;
+                
                 if (slot.isEmpty()) {
-                    validSlots.push({ row: r, col: c });
+                    normalSlots.push({ row: r, col: c });
                 } else {
-                    // Check if slot has a GEM or PowerUP (CONTENT layer)
+                    var hasPriority = false;
+                    var hasNormal = false;
+                    
                     for (var i = 0; i < slot.listElement.length; i++) {
                         var elem = slot.listElement[i];
-                        if (elem.isIdle() && elem instanceof CoreGame.GemObject || elem instanceof CoreGame.PowerUP) {
-                            validSlots.push({ row: r, col: c });
+                        if (!elem.isIdle()) continue;
+
+                        // Check for priority targets first
+                        if (priorityTargets.length > 0 && priorityTargets.indexOf(elem.type) !== -1) {
+                            hasPriority = true;
                             break;
                         }
+
+                        // Normal valid targets: GEM or PowerUP (CONTENT layer)
+                        if (elem instanceof CoreGame.GemObject || elem instanceof CoreGame.PowerUP) {
+                            hasNormal = true;
+                        }
+                    }
+                    
+                    if (hasPriority) {
+                        prioritySlots.push({ row: r, col: c });
+                    } else if (hasNormal) {
+                        normalSlots.push({ row: r, col: c });
                     }
                 }
             }
         }
 
-        if (validSlots.length === 0) return;
+        // Combine slots based on priority
+        var finalSlots = [];
+        this.shuffleArray(prioritySlots, boardMgr.random);
+        this.shuffleArray(normalSlots, boardMgr.random);
+        
+        finalSlots = prioritySlots.concat(normalSlots);
 
-        this.shuffleArray(validSlots, boardMgr.random);
-        var numSpawned = Math.min(numToSpawn, validSlots.length);
-        var targetSlots = validSlots.slice(0, numSpawned);
+        if (finalSlots.length === 0) return;
+
+        var numSpawned = Math.min(numToSpawn, finalSlots.length);
+        var targetSlots = finalSlots.slice(0, numSpawned);
 
         var delayTime = Math.max(0, time - 0.05);
 
@@ -232,12 +262,13 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
                     (function (index) {
                         var pos = targetSlots[index];
                         var targetPixelPos = boardMgr.gridToPixel(pos.row, pos.col);
+                        var currentTypeToSpawn = typeConfig[boardMgr.random.nextInt32Bound(typeConfig.length)];
 
                         var tempElem = null;
-                        if (CoreGame.ElementObject.map[typeToSpawn]) {
-                            tempElem = CoreGame.ElementObject.create(-1, -1, typeToSpawn);
+                        if (CoreGame.ElementObject.map[currentTypeToSpawn]) {
+                            tempElem = CoreGame.ElementObject.create(-1, -1, currentTypeToSpawn);
                         } else {
-                            tempElem = CoreGame.BlockerFactory.createBlocker(-1, -1, typeToSpawn);
+                            tempElem = CoreGame.BlockerFactory.createBlocker(-1, -1, currentTypeToSpawn);
                         }
 
                         if (tempElem) {
@@ -258,7 +289,7 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
                                 ));
 
                                 CoreGame.TimedActionMgr.addAction(flyTime, function () {
-                                    boardMgr.addNewElement(pos.row, pos.col, typeToSpawn);
+                                    boardMgr.addNewElement(pos.row, pos.col, currentTypeToSpawn);
                                 }, this);
                             }
                         }
@@ -268,7 +299,8 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
                 // Fallback to immediate spawn if no emitter node found
                 for (var i = 0; i < targetSlots.length; i++) {
                     var pos = targetSlots[i];
-                    var newElement = boardMgr.addNewElement(pos.row, pos.col, typeToSpawn);
+                    var currentTypeToSpawn = typeConfig[boardMgr.random.nextInt32Bound(typeConfig.length)];
+                    var newElement = boardMgr.addNewElement(pos.row, pos.col, currentTypeToSpawn);
                 }
             }
         }, this);
@@ -288,3 +320,4 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
     }
 });
 CoreGame.Strategies.RandomSpawnElementAction.executedOnTurnEnd = false;
+

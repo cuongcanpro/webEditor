@@ -18,9 +18,9 @@ var CoreGame = CoreGame || {};
 CoreGame.RemoteLog = (function () {
 
     var SERVER_URL = "http://127.0.0.1:9999/log";
-    var _enabled   = true;
-    var _queue     = [];
-    var _sending   = false;
+    var _enabled = true;
+    var _queue = [];
+    var _sending = false;
 
     // -----------------------------------------------------------------------
     // Internal XHR sender — async, queued
@@ -67,11 +67,11 @@ CoreGame.RemoteLog = (function () {
     // Public API
     // -----------------------------------------------------------------------
     return {
-        setUrl:     function (url) { SERVER_URL = url; },
-        setEnabled: function (v)   { _enabled = !!v; },
+        setUrl: function (url) { SERVER_URL = url; },
+        setEnabled: function (v) { _enabled = !!v; },
 
-        log:   function (msg) { _send(msg, "LOG");   },
-        warn:  function (msg) { _send(msg, "WARN");  },
+        log: function (msg) { _send(msg, "LOG"); },
+        warn: function (msg) { _send(msg, "WARN"); },
         error: function (msg) { _send(msg, "ERROR"); }
     };
 

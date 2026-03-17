@@ -1,4 +1,4 @@
-﻿/**
+/**
  * SideMatchAction - Strategy for side match interactions
  * Part of Match-3 Core Game
  */
@@ -142,5 +142,28 @@ CoreGame.Strategies.CollectTakeDamageAction = CoreGame.Strategies.TakeDamageActi
             element.doExplode(context.row, context.col);
         }
         element.ui.updateLabelState(JSON.stringify(this.configData._requiredTypeIds) + "\n" + JSON.stringify(this._collectedTypeIds));
+    }
+});
+
+CoreGame.Strategies.MatchColorTakeDamageAction = CoreGame.Strategies.TakeDamageAction.extend({
+    configData: {
+        _matchColor: -1,
+    },
+
+    ctor: function () {
+        this._super();
+    },
+
+    /**
+     * Check if condition is met
+     * @param {ElementObject} element - The element instance
+     * @param {Object} context - Context data for evaluation
+     * @returns {boolean} true if condition is met
+     */
+    checkCondition: function (element, context) {
+        if (context && context.matchColor === this.configData._matchColor) {
+            return element.canTakeDamage(context.matchColor);
+        }
+        return false;
     }
 });

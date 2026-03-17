@@ -67,7 +67,7 @@ var TargetListUI = cc.Node.extend({
         headerBg.setPosition(0, H - HEADER_H);
         this.addChild(headerBg, 1);
 
-        var lbTitle = new cc.LabelTTF("TARGETS", "font/BalooPaaji2-Regular.ttf", 12);
+        var lbTitle = new cc.LabelTTF("OBJECTIVE", "font/BalooPaaji2-Regular.ttf", 12);
         lbTitle.setColor(cc.color(180, 220, 255));
         lbTitle.setAnchorPoint(cc.p(0, 0.5));
         lbTitle.setPosition(6, HEADER_H / 2);
@@ -77,12 +77,27 @@ var TargetListUI = cc.Node.extend({
         btnAdd.setAnchorPoint(cc.p(1, 0.5));
         btnAdd.setPosition(W - 4, HEADER_H / 2);
         btnAdd.addTouchEventListener(function (sender, type) {
+            cc.log("lfjsdlfds ======== btnAdd");
             if (type === ccui.Widget.TOUCH_ENDED) {
                 self.targetEntries.push({ id: 1, count: 1 });
                 self._refresh();
             }
         });
         headerBg.addChild(btnAdd);
+
+        // Button: Add From Map (collect blockers/gems present on current EditMap)
+        var btnFromMap = this._makeBtn("From Map", 80, HEADER_H - 6, cc.color(120, 200, 250));
+        btnFromMap.setAnchorPoint(cc.p(1, 0.5));
+        // place to the left of +Add (leave a small gap)
+        btnFromMap.setPosition(W - 62, HEADER_H / 2);
+        btnFromMap.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) {
+                self._showMapPicker(function () {
+                    self._refresh();
+                });
+            }
+        });
+        headerBg.addChild(btnFromMap);
 
         // ── ScrollView ──────────────────────────────────────────────────────
         var scrollH = H - HEADER_H;
@@ -216,6 +231,7 @@ var TargetListUI = cc.Node.extend({
         bg.addChild(btnPlus);
 
         btnMinus.addTouchEventListener(function (sender, type) {
+            cc.log("lfjsdlfds ======== ");
             if (type === ccui.Widget.TOUCH_ENDED) {
                 var v = parseInt(cntField.getString()) || 1;
                 if (v > 1) { v--; cntField.setString(String(v)); entry.count = v; }
@@ -306,15 +322,236 @@ var TargetListUI = cc.Node.extend({
             this._selectorUI.setPosition(4, 4);
             panel.addChild(this._selectorUI);
 
+            // Close button (✕)
+            var btnClose = this._makeBtn("✕", 32, 32, cc.color(240, 40, 40));
+            btnClose.setPosition(panelW - 20, panelH - 18);
+            btnClose.addTouchEventListener(function (sender, type) {
+                if (type === ccui.Widget.TOUCH_ENDED) {
+                    self._pickerLayer.setVisible(false);
+                }
+            });
+            panel.addChild(btnClose);
+
             // Attach to scene root (high z-order)
-            var scene = cc.director.getRunningScene();
-            if (scene) scene.addChild(this._pickerLayer, 9999);
-            else this.addChild(this._pickerLayer, 9999);
+            // var scene = cc.director.getRunningScene();
+            // if (scene) scene.addChild(this._pickerLayer, 9999);
+            EditMapSceneNew.getInstance().addChild(this._pickerLayer, 9999);
         }
 
         this._pickerCallback = callback;
         this._pickerLayer.setVisible(true);
         if (this._selectorUI) this._selectorUI.clearSelection();
+    },
+
+    // Show a picker listing unique element types currently on the EditMap
+    _showMapPicker: function (doneCallback) {
+        var self = this;
+        // Try to locate the running EditMapScene instance.
+        // Don't call EditMapSceneNew.getInstance() here because that may create
+        // a new singleton instead of returning the currently displayed scene.
+        var edit = EditMapSceneNew.getInstance();
+        // // First try walking up from this node (pTarget -> rootNode -> scene layer)
+        // try {
+        //     var p = this.getParent();
+        //     while (p) {
+        //         if (p.boardUI && p.boardUI.getMapConfig) { edit = p; break; }
+        //         p = p.getParent ? p.getParent() : null;
+        //     }
+        // } catch (e) { }
+
+        // // Fallback: search running scene children for a layer with boardUI
+        // if (!edit) {
+        //     var scene = cc.director.getRunningScene();
+        //     if (scene) {
+        //         var ch = scene.getChildren();
+        //         for (var ci = 0; ci < ch.length; ci++) {
+        //             var c = ch[ci];
+        //             if (c && c.boardUI && c.boardUI.getMapConfig) { edit = c; break; }
+        //         }
+        //     }
+        // }
+
+        // if (!edit || !edit.boardUI || !edit.boardUI.getMapConfig) {
+        //     cc.log("[TargetListUI] _showMapPicker: EditMapScene not available");
+        //     return;
+        // }
+
+        var mapCfg = edit.boardUI.getMapConfig();
+        var elems = (mapCfg && mapCfg.elements) ? mapCfg.elements : [];
+
+        // Collect unique types + count occurrences
+        var countMap = {};
+        var types = [];
+        for (var i = 0; i < elems.length; i++) {
+            var t = elems[i].type;
+            if (t == null) continue;
+            if (!countMap[t]) { countMap[t] = 0; types.push(t); }
+            countMap[t]++;
+        }
+
+        if (types.length === 0) {
+            cc.log("[TargetListUI] No elements found on map to import as targets");
+            return;
+        }
+        this._mapCountMap = countMap; // Store for use in button callbacks
+
+        // Lazy-initialize map picker layer
+        if (!this._mapPickerLayer) {
+            var sz = cc.winSize;
+            var panelW = Math.min(sz.width * 0.7, 700);
+            var panelH = Math.min(sz.height * 0.75, 520);
+
+            this._mapPickerLayer = new cc.LayerColor(cc.color(0, 0, 0, 190));
+            this._mapPickerLayer.setContentSize(sz);
+
+            var outerListener = cc.EventListener.create({
+                event: cc.EventListener.TOUCH_ONE_BY_ONE,
+                swallowTouches: true,
+                onTouchBegan: function (touch, event) {
+                    var target = event.getCurrentTarget();
+                    if (!target || !target.isVisible()) return false;
+                    target.setVisible(false);
+                    return true;
+                }
+            });
+            cc.eventManager.addListener(outerListener, this._mapPickerLayer);
+
+            var panel = new ccui.Layout();
+            panel.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+            panel.setBackGroundColor(cc.color(35, 37, 50));
+            panel.setContentSize(panelW, panelH);
+            panel.setPosition(sz.width / 2 - panelW / 2, sz.height / 2 - panelH / 2);
+
+            var innerListener = cc.EventListener.create({
+                event: cc.EventListener.TOUCH_ONE_BY_ONE,
+                swallowTouches: true,
+                onTouchBegan: function (touch, event) {
+                    if (self._mapPickerLayer.isVisible()) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            cc.eventManager.addListener(innerListener, panel);
+            this._mapPickerLayer.addChild(panel);
+
+            var lbTitle = new cc.LabelTTF("Map Elements", "font/BalooPaaji2-Regular.ttf", 18);
+            lbTitle.setColor(cc.color(220, 220, 255));
+            lbTitle.setPosition(panelW / 2, panelH - 18);
+            panel.addChild(lbTitle);
+
+            // Scroll view for types
+            var listH = panelH - 64;
+            var sv = new ccui.ScrollView();
+            sv.setDirection(ccui.ScrollView.DIR_VERTICAL);
+            sv.setContentSize(cc.size(panelW - 20, listH));
+            sv.setPosition(10, 32);
+            panel.addChild(sv);
+            this._mapPickerScroll = sv;
+
+            // Add All button
+            var btnAddAll = this._makeBtn("Add All", 80, 28, cc.color(150, 240, 160));
+            btnAddAll.setAnchorPoint(cc.p(1, 0.5));
+            btnAddAll.setPosition(panelW - 10, panelH - 18);
+            btnAddAll.addTouchEventListener(function (sender, type) {
+                if (type === ccui.Widget.TOUCH_ENDED) {
+                    for (var k = 0; k < self._mapPickerTypes.length; k++) {
+                        var tid = self._mapPickerTypes[k];
+                        var defaultCnt = (self._mapCountMap && self._mapCountMap[tid]) ? self._mapCountMap[tid] : 1;
+                        var exists = false;
+                        for (var e = 0; e < self.targetEntries.length; e++) if (self.targetEntries[e].id === tid) { exists = true; break; }
+                        if (!exists) self.targetEntries.push({ id: tid, count: defaultCnt });
+                    }
+                    if (doneCallback) doneCallback();
+                    self._mapPickerLayer.setVisible(false);
+                }
+            });
+            panel.addChild(btnAddAll);
+
+            // Close button (✕)
+            var btnClose = this._makeBtn("✕", 28, 28, cc.color(240, 40, 40));
+            btnClose.setAnchorPoint(cc.p(1, 0.5));
+            btnClose.setPosition(panelW - 100, panelH - 18);
+            btnClose.addTouchEventListener(function (sender, type) {
+                if (type === ccui.Widget.TOUCH_ENDED) {
+                    self._mapPickerLayer.setVisible(false);
+                }
+            });
+            panel.addChild(btnClose);
+
+            // Attach to scene root
+            EditMapSceneNew.getInstance().addChild(this._mapPickerLayer, 9999);
+        }
+
+        // Populate list (rebuild)
+        this._mapPickerLayer.setVisible(true);
+        this._mapPickerTypes = types;
+        this._mapCountMap = countMap;
+
+        var sv = this._mapPickerScroll;
+        sv.removeAllChildren();
+
+        var totalH = Math.max(sv.getContentSize().height, types.length * 40 + 8);
+        var container = new ccui.Layout();
+        container.setContentSize(sv.getContentSize().width, totalH);
+        sv.addChild(container);
+        sv.setInnerContainerSize(container.getContentSize());
+
+        for (var i = 0; i < types.length; i++) {
+            var ti = types[i];
+            var idx = i;
+            var y = totalH - (idx * 40 + 20);
+            var row = new ccui.Layout();
+            row.setContentSize(container.getContentSize().width, 36);
+            row.setPosition(0, y - 18);
+            container.addChild(row);
+
+            var defaultCnt = (countMap && countMap[ti]) ? countMap[ti] : 1;
+            var lb = new cc.LabelTTF("ID: " + String(ti) + "  x" + defaultCnt, "font/BalooPaaji2-Regular.ttf", 14);
+            lb.setAnchorPoint(cc.p(0, 0.5));
+            lb.setPosition(48, 18); // Shifted right for icon
+            lb.setColor(cc.color(220, 220, 220));
+            row.addChild(lb);
+
+            // --- Icon for Map Picker row ---
+            var elemObj;
+            try {
+                if (CoreGame.ElementObject.map[ti]) {
+                    elemObj = CoreGame.ElementObject.create(0, 0, ti, 1);
+                } else {
+                    elemObj = CoreGame.BlockerFactory.createBlocker(0, 0, ti, 1);
+                }
+            } catch (e) { }
+
+            if (elemObj) {
+                elemObj.createUI(row);
+                if (elemObj.ui) {
+                    var sc = elemObj.getScaleToFit ? elemObj.getScaleToFit(32, 32) : 0.45;
+                    elemObj.ui.setScale(sc);
+                    elemObj.ui.setPosition(24, 18);
+                }
+            }
+
+            var btn = self._makeBtn("Add", 56, 26, cc.color(150, 240, 160));
+            btn.setAnchorPoint(cc.p(1, 0.5));
+            btn.setPosition(container.getContentSize().width - 8, 18);
+            // Lưu giá trị vào chính button (cách Cocos2d-JS để tránh closure var)
+            btn.targetTypeId = ti;
+            btn.targetCnt = defaultCnt;
+            btn.addTouchEventListener(function (s, ttype) {
+                if (ttype === ccui.Widget.TOUCH_ENDED) {
+                    var type_id = s.targetTypeId;
+                    var cnt = s.targetCnt;
+                    var exists = false;
+                    for (var e = 0; e < self.targetEntries.length; e++) if (self.targetEntries[e].id === type_id) { exists = true; break; }
+                    if (!exists) self.targetEntries.push({ id: type_id, count: cnt });
+                    if (doneCallback) doneCallback();
+                    s.setTitleText("Added");
+                    s.setEnabled(false);
+                }
+            });
+            row.addChild(btn);
+        }
     },
 
     // ─────────────────────────────────────────────────────────────────────────

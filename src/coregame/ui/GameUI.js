@@ -1,4 +1,4 @@
-﻿/**
+/**
  * GameUI - Main game interface wrapper
  * Contains BoardUI with additional game UI elements:
  * - Back button to return to BlockCreatorUI
@@ -82,8 +82,11 @@ CoreGame.GameUI = cc.Layer.extend({
         this.gameBoardInfoUI.initData(levelConfig);
 
         // Create BoardTool UI
-        // this.gameBoardToolUI = new CoreGame.GameBoardToolUI(this);
-        // this.addChild(this.gameBoardToolUI);
+        if (cc.sys.isNative) {
+            this.gameBoardToolUI = new CoreGame.GameBoardToolUI(this);
+            this.addChild(this.gameBoardToolUI);
+        }
+
         this.gameBoardInfoUI.initData(levelConfig);
 
         // Create EffectLayer
@@ -91,6 +94,12 @@ CoreGame.GameUI = cc.Layer.extend({
         this.addChild(this.gameBoardEffectLayer);
 
         this.boardUI.boardMgr.gameUI = this;
+
+        // Apply spawn strategy from map config if specified
+        var stratKey = levelConfig.mapConfig && levelConfig.mapConfig.spawnStrategy;
+        if (stratKey && CoreGame.DropStrategy[stratKey] && this.boardUI.boardMgr.dropMgr) {
+            this.boardUI.boardMgr.dropMgr.setSpawnStrategy(new CoreGame.DropStrategy[stratKey]());
+        }
     },
 
     /**
@@ -106,9 +115,9 @@ CoreGame.GameUI = cc.Layer.extend({
         backBtn.setPosition(80, cc.winSize.height - 50);
         backBtn.addTouchEventListener(function (sender, type) {
             if (type === ccui.Widget.TOUCH_ENDED) {
-                var toolScene = new cc.Scene();
-                toolScene.addChild(new BlockCreatorUI());
-                cc.director.runScene(toolScene);
+                // var toolScene = new cc.Scene();
+                // toolScene.addChild(new BlockCreatorUI());
+                SceneLoading.openWithBuffer(CoreGame.TestScene);
             }
         });
         this.addChild(backBtn, 1000);

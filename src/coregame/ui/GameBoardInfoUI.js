@@ -26,7 +26,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     },
 
     initLayer: function () {
-        this.lbLevel.setString(this.mainScene? this.mainScene.getLevel() : "-");
+        this.lbLevel.setString(this.mainScene ? this.mainScene.getLevel() : "-");
         this.setScale(cc.winSize.width / this.bgTop.width);
         this.setPositionOnNotchIOS();
 
@@ -38,7 +38,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         this._initTest();
     },
 
-    initItemCount: function(type, lbl) {
+    initItemCount: function (type, lbl) {
         this.nodeMain.getChildByName('itemCount').setVisible(true);
         this.nodeMain.getChildByName('itemCount').getChildByName('icon')
             .loadTexture('game/element/icon/' + type + '.png', ccui.Widget.LOCAL_TEXTURE);
@@ -174,7 +174,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         cc.log("suckElement " + element.id, this.mainScene.mainBoard.listCurTarget[CoreGame.Config.ElementType.GOLD_BONUS]);
 
         if (element.getCurState() == Element.State.NONE) return;
-        cc.log("element " + element.id + " suck " + element.type +' '+ element.isCollected)
+        cc.log("element " + element.id + " suck " + element.type + ' ' + element.isCollected)
         var nodeTarget = this.getNodeTarget(element.getType());
         if (nodeTarget == null) return;
         if (!element.isCollectible()) {
@@ -187,7 +187,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         element.getBoard().removeElement(element);
         for (let i = 0; i < element.width; i++)
             for (let j = 0; j < element.height; j++) {
-                this.board.getSlot(element.row-i, element.col-j).removeElement(element);
+                this.board.getSlot(element.row - i, element.col - j).removeElement(element);
             }
 
         UIUtils.changeParent(element, cc.director.getRunningScene());
@@ -215,10 +215,9 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             cc.delayTime(timeDelay),
             cc.callFunc(function () {
                 element.setCurState(Element.State.NONE);
-                if(element.getType() >= CoreGame.Config.ElementType.GREEN && element.getType() <= CoreGame.Config.ElementType.CYAN){
+                if (element.getType() >= CoreGame.Config.ElementType.GREEN && element.getType() <= CoreGame.Config.ElementType.CYAN) {
                     element.shadow = new CoreGame.GameBoardInfoUI.NodeShadow(element, timeMove, "icon_" + element.getType() + "_shadow.png");
-                }else
-                {
+                } else {
                     element.shadow = new CoreGame.GameBoardInfoUI.NodeShadow(element, timeMove);
                 }
                 element.shadow.setShadowZOder(BoardConst.zOrder.OBJECTIVE + zOrderInc - 1);
@@ -288,8 +287,8 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
                     coin.runAction(cc.scaleTo(timeMove * 0.4, 100 / 80, 100 / 80));
                 }
                 var actionScaleShadow = cc.sequence(
-                    cc.scaleTo(timeMove/2, 1.5),
-                    cc.scaleTo(timeMove - timeMove/2, 1.0)
+                    cc.scaleTo(timeMove / 2, 1.5),
+                    cc.scaleTo(timeMove - timeMove / 2, 1.0)
                 )
                 coin.shadow = new CoreGame.GameBoardInfoUI.NodeShadow(coin, timeMove, null, actionScaleShadow);
                 coin.runAction(cc.sequence(
@@ -319,12 +318,12 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         for (let i in this.listNode)
             this.listNode[i].setVisible(isShow);
         this.spine_cat.setVisible(isShow);
-        if(!isShow){ // ballon resize top bar
+        if (!isShow) { // ballon resize top bar
             this.bgTop.height = 50;
-            if(fr.platformWrapper.isIOSHaveNotch()){
+            if (fr.platformWrapper.isIOSHaveNotch()) {
                 this.bgTop.height = 50 + GUIConst.IOS_NOTCH_HEIGHT
             }
-        }else{
+        } else {
             this.bgTop.height = 75;
         }
     },
@@ -342,7 +341,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     },
 
     stopSpineCatTalking: function () {
-        if (this.spineCatData != null){
+        if (this.spineCatData != null) {
             UIUtils.changeParent(this.spine_cat, this.spineCatData.parent, 1);
             this.spine_cat.setAnimation(0, 'idle', true);
             this.spine_cat.setVisible(this.spineCatData.visible);
@@ -367,9 +366,9 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         };
         this.btnTest.addClickEventListener(this.showTest.bind(this));
         this.onTestSetMove = function () {
-            if (!gv.isRelease){
+            if (!gv.isRelease) {
                 var inputMove = Number(this.tfTestSetMove.getString());
-                if (1 <= inputMove && inputMove <= 100){
+                if (1 <= inputMove && inputMove <= 100) {
                     this.board.setMove(inputMove);
                 }
             }
@@ -378,7 +377,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     },
 
 });
-CoreGame.GameBoardInfoUI.JSON = "res/zcsd/game/GameBoardInfoUI.json";
+CoreGame.GameBoardInfoUI.JSON = "zcsd/game/GameBoardInfoUI.json";
 
 /**
  * Create shadowFake, add child to object Flying
@@ -393,53 +392,52 @@ CoreGame.GameBoardInfoUI.NodeShadow = cc.Node.extend({
      * @param shadowZOrder: ZOder shadow
      * @param timeMove: total time move animation
      */
-    ctor:function (objectFly, timeMove, shadowResourcesPath, actionScale ) {
+    ctor: function (objectFly, timeMove, shadowResourcesPath, actionScale) {
         this._super();
         objectFly.getParent().addChild(this);
         this.objectFly = objectFly;
 
         //init shadow resources path
-        if(_.isUndefined(shadowResourcesPath) || shadowResourcesPath == null){
+        if (_.isUndefined(shadowResourcesPath) || shadowResourcesPath == null) {
             shadowResourcesPath = res.img_shadow;
         }
 
         this._shadow = UIUtils.createSprite(shadowResourcesPath, objectFly.getParent());
-        this._shadow.setLocalZOrder(objectFly.getLocalZOrder()-1);
+        this._shadow.setLocalZOrder(objectFly.getLocalZOrder() - 1);
         // run action scale custom, if actionScale = null then scale on update with scale rate = object fly'scale rate
-        if(!_.isUndefined(actionScale) && actionScale !=  null)
-        {
+        if (!_.isUndefined(actionScale) && actionScale != null) {
             this.actionScaleCustome = actionScale;
             this._shadow.runAction(actionScale);
         }
         this.timeMove = timeMove;
-        if(_.isUndefined(timeMove) || timeMove == null){
+        if (_.isUndefined(timeMove) || timeMove == null) {
             this.timeMove = 1.0;
         }
 
 
         this._shadow.getParent().runAction(cc.sequence(
-            cc.delayTime(timeMove*0.9),
+            cc.delayTime(timeMove * 0.9),
             cc.callFunc(function () {
                 this.remove();
             }.bind(this))
         ))
 
 
-        this.distance = {x: 0, y : 0};
+        this.distance = { x: 0, y: 0 };
         this.delta = 5;
         this.timeFly = 0;
         this.scheduleUpdate();
 
     },
-    setShadowZOder:function(shadowZOrder){
+    setShadowZOder: function (shadowZOrder) {
         this._shadow.setLocalZOrder(shadowZOrder);
     },
     /**
      * remove after fly done
      */
-    remove:function(){
+    remove: function () {
 
-        if(this._shadow == null) return;
+        if (this._shadow == null) return;
 
         this._shadow.setVisible(false);
         this._shadow.removeFromParent(false);
@@ -450,32 +448,32 @@ CoreGame.GameBoardInfoUI.NodeShadow = cc.Node.extend({
     /**
      * Update _shadow position along to shadowFake position.
      */
-    update:function (dt) {
-        if(_.isUndefined(this._shadow) || this._shadow == null) return;
+    update: function (dt) {
+        if (_.isUndefined(this._shadow) || this._shadow == null) return;
 
-        this.timeFly+= dt;
+        this.timeFly += dt;
 
-        if(this.timeFly < this.timeMove/2){
+        if (this.timeFly < this.timeMove / 2) {
             this.distance.y -= this.delta;
             this.distance.x -= this.delta;
         }
-        else{
+        else {
             this.distance.y += this.delta;
             this.distance.x += this.delta;
         }
-        if(!cc.sys.isObjectValid(this.objectFly)){
+        if (!cc.sys.isObjectValid(this.objectFly)) {
             return;
         }
         this._shadow.x = this.objectFly.x + this.distance.x;
         this._shadow.y = this.objectFly.y + this.distance.y;
-        if(this._shadow.y > this.objectFly.y){
+        if (this._shadow.y > this.objectFly.y) {
             this._shadow.y = this.objectFly.y;
         }
-        if(this._shadow.x > this.objectFly.x){
+        if (this._shadow.x > this.objectFly.x) {
             this._shadow.x = this.objectFly.x;
         }
 
-        if(_.isUndefined(this.actionScaleCustome)){
+        if (_.isUndefined(this.actionScaleCustome)) {
 
             this._shadow.setScale(this.objectFly.getScaleX(), this.objectFly.getScaleY());
         }

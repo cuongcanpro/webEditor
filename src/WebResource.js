@@ -33,4 +33,6 @@ WebResource.getInstance = function () {
 };
 var webResource = WebResource.getInstance();
 
-var URL = "http://120.138.65.103/sources/apk/tala/testWeb/"
+// Avoid shadowing the global `URL` constructor used by browsers (e.g. URL.createObjectURL)
+// Store resource base URL on the WebResource namespace instead.
+WebResource.baseURL = "http://120.138.65.103/sources/apk/tala/testWeb/";

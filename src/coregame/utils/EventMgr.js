@@ -1,4 +1,4 @@
-﻿/**
+/**
  * EventMgr - Simple event bus for decoupled communication
  * Part of Match-3 Core Game
  */
@@ -52,6 +52,21 @@ CoreGame.EventMgr = {
         }
     },
 
+    /**
+     * Clear all listeners for a specific target
+     * @param {object} target - Context for callbacks to remove
+     */
+    offTarget: function (target) {
+        if (!target) return;
+        for (var event in this._listeners) {
+            var listeners = this._listeners[event];
+            for (var i = listeners.length - 1; i >= 0; i--) {
+                if (listeners[i].target === target) {
+                    listeners.splice(i, 1);
+                }
+            }
+        }
+    },
     /**
      * Clear all listeners
      */
