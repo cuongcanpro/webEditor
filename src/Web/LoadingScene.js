@@ -90,19 +90,33 @@ cc.LoadingScene = cc.Scene.extend({
         var self = this;
         self.unschedule(self._startLoading);
         var res = self.resources;
-        cc.loader.load(res,
-            function (result, count, loadedCount) {
-                var percent = (loadedCount / count * 100) | 0;
-                percent = Math.min(percent, 100);
-                self._label.setString("Đang tải... " + percent + "%");
-            }, function () {
-                // self.lastTime = -1;
-                // if (Config.IS_FACEBOOK_INSTANT)
-                //     FBInstant["startGameAsync"]();
+        var BATCH_SIZE = 100;
+        var totalCount = res.length;
+        var loadedCount = 0;
+        var batchIndex = 0;
+
+        function loadNextBatch() {
+            var batch = res.slice(batchIndex, batchIndex + BATCH_SIZE);
+            batchIndex += BATCH_SIZE;
+            if (batch.length === 0) {
                 if (self.cb)
                     self.cb.call(self.target);
-            });
-       // self.cb.call(self.target);
+                return;
+            }
+            cc.loader.load(batch,
+                function (result, count, batchLoaded) {
+                    var percent = ((loadedCount + batchLoaded) / totalCount * 100) | 0;
+                    percent = Math.min(percent, 100);
+                    self._label.setString("Đang tải... " + percent + "%");
+                },
+                function () {
+                    loadedCount += batch.length;
+                    loadNextBatch();
+                }
+            );
+        }
+
+        loadNextBatch();
     }
 });
 
