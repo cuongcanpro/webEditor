@@ -73,7 +73,7 @@
 
     showEffectExplode: function () {
         // calculate time move
-        var timeMove = RocketDownwards.TIME_MOVE;
+        var timeMove = CoreGame.RocketUI.TIME_MOVE;
 
         var distFirst = this.calculateFirstDistance();
         var timeFirst = distFirst * timeMove;

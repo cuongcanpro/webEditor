@@ -220,7 +220,7 @@ var EditMapSceneNew = cc.Layer.extend({
 
         // "M3 Editor v2.3" title label on left
         // var topH = this.pTop.getContentSize().height;
-        // var title = new cc.LabelTTF("M3 Editor v2.3", "font/BalooPaaji2-Regular.ttf", 13);
+        // var title = new ccui.Text("M3 Editor v2.3", "font/BalooPaaji2-Regular.ttf", 13);
         // title.setColor(cc.color(160, 180, 220));
         // title.setAnchorPoint(cc.p(0, 0.5));
         // title.setPosition(8, topH / 2);
@@ -472,7 +472,7 @@ var EditMapSceneNew = cc.Layer.extend({
         hdr.setPosition(0, parent.getContentSize().height);
         parent.addChild(hdr, 1);
 
-        var lb = new cc.LabelTTF(title, "font/BalooPaaji2-Regular.ttf", 11);
+        var lb = new ccui.Text(title, "font/BalooPaaji2-Regular.ttf", 11);
         lb.setColor(cc.color(160, 180, 220));
         lb.setAnchorPoint(cc.p(0, 0.5));
         lb.setPosition(6, HDR_H / 2);
@@ -509,7 +509,7 @@ var EditMapSceneNew = cc.Layer.extend({
 
         // Turn
         var y1 = H - HDR_H - 13;
-        var lb1 = new cc.LabelTTF("Turn:", "font/BalooPaaji2-Regular.ttf", 12);
+        var lb1 = new ccui.Text("Turn:", "font/BalooPaaji2-Regular.ttf", 12);
         lb1.setColor(cc.color(170, 170, 190)); lb1.setAnchorPoint(cc.p(0, 0.5));
         lb1.setPosition(6, y1); panel.addChild(lb1, 1);
         this.tfMoves = this._makeField(panel, "30", TF_X, y1, TF_W, ROW);
@@ -517,7 +517,7 @@ var EditMapSceneNew = cc.Layer.extend({
 
         // TPP
         var y2 = y1 - ROW - 5;
-        var lb2 = new cc.LabelTTF("TPP:", "font/BalooPaaji2-Regular.ttf", 12);
+        var lb2 = new ccui.Text("TPP:", "font/BalooPaaji2-Regular.ttf", 12);
         lb2.setColor(cc.color(170, 170, 190)); lb2.setAnchorPoint(cc.p(0, 0.5));
         lb2.setPosition(6, y2); panel.addChild(lb2, 1);
         this._tfTPP = this._makeField(panel, "1.0", TF_X, y2, TF_W, ROW);
@@ -525,7 +525,7 @@ var EditMapSceneNew = cc.Layer.extend({
 
         // Spawn
         var y3 = y2 - ROW - 5;
-        var lb3 = new cc.LabelTTF("Spawn:", "font/BalooPaaji2-Regular.ttf", 12);
+        var lb3 = new ccui.Text("Spawn:", "font/BalooPaaji2-Regular.ttf", 12);
         lb3.setColor(cc.color(170, 170, 190)); lb3.setAnchorPoint(cc.p(0, 0.5));
         lb3.setPosition(6, y3); panel.addChild(lb3, 1);
         this._btnSpawn = new ccui.Button();
@@ -569,13 +569,13 @@ var EditMapSceneNew = cc.Layer.extend({
         for (var i = 0; i < lines.length; i++) {
             var yPos = H - HDR_H - 14 - i * (ROW + 3);
 
-            var lbKey = new cc.LabelTTF(lines[i].label, "font/BalooPaaji2-Regular.ttf", 12);
+            var lbKey = new ccui.Text(lines[i].label, "font/BalooPaaji2-Regular.ttf", 12);
             lbKey.setColor(cc.color(170, 170, 180));
             lbKey.setAnchorPoint(cc.p(0, 0.5));
             lbKey.setPosition(6, yPos);
             panel.addChild(lbKey, 1);
 
-            var lbVal = new cc.LabelTTF("0", "font/BalooPaaji2-Regular.ttf", 12);
+            var lbVal = new ccui.Text("0", "font/BalooPaaji2-Regular.ttf", 12);
             lbVal.setColor(lines[i].yellow ? cc.color(255, 215, 70) : cc.color(255, 220, 100));
             lbVal.setAnchorPoint(cc.p(1, 0.5));
             lbVal.setPosition(W - 5, yPos);
@@ -628,7 +628,7 @@ var EditMapSceneNew = cc.Layer.extend({
 
         // Agent
         var y1 = H - HDR_H - 13;
-        var lb1 = new cc.LabelTTF("Agent:", "font/BalooPaaji2-Regular.ttf", 12);
+        var lb1 = new ccui.Text("Agent:", "font/BalooPaaji2-Regular.ttf", 12);
         lb1.setColor(cc.color(170, 170, 190)); lb1.setAnchorPoint(cc.p(0, 0.5));
         lb1.setPosition(6, y1); panel.addChild(lb1, 1);
         this._tfAgent = this._makeField(panel, "ObjectivePUAgent (v2)", TF_X, y1, TF_W, ROW);
@@ -636,7 +636,7 @@ var EditMapSceneNew = cc.Layer.extend({
 
         // Episodes
         var y2 = y1 - ROW - 5;
-        var lb2 = new cc.LabelTTF("Episodes:", "font/BalooPaaji2-Regular.ttf", 12);
+        var lb2 = new ccui.Text("Episodes:", "font/BalooPaaji2-Regular.ttf", 12);
         lb2.setColor(cc.color(170, 170, 190)); lb2.setAnchorPoint(cc.p(0, 0.5));
         lb2.setPosition(6, y2); panel.addChild(lb2, 1);
         this._tfPlayTest = this._makeField(panel, "1", TF_X, y2, TF_W, ROW);
@@ -673,7 +673,7 @@ var EditMapSceneNew = cc.Layer.extend({
         var y1 = H - HDR_H - 13;
         this._tfSaveName = this._makeField(panel, "level_xxx", 5, y1, tfW, 20);
 
-        var lbJson = new cc.LabelTTF(".json", "font/BalooPaaji2-Regular.ttf", 11);
+        var lbJson = new ccui.Text(".json", "font/BalooPaaji2-Regular.ttf", 11);
         lbJson.setColor(cc.color(140, 145, 160));
         lbJson.setAnchorPoint(cc.p(0, 0.5));
         lbJson.setPosition(5 + tfW + 3, y1);
