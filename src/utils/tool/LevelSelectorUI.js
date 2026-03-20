@@ -6,6 +6,7 @@ var LevelSelectorUI = cc.LayerColor.extend({
     scrollView: null,
     container: null,
     levelList: [],          // Array of {name: string, filename: string}
+    filterText: "",         // Current filter string
     onSelectCallback: null,
 
     // Layout config
@@ -94,10 +95,33 @@ var LevelSelectorUI = cc.LayerColor.extend({
         });
         this.popupBg.addChild(closeBtn);
 
+        // Add filter text field
+        var filterBg = new ccui.Layout();
+        filterBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        filterBg.setBackGroundColor(cc.color(20, 20, 30));
+        filterBg.setContentSize(this.POPUP_WIDTH - 40, 36);
+        filterBg.setPosition(20, this.POPUP_HEIGHT - 100);
+        this.popupBg.addChild(filterBg);
+
+        this.filterField = new ccui.TextField();
+        this.filterField.setPlaceHolder("Filter levels...");
+        this.filterField.setFontSize(18);
+        this.filterField.setContentSize(this.POPUP_WIDTH - 40, 36);
+        this.filterField.setPosition(0, 5);
+        this.filterField.setAnchorPoint(cc.p(0, 0));
+        this.filterField.setMaxLength(50);
+        this.filterField.setMaxLengthEnabled(true);
+        var self2 = this;
+        this.filterField.addEventListener(function (sender, eventType) {
+            self2.filterText = sender.getString();
+            self2.applyFilter();
+        });
+        filterBg.addChild(this.filterField);
+
         // Create scroll view for levels
         this.scrollView = new ccui.ScrollView();
         this.scrollView.setDirection(ccui.ScrollView.DIR_VERTICAL);
-        this.scrollView.setContentSize(this.POPUP_WIDTH - 40, this.POPUP_HEIGHT - 120);
+        this.scrollView.setContentSize(this.POPUP_WIDTH - 40, this.POPUP_HEIGHT - 160);
         this.scrollView.setPosition(20, 60);
         this.scrollView.setBounceEnabled(true);
         this.popupBg.addChild(this.scrollView);
@@ -140,13 +164,36 @@ var LevelSelectorUI = cc.LayerColor.extend({
     },
 
     /**
+     * Filter levelList by filterText and repopulate
+     */
+    applyFilter: function () {
+        var keyword = this.filterText.toLowerCase().trim();
+        if (keyword === "") {
+            this.filteredList = this.levelList.slice();
+        } else {
+            this.filteredList = [];
+            for (var i = 0; i < this.levelList.length; i++) {
+                if (this.levelList[i].name.toLowerCase().indexOf(keyword) !== -1) {
+                    this.filteredList.push(this.levelList[i]);
+                }
+            }
+        }
+        this.populateList();
+    },
+
+    /**
      * Populate scroll view with level buttons
      */
     populateList: function () {
         this.container.removeAllChildren();
 
-        if (this.levelList.length === 0) {
-            var noLevelsLabel = new cc.LabelTTF("No maps found in res/maps/", "Arial", 18);
+        var list = this.filteredList || this.levelList;
+
+        if (list.length === 0) {
+            var noLevelsLabel = new cc.LabelTTF(
+                this.filterText ? "No results for \"" + this.filterText + "\"" : "No maps found in res/maps/",
+                "Arial", 18
+            );
             noLevelsLabel.setPosition(this.container.getContentSize().width / 2, 100);
             noLevelsLabel.setColor(cc.color(200, 200, 200));
             this.container.addChild(noLevelsLabel);
@@ -154,17 +201,17 @@ var LevelSelectorUI = cc.LayerColor.extend({
         }
 
         // Sort levels alphabetically
-        // this.levelList.sort(function (a, b) {
+        // list.sort(function (a, b) {
         //     return a.name.localeCompare(b.name);
         // });
 
-        var containerHeight = this.levelList.length * (this.ITEM_HEIGHT + this.ITEM_PADDING) + this.ITEM_PADDING;
+        var containerHeight = list.length * (this.ITEM_HEIGHT + this.ITEM_PADDING) + this.ITEM_PADDING;
         this.container.setContentSize(this.scrollView.getContentSize().width, containerHeight);
         this.scrollView.setInnerContainerSize(cc.size(this.scrollView.getContentSize().width, containerHeight));
 
         // Create button for each level
-        for (var i = 0; i < this.levelList.length; i++) {
-            var level = this.levelList[i];
+        for (var i = 0; i < list.length; i++) {
+            var level = list[i];
             var btn = this.createLevelButton(level, i);
             this.container.addChild(btn);
         }
@@ -224,6 +271,13 @@ var LevelSelectorUI = cc.LayerColor.extend({
      */
     show: function () {
         this.setVisible(true);
+
+        // Reset filter
+        this.filterText = "";
+        this.filteredList = null;
+        if (this.filterField) {
+            this.filterField.setString("");
+        }
 
         // Reload levels in case new ones were added
         this.levelList = [];

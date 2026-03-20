@@ -209,13 +209,15 @@ CoreGame.DropMgr = cc.Class.extend({
                             }
                         }
 
-                        // Diagonal: only pull 1x1 elements
+                        // Diagonal: only pull 1x1 elements that are blocked in their own column
                         if (!foundVertical && verticalBlocked && r - 1 >= 0) {
-                            if (c - 1 >= 0 && grid[r - 1][c - 1] != null && !_isMultiCell(grid[r - 1][c - 1])) {
+                            if (c - 1 >= 0 && grid[r - 1][c - 1] != null && !_isMultiCell(grid[r - 1][c - 1])
+                                && (isBlocked[r][c - 1] || grid[r][c - 1] != null)) {
                                 grid[r][c] = grid[r - 1][c - 1];
                                 grid[r - 1][c - 1] = null;
                                 changed = true;
-                            } else if (c + 1 < cols && grid[r - 1][c + 1] != null && !_isMultiCell(grid[r - 1][c + 1])) {
+                            } else if (c + 1 < cols && grid[r - 1][c + 1] != null && !_isMultiCell(grid[r - 1][c + 1])
+                                && (isBlocked[r][c + 1] || grid[r][c + 1] != null)) {
                                 grid[r][c] = grid[r - 1][c + 1];
                                 grid[r - 1][c + 1] = null;
                                 changed = true;
@@ -259,14 +261,16 @@ CoreGame.DropMgr = cc.Class.extend({
                             }
                         }
 
-                        // Diagonal: only pull 1x1 elements
+                        // Diagonal: only pull 1x1 elements that are blocked in their own column
                         if (!foundVertical && verticalBlocked && r + 1 < rows) {
                             cc.log("Check diagonal " + r + " " + c);
-                            if (c - 1 >= 0 && grid[r + 1][c - 1] != null && !_isMultiCell(grid[r + 1][c - 1])) {
+                            if (c - 1 >= 0 && grid[r + 1][c - 1] != null && !_isMultiCell(grid[r + 1][c - 1])
+                                && (isBlocked[r][c - 1] || grid[r][c - 1] != null)) {
                                 grid[r][c] = grid[r + 1][c - 1];
                                 grid[r + 1][c - 1] = null;
                                 changed = true;
-                            } else if (c + 1 < cols && grid[r + 1][c + 1] != null && !_isMultiCell(grid[r + 1][c + 1])) {
+                            } else if (c + 1 < cols && grid[r + 1][c + 1] != null && !_isMultiCell(grid[r + 1][c + 1])
+                                && (isBlocked[r][c + 1] || grid[r][c + 1] != null)) {
                                 grid[r][c] = grid[r + 1][c + 1];
                                 grid[r + 1][c + 1] = null;
                                 changed = true;

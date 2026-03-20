@@ -7,6 +7,8 @@ var CoreGame = CoreGame || {};
 
 CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
     _gridDrawNode: null,
+    _heatmapContainer: null,
+    _heatmapLabels: null,
 
     /**
      * Constructor
@@ -17,13 +19,17 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
         // Pass null for testBoxes since we don't need test data
         this._super(null, null, true);
         this.editMapUI = editMapUI;
+        this._heatmapContainer = null;
+        this._heatmapLabels = null;
         cc.log("BoardEditUI initialized with mapConfig");
+        this.drawGrid();
+        this.initializeHeatmap();
         return true;
     },
 
     onEnter: function () {
         this._super();
-        this.drawGrid();
+        
     },
 
     /**
@@ -77,10 +83,201 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
     },
 
     /**
-     * Refresh the grid overlay (call after slot enable states change).
+     * Initialize heatmap container and labels grid (called once in ctor)
+     * Creates label nodes for each cell but hides them initially
      */
-    refreshGrid: function () {
-        this.drawGrid();
+    initializeHeatmap: function () {
+        if (this._heatmapContainer) {
+            this._heatmapContainer.removeFromParent(true);
+        }
+
+        this._heatmapContainer = new cc.Node();
+        this._heatmapContainer.setPosition(0, 0);
+
+        var rows = this.boardMgr.rows;
+        var cols = this.boardMgr.cols;
+
+        var cs = CoreGame.Config.CELL_SIZE;
+        var bgSize = cs * 0.9;
+
+        // Create 2D array to store labels for quick access
+        this._heatmapLabels = [];
+        this._heatmapBgs = [];
+        for (var r = 0; r < rows; r++) {
+            this._heatmapLabels[r] = [];
+            this._heatmapBgs[r] = [];
+            for (var c = 0; c < cols; c++) {
+                var pos = this.boardMgr.gridToPixel(r, c);
+
+                // Background node (LayerColor is more reliable than DrawNode fill in HTML5)
+                var bg = new cc.LayerColor(cc.color(0, 0, 0, 160), bgSize, bgSize);
+                bg.setAnchorPoint(cc.p(0.5, 0.5));
+                bg.setPosition(pos.x - bgSize / 2, pos.y - bgSize / 2);
+                bg.setVisible(false);
+                this._heatmapContainer.addChild(bg, 0);
+                this._heatmapBgs[r][c] = bg;
+
+                // Create label
+                var label = null;
+                try {
+                    label = new cc.LabelTTF("0", "font/BalooPaaji2-Regular.ttf", 28);
+                } catch (e) {
+                    cc.log("Failed to create LabelTTF for heatmap:", e);
+                    continue;
+                }
+
+                if (label) {
+                    label.setPosition(pos.x, pos.y);
+                    label.setColor(cc.color(255, 220, 50));  // Orange-yellow color
+                    label.setOpacity(255);
+                    label.setVisible(false);  // Hide by default
+                    this._heatmapContainer.addChild(label, 1);
+                }
+
+                this._heatmapLabels[r][c] = label;
+            }
+        }
+
+        this.addChild(this._heatmapContainer, 2);
+        cc.log("Heatmap initialized: " + rows + "x" + cols + " labels");
+    },
+
+    /**
+     * Update heatmap with current HP values
+     * Modifies existing label text instead of recreating them
+     */
+    updateHeatmap: function () {
+        if (!this._heatmapContainer || !this._heatmapLabels) {
+            cc.log("Heatmap not initialized");
+            return;
+        }
+
+        var rows = this.boardMgr.rows;
+        var cols = this.boardMgr.cols;
+        var hpMap = {};  // Map to track which elements we've already calculated
+
+        // First pass: identify all elements and their occupied cells
+        for (var r = 0; r < rows; r++) {
+            for (var c = 0; c < cols; c++) {
+                var slot = this.boardMgr.mapGrid[r][c];
+                if (!slot || !slot.enable || !slot.listElement) continue;
+
+                // Process each element in the slot
+                for (var i = 0; i < slot.listElement.length; i++) {
+                    var elem = slot.listElement[i];
+                    if (!elem) continue;
+
+                    var elemId = elem.uid || ("elem_" + r + "_" + c + "_" + i);
+
+                    // Skip if already processed
+                    if (hpMap[elemId]) continue;
+
+                    // Get element HP and grid cells
+                    var hp = elem.hitPoints || elem.hp || 1;
+                    var gridCells = [];
+                    if (elem.getGridCells) {
+                        gridCells = elem.getGridCells();
+                    } else {
+                        gridCells = [{x: r, y: c}];
+                    }
+                    var cellCount = gridCells.length || 1;
+
+                    // Store HP information with cell count
+                    hpMap[elemId] = {
+                        hp: hp,
+                        cellCount: cellCount,
+                        gridCells: gridCells
+                    };
+                }
+            }
+        }
+
+        // Clear all labels and bgs first
+        for (var r = 0; r < rows; r++) {
+            if (!this._heatmapLabels[r]) continue;
+            for (var c = 0; c < cols; c++) {
+                var label = this._heatmapLabels[r][c];
+                if (label) label.setVisible(false);
+                var bg = this._heatmapBgs && this._heatmapBgs[r] && this._heatmapBgs[r][c];
+                if (bg) bg.setVisible(false);
+            }
+        }
+
+        // Second pass: update labels with HP values
+        var labelCount = 0;
+        for (var elemId in hpMap) {
+            var hpInfo = hpMap[elemId];
+            var hpPerCell = hpInfo.cellCount > 0 ? Math.ceil(hpInfo.hp / hpInfo.cellCount) : 1;
+
+            for (var j = 0; j < hpInfo.gridCells.length; j++) {
+                var cell = hpInfo.gridCells[j];
+                var cellR = cell.x;
+                var cellC = cell.y;
+
+                // Validate cell position
+                if (cellR < 0 || cellR >= rows || cellC < 0 || cellC >= cols) continue;
+                if (!this._heatmapLabels[cellR] || !this._heatmapLabels[cellR][cellC]) continue;
+
+                // Update existing label
+                var label = this._heatmapLabels[cellR][cellC];
+                if (label) {
+                    try {
+                        if (label.setString) {
+                            label.setString(String(hpPerCell));
+                        } else if (label.setText) {
+                            label.setText(String(hpPerCell));
+                        }
+                        label.setVisible(true);
+                        var bg = this._heatmapBgs && this._heatmapBgs[cellR] && this._heatmapBgs[cellR][cellC];
+                        if (bg) {
+                            var bgColor = this._hpToColor(hpPerCell);
+                            bg.setColor(cc.color(bgColor.r, bgColor.g, bgColor.b));
+                            bg.setOpacity(bgColor.a);
+                            bg.setVisible(true);
+                        }
+                        labelCount++;
+                    } catch (e) {
+                        cc.log("Failed to update label at " + cellR + "," + cellC + ":", e);
+                    }
+                }
+            }
+        }
+
+        cc.log("Heatmap updated: " + labelCount + " labels visible");
+    },
+
+    /**
+     * Return a LayerColor-compatible color based on HP value (Max HP = 4)
+     * 1 → green, 2 → yellow, 3 → orange, 4 → red
+     */
+    _hpToColor: function (hp) {
+        var MAX_HP = 4;
+        var clamped = Math.max(1, Math.min(hp, MAX_HP));
+        var palette = [
+            cc.color(50,  200,  50, 200),   // HP 1 - green
+            cc.color(200, 200,  50, 200),   // HP 2 - yellow
+            cc.color(220, 120,  30, 200),   // HP 3 - orange
+            cc.color(220,  50,  50, 200)    // HP 4 - red
+        ];
+        return palette[clamped - 1];
+    },
+
+    /**
+     * Refresh heatmap display (call after element changes)
+     */
+    refreshHeatmap: function () {
+        this.updateHeatmap();
+    },
+
+    /**
+     * Draw a heatmap showing HP values of elements occupying each slot.
+     * For multi-cell elements, divides HP equally among occupied cells.
+     */
+    drawHeatmap: function () {
+        // This method is kept for backward compatibility
+        // Use initializeHeatmap() and updateHeatmap() instead
+        this.initializeHeatmap();
+        this.updateHeatmap();
     },
 
     /**
@@ -197,6 +394,7 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
 
         this.renderBoardBorder();
         this.refreshGrid();
+        this.refreshHeatmap();
 
         cc.log("Map configuration loaded successfully");
     },
@@ -350,32 +548,37 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
                 elementToRemove.remove();
                 cc.log("Removed element with LayerBehavior:", elementToRemove.layerBehavior, "at", row, col);
             }
+            // this.refreshHeatmap();
         }
     },
 
     removeAllElements: function () {
         cc.log("Remove All Border");
-        for (let border of this.listBorder) {
-            border.removeFromParent(true);
-        }
-        this.listBorder = [];
+        // for (let border of this.listBorder) {
+        //     border.removeFromParent(true);
+        // }
+        // this.listBorder = [];
 
-        cc.log("Remove All Elemtn");
+        // Clear Grass/Cloud connected borders (GridBorderMgr)
+        // if (this.gridBorderMgr) {
+        //     this.gridBorderMgr.clearAll();
+        // }
+
+        cc.log("Remove All Elements");
         for (var r = 0; r < this.boardMgr.rows; r++) {
             for (var c = 0; c < this.boardMgr.cols; c++) {
-                // remove all elements at (r, c)
                 var slot = this.boardMgr.mapGrid[r][c];
                 if (!slot) continue;
 
-                var elements = slot.listElement;
-                // if (!elements || elements.length === 0) continue;
-
+                var elements = slot.listElement.slice(); // copy to avoid mutation during iteration
                 for (var i = 0; i < elements.length; i++) {
                     elements[i].remove();
                 }
                 slot.setEnable(false);
             }
         }
+
+        // this.refreshHeatmap();
     },
 
     enableSlot: function (row, col, enable) {
@@ -417,6 +620,7 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
                     }
                 }
             }
+            // this.refreshHeatmap();
             return element;
         }
         return null;

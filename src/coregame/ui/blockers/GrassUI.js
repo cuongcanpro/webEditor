@@ -86,7 +86,10 @@ CoreGame.GrassUI = CoreGame.ElementUI.extend({
     },
 
     removeFromParent: function (clean) {
-        this.sprBg.removeFromParent(clean);
+        cc.log("Run here removeFromParent Grass ========  ");
+        if (this.sprBg && this.sprBg.getParent()) {
+            this.sprBg.removeFromParent(clean);
+        }
         this._super(clean);
     }
 });

@@ -48,6 +48,8 @@ var EditMapSceneNew = cc.Layer.extend({
     _btnDelete: null,
     _btnSpawn: null,
     _btnSlot: null,
+    _btnHeatMap: null,
+    _heatmapOn: false,
 
     // Metrics labels
     _lblActiveCells: null,
@@ -63,6 +65,18 @@ var EditMapSceneNew = cc.Layer.extend({
     _agentKey: "GreedyBot",
     _btnAgent: null,
     _tfSaveName: null,
+
+    // Gem color selector
+    _gemColorActive: null,   // [bool x6] — which gem types (1-6) are allowed to spawn
+    _colorButtons: null,     // [ccui.Button x6]
+    _GEM_COLORS: [
+        cc.color(220, 60,  60),   // 1 Red
+        cc.color(60,  120, 220),  // 2 Blue
+        cc.color(60,  200, 80),   // 3 Green
+        cc.color(220, 200, 50),   // 4 Yellow
+        cc.color(160, 60,  220),  // 5 Purple
+        cc.color(220, 130, 40),   // 6 Orange
+    ],
 
     // Max moves used in the difficulty simulation (fixed safety cap)
     MAX_SIM_MOVES: 100,
@@ -83,6 +97,33 @@ var EditMapSceneNew = cc.Layer.extend({
         this._undoStack = [];
         this._redoStack = [];
         this.initUI();
+    },
+
+    /**
+     * Reload or rebuild the element selector list.
+     * - If the ElementSelectorUI provides a reload/reloadElements API, call it.
+     * - Otherwise destroy and recreate the selector via setupElementSelector().
+     */
+    reloadElementSelector: function () {
+        try {
+            if (this.elementSelector) {
+                if (typeof this.elementSelector.reload === 'function') {
+                    this.elementSelector.reload();
+                    return;
+                }
+                if (typeof this.elementSelector.reloadElements === 'function') {
+                    this.elementSelector.reloadElements();
+                    return;
+                }
+                // Fallback: remove and recreate
+                this.elementSelector.removeFromParent(true);
+                this.elementSelector = null;
+            }
+        } catch (e) {
+            cc.log("reloadElementSelector error:", e);
+        }
+        // Rebuild selector UI
+        this.setupElementSelector();
     },
 
     onEnter: function () {
@@ -171,7 +212,8 @@ var EditMapSceneNew = cc.Layer.extend({
         // BOARD_OFFSET: where board cells start inside the boardUI layer (read-only here)
         var offX = CoreGame.Config.BOARD_OFFSET_X || 0;
         var offY = CoreGame.Config.BOARD_OFFSET_Y || 0;
-
+        this.saveOffsetX = offX;
+        this.saveOffsetY = offY;
         // Panel geometry (resolved after doLayout)
         var topH = this.pTop ? this.pTop.getContentSize().height : 50;
         var toolW = this.pTool ? this.pTool.getContentSize().width : 200;
@@ -236,7 +278,7 @@ var EditMapSceneNew = cc.Layer.extend({
             var btnLoad     = UIUtils.seekWidgetByName(pFunc, "btnLoad");
             var btnSave     = UIUtils.seekWidgetByName(pFunc, "btnSave");
             var btnPlay     = UIUtils.seekWidgetByName(pFunc, "btnPlay");
-            var btnPlayTest = UIUtils.seekWidgetByName(pFunc, "btnPlayTest");
+            var btnHeatMap = UIUtils.seekWidgetByName(pFunc, "btnHeatMap");
             var btnUndo     = UIUtils.seekWidgetByName(pFunc, "btnUndo");
             var btnRedo     = UIUtils.seekWidgetByName(pFunc, "btnRedo");
 
@@ -276,8 +318,9 @@ var EditMapSceneNew = cc.Layer.extend({
                     if (type === ccui.Widget.TOUCH_ENDED) { self.testMap(); }
                 });
             }
-            if (btnPlayTest) {
-                btnPlayTest.addTouchEventListener(function (sender, type) {
+            if (btnHeatMap) {
+                self._btnHeatMap = btnHeatMap;
+                btnHeatMap.addTouchEventListener(function (sender, type) {
                     if (type === ccui.Widget.TOUCH_ENDED) { self.showHeatmap(); }
                 });
             }
@@ -316,7 +359,25 @@ var EditMapSceneNew = cc.Layer.extend({
     },
 
     showHeatmap: function () {
-        cc.log("[EditMap] Heatmap not yet implemented");
+        if (!this.boardUI) return;
+
+        this._heatmapOn = !this._heatmapOn;
+
+        if (this._heatmapOn) {
+            this.boardUI.refreshHeatmap();
+            if (this.boardUI._heatmapContainer) {
+                this.boardUI._heatmapContainer.setVisible(true);
+            }
+        } else {
+            if (this.boardUI._heatmapContainer) {
+                this.boardUI._heatmapContainer.setVisible(false);
+            }
+        }
+
+        if (this._btnHeatMap) {
+            this._btnHeatMap.setColor(this._heatmapOn ? cc.color(255, 200, 40) : cc.color(255, 255, 255));
+        }
+        cc.log("[EditMap] Heatmap " + (this._heatmapOn ? "ON" : "OFF"));
     },
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -413,7 +474,14 @@ var EditMapSceneNew = cc.Layer.extend({
         this.pRight.addChild(pObj);
         this.targetListUI = new TargetListUI(pObj);
 
-        // ── 2. GAME CONFIG (Turn / TPP / Spawn) ──────────────────────────
+        // ── 2. GEM COLORS ─────────────────────────────────────────────────
+        var gemH = 76;
+        curY -= gemH;
+        var pGem = this._makeRightPanel(W, gemH, curY, cc.color(22, 30, 55));
+        this.pRight.addChild(pGem);
+        this._buildGemColorSection(pGem);
+
+        // ── 3. GAME CONFIG (Turn / TPP / Spawn) ──────────────────────────
         var cfgH = 92;
         curY -= cfgH;
         var pCfg = this._makeRightPanel(W, cfgH, curY, cc.color(25, 32, 58));
@@ -553,6 +621,85 @@ var EditMapSceneNew = cc.Layer.extend({
             cc.director.getRunningScene().addChild(dialog, 999);
             dialog.show();
         });
+    },
+
+    _buildGemColorSection: function (panel) {
+        var W = panel.getContentSize().width;
+        var H = panel.getContentSize().height;
+        var HDR_H = 22;
+        var PAD = 6;
+        var GAP = 3;
+        var btnSize = Math.floor((W - PAD * 2 - GAP * 5) / 6);
+        var imgScale = (btnSize - 4) / 64; // gem sprites are ~64px natural size
+
+        this._makeSectionHeader(panel, "GEM COLORS");
+        this._gemColorActive = [true, true, true, true, true, true];
+        this._colorButtons = [];
+
+        var btnY = H - HDR_H - PAD - btnSize / 2;
+        var self = this;
+
+        for (var i = 0; i < 6; i++) {
+            // Background panel — green = active, dark = inactive
+            var bg = new ccui.Layout();
+            bg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+            bg.setBackGroundColor(cc.color(30, 120, 30));
+            bg.setContentSize(btnSize, btnSize);
+            bg.setAnchorPoint(cc.p(0, 0.5));
+            bg.setPosition(PAD + i * (btnSize + GAP), btnY);
+            panel.addChild(bg, 1);
+            this._colorButtons.push(bg);
+
+            // Gem image
+            var gemSprite = new cc.Sprite("res/high/game/element/" + (i + 1) + ".png");
+            if (gemSprite) {
+                gemSprite.setScale(imgScale);
+                gemSprite.setPosition(btnSize / 2, btnSize / 2);
+                bg.addChild(gemSprite, 1);
+            }
+
+            // Touch listener
+            (function (idx, bgNode) {
+                var listener = cc.EventListener.create({
+                    event: cc.EventListener.TOUCH_ONE_BY_ONE,
+                    swallowTouches: true,
+                    onTouchBegan: function (touch, event) {
+                        var loc = bgNode.convertToNodeSpace(touch.getLocation());
+                        var sz = bgNode.getContentSize();
+                        return cc.rectContainsPoint(cc.rect(0, 0, sz.width, sz.height), loc);
+                    },
+                    onTouchEnded: function (touch, event) {
+                        self._gemColorActive[idx] = !self._gemColorActive[idx];
+                        self._updateGemColorBtn(bgNode, self._gemColorActive[idx]);
+                    }
+                });
+                cc.eventManager.addListener(listener, bgNode);
+            })(i, bg);
+        }
+
+        // Count label "X/6" at bottom-right
+        this._lblGemCount = new ccui.Text("6/6", "font/BalooPaaji2-Regular.ttf", 10);
+        this._lblGemCount.setColor(cc.color(160, 180, 220));
+        this._lblGemCount.setAnchorPoint(cc.p(1, 0.5));
+        this._lblGemCount.setPosition(W - 4, 8);
+        panel.addChild(this._lblGemCount, 1);
+    },
+
+    _updateGemColorBtn: function (bgNode, active) {
+        bgNode.setBackGroundColor(active ? cc.color(30, 120, 30) : cc.color(30, 30, 30));
+        // Dim gem sprite inside
+        var children = bgNode.getChildren();
+        for (var k = 0; k < children.length; k++) {
+            children[k].setOpacity(active ? 255 : 70);
+        }
+        // Update count label
+        if (this._gemColorActive && this._lblGemCount) {
+            var count = 0;
+            for (var i = 0; i < this._gemColorActive.length; i++) {
+                if (this._gemColorActive[i]) count++;
+            }
+            this._lblGemCount.setString(count + "/6");
+        }
     },
 
     _buildMetricsSection: function (panel) {
@@ -785,6 +932,22 @@ var EditMapSceneNew = cc.Layer.extend({
             }
         });
         this.rootNode.addChild(btnCreate, 5);
+
+        // Refresh button to reload element list (useful after adding new blockers/elements)
+        var btnRefresh = new ccui.Button();
+        btnRefresh.setScale9Enabled(true);
+        btnRefresh.setContentSize(80, CREATE_BTN_H - 6);
+        btnRefresh.setTitleText("Refresh");
+        btnRefresh.setTitleFontSize(11);
+        btnRefresh.setColor(cc.color(100, 200, 120));
+        btnRefresh.setAnchorPoint(cc.p(0, 0));
+        btnRefresh.setPosition(20 + (toolW - 4) - 80, botH + 3);
+        btnRefresh.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) {
+                self.reloadElementSelector();
+            }
+        });
+        this.rootNode.addChild(btnRefresh, 5);
     },
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -1031,6 +1194,13 @@ var EditMapSceneNew = cc.Layer.extend({
         mapData.tpp = parseFloat(this._tfTPP ? this._tfTPP.getString() : "1.0") || 1.0;
         mapData.spawnStrategy = this._spawnStrategyKey || "";
         mapData.agentType = this._agentKey || "GreedyBot";
+        var gemTypes = [];
+        if (this._gemColorActive) {
+            for (var gi = 0; gi < this._gemColorActive.length; gi++) {
+                if (this._gemColorActive[gi]) gemTypes.push(gi + 1);
+            }
+        }
+        mapData.gemTypes = gemTypes.length > 0 ? gemTypes : [1, 2, 3, 4, 5, 6];
 
         var jsonStr = JSON.stringify(mapData, null, 4);
         var filePath = "res/maps/" + mapName + ".json";
@@ -1140,6 +1310,24 @@ var EditMapSceneNew = cc.Layer.extend({
             this._agentKey = data.agentType;
             if (this._btnAgent) this._btnAgent.setTitleText(data.agentType);
         }
+        if (this._gemColorActive && this._colorButtons) {
+            // gemTypes is array of active type numbers [1..6]; default all active
+            var activeSet = {};
+            if (data.gemTypes && data.gemTypes.length > 0) {
+                for (var gi = 0; gi < data.gemTypes.length; gi++) {
+                    activeSet[data.gemTypes[gi]] = true;
+                }
+            } else {
+                for (var gi = 1; gi <= 6; gi++) activeSet[gi] = true;
+            }
+            for (var ci = 0; ci < 6; ci++) {
+                var active = !!activeSet[ci + 1];
+                this._gemColorActive[ci] = active;
+                if (this._colorButtons[ci]) {
+                    this._updateGemColorBtn(this._colorButtons[ci], active);
+                }
+            }
+        }
 
         if (this.boardInfoUI) {
             this.boardInfoUI.setInfo({
@@ -1161,8 +1349,15 @@ var EditMapSceneNew = cc.Layer.extend({
         mapData.levelId = 0;
         mapData.reward = 100;
         mapData.spawnStrategy = this._spawnStrategyKey || "RandomSpawnStrategy";
-
         mapData.numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "1") || 1;
+
+        var gemTypes = [];
+        if (this._gemColorActive) {
+            for (var gi = 0; gi < this._gemColorActive.length; gi++) {
+                if (this._gemColorActive[gi]) gemTypes.push(gi + 1);
+            }
+        }
+        mapData.gemTypes = gemTypes.length > 0 ? gemTypes : [1, 2, 3, 4, 5, 6];
 
         // Switch to portrait (game) resolution before running GameUI
         this._applyResolution(false);
@@ -1198,6 +1393,8 @@ var EditMapSceneNew = cc.Layer.extend({
                 // Portrait: use standard game resolution (taller than wide)
                 cc.view.setDesignResolutionSize(designSize.width, designSize.height, cc.ResolutionPolicy.FIXED_HEIGHT);
             }
+            CoreGame.Config.BOARD_OFFSET_X = this.saveOffsetX || 0;
+            CoreGame.Config.BOARD_OFFSET_Y = this.saveOffsetY || 0;
             return;
         }
         var targetW = landscape ? w : h;
@@ -1247,6 +1444,14 @@ var EditMapSceneNew = cc.Layer.extend({
 
         var numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "50") || 50;
         var targetEntries = this.targetListUI ? this.targetListUI.getEntries() : [];
+
+        var gemTypes = [];
+        if (this._gemColorActive) {
+            for (var gi = 0; gi < this._gemColorActive.length; gi++) {
+                if (this._gemColorActive[gi]) gemTypes.push(gi + 1);
+            }
+        }
+        if (gemTypes.length > 0) boardMgr.gemTypes = gemTypes;
 
         CoreGame.DifficultyCalc.NUM_EPISODES = numTest;
         var targets = {};

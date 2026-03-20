@@ -273,6 +273,18 @@ var ElementSelectorUI = cc.Node.extend({
     },
 
     /**
+     * Reload the element list and refresh the grid
+     * Clears current selection and reloads all elements from scratch
+     */
+    reload: function () {
+        this.elements = [];
+        this.selectedType = null;
+        this.clearSelection();
+        this.loadElements();
+        cc.log("[ElementSelectorUI] Reloaded element list");
+    },
+
+    /**
      * Get currently selected type
      */
     getSelectedType: function () {

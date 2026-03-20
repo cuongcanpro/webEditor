@@ -55,7 +55,7 @@ var SceneLoading = cc.Scene.extend({
         this.addChild(subLabel);
 
         // Schedule delayed transition
-        this.scheduleOnce(this.goToNextScene, 0.2);
+        this.scheduleOnce(this.goToNextScene, 0.1);
     },
 
     goToNextScene: function () {
