@@ -27,6 +27,7 @@ CoreGame.BoardMgr = cc.Class.extend({
     requiredMatching: false,
     requiredRefill: false,
     playerMoved: false,
+    didPlayerSwap: false,   // true only on real player swaps (not shuffle)
 
     // Additional properties
     rows: 0,
@@ -687,6 +688,7 @@ CoreGame.BoardMgr = cc.Class.extend({
     onSelectLastGrid: function () {
         if (this.selectedSlot) {
             this.playerMoved = this.selectedSlot.onActive();
+            if (this.playerMoved) this.didPlayerSwap = true;
         }
     },
 
@@ -728,6 +730,7 @@ CoreGame.BoardMgr = cc.Class.extend({
             // Slot is truly empty — try move-to-empty
             var emptySwap = new CoreGame.MoveToEmptySwap(this);
             this.playerMoved = emptySwap.swap(element1, slot2);
+            if (this.playerMoved) this.didPlayerSwap = true;
             return;
         }
         this.state = CoreGame.BoardState.SWAPPING;
@@ -736,6 +739,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         var swapLogic = this.getSwapLogic(element1, element2);
         //
         this.playerMoved = swapLogic.swap(element1, element2);
+        if (this.playerMoved) this.didPlayerSwap = true;
 
         // State update handled by swapLogic timers
     },
@@ -758,6 +762,20 @@ CoreGame.BoardMgr = cc.Class.extend({
 
 
     // ========= Match Methods =========
+
+    /**
+     * Set remaining move count (XOR-obfuscated storage)
+     */
+    setMove: function (move) {
+        this._move = move ^ 10;
+    },
+
+    /**
+     * Get remaining move count
+     */
+    getMove: function () {
+        return (this._move || 0) ^ 10;
+    },
 
     /**
      * Set matching required flag
@@ -931,6 +949,16 @@ CoreGame.BoardMgr = cc.Class.extend({
      * Override this or set as callback
      */
     onFinishTurn: function () {
+        // Decrement move count only for real player swaps (not shuffle)
+        if (this.didPlayerSwap) {
+            this.didPlayerSwap = false;
+            var newMove = this.getMove() - 1;
+            this.setMove(newMove);
+            if (this.gameUI && this.gameUI.onMoveUpdate) {
+                this.gameUI.onMoveUpdate(newMove);
+            }
+        }
+
         // Trigger END_TURN actions on all elements via global event
         CoreGame.EventMgr.emit("custom" + CoreGame.ElementObject.ACTION_TYPE.END_TURN, {
             boardMgr: this

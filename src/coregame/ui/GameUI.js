@@ -1,4 +1,4 @@
-﻿/**
+/**
  * GameUI - Main game interface wrapper
  * Contains BoardUI with additional game UI elements:
  * - Back button to return to BlockCreatorUI
@@ -94,6 +94,7 @@ CoreGame.GameUI = cc.Layer.extend({
         this.addChild(this.gameBoardEffectLayer);
 
         this.boardUI.boardMgr.gameUI = this;
+        this.boardUI.boardMgr.setMove(levelConfig.mapConfig ? (levelConfig.mapConfig.numMove || 0) : 0);
 
         // Apply spawn strategy from map config if specified
         var stratKey = levelConfig.mapConfig && levelConfig.mapConfig.spawnStrategy;
@@ -274,6 +275,15 @@ CoreGame.GameUI = cc.Layer.extend({
      */
     onExit: function () {
         this._super();
+    },
+
+    /**
+     * Called by BoardMgr when move count changes
+     */
+    onMoveUpdate: function (move) {
+        if (this.gameBoardInfoUI) {
+            this.gameBoardInfoUI.setMove(move);
+        }
     },
 
     /**

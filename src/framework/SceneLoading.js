@@ -31,10 +31,9 @@ var SceneLoading = cc.Scene.extend({
         var targetW = landscape ? designSize.height : designSize.width;
         var targetH = landscape ? designSize.width : designSize.height;
 
-        // Trên web, frame size phải là kích thước viewport thực, không phải design size
-        if (cc.sys.isNative) {
-            cc.view.setFrameSize(targetW, targetH);
-        }
+        // Set lại FrameSize — hoạt động trên cả Simulator (Win32) và Web
+        // (tương đương chọn kích thước trong menu View > Device của Simulator)
+        cc.view.setFrameSize(targetW, targetH);
 
         var winSize = cc.director.getWinSize();
 
