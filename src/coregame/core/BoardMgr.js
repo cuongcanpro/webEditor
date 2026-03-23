@@ -873,7 +873,12 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         // Wait for animation and then check for matches
         var self = this;
+        var shuffledGems = gems;
         CoreGame.TimedActionMgr.addAction(duration + 0.1, function () {
+            for (var i = 0; i < shuffledGems.length; i++) {
+                shuffledGems[i].setState(CoreGame.ElementState.IDLE);
+            }
+            self.playerMoved = true;
             self.setMatchingRequired(true);
             if (callback) callback();
         }, this);

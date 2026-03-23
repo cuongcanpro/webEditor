@@ -274,17 +274,17 @@ var EditMapSceneNew = cc.Layer.extend({
 
         var pFunc = this.pTop.getChildByName("pFunction");
         if (pFunc) {
-            var btnNew      = UIUtils.seekWidgetByName(pFunc, "btnNew");
-            var btnLoad     = UIUtils.seekWidgetByName(pFunc, "btnLoad");
-            var btnSave     = UIUtils.seekWidgetByName(pFunc, "btnSave");
-            var btnPlay     = UIUtils.seekWidgetByName(pFunc, "btnPlay");
+            var btnNew = UIUtils.seekWidgetByName(pFunc, "btnNew");
+            var btnLoad = UIUtils.seekWidgetByName(pFunc, "btnLoad");
+            var btnSave = UIUtils.seekWidgetByName(pFunc, "btnSave");
+            var btnPlay = UIUtils.seekWidgetByName(pFunc, "btnPlay");
             var btnHeatMap = UIUtils.seekWidgetByName(pFunc, "btnHeatMap");
-            var btnUndo     = UIUtils.seekWidgetByName(pFunc, "btnUndo");
-            var btnRedo     = UIUtils.seekWidgetByName(pFunc, "btnRedo");
+            var btnUndo = UIUtils.seekWidgetByName(pFunc, "btnUndo");
+            var btnRedo = UIUtils.seekWidgetByName(pFunc, "btnRedo");
 
             // Visual styling
-            if (btnSave)     { btnSave.setColor(cc.color(40, 110, 220)); }
-            if (btnPlay)     { btnPlay.setColor(cc.color(35, 170, 75)); }
+            if (btnSave) { btnSave.setColor(cc.color(40, 110, 220)); }
+            if (btnPlay) { btnPlay.setColor(cc.color(35, 170, 75)); }
 
             // Handlers
             if (btnNew) {
@@ -711,10 +711,10 @@ var EditMapSceneNew = cc.Layer.extend({
         this._makeSectionHeader(panel, "METRICS");
 
         var lines = [
-            { key: "_lblActiveCells", label: "Cells:",    yellow: false },
-            { key: "_lblBlockers",    label: "Blockers:", yellow: false },
-            { key: "_lblTotalHP",     label: "Total HP:", yellow: false },
-            { key: "_lblDensity",     label: "Density:",  yellow: true  }
+            { key: "_lblActiveCells", label: "Cells:", yellow: false },
+            { key: "_lblBlockers", label: "Blockers:", yellow: false },
+            { key: "_lblTotalHP", label: "Total HP:", yellow: false },
+            { key: "_lblDensity", label: "Density:", yellow: true }
         ];
 
         for (var i = 0; i < lines.length; i++) {
@@ -928,7 +928,10 @@ var EditMapSceneNew = cc.Layer.extend({
         btnCreate.setPosition(2, botH + 3);
         btnCreate.addTouchEventListener(function (sender, type) {
             if (type === ccui.Widget.TOUCH_ENDED) {
-                cc.log("[EditMap] Create Blocker / Monster — not yet implemented");
+                GeminiDialog.show(function () {
+                    // Called when the dialog is closed (X or Manual Tool button)
+                    self.reloadElementSelector();
+                });
             }
         });
         this.rootNode.addChild(btnCreate, 5);
@@ -1458,6 +1461,7 @@ var EditMapSceneNew = cc.Layer.extend({
         targetEntries.forEach(function (t) { targets[t.id] = t.count; });
 
         var self = this;
+        var savedState = boardMgr.getBoardState();
         CoreGame.FakeUI.start();
         CoreGame.DifficultyCalc.calculate(
             boardMgr,
@@ -1466,6 +1470,7 @@ var EditMapSceneNew = cc.Layer.extend({
             null,
             function (report) {
                 CoreGame.FakeUI.restore();
+                boardMgr.setBoardState(savedState);
                 var dialog = new BenchDiffDialog(report);
                 self.addChild(dialog, 1000);
                 dialog.show();
