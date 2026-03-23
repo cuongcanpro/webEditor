@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GameUI - Main game interface wrapper
  * Contains BoardUI with additional game UI elements:
  * - Back button to return to BlockCreatorUI

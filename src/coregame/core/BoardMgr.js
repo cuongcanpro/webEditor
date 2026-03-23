@@ -979,8 +979,13 @@ CoreGame.BoardMgr = cc.Class.extend({
         }
         if (isWin) {
             this.state = CoreGame.BoardState.END_GAME;
-            if (this.gameUI) {
-                this.gameUI.onEndGame();
+            if (cc.sys.isNative) {
+                if (this.gameUI) {
+                    this.gameUI.onEndGame();
+                }
+            }
+            else {
+                alert("Level Complete!");
             }
         } else {
             // Check for available moves — if no possible moves, shuffle the board
