@@ -36,7 +36,7 @@
             BoardConst.zOrder.MATCH_4_EXPLODE + 1
         );
         timelineFx.runAction(cc.sequence(
-            cc.delayTime(PowerUp.DELETE_DELAY),
+            cc.delayTime(0.2),
             cc.removeSelf()
         ));
 
