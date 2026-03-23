@@ -30,7 +30,7 @@
 
         let pos = this.getParent().convertToWorldSpace(this.getPosition());
         let timelineFx = gv.createTLFX(
-            Bomb.TLFX_NAME,
+            "pu_giftbox_explosion",
             pos,
             this.getParent(),
             BoardConst.zOrder.MATCH_4_EXPLODE + 1
