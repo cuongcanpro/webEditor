@@ -12,6 +12,7 @@ CoreGame.PinwheelUI = CoreGame.ElementUI.extend({
     ctor: function (element) {
         this._super(element);
         this.colorSpines = {};
+        // this.sprite.setScale(0.5);
         this.initSpine();
         return true;
     },
@@ -25,6 +26,7 @@ CoreGame.PinwheelUI = CoreGame.ElementUI.extend({
             this.spineFx = gv.createSpineAnimation(resAni[baseKey] + "_fx");
             this.addChild(this.spineFx);
             this.spineFx.setAnimation(0, 'idle', true);
+            this.spineFx.setScale(0.6); // Compromise
         }
 
         // Color Spines (Overlays)
@@ -44,11 +46,12 @@ CoreGame.PinwheelUI = CoreGame.ElementUI.extend({
                 var sp = gv.createSpineAnimation(resAni[animName] + key);
                 this.addChild(sp);
                 this.colorSpines[id] = sp;
+                sp.setScale(0.6);
             }
         }
 
-        this.setScale(0.85);
-        this.setScale(0.6); // Compromise
+        // this.setScale(0.85);
+        
     },
 
     /**

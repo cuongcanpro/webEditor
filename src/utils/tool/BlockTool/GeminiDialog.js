@@ -247,22 +247,28 @@ var GeminiDialog = cc.Layer.extend({
         var xhr = cc.loader.getXMLHttpRequest();
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300) {
-                try {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.models && response.models.length > 0) {
-                        self.availableModels = response.models;
-                        if (self.availableModels.indexOf(self.MODEL) === -1) {
-                            self.MODEL = self.availableModels[0];
-                            self.modelBtn.setTitleText(self.MODEL);
+            if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.models && response.models.length > 0) {
+                            self.availableModels = response.models;
+                            if (self.availableModels.indexOf(self.MODEL) === -1) {
+                                self.MODEL = self.availableModels[0];
+                                self.modelBtn.setTitleText(self.MODEL);
+                            }
                         }
+                    } catch (e) {
+                        self.appendMessage("System", "Error parsing available models list.");
                     }
-                } catch (e) {
-                    cc.log("Error parsing models:", e.message);
+                } else if (xhr.status > 0) {
+                    self.appendMessage("System", "Could not fetch model list (Status " + xhr.status + "). Check server or API key.");
                 }
             }
         };
-        xhr.onerror = function () { cc.log("Failed to fetch models"); };
+        xhr.onerror = function () {
+            self.appendMessage("System", "Failed to connect to Local Server for model list.");
+        };
         xhr.send();
     },
 
@@ -291,23 +297,24 @@ var GeminiDialog = cc.Layer.extend({
     },
 
     startTypingAnimation: function () {
+        this.stopTypingAnimation();
         this._typingDots = 0;
-        this._typingBaseText = this.conversationText.replace(/Running Local Agent Tools\.*/g, "Running Local Agent Tools");
         var self = this;
+
         this.schedule(function () {
             self._typingDots = (self._typingDots + 1) % 4;
             var dots = "";
             for (var i = 0; i < self._typingDots; i++) dots += ".";
-            // Replace last occurrence of the typing indicator
-            var base = self._typingBaseText;
-            self.conversationText = base + dots;
-            self.updateChatLayout();
+            
+            // Only update the display string with dots, don't change this.conversationText
+            self.chatText.setString(self.conversationText + "\n(Agent Thinking" + dots + ")");
             self.scrollView.scrollToBottom(0.1, false);
         }, 0.5, cc.REPEAT_FOREVER, 0, "typingAnim");
     },
 
     stopTypingAnimation: function () {
         this.unschedule("typingAnim");
+        this.updateChatLayout(); // Restore normal display
     },
 
     updateChatLayout: function () {
@@ -349,7 +356,7 @@ var GeminiDialog = cc.Layer.extend({
 
         this.inputBox.setString("");
         this.appendMessage("You", text);
-        this.appendMessage("Gemini", "Requesting Agent Task...");
+        this.appendMessage("Gemini", "Processing request...");
         this.startTypingAnimation();
 
         var self = this;
@@ -372,18 +379,18 @@ var GeminiDialog = cc.Layer.extend({
                     try {
                         var response = JSON.parse(xhr.responseText);
                         if (response.task_id) {
-                            self.appendMessage("Gemini", "Agent is thinking... (Polling local server)");
+                            // Task started, begin polling
                             self.startPolling(response.task_id);
                         } else {
-                            self.removeTypingIndicator();
+                            self.stopTypingAnimation();
                             self.appendMessage("System", "Error: No task_id returned from server.");
                         }
                     } catch (e) {
-                        self.removeTypingIndicator();
+                        self.stopTypingAnimation();
                         self.appendMessage("System", "Error parsing initial response: " + e.message);
                     }
                 } else {
-                    self.removeTypingIndicator();
+                    self.stopTypingAnimation();
                     self.appendMessage("System", "HTTP Error (Start Task): " + xhr.status + "\n" + xhr.responseText);
                 }
             }
@@ -437,7 +444,12 @@ var GeminiDialog = cc.Layer.extend({
                     } else {
                         clearInterval(pollInterval);
                         self.removeTypingIndicator();
-                        self.appendMessage("System", "Poll failed with status: " + xhr.status);
+                        var errMsg = "Poll failed with status: " + xhr.status;
+                        try {
+                            var errRes = JSON.parse(xhr.responseText);
+                            if (errRes.error) errMsg = "Server Error: " + errRes.error;
+                        } catch(e) {}
+                        self.appendMessage("System", errMsg);
                     }
                 }
             };
