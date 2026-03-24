@@ -393,8 +393,8 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
         }
 
         this.renderBoardBorder();
-        this.refreshGrid();
-        this.refreshHeatmap();
+        // this.refreshGrid();
+        // this.refreshHeatmap();
 
         cc.log("Map configuration loaded successfully");
     },

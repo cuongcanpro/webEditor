@@ -57,6 +57,13 @@ CoreGame.ChainUI = CoreGame.ElementUI.extend({
      * Play explosion effect for Chain
      */
     playExplodeEffect: function () {
+        
+    },
+
+    /**
+     * Play explosion effect for Box
+     */
+    playTakeDamageEffect: function () {
         // Sound effect
         if (typeof resSound !== 'undefined' && resSound.chain) {
             fr.Sound.playSoundEffect(resSound.chain, false);
@@ -74,5 +81,9 @@ CoreGame.ChainUI = CoreGame.ElementUI.extend({
         }
 
         // Note: The base Blocker.destroy handles fading out the ui.
+    },
+
+    playAnimation: function (animationName) {
+        this.playTakeDamageEffect();
     }
 });

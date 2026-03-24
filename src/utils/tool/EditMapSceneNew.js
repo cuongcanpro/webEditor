@@ -1048,7 +1048,7 @@ var EditMapSceneNew = cc.Layer.extend({
                 this.boardUI.boardMgr.mapGrid[row][col];
             if (rawSlot2) {
                 this.boardUI.enableSlot(row, col, !rawSlot2.enable);
-                this.boardUI.refreshGrid();
+                //this.boardUI.refreshGrid();
             }
             this.updateMetrics();
             return;
@@ -1095,7 +1095,7 @@ var EditMapSceneNew = cc.Layer.extend({
                 this.boardUI.boardMgr.mapGrid[row][col];
             if (!rawSlot) return;
             this.boardUI.enableSlot(row, col, true);
-            this.boardUI.refreshGrid();
+          //  this.boardUI.refreshGrid();
             slot = this.boardUI.boardMgr.getSlot(row, col);
             if (!slot) return;
         }
@@ -1106,7 +1106,7 @@ var EditMapSceneNew = cc.Layer.extend({
             slot.clearElements();
             this.activeDynamicBlocker.addCell({ r: row, c: col });
             this.boardUI.enableSlot(row, col, true);
-            this.boardUI.refreshGrid();
+           // this.boardUI.refreshGrid();
         } else {
             this.activeDynamicBlocker = this.boardUI.addElement(row, col, this.selectedType, this.selectedHP);
         }
@@ -1334,20 +1334,31 @@ var EditMapSceneNew = cc.Layer.extend({
             this._agentKey = data.agentType;
             if (this._btnAgent) this._btnAgent.setTitleText(data.agentType);
         }
-        if (this._gemColorActive && this._colorButtons) {
-            // gemTypes is array of active type numbers [1..6]; default all active
+        if (this._gemColorActive) {
+            // Prefer explicit gemTypes from the loaded JSON; fall back to boardUI config
+            var srcGemTypes = data.gemTypes;
+            if ((!srcGemTypes || srcGemTypes.length === 0) && this.boardUI && this.boardUI.getMapConfig) {
+                try {
+                    var bm = this.boardUI.getMapConfig() || {};
+                    if (bm.gemTypes && bm.gemTypes.length > 0) srcGemTypes = bm.gemTypes;
+                } catch (e) { /* ignore */ }
+            }
+
+            // Normalize to numbers and build active set (defaults to all active)
             var activeSet = {};
-            if (data.gemTypes && data.gemTypes.length > 0) {
-                for (var gi = 0; gi < data.gemTypes.length; gi++) {
-                    activeSet[data.gemTypes[gi]] = true;
+            if (srcGemTypes && srcGemTypes.length > 0) {
+                for (var gi = 0; gi < srcGemTypes.length; gi++) {
+                    var gval = parseInt(srcGemTypes[gi], 10);
+                    if (!isNaN(gval) && gval >= 1 && gval <= 6) activeSet[gval] = true;
                 }
             } else {
-                for (var gi = 1; gi <= 6; gi++) activeSet[gi] = true;
+                for (var gi2 = 1; gi2 <= 6; gi2++) activeSet[gi2] = true;
             }
+
             for (var ci = 0; ci < 6; ci++) {
                 var active = !!activeSet[ci + 1];
                 this._gemColorActive[ci] = active;
-                if (this._colorButtons[ci]) {
+                if (this._colorButtons && this._colorButtons[ci]) {
                     this._updateGemColorBtn(this._colorButtons[ci], active);
                 }
             }

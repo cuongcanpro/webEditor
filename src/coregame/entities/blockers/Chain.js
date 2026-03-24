@@ -5,7 +5,9 @@
 var CoreGame = CoreGame || {};
 
 CoreGame.Chain = CoreGame.Blocker.extend({
-
+    configData: {
+        maxHP: 2
+    },
     ctor: function () {
         this._super();
         this.layerBehavior = CoreGame.LayerBehavior.OVERLAY;
