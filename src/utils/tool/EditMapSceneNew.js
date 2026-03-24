@@ -61,7 +61,7 @@ var EditMapSceneNew = cc.Layer.extend({
     // Right-panel game config fields
     _tfTPP: null,
     _spawnStrategyKey: "RandomSpawnStrategy",
-    _btnSpawn: null,
+    _btnSpawnStrategy: null,
     _agentKey: "GreedyBot",
     _btnAgent: null,
     _tfSaveName: null,
@@ -600,23 +600,23 @@ var EditMapSceneNew = cc.Layer.extend({
         var lb3 = new ccui.Text("Spawn:", "font/BalooPaaji2-Regular.ttf", 12);
         lb3.setColor(cc.color(170, 170, 190)); lb3.setAnchorPoint(cc.p(0, 0.5));
         lb3.setPosition(6, y3); panel.addChild(lb3, 1);
-        this._btnSpawn = new ccui.Button();
-        this._btnSpawn.loadTextureNormal("res/tool/res/bgTf.png");
-        this._btnSpawn.setScale9Enabled(true);
-        this._btnSpawn.setContentSize(TF_W, ROW);
-        this._btnSpawn.setAnchorPoint(cc.p(0, 0.5));
-        this._btnSpawn.setPosition(TF_X, y3);
-        this._btnSpawn.setTitleText(this._spawnStrategyKey);
-        this._btnSpawn.setTitleFontSize(11);
-        this._btnSpawn.setTitleColor(cc.color(220, 220, 255));
-        // this._btnSpawn.setTitleAlignment(cc.TEXT_ALIGNMENT_LEFT);
-        panel.addChild(this._btnSpawn, 1);
+        this._btnSpawnStrategy = new ccui.Button();
+        this._btnSpawnStrategy.loadTextureNormal("res/tool/res/bgTf.png");
+        this._btnSpawnStrategy.setScale9Enabled(true);
+        this._btnSpawnStrategy.setContentSize(TF_W, ROW);
+        this._btnSpawnStrategy.setAnchorPoint(cc.p(0, 0.5));
+        this._btnSpawnStrategy.setPosition(TF_X, y3);
+        this._btnSpawnStrategy.setTitleText(this._spawnStrategyKey);
+        this._btnSpawnStrategy.setTitleFontSize(11);
+        this._btnSpawnStrategy.setTitleColor(cc.color(220, 220, 255));
+        // this._btnSpawnStrategy.setTitleAlignment(cc.TEXT_ALIGNMENT_LEFT);
+        panel.addChild(this._btnSpawnStrategy, 1);
         var self = this;
-        this._btnSpawn.addTouchEventListener(function (sender, type) {
+        this._btnSpawnStrategy.addTouchEventListener(function (sender, type) {
             if (type !== ccui.Widget.TOUCH_ENDED) return;
             var dialog = new DifficultyDialog(function (key) {
                 self._spawnStrategyKey = key;
-                self._btnSpawn.setTitleText(key);
+                self._btnSpawnStrategy.setTitleText(key);
             });
             cc.director.getRunningScene().addChild(dialog, 999);
             dialog.show();
@@ -1328,7 +1328,7 @@ var EditMapSceneNew = cc.Layer.extend({
         if (this._tfTPP && data.tpp !== undefined) this._tfTPP.setString("" + data.tpp);
         if (data.spawnStrategy) {
             this._spawnStrategyKey = data.spawnStrategy;
-            if (this._btnSpawn) this._btnSpawn.setTitleText(data.spawnStrategy);
+            if (this._btnSpawnStrategy) this._btnSpawnStrategy.setTitleText(data.spawnStrategy);
         }
         if (data.agentType) {
             this._agentKey = data.agentType;

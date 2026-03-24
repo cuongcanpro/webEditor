@@ -554,10 +554,10 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
 
     removeAllElements: function () {
         cc.log("Remove All Border");
-        // for (let border of this.listBorder) {
-        //     border.removeFromParent(true);
-        // }
-        // this.listBorder = [];
+        for (let border of this.listBorder) {
+            border.removeFromParent(true);
+        }
+        this.listBorder = [];
 
         // Clear Grass/Cloud connected borders (GridBorderMgr)
         // if (this.gridBorderMgr) {
