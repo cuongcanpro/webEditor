@@ -1138,6 +1138,27 @@ var EditMapSceneNew = cc.Layer.extend({
             var sz = preview.size || cc.size(1, 1);
             if (row + sz.height > this.boardUI.boardMgr.rows ||
                 col + sz.width > this.boardUI.boardMgr.cols) return false;
+
+            // OVERLAY elements (e.g. Chain) must be placed on a slot that has a CONTENT element (GEM)
+            if (preview.layerBehavior === CoreGame.LayerBehavior.OVERLAY) {
+                var contentElement = null;
+                if (slot && slot.enable) {
+                    for (var i = 0; i < slot.listElement.length; i++) {
+                        var lb = (typeof slot.listElement[i].layerBehavior !== 'undefined') ?
+                            slot.listElement[i].layerBehavior : CoreGame.LayerBehavior.CONTENT;
+                        if (lb === CoreGame.LayerBehavior.CONTENT) {
+                            contentElement = slot.listElement[i];
+                            break;
+                        }
+                    }
+                }
+                // No GEM in slot → cannot place OVERLAY
+                if (!contentElement) return false;
+                // Already has same OVERLAY type attached → cannot place another
+                for (var j = 0; j < contentElement.attachments.length; j++) {
+                    if (contentElement.attachments[j].type === type) return false;
+                }
+            }
         }
         return true;
     },
