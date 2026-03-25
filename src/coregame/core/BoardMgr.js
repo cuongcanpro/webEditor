@@ -909,9 +909,10 @@ CoreGame.BoardMgr = cc.Class.extend({
         var swapLogic = this.getSwapLogic(element1, element2);
         //
         this.playerMoved = swapLogic.swap(element1, element2);
-        if (this.playerMoved) this.didPlayerSwap = true;
-
-        this.useMove();
+        if (this.playerMoved) {
+            this.didPlayerSwap = true;
+            this.useMove();
+        }
         // State update handled by swapLogic timers
     },
 

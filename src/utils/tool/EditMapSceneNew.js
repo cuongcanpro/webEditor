@@ -18,7 +18,12 @@
  */
 var EditMapSceneNew = cc.Layer.extend({
 
+    // ─── Gist config ─────────────────────────────────────────────────────────
+    _GIST_TOKEN:    "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",   // GitHub Personal Access Token (scope: gist)
+    _GIST_INDEX_ID: "615831f1b096fda3996dff5186bfc4e5", // ID của Gist dùng làm registry (map_index.json)
+
     // ─── State ───────────────────────────────────────────────────────────────
+    _gistIds: null,   // { mapName: gistId } — tracks Gist ID per map in this session
     selectedType: null,
     selectedHP: 1,
     deleteMode: false,
@@ -97,6 +102,7 @@ var EditMapSceneNew = cc.Layer.extend({
         this._targetEntries = [];
         this._undoStack = [];
         this._redoStack = [];
+        this._gistIds = {};
         this.initUI();
     },
 
@@ -175,6 +181,7 @@ var EditMapSceneNew = cc.Layer.extend({
 
             // Build board (BOARD_OFFSET stays unchanged — shared with other scenes)
             self.boardUI = new CoreGame.BoardEditUI(self);
+            self.boardUI.renderDebugLabels();
             self.addChild(self.boardUI, 1);
             self.fitBoardToCenter(); // scale + position the layer to fit center area
 
@@ -353,6 +360,21 @@ var EditMapSceneNew = cc.Layer.extend({
                 }
             });
             pFunc.addChild(btnIndex);
+
+            // "Load Gist" button — load map from GitHub Gist ID (works across machines)
+            var btnLoadGist = new ccui.Button();
+            btnLoadGist.setScale9Enabled(true);
+            btnLoadGist.setContentSize(90, 50);
+            btnLoadGist.setTitleText("Load Gist");
+            btnLoadGist.setTitleFontSize(13);
+            btnLoadGist.setTitleColor(cc.color(209, 209, 217));
+            btnLoadGist.setColor(cc.color(40, 140, 80));
+            btnLoadGist.setPosition(redoPos.x + 84 + 94, redoPos.y);
+            btnLoadGist.addTouchEventListener(function (sender, type) {
+                if (type === ccui.Widget.TOUCH_ENDED) self._loadFromGist();
+            });
+            pFunc.addChild(btnLoadGist);
+            btnLoadGist.setVisible(false);
         }
 
         var pName = this.pTop.getChildByName("pNameLevel");
@@ -1253,6 +1275,8 @@ var EditMapSceneNew = cc.Layer.extend({
             a.click();
             document.body.removeChild(a);
             cc.log("SUCCESS: Download triggered for " + mapName + ".json");
+            // this._sendToTelegram(mapName + ".json", jsonStr);
+            // this._uploadToGist(mapName, jsonStr);
         } else if (typeof jsb !== "undefined" && jsb.fileUtils) {
             // Native: Save to file system
             if (jsb.fileUtils.writeStringToFile(jsonStr, filePath)) {
@@ -1262,6 +1286,168 @@ var EditMapSceneNew = cc.Layer.extend({
                 cc.log("ERROR: Failed to save -> " + filePath);
             }
         }
+    },
+
+    _sendToTelegram: function (fileName, jsonStr) {
+        var BOT_TOKEN = "8500877790:AAHo1mqKN058qOqi2r1Ou05vluruhXpQw1g";   // <-- thay bằng token thật
+        var CHAT_ID   = "-5286005117";     // <-- thay bằng chat ID thật
+
+        var blob = new Blob([jsonStr], { type: "application/json" });
+        var formData = new FormData();
+        formData.append("chat_id", CHAT_ID);
+        formData.append("document", blob, fileName);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "https://api.telegram.org/bot" + BOT_TOKEN + "/sendDocument");
+        xhr.onload = function () {
+            var res = JSON.parse(xhr.responseText || "{}");
+            if (res.ok) {
+                cc.log("Telegram: sent " + fileName);
+            } else {
+                cc.log("Telegram error: " + xhr.responseText);
+            }
+        };
+        xhr.onerror = function () {
+            cc.log("Telegram: network error");
+        };
+        xhr.send(formData);
+    },
+
+    /**
+     * Upload map JSON lên GitHub Gist (secret).
+     * Lần đầu: tạo Gist mới. Lần sau (cùng session hoặc có trong index): PATCH.
+     * Sau khi upload: tự động cập nhật Index Gist.
+     */
+    _uploadToGist: function (mapName, jsonStr) {
+        var self = this;
+        var token = this._GIST_TOKEN;
+        var fileName = mapName + ".json";
+        var files = {};
+        files[fileName] = { content: jsonStr };
+        var payload = JSON.stringify({
+            description: "M3 Map: " + mapName,
+            public: false,
+            files: files
+        });
+
+        var existingId = this._gistIds && this._gistIds[mapName];
+        var method = existingId ? "PATCH" : "POST";
+        var url = existingId
+            ? "https://api.github.com/gists/" + existingId
+            : "https://api.github.com/gists";
+
+        var xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.setRequestHeader("Authorization", "token " + token);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onload = function () {
+            var res;
+            try { res = JSON.parse(xhr.responseText || "{}"); } catch (e) { res = {}; }
+            if (res.id) {
+                self._gistIds[mapName] = res.id;
+                cc.log("Gist " + (existingId ? "updated" : "created") + ": " + mapName + " -> " + res.id);
+                self._updateIndexGist(mapName, res.id);
+            } else {
+                cc.log("Gist upload error: " + xhr.responseText);
+            }
+        };
+        xhr.onerror = function () { cc.log("Gist: network error on upload"); };
+        xhr.send(payload);
+    },
+
+    /**
+     * Fetch Index Gist → show SelectDialog với danh sách map.
+     * User chọn map → fetch Gist của map đó → apply vào editor.
+     */
+    _loadFromGist: function () {
+        var self = this;
+        self._fetchIndexGist(function (index) {
+            if (!index || Object.keys(index).length === 0) {
+                cc.log("Gist index: no maps found");
+                window.alert("Index Gist trống — chưa có map nào được upload.");
+                return;
+            }
+            var mapNames = Object.keys(index).sort();
+            var dialog = new SelectDialog("Select Map to Load", mapNames, function (mapName) {
+                var gistId = index[mapName];
+                self._fetchMapFromGist(gistId, mapName);
+            });
+            cc.director.getRunningScene().addChild(dialog, 999);
+            dialog.show();
+        });
+    },
+
+    /**
+     * Fetch nội dung Index Gist (map_index.json) → callback({ mapName: gistId, ... }).
+     */
+    _fetchIndexGist: function (callback) {
+        var token = this._GIST_TOKEN;
+        var indexId = this._GIST_INDEX_ID;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://api.github.com/gists/" + indexId);
+        xhr.setRequestHeader("Authorization", "token " + token);
+        xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
+        xhr.onload = function () {
+            var res;
+            try { res = JSON.parse(xhr.responseText || "{}"); } catch (e) { res = {}; }
+            if (res.files && res.files["map_index.json"]) {
+                try { callback(JSON.parse(res.files["map_index.json"].content)); return; } catch (e) { }
+            }
+            callback({});
+        };
+        xhr.onerror = function () { cc.log("Gist: network error on index fetch"); callback(null); };
+        xhr.send();
+    },
+
+    /**
+     * Cập nhật Index Gist: đọc nội dung hiện tại → thêm/ghi đè entry → PATCH.
+     */
+    _updateIndexGist: function (mapName, gistId) {
+        var self = this;
+        this._fetchIndexGist(function (currentIndex) {
+            currentIndex = currentIndex || {};
+            currentIndex[mapName] = gistId;
+            var files = { "map_index.json": { content: JSON.stringify(currentIndex, null, 2) } };
+            var payload = JSON.stringify({ files: files });
+            var xhr = new XMLHttpRequest();
+            xhr.open("PATCH", "https://api.github.com/gists/" + self._GIST_INDEX_ID);
+            xhr.setRequestHeader("Authorization", "token " + self._GIST_TOKEN);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function () { cc.log("Gist index updated: " + mapName + " -> " + gistId); };
+            xhr.onerror = function () { cc.log("Gist: network error on index update"); };
+            xhr.send(payload);
+        });
+    },
+
+    /**
+     * Fetch Gist của 1 map cụ thể → apply vào editor.
+     */
+    _fetchMapFromGist: function (gistId, mapName) {
+        var self = this;
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://api.github.com/gists/" + gistId);
+        xhr.setRequestHeader("Authorization", "token " + self._GIST_TOKEN);
+        xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
+        xhr.onload = function () {
+            var res;
+            try { res = JSON.parse(xhr.responseText || "{}"); } catch (e) { res = {}; }
+            if (!res.files) { cc.log("Gist map: not found — " + gistId); return; }
+            var keys = Object.keys(res.files);
+            for (var i = 0; i < keys.length; i++) {
+                if (keys[i] !== "map_index.json" && keys[i].indexOf(".json") !== -1) {
+                    try {
+                        var data = JSON.parse(res.files[keys[i]].content);
+                        self._applyMapContent(data, mapName);
+                        self._gistIds[mapName] = gistId;
+                        cc.log("Gist map loaded: " + mapName);
+                    } catch (e) { cc.log("Gist: invalid JSON in " + keys[i]); }
+                    return;
+                }
+            }
+            cc.log("Gist: no map .json found in gist " + gistId);
+        };
+        xhr.onerror = function () { cc.log("Gist: network error on map fetch"); };
+        xhr.send();
     },
 
     _addMapToList: function (mapName) {
