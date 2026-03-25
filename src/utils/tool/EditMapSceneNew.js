@@ -19,8 +19,8 @@
 var EditMapSceneNew = cc.Layer.extend({
 
     // ─── Gist config ─────────────────────────────────────────────────────────
-    _GIST_TOKEN:    "", 
-    _GIST_INDEX_ID: "",
+    _Fake1:    "", 
+    _Fake2: "",
 
     // ─── State ───────────────────────────────────────────────────────────────
     _gistIds: null,   // { mapName: gistId } — tracks Gist ID per map in this session
@@ -1320,7 +1320,7 @@ var EditMapSceneNew = cc.Layer.extend({
      */
     _uploadToGist: function (mapName, jsonStr) {
         var self = this;
-        var token = this._GIST_TOKEN;
+        var token = this._Fake1;
         var fileName = mapName + ".json";
         var files = {};
         files[fileName] = { content: jsonStr };
@@ -1381,8 +1381,8 @@ var EditMapSceneNew = cc.Layer.extend({
      * Fetch nội dung Index Gist (map_index.json) → callback({ mapName: gistId, ... }).
      */
     _fetchIndexGist: function (callback) {
-        var token = this._GIST_TOKEN;
-        var indexId = this._GIST_INDEX_ID;
+        var token = this._Fake1;
+        var indexId = this._Fake2;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "https://api.github.com/gists/" + indexId);
         xhr.setRequestHeader("Authorization", "token " + token);
@@ -1410,8 +1410,8 @@ var EditMapSceneNew = cc.Layer.extend({
             var files = { "map_index.json": { content: JSON.stringify(currentIndex, null, 2) } };
             var payload = JSON.stringify({ files: files });
             var xhr = new XMLHttpRequest();
-            xhr.open("PATCH", "https://api.github.com/gists/" + self._GIST_INDEX_ID);
-            xhr.setRequestHeader("Authorization", "token " + self._GIST_TOKEN);
+            xhr.open("PATCH", "https://api.github.com/gists/" + self._Fake2);
+            xhr.setRequestHeader("Authorization", "token " + self._Fake1);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.onload = function () { cc.log("Gist index updated: " + mapName + " -> " + gistId); };
             xhr.onerror = function () { cc.log("Gist: network error on index update"); };
@@ -1426,7 +1426,7 @@ var EditMapSceneNew = cc.Layer.extend({
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "https://api.github.com/gists/" + gistId);
-        xhr.setRequestHeader("Authorization", "token " + self._GIST_TOKEN);
+        xhr.setRequestHeader("Authorization", "token " + self._Fake1);
         xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
         xhr.onload = function () {
             var res;
