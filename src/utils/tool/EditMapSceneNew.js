@@ -1244,8 +1244,7 @@ var EditMapSceneNew = cc.Layer.extend({
 
         if (!cc.sys.isNative) {
             // Web: Trigger file download
-            var blob = new Blob([jsonStr], { type: "application/json" });
-            var url = URL.createObjectURL(blob);
+            var url = "data:application/json;charset=utf-8," + encodeURIComponent(jsonStr);
             var a = document.createElement("a");
             a.style.display = "none";
             a.href = url;
@@ -1253,7 +1252,6 @@ var EditMapSceneNew = cc.Layer.extend({
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            URL.revokeObjectURL(url);
             cc.log("SUCCESS: Download triggered for " + mapName + ".json");
         } else if (typeof jsb !== "undefined" && jsb.fileUtils) {
             // Native: Save to file system
