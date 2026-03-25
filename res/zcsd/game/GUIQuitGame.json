@@ -1,5 +1,5 @@
 {
-  "ID": "797f84e3-1011-4316-8a10-b3022e6dbade",
+  "ID": "3366c06c-9189-4aae-a33d-9fc3c12a5196",
   "Version": "2.3.4",
   "Name": "GUIQuitGame",
   "Content": {
@@ -12,7 +12,7 @@
       },
       "AnimationList": [],
       "ObjectData": {
-        "Tag": 44,
+        "Tag": 170,
         "Children": [
           {
             "FileData": {
@@ -29,8 +29,8 @@
               "ScaleY": 0.5
             },
             "Position": {
-              "X": 0.0,
-              "Y": 0.0
+              "X": 360.0,
+              "Y": 640.0
             },
             "Scale": {
               "ScaleX": 1.0,
@@ -41,18 +41,18 @@
             "PositionPercentXEnabled": true,
             "PositionPercentYEnabled": true,
             "PrePosition": {
-              "X": 0.0,
-              "Y": 0.0
+              "X": 0.5,
+              "Y": 0.5
             },
             "PreSize": {
-              "X": 0.0,
-              "Y": 0.0
+              "X": 1.0306,
+              "Y": 0.5336
             },
-            "LeftMargin": -371.0,
-            "RightMargin": -371.0,
-            "TopMargin": -341.5,
-            "BottomMargin": -341.5,
-            "Tag": 67,
+            "LeftMargin": -11.0,
+            "RightMargin": -11.0,
+            "TopMargin": 298.5,
+            "BottomMargin": 298.5,
+            "Tag": 171,
             "Children": [
               {
                 "FileData": {
@@ -92,8 +92,8 @@
                 "RightMargin": 64.0,
                 "TopMargin": 45.105,
                 "BottomMargin": 133.895,
-                "Tag": 68,
-                "ActionTag": 1450595850,
+                "Tag": 172,
+                "ActionTag": -150494393,
                 "Size": {
                   "X": 614.0,
                   "Y": 504.0
@@ -155,8 +155,8 @@
                 "RightMargin": 221.0,
                 "TopMargin": 9.6541,
                 "BottomMargin": 593.3459,
-                "Tag": 74,
-                "ActionTag": 1344529091,
+                "Tag": 173,
+                "ActionTag": 1918671642,
                 "Size": {
                   "X": 300.0,
                   "Y": 80.0
@@ -202,8 +202,8 @@
                 "RightMargin": 164.0,
                 "TopMargin": 163.39,
                 "BottomMargin": 395.61,
-                "Tag": 86,
-                "ActionTag": 865928730,
+                "Tag": 174,
+                "ActionTag": -485161811,
                 "Size": {
                   "X": 414.0,
                   "Y": 124.0
@@ -264,8 +264,8 @@
                 "RightMargin": 296.0,
                 "TopMargin": 110.1,
                 "BottomMargin": 519.9,
-                "Tag": 87,
-                "ActionTag": 229449796,
+                "Tag": 175,
+                "ActionTag": -1206968710,
                 "Size": {
                   "X": 150.0,
                   "Y": 53.0
@@ -328,8 +328,8 @@
                 "RightMargin": 146.0,
                 "TopMargin": 296.99,
                 "BottomMargin": 256.01,
-                "Tag": 88,
-                "ActionTag": -1636420893,
+                "Tag": 176,
+                "ActionTag": -2046062353,
                 "Size": {
                   "X": 450.0,
                   "Y": 130.0
@@ -406,7 +406,7 @@
                 "TopMargin": 419.27,
                 "BottomMargin": 159.73,
                 "UserData": "-press_action",
-                "Tag": 89,
+                "Tag": 177,
                 "Children": [
                   {
                     "FontSize": 44,
@@ -459,8 +459,8 @@
                     "RightMargin": -64.0,
                     "TopMargin": 22.5,
                     "BottomMargin": 22.5,
-                    "Tag": 90,
-                    "ActionTag": -1471910150,
+                    "Tag": 178,
+                    "ActionTag": 1865599961,
                     "Size": {
                       "X": 484.0,
                       "Y": 59.0
@@ -469,7 +469,7 @@
                     "ctype": "TextObjectData"
                   }
                 ],
-                "ActionTag": 1424114855,
+                "ActionTag": 1969626203,
                 "Size": {
                   "X": 356.0,
                   "Y": 104.0
@@ -546,7 +546,7 @@
                 "TopMargin": 555.87,
                 "BottomMargin": 23.13,
                 "UserData": "-press_action",
-                "Tag": 91,
+                "Tag": 179,
                 "Children": [
                   {
                     "FontSize": 44,
@@ -599,8 +599,8 @@
                     "RightMargin": -49.5,
                     "TopMargin": 22.5,
                     "BottomMargin": 22.5,
-                    "Tag": 92,
-                    "ActionTag": 1457909542,
+                    "Tag": 180,
+                    "ActionTag": 1322393526,
                     "Size": {
                       "X": 413.0,
                       "Y": 59.0
@@ -639,15 +639,15 @@
                       "Y": 0.8
                     },
                     "PreSize": {
-                      "X": 0.1465,
-                      "Y": 0.4423
+                      "X": 0.1783,
+                      "Y": 0.5096
                     },
-                    "LeftMargin": -23.0,
-                    "RightMargin": 291.0,
-                    "TopMargin": -2.2,
-                    "BottomMargin": 60.2,
-                    "Tag": 93,
-                    "ActionTag": 698142094,
+                    "LeftMargin": -28.0,
+                    "RightMargin": 286.0,
+                    "TopMargin": -5.7,
+                    "BottomMargin": 56.7,
+                    "Tag": 181,
+                    "ActionTag": -537239745,
                     "Size": {
                       "X": 56.0,
                       "Y": 53.0
@@ -656,7 +656,7 @@
                     "ctype": "SpriteObjectData"
                   }
                 ],
-                "ActionTag": -328315925,
+                "ActionTag": 639360059,
                 "Size": {
                   "X": 314.0,
                   "Y": 104.0
@@ -665,7 +665,7 @@
                 "ctype": "ButtonObjectData"
               }
             ],
-            "ActionTag": -243328578,
+            "ActionTag": 1485092126,
             "Size": {
               "X": 742.0,
               "Y": 683.0
@@ -675,11 +675,11 @@
           }
         ],
         "Size": {
-          "X": 0.0,
-          "Y": 0.0
+          "X": 720.0,
+          "Y": 1280.0
         },
-        "Name": "Node",
-        "ctype": "SingleNodeObjectData"
+        "Name": "Layer",
+        "ctype": "LayerObjectData"
       },
       "UsedResources": [
         "../../button/btn_green.png",
@@ -694,5 +694,5 @@
       "ctype": "GameFileData"
     }
   },
-  "Type": "Node"
+  "Type": "Layer"
 }

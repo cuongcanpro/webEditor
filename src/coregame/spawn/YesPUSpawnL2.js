@@ -23,18 +23,18 @@ CoreGame.DropStrategy = CoreGame.DropStrategy || {};
 CoreGame.DropStrategy.YesPUSpawnL2 = CoreGame.DropStrategy.YesPUSpawnL1.extend({
 
     getGemType: function (row, col, boardMgr) {
-        var numColors = CoreGame.Config.NUM_COLORS;
-        var l1PU = [];    // immediate cascade PU
-        var l2PU = [];    // one-swap PU (but not immediate)
+        var types = this._gemTypes(boardMgr);
+        var l1PU   = []; // immediate cascade PU
+        var l2PU   = []; // one-swap PU (but not immediate)
         var neutral = []; // neither
 
-        for (var t = 1; t <= numColors; t++) {
-            if (this._wouldCreatePowerUp(row, col, t, boardMgr)) {
-                l1PU.push(t);
-            } else if (this._anySwapCreatesPowerUp(row, col, t, boardMgr)) {
-                l2PU.push(t);
+        for (var i = 0; i < types.length; i++) {
+            if (this._wouldCreatePowerUp(row, col, types[i], boardMgr)) {
+                l1PU.push(types[i]);
+            } else if (this._anySwapCreatesPowerUp(row, col, types[i], boardMgr)) {
+                l2PU.push(types[i]);
             } else {
-                neutral.push(t);
+                neutral.push(types[i]);
             }
         }
 
@@ -48,7 +48,7 @@ CoreGame.DropStrategy.YesPUSpawnL2 = CoreGame.DropStrategy.YesPUSpawnL1.extend({
         if (neutral.length > 0) {
             return neutral[boardMgr.random.nextInt32Bound(neutral.length)];
         }
-        return boardMgr.random.nextInt32Bound(numColors) + 1;
+        return types[boardMgr.random.nextInt32Bound(types.length)];
     },
 
     /**

@@ -32,14 +32,15 @@ fr.createCommonButton = function(imgNormal, imgSelected, imgDisabled, texType) /
     btnKeep.loadTextures(imgNormal, imgSelected, imgDisabled,texType);
     return btnKeep;
 };
-fr.createSprite = function(name, path)
-{
+
+fr.createSprite = function (name, path) {
+    cc.log("fr.createSprite getSpriteFrame", name);
     path = path || name;
-    if(cc.spriteFrameCache.getSpriteFrame(name))
-    {
+    if (cc.spriteFrameCache.getSpriteFrame(name)) {
+        cc.log("fr.createSprite getSpriteFrame", name);
         return new cc.Sprite("#" + name);
-    }
-    else{
+    } else {
+        cc.log("fr.createSprite Path", path);
         return new cc.Sprite(path);
     }
 };

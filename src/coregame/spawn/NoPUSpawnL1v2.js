@@ -21,17 +21,17 @@ CoreGame.DropStrategy = CoreGame.DropStrategy || {};
 CoreGame.DropStrategy.NoPUSpawnL1v2 = CoreGame.DropStrategy.SpawnStrategy.extend({
 
     getGemType: function (row, col, boardMgr) {
-        var numColors = CoreGame.Config.NUM_COLORS;
+        var types = this._gemTypes(boardMgr);
         var safe = [];
 
-        for (var t = 1; t <= numColors; t++) {
-            if (!this._wouldCreatePowerUp(row, col, t, boardMgr)) {
-                safe.push(t);
+        for (var i = 0; i < types.length; i++) {
+            if (!this._wouldCreatePowerUp(row, col, types[i], boardMgr)) {
+                safe.push(types[i]);
             }
         }
 
         if (safe.length === 0) {
-            return boardMgr.random.nextInt32Bound(numColors) + 1;
+            return types[boardMgr.random.nextInt32Bound(types.length)];
         }
         return safe[boardMgr.random.nextInt32Bound(safe.length)];
     },

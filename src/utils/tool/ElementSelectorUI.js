@@ -102,7 +102,6 @@ var ElementSelectorUI = cc.Node.extend({
                 isGem: true
             });
         }
-
         // Add power-ups
         for (var p = 0; p < powerIds.length; p++) {
             this.elements.push({
@@ -198,6 +197,7 @@ var ElementSelectorUI = cc.Node.extend({
         } else {
             btn.setColor(cc.color(255, 220, 200)); // Light orange for blockers
         }
+        
 
         // Store element data
         btn.elementType = element.type;
@@ -219,6 +219,7 @@ var ElementSelectorUI = cc.Node.extend({
             // Fallback to BlockerFactory for unregistered types (JSON-based blockers)
             elementObject = CoreGame.BlockerFactory.createBlocker(row, col, element.type, 1);
         }
+        
         elementObject.createUI(btn);
         elementObject.ui.setPosition(btn.getContentSize().width / 2, btn.getContentSize().height / 2);
 

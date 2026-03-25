@@ -48,7 +48,7 @@
         // Self explosion visuals
         var spineExplode = gv.createSpineAnimation(resAni.rainbow_spine);
         spineExplode.setPosition(selfPos);
-        parent.addChild(spineExplode, BoardConst.zOrder.GEM_SWAP);
+        parent.addChild(spineExplode, BoardConst.zOrder.MATCH_4_EXPLODE);
         spineExplode.setAnimation(0, "run", false);
         gv.removeSpineAfterRun(spineExplode);
 
@@ -58,7 +58,7 @@
             if (efkManager) {
                 var emitter = gv.createEfk(efkManager, resAni.rainbow_efk);
                 emitter.setPosition3D(cc.math.vec3(selfPos.x, selfPos.y, 0));
-                parent.addChild(emitter, BoardConst.zOrder.GEM_SWAP);
+                parent.addChild(emitter, BoardConst.zOrder.MATCH_4_EXPLODE);
             }
         }
 
@@ -92,7 +92,7 @@
         // Ray Spine
         var ray = gv.createSpineAnimation(resAni.rainbow_ray_spine);
         ray.setPosition(selfPos);
-        parent.addChild(ray, BoardConst.zOrder.GEM_SWAP);
+        parent.addChild(ray, BoardConst.zOrder.MATCH_4_EXPLODE);
 
         var dir = cc.p(selfPos.x - toPos.x, selfPos.y - toPos.y);
         var angle = Math.atan2(dir.x, dir.y) * (180 / Math.PI) - 180;
@@ -121,14 +121,14 @@
         // Hit Spine
         var hit = gv.createSpineAnimation(resAni.rainbow_hit_spine);
         hit.setPosition(pos);
-        parent.addChild(hit, BoardConst.zOrder.GEM_SWAP);
+        parent.addChild(hit, BoardConst.zOrder.MATCH_4_EXPLODE);
         hit.setAnimation(0, "run", true);
 
         // Hit Particle
         if (efkManager) {
             var emitterHit = gv.createEfk(efkManager, resAni.rainbow_hit_efk);
             emitterHit.setPosition3D(cc.math.vec3(pos.x, pos.y, 0));
-            parent.addChild(emitterHit, BoardConst.zOrder.GEM_SWAP);
+            parent.addChild(emitterHit, BoardConst.zOrder.MATCH_4_EXPLODE);
         }
         if (this.onTargetHit) {
             this.onTargetHit(index);
@@ -146,14 +146,14 @@
                 cc.callFunc(function () {
                     var endFx = gv.createSpineAnimation(resAni.rainbow_end_spine);
                     endFx.setPosition(this.getPosition());
-                    this.getParent().addChild(endFx, BoardConst.zOrder.GEM_SWAP);
+                    this.getParent().addChild(endFx, BoardConst.zOrder.MATCH_4_EXPLODE);
                     endFx.setAnimation(0, "run", false);
                     gv.removeSpineAfterRun(endFx);
 
                     if (efkManager) {
                         var emitterEnd = gv.createEfk(efkManager, resAni.rainbow_end_efk);
                         emitterEnd.setPosition3D(cc.math.vec3(this.x, this.y, 0));
-                        this.getParent().addChild(emitterEnd, BoardConst.zOrder.GEM_SWAP);
+                        this.getParent().addChild(emitterEnd, BoardConst.zOrder.MATCH_4_EXPLODE);
                     }
 
                     this.removeFromParent();

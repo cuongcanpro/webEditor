@@ -29,6 +29,8 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
 
         this.initWithJsonFile(CoreGame.GameBoardToolUI.JSON);
 
+        this.pTools.setVisible(false);
+
         this.checkEnableTools();
     },
 
@@ -166,20 +168,11 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
 
         // this.board.onClickBack();
 
-        if (!this.guiQuitGame) {
-            this.guiQuitGame = new GUIQuitGame(this);
-            this.addChild(
-                this.guiQuitGame,
-                MainScene.ZORDER.QUIT_GAME,
-                MainScene.TagLayer.QUIT_GAME
-            );
-            this.guiQuitGame.quitGameCallBack = function () {
-                this.onQuitGame();
-            }.bind(this);
-        }
+        sceneMgr.openGUI(GUIQuitGame.className).quitGameCallBack = function () {
+            this.onQuitGame();
+        }.bind(this);
 
         // this.guiQuitGame.initTarget([]);
-        this.guiQuitGame.show();
     },
 
     onQuitGame: function () {
@@ -392,7 +385,19 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
         for (let i in this.listTool){
             this.listTool[i].btn.setEnabled(isEnabled);
         }
+    },
+
+    //region EFX
+    efxIn: function (delayTime = 0, efxTime = 0.25) {
+        this.toolTray.stopAllActions();
+        this.toolTray.setPosition(this.toolTray.rawPos);
+        this.toolTray.y -= 250;
+        this.toolTray.runAction(cc.sequence(
+            cc.delayTime(delayTime),
+            cc.moveTo(efxTime, this.toolTray.rawPos).easing(cc.easeBackOut())
+        ));
     }
+    //endregion EFX
 });
 CoreGame.GameBoardToolUI.JSON = "zcsd/game/GameBoardToolUI.json";
 CoreGame.GameBoardToolUI.zOrder = {

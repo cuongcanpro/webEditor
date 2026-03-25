@@ -51,8 +51,8 @@ CoreGame.TimedActionMgr = {
             action.time -= dt;
 
             if (action.time <= 0) {
-                action.callback.call(action.target);
                 this._actions.splice(i, 1);
+                action.callback.call(action.target);
             }
         }
     },

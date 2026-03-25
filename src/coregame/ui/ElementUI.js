@@ -12,6 +12,7 @@ CoreGame.ElementUI = cc.Node.extend({
     isElementUI: true,
 
     ctor: function (element) {
+        cc.log("type nay === " + element.type);
         this._super();
         this.element = element;
         this.type = element.type;
@@ -35,17 +36,56 @@ CoreGame.ElementUI = cc.Node.extend({
      * Overwrite in subclasses to provide custom visuals.
      */
     initSprite: function () {
+        let path = "res/high/game/element/";
         var fileName;
-        if (CoreGame.ElementObject.map[this.type])
-            fileName = "res/high/game/element/" + this.type + ".png";
-        else
-            fileName = "res/high/game/element/7.png";
-        this.sprite = new cc.Sprite(fileName);
+        if (CoreGame.ElementObject.map[this.type]) {
+            fileName = this.type + ".png";
+            if (this.type == 7) {
+                fileName = "randomGem.png";
+            }
+        } else {
+            fileName = "7.png";
+        }
+
+        this.sprite = fr.createSprite(fileName, path + fileName);
+        this.sprite.setCascadeOpacityEnabled(true);
         this.addChild(this.sprite);
+
+        //isGem
+        if (this.type < 10 && this.type != 7) {
+            //Add Shadow
+            this.shawdow = fr.createSprite(this.type + "_shadow.png");
+            this.sprite.addChild(this.shawdow, -1);
+            UIUtils.posToCenter(this.shawdow);
+
+            //Glow
+            this.glow = fr.createSprite(this.type + "_glow.png");
+            this.glow.setBlendFunc(new cc.BlendFunc(cc.ONE, cc.ONE));
+            this.glow.setVisible(false);
+            this.sprite.addChild(this.glow);
+            UIUtils.posToCenter(this.glow);
+        }
     },
 
     updateLabelState: function (content) {
         this.lbState.setString(content);
+    },
+
+    /**
+     * Update visual to reflect a new gem type (used by shuffle).
+     * Rebuilds the sprite, shadow, and glow for the new type.
+     * @param {number} newType
+     */
+    updateType: function (newType) {
+        this.type = newType;
+
+        // Remove old visuals
+        if (this.sprite) this.sprite.removeFromParent(true);
+        if (this.shawdow) this.shawdow = null;
+        if (this.glow) this.glow = null;
+
+        // Rebuild sprite
+        this.initSprite();
     },
 
     updateVisual: function () {
@@ -84,6 +124,8 @@ CoreGame.ElementUI = cc.Node.extend({
         //Debris
         fr.platformWrapper.hapticTouch(HAPTIC_TOUCH_TYPE.LIGHT);
 
+        let efxTime = 0.2;
+
         if (this.type < debris_type_name.length) {
             let parent = this.getParent()
             this.setVisible(false);
@@ -97,10 +139,13 @@ CoreGame.ElementUI = cc.Node.extend({
         }
         //Debris
 
-        var scaleUp = cc.scaleTo(0.1, 1.2);
-        var scaleDown = cc.scaleTo(0.1, 0);
-        this.runAction(cc.sequence(scaleUp, scaleDown));
-        return 0.2;
+        //Scale
+        this.runAction(cc.sequence(
+            cc.scaleTo(efxTime * 0.5, 1.2).easing(cc.easeIn(2.5)),
+            cc.scaleTo(efxTime * 0.5, 0).easing(cc.easeOut(2.5))
+        ));
+
+        return efxTime;
     },
 
     playTakeDamageEffect: function (hitpoints, row, col) {
@@ -114,6 +159,16 @@ CoreGame.ElementUI = cc.Node.extend({
      * Play destroy effect
      */
     playDestroyEffect: function () {
+        //Efx sparkle
+        let pos = UIUtils.getWorldPosition(this);
+        let nodeTLFX = gv.createTLFX(
+            "fx_blink_meta",
+            pos,
+            this.getParent(),
+            this.getLocalZOrder() - 1
+        );
+        nodeTLFX.setScale(0.5 + Math.random() * 0.1);
+
         this.runAction(cc.sequence(
             cc.scaleTo(CoreGame.Config.DESTROY_DURATION, 0).easing(cc.easeBackIn()),
             cc.callFunc(this.efxDebris.bind(this))
@@ -229,12 +284,30 @@ CoreGame.ElementUI = cc.Node.extend({
 
         var converge = cc.sequence(
             cc.moveTo(duration, targetPos).easing(cc.easeIn(2.5)),
+            cc.scaleTo(duration, 0).easing(cc.easeBackIn()),
             cc.hide()
         );
         converge.setTag(CoreGame.TAG_MOVE_ACTION);
         this.runAction(converge);
 
-        return duration;
+        //Flash
+        if (this.glow) {
+            this.glow.setOpacity(0);
+            this.glow.setVisible(true);
+            this.glow.runAction(cc.sequence(
+                cc.delayTime(duration),
+                cc.fadeIn(duration).easing(cc.easeOut(2.5))
+            ));
+        }
+
+        //Hide shadow
+        if (this.shawdow) {
+            this.shawdow.runAction(
+                cc.fadeOut(duration).easing(cc.easeOut(2.5))
+            );
+        }
+
+        return duration * 2;
     },
 
     /**

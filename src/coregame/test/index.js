@@ -22,14 +22,6 @@ CoreGame.createScene = function (config) {
 
     var scene = new cc.Scene();
 
-    // Center board on screen
-    var winSize = cc.director.getWinSize();
-    var boardWidth = CoreGame.Config.BOARD_COLS * CoreGame.Config.CELL_SIZE;
-    var boardHeight = CoreGame.Config.BOARD_ROWS * CoreGame.Config.CELL_SIZE;
-
-    CoreGame.Config.BOARD_OFFSET_X = (winSize.width - boardWidth) / 2;
-    CoreGame.Config.BOARD_OFFSET_Y = (winSize.height - boardHeight) / 2;
-
     // Create UI (which creates Manager and initializes Grid)
     var boardUI = CoreGame.BoardUI.getInstance();
     scene.addChild(boardUI);

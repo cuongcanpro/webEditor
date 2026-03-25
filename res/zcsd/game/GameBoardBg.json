@@ -69,8 +69,8 @@
                 },
                 "Scale9OriginX": 211,
                 "Scale9OriginY": 374,
-                "Scale9Width": 298,
-                "Scale9Height": 811,
+                "Scale9Width": 169,
+                "Scale9Height": 532,
                 "AnchorPoint": {
                   "ScaleX": 0.5,
                   "ScaleY": 0.5
@@ -452,7 +452,7 @@
                 },
                 "PreSize": {
                   "X": 1.0028,
-                  "Y": 0.0312
+                  "Y": 0.0313
                 },
                 "LeftMargin": -1.0,
                 "RightMargin": -1.0,

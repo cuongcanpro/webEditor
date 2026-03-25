@@ -7,7 +7,6 @@ let BaseLayer = cc.Layer.extend({
         BaseLayer.initWithJsonFile(
             this, json, rootPath, size
         );
-        this.initLayer();
     },
 
     /**
@@ -15,7 +14,6 @@ let BaseLayer = cc.Layer.extend({
      */
     onEnter: function () {
         cc.Layer.prototype.onEnter.call(this);
-
         this.onEnterFinish();
     },
 
@@ -65,7 +63,121 @@ let BaseLayer = cc.Layer.extend({
 
     },
     //endregion Button
+
+    //region PopUp
+    enableFog: function (opacity = 255 * 0.85, blockTouch = true) {
+        if (this._fog) {
+            this._fog.removeFromParent();
+        }
+
+        this._fog = new ccui.Layout();
+        this._fog.setVisible(true);
+        this._fog.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        this._fog.setBackGroundColor(cc.BLACK);
+        this._fog.setBackGroundColorOpacity(opacity);
+        this._fog.setTouchEnabled(blockTouch);
+
+        this.addChild(this._fog, -999);
+    },
+
+    setShowHideAnimate: function (bgMain) {
+        this._showHideAnimate = true;
+
+        if (bgMain === undefined) {
+            this._bgShowHideAnimate = this._rootNode;
+        } else {
+            this._bgShowHideAnimate = bgMain;
+        }
+
+        let efxTime = BaseLayer.ANIMATE_TIME;
+        let targetScale = this._bgShowHideAnimate.oriScale ? this._bgShowHideAnimate.oriScale : 1;
+
+        this._bgShowHideAnimate.stopAllActions();
+        this._bgShowHideAnimate.setScale(targetScale / 2);
+        this._bgShowHideAnimate.setOpacity(0);
+        this._bgShowHideAnimate.runAction(cc.sequence(
+            cc.spawn(
+                cc.scaleTo(efxTime, targetScale).easing(cc.easeBackOut()),
+                cc.fadeIn(efxTime)
+            ),
+            cc.callFunc(this.finishShowAnimate, this)
+        ));
+
+        if (this._fog) {
+            this._fog.stopAllActions();
+            this._fog.setVisible(true);
+            this._fog.setOpacity(0);
+            this._fog.setContentSize(cc.winSize);
+            this._fog.runAction(cc.fadeIn(efxTime).easing(cc.easeOut(2.5)));
+        }
+    },
+
+    finishShowAnimate: function () {
+        //Abstract
+    },
+
+    onClose: function () {
+        if (this._fog && this._fog.isVisible()) {
+            this._fog.runAction(cc.fadeOut(BaseLayer.ANIMATE_TIME).easing(cc.easeOut(2.5)));
+        }
+
+        if (this._showHideAnimate) {
+            this._bgShowHideAnimate.stopAllActions();
+            this._bgShowHideAnimate.runAction(cc.sequence(
+                cc.spawn(
+                    cc.scaleTo(BaseLayer.ANIMATE_TIME, 0.2).easing(cc.easeBackIn()),
+                    cc.fadeOut(BaseLayer.ANIMATE_TIME).easing(cc.easeOut(2.5))
+                ),
+                cc.callFunc(this.onCloseDone.bind(this))
+            ));
+        } else {
+            this.onCloseDone();
+        }
+    },
+
+    onCloseDone: function () {
+        this.removeFromParent(cc.sys.isNative); // neu la ban web khong remove, vi remove se xoa het eventListener khi cache
+    },
+
+    setBackEnable: function (enable) {
+        this._enableBack = enable;
+    },
+
+    backKeyPress: function () {
+        if (!this._enableBack) return;
+
+        this.onBack();
+    },
+
+    onBack : function () {
+        //Abstract
+    },
+    //endregion PopUp
+
+    //region Others
+    resetDefaultPosition: function (control) {
+        if (control === undefined) return;
+
+        try {
+            if (control.defaultPos === undefined) control.defaultPos = control.getPosition();
+            else control.setPosition(control.defaultPos);
+        } catch (e) {
+
+        }
+    },
+
+    setAsPopup: function (value, isCache) {
+        this._aaPopup = value;
+        this._cachePopup = isCache;
+
+        if (value && this._layerGUI) {
+            this._layerGUI.removeFromParent();
+            this._layerGUI = null;
+        }
+    },
+    //endregion Others
 });
+BaseLayer.ANIMATE_TIME = 0.333;
 
 /* region BaseLayer common */
 BaseLayer.initWithJsonFile = function (self, json, rootPath = res.ZCSD_ROOT, size = cc.director.getWinSize()) {
@@ -73,11 +185,13 @@ BaseLayer.initWithJsonFile = function (self, json, rootPath = res.ZCSD_ROOT, siz
     var start = new Date().getTime();
 
     self._jsonPath = json;
-    var jsonLayout = ccs.load(json, rootPath);
-    self._rootNode = jsonLayout.node;
+    self._rootNode = ccs.load(json, rootPath).node;
     self._rootNode.setContentSize(size);
     ccui.Helper.doLayout(self._rootNode);
     self.addChild(self._rootNode);
+
+    self.setCascadeOpacityEnabled(true);
+    self._rootNode.setCascadeOpacityEnabled(true);
 
     var end = new Date().getTime();
     cc.log("## Time Load " + json + " : " + (end - start));
@@ -113,6 +227,8 @@ BaseLayer._syncInNode = function (node, ctx, createNew = true) {
 };
 
 BaseLayer._handleDefaultNode = function (node, self) {
+    if (!node) return;
+
     if (node instanceof ccui.Button) {
         node.setPressedActionEnabled && node.setPressedActionEnabled(true);
         node.removeAllEventListeners && node.removeAllEventListeners();

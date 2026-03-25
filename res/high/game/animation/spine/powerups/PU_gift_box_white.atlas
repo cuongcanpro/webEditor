@@ -1,0 +1,153 @@
+
+PU_gift_box_white.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fx_blur_1
+  rotate: false
+  xy: 238, 339
+  size: 161, 142
+  orig: 161, 143
+  offset: 0, 1
+  index: -1
+fx_blur_1_color
+  rotate: false
+  xy: 226, 193
+  size: 160, 144
+  orig: 160, 144
+  offset: 0, 0
+  index: -1
+fx_blur_1_color2
+  rotate: true
+  xy: 636, 617
+  size: 159, 143
+  orig: 160, 144
+  offset: 0, 1
+  index: -1
+fx_blur_2
+  rotate: false
+  xy: 475, 628
+  size: 159, 148
+  orig: 159, 149
+  offset: 0, 1
+  index: -1
+fx_blur_2_color
+  rotate: false
+  xy: 224, 46
+  size: 152, 145
+  orig: 153, 146
+  offset: 0, 1
+  index: -1
+fx_blur_2_color2
+  rotate: false
+  xy: 401, 336
+  size: 152, 145
+  orig: 153, 146
+  offset: 0, 1
+  index: -1
+gift_body
+  rotate: false
+  xy: 2, 793
+  size: 235, 212
+  orig: 235, 212
+  offset: 0, 0
+  index: -1
+gift_body2
+  rotate: false
+  xy: 239, 793
+  size: 234, 212
+  orig: 235, 212
+  offset: 0, 0
+  index: -1
+gift_body2_color
+  rotate: false
+  xy: 2, 365
+  size: 234, 212
+  orig: 235, 212
+  offset: 0, 0
+  index: -1
+gift_body3
+  rotate: false
+  xy: 2, 579
+  size: 235, 212
+  orig: 235, 212
+  offset: 0, 0
+  index: -1
+gift_body_color
+  rotate: false
+  xy: 239, 579
+  size: 234, 212
+  orig: 235, 212
+  offset: 0, 0
+  index: -1
+gift_top
+  rotate: false
+  xy: 475, 874
+  size: 244, 131
+  orig: 245, 132
+  offset: 0, 1
+  index: -1
+gift_top_color
+  rotate: true
+  xy: 2, 119
+  size: 244, 131
+  orig: 244, 131
+  offset: 0, 0
+  index: -1
+ribbon_10
+  rotate: false
+  xy: 238, 483
+  size: 221, 94
+  orig: 221, 95
+  offset: 0, 1
+  index: -1
+ribbon_10_color
+  rotate: false
+  xy: 475, 778
+  size: 220, 94
+  orig: 221, 94
+  offset: 0, 0
+  index: -1
+ribbon_10_color2
+  rotate: false
+  xy: 721, 911
+  size: 220, 94
+  orig: 221, 94
+  offset: 0, 0
+  index: -1
+ribbon_11
+  rotate: true
+  xy: 135, 241
+  size: 122, 89
+  orig: 122, 89
+  offset: 0, 0
+  index: -1
+ribbon_11_color
+  rotate: false
+  xy: 388, 245
+  size: 121, 89
+  orig: 122, 89
+  offset: 0, 0
+  index: -1
+ribbon_12
+  rotate: true
+  xy: 135, 123
+  size: 116, 87
+  orig: 116, 87
+  offset: 0, 0
+  index: -1
+ribbon_12_color
+  rotate: false
+  xy: 388, 157
+  size: 115, 86
+  orig: 115, 86
+  offset: 0, 0
+  index: -1
+shadow
+  rotate: true
+  xy: 2, 2
+  size: 115, 135
+  orig: 115, 135
+  offset: 0, 0
+  index: -1

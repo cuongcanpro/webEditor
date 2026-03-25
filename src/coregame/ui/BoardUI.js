@@ -86,6 +86,7 @@ CoreGame.BoardUI = cc.Layer.extend({
                 label.setColor(cc.color(255, 255, 0));  // Yellow
                 label.enableStroke(cc.color(0, 0, 0), 2); // Black outline for readability
                 label.setPosition(pixelPos);
+                label.setVisible(false);
                 this.root.addChild(label, 9999);  // High zOrder to always be on top
             }
         }

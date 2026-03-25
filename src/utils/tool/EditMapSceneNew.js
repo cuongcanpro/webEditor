@@ -62,6 +62,7 @@ var EditMapSceneNew = cc.Layer.extend({
     _tfTPP: null,
     _spawnStrategyKey: "RandomSpawnStrategy",
     _btnSpawnStrategy: null,
+    _tfTargetMove: null,
     _agentKey: "GreedyBot",
     _btnAgent: null,
     _tfSaveName: null,
@@ -177,11 +178,13 @@ var EditMapSceneNew = cc.Layer.extend({
             self.addChild(self.boardUI, 1);
             self.fitBoardToCenter(); // scale + position the layer to fit center area
 
+            
             // Wire up all sections
             self.setupToolbar();
             self.setupToolPanel();
             self.setupRightPanel();
             self.setupBottomBar();
+            
             self.setupElementSelector();
             self.setupLevelSelector();
         });
@@ -210,8 +213,8 @@ var EditMapSceneNew = cc.Layer.extend({
         var cols = CoreGame.Config.BOARD_COLS || 9;
         var cell = CoreGame.Config.CELL_SIZE || 57;
         // BOARD_OFFSET: where board cells start inside the boardUI layer (read-only here)
-        var offX = CoreGame.Config.BOARD_OFFSET_X || 0;
-        var offY = CoreGame.Config.BOARD_OFFSET_Y || 0;
+        var offX = this.boardUI.boardMgr ? this.boardUI.boardMgr.boardOffsetX : 0;
+        var offY = this.boardUI.boardMgr ? this.boardUI.boardMgr.boardOffsetY : 0;
         this.saveOffsetX = offX;
         this.saveOffsetY = offY;
         // Panel geometry (resolved after doLayout)
@@ -481,8 +484,8 @@ var EditMapSceneNew = cc.Layer.extend({
         this.pRight.addChild(pGem);
         this._buildGemColorSection(pGem);
 
-        // ── 3. GAME CONFIG (Turn / TPP / Spawn) ──────────────────────────
-        var cfgH = 92;
+        // ── 3. GAME CONFIG (Turn / TPP / Spawn / TargetMove) ─────────────
+        var cfgH = 118;
         curY -= cfgH;
         var pCfg = this._makeRightPanel(W, cfgH, curY, cc.color(25, 32, 58));
         this.pRight.addChild(pCfg);
@@ -595,17 +598,25 @@ var EditMapSceneNew = cc.Layer.extend({
         this._tfTPP = this._makeField(panel, "1.0", TF_X, y2, TF_W, ROW);
         this._tfTPP.setString("1.0");
 
-        // Spawn
+        // TargetMove (hidden difficulty metric — not shown to players)
         var y3 = y2 - ROW - 5;
+        var lb3tm = new ccui.Text("TgtMove:", "font/BalooPaaji2-Regular.ttf", 12);
+        lb3tm.setColor(cc.color(150, 150, 120)); lb3tm.setAnchorPoint(cc.p(0, 0.5));
+        lb3tm.setPosition(6, y3); panel.addChild(lb3tm, 1);
+        this._tfTargetMove = this._makeField(panel, "0", TF_X, y3, TF_W, ROW);
+        this._tfTargetMove.setString("0");
+
+        // Spawn
+        var y4 = y3 - ROW - 5;
         var lb3 = new ccui.Text("Spawn:", "font/BalooPaaji2-Regular.ttf", 12);
         lb3.setColor(cc.color(170, 170, 190)); lb3.setAnchorPoint(cc.p(0, 0.5));
-        lb3.setPosition(6, y3); panel.addChild(lb3, 1);
+        lb3.setPosition(6, y4); panel.addChild(lb3, 1);
         this._btnSpawnStrategy = new ccui.Button();
         this._btnSpawnStrategy.loadTextureNormal("res/tool/res/bgTf.png");
         this._btnSpawnStrategy.setScale9Enabled(true);
         this._btnSpawnStrategy.setContentSize(TF_W, ROW);
         this._btnSpawnStrategy.setAnchorPoint(cc.p(0, 0.5));
-        this._btnSpawnStrategy.setPosition(TF_X, y3);
+        this._btnSpawnStrategy.setPosition(TF_X, y4);
         this._btnSpawnStrategy.setTitleText(this._spawnStrategyKey);
         this._btnSpawnStrategy.setTitleFontSize(11);
         this._btnSpawnStrategy.setTitleColor(cc.color(220, 220, 255));
@@ -1216,6 +1227,7 @@ var EditMapSceneNew = cc.Layer.extend({
         mapData.notes = this._tfNotes ? this._tfNotes.getString() : "";
         mapData.numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "50") || 50;
         mapData.tpp = parseFloat(this._tfTPP ? this._tfTPP.getString() : "1.0") || 1.0;
+        mapData.targetMove = parseInt(this._tfTargetMove ? this._tfTargetMove.getString() : "0") || 0;
         mapData.spawnStrategy = this._spawnStrategyKey || "";
         mapData.agentType = this._agentKey || "GreedyBot";
         var gemTypes = [];
@@ -1326,6 +1338,7 @@ var EditMapSceneNew = cc.Layer.extend({
         if (this._tfNotes) this._tfNotes.setString(data.notes || "");
         if (this._tfPlayTest) this._tfPlayTest.setString("" + (data.numTest || 50));
         if (this._tfTPP && data.tpp !== undefined) this._tfTPP.setString("" + data.tpp);
+        if (this._tfTargetMove) this._tfTargetMove.setString("" + (data.targetMove || 0));
         if (data.spawnStrategy) {
             this._spawnStrategyKey = data.spawnStrategy;
             if (this._btnSpawnStrategy) this._btnSpawnStrategy.setTitleText(data.spawnStrategy);
@@ -1399,7 +1412,9 @@ var EditMapSceneNew = cc.Layer.extend({
 
         var scene = new cc.Scene();
         CoreGame.BoardUI.instance = null;
-        scene.addChild(new CoreGame.GameUI({ mapConfig: mapData }));
+        let gui = new CoreGame.GameUI({ mapConfig: mapData });
+        scene.addChild(gui);
+        gui.startNow();
         cc.director.runScene(scene);
     },
 
@@ -1423,6 +1438,7 @@ var EditMapSceneNew = cc.Layer.extend({
         if (!cc.sys.isNative) {
             if (landscape) {
                 // Landscape: swap width ↔ height so the wider dimension is horizontal
+                cc.log("Applying landscape design resolution (swapped):", designSize.height, "x", designSize.width);
                 cc.view.setDesignResolutionSize(designSize.height, designSize.width, cc.ResolutionPolicy.FIXED_HEIGHT);
             } else {
                 // Portrait: use standard game resolution (taller than wide)
@@ -1493,16 +1509,29 @@ var EditMapSceneNew = cc.Layer.extend({
         targetEntries.forEach(function (t) { targets[t.id] = t.count; });
 
         var self = this;
+        var mapName = (this._tfSaveName && this._tfSaveName.getString().trim()) ||
+                      (this._tfMapName  && this._tfMapName.getString().trim())  || "map";
+        var title = "Run Test — " + this._agentKey + " / " + mapName;
+        var progressDlg = new TestProgressDialog(title);
+        this.addChild(progressDlg, 1000);
+        progressDlg.show();
+        progressDlg.updateProgress(0, numTest);
+
         var savedState = boardMgr.getBoardState();
         CoreGame.FakeUI.start();
         CoreGame.DifficultyCalc.calculate(
             boardMgr,
             { maxMoves: self.MAX_SIM_MOVES, targets: targets },
             bot,
-            null,
+            function (step, total, state) {
+                if (state && state.phase === "episode") {
+                    progressDlg.updateProgress(state.episode, state.numEpisodes);
+                }
+            },
             function (report) {
                 CoreGame.FakeUI.restore();
                 boardMgr.setBoardState(savedState);
+                progressDlg.hide();
                 var dialog = new BenchDiffDialog(report);
                 self.addChild(dialog, 1000);
                 dialog.show();

@@ -1,0 +1,237 @@
+
+PU_rocket_H_white.png
+size: 512,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+body
+  rotate: true
+  xy: 355, 423
+  size: 87, 95
+  orig: 88, 96
+  offset: 0, 1
+  index: -1
+body1_color
+  rotate: false
+  xy: 82, 232
+  size: 86, 94
+  orig: 86, 94
+  offset: 0, 0
+  index: -1
+body1_cover_color
+  rotate: false
+  xy: 238, 411
+  size: 84, 20
+  orig: 84, 20
+  offset: 0, 0
+  index: -1
+body1_light_color
+  rotate: true
+  xy: 192, 246
+  size: 80, 20
+  orig: 81, 21
+  offset: 0, 1
+  index: -1
+body2_color
+  rotate: false
+  xy: 82, 136
+  size: 86, 94
+  orig: 86, 94
+  offset: 0, 0
+  index: -1
+body2_cover_color
+  rotate: true
+  xy: 170, 242
+  size: 84, 20
+  orig: 84, 20
+  offset: 0, 0
+  index: -1
+body2_light_color
+  rotate: false
+  xy: 254, 269
+  size: 80, 20
+  orig: 81, 21
+  offset: 0, 1
+  index: -1
+body_cover
+  rotate: true
+  xy: 170, 157
+  size: 83, 19
+  orig: 83, 19
+  offset: 0, 0
+  index: -1
+body_light
+  rotate: false
+  xy: 254, 248
+  size: 80, 19
+  orig: 80, 20
+  offset: 0, 1
+  index: -1
+body_outline
+  rotate: true
+  xy: 2, 3
+  size: 87, 95
+  orig: 88, 96
+  offset: 0, 1
+  index: -1
+bot_1
+  rotate: false
+  xy: 325, 314
+  size: 71, 38
+  orig: 71, 38
+  offset: 0, 0
+  index: -1
+bot_1_color
+  rotate: false
+  xy: 398, 306
+  size: 70, 36
+  orig: 70, 36
+  offset: 0, 0
+  index: -1
+bot_2
+  rotate: true
+  xy: 214, 263
+  size: 71, 38
+  orig: 71, 38
+  offset: 0, 0
+  index: -1
+bot_2_color
+  rotate: false
+  xy: 254, 291
+  size: 69, 36
+  orig: 69, 36
+  offset: 0, 0
+  index: -1
+effects/sparks_shot_1
+  rotate: true
+  xy: 336, 245
+  size: 22, 40
+  orig: 102, 102
+  offset: 40, 4
+  index: -1
+effects/sparks_shot_2
+  rotate: false
+  xy: 460, 351
+  size: 44, 79
+  orig: 102, 102
+  offset: 28, 7
+  index: -1
+effects/sparks_shot_3
+  rotate: false
+  xy: 272, 329
+  size: 51, 80
+  orig: 102, 102
+  offset: 24, 10
+  index: -1
+effects/sparks_shot_4
+  rotate: false
+  xy: 452, 432
+  size: 54, 78
+  orig: 102, 102
+  offset: 23, 15
+  index: -1
+effects/sparks_shot_5
+  rotate: false
+  xy: 403, 344
+  size: 55, 77
+  orig: 102, 102
+  offset: 22, 18
+  index: -1
+fx_blur
+  rotate: true
+  xy: 119, 328
+  size: 81, 74
+  orig: 81, 74
+  offset: 0, 0
+  index: -1
+fx_blur_color
+  rotate: false
+  xy: 325, 354
+  size: 76, 67
+  orig: 76, 67
+  offset: 0, 0
+  index: -1
+fx_blur_ice
+  rotate: false
+  xy: 195, 336
+  size: 75, 73
+  orig: 81, 74
+  offset: 3, 0
+  index: -1
+rocket_shadow
+  rotate: false
+  xy: 99, 45
+  size: 87, 89
+  orig: 87, 89
+  offset: 0, 0
+  index: -1
+tail_1
+  rotate: true
+  xy: 470, 306
+  size: 43, 40
+  orig: 43, 40
+  offset: 0, 0
+  index: -1
+tail_1_color
+  rotate: false
+  xy: 143, 4
+  size: 42, 39
+  orig: 42, 39
+  offset: 0, 0
+  index: -1
+tail_2
+  rotate: false
+  xy: 336, 269
+  size: 43, 43
+  orig: 43, 43
+  offset: 0, 0
+  index: -1
+tail_2_color
+  rotate: false
+  xy: 99, 2
+  size: 42, 41
+  orig: 42, 41
+  offset: 0, 0
+  index: -1
+top_1
+  rotate: false
+  xy: 2, 420
+  size: 117, 90
+  orig: 117, 90
+  offset: 0, 0
+  index: -1
+top_1_color
+  rotate: false
+  xy: 2, 328
+  size: 115, 90
+  orig: 115, 90
+  offset: 0, 0
+  index: -1
+top_1_ice
+  rotate: false
+  xy: 121, 421
+  size: 115, 89
+  orig: 117, 90
+  offset: 1, 1
+  index: -1
+top_2
+  rotate: true
+  xy: 2, 209
+  size: 117, 78
+  orig: 117, 78
+  offset: 0, 0
+  index: -1
+top_2_color
+  rotate: false
+  xy: 238, 433
+  size: 115, 77
+  orig: 115, 77
+  offset: 0, 0
+  index: -1
+top_2_ice
+  rotate: true
+  xy: 2, 92
+  size: 115, 77
+  orig: 115, 77
+  offset: 0, 0
+  index: -1

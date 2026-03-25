@@ -84,7 +84,7 @@ CoreGame.GridSlot = cc.Class.extend({
             }
             if (this.listElement[i].isStopAction(type)) return null;
         }
-        return null
+        return null;
     },
 
     /**
@@ -123,6 +123,9 @@ CoreGame.GridSlot = cc.Class.extend({
         var dumpElement = this.listElement.slice();
         for (var i = 0; i < dumpElement.length; i++) {
             var element = dumpElement[i];
+
+            // Skip elements immune to activation (newly created powerups during ActiveSwap)
+            if (element._immuneToActivation) continue;
 
             // if (element.hasAction(CoreGame.ElementObject.Action.ACTIVE)) {
             if (forceMatch || element.isIdle()) {

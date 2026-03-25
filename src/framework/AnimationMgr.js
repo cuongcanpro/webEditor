@@ -123,18 +123,22 @@ gv.isHaveSpineAnimation = function (path) {
     return true;
 };
 
-gv.createSpineAnimation = function (path) {
+gv.createSpineAnimation = function (path, difPath) {
+    difPath = difPath || path;
+
     var jsonFile = path + ".json";
-    var alas = path + ".atlas";
+    var alas = difPath + ".atlas";
     cc.log("json file " + jsonFile + "atlas file " + alas);
     return new sp.SkeletonAnimation(jsonFile, alas);
 };
+
 gv.createSkeletonSpine = function (path) {
     var jsonFile = path + ".json";
     var alas = path + ".atlas";
     cc.log("json file " + jsonFile + "atlas file " + alas);
     return new SkeletonSpine(jsonFile, alas);
 }
+
 gv.removeSpineAfterRun = function (spine) {
     // return;
     spine.setCompleteListener(function () {

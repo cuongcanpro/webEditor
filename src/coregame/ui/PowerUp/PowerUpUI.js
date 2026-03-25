@@ -7,10 +7,15 @@
         this.mainSpr.setScale(CoreGame.PowerUpUI.DEFAULT_SCALE);
         this.mainSpr.setSkin(this.skin);
 
-        this.anims = [this.mainSpr];
+        this.whiteSpr = gv.createSpineAnimation(this.resAnim + "_white");
+        this.whiteSpr.setScale(CoreGame.PowerUpUI.DEFAULT_SCALE);
+        this.whiteSpr.setSkin(this.skin);
+
+        this.anims = [this.mainSpr, this.whiteSpr];
         this.spawnAnim();
 
         this.addChild(this.mainSpr);
+        this.addChild(this.whiteSpr);
 
         this.setLocalZOrder(BoardConst.zOrder.POWER_UP);
     },
@@ -27,6 +32,24 @@
         for (let anim of this.anims) {
             anim.setAnimation(0, "init", false);
             anim.addAnimation(0, "run", true);
+        }
+
+        if (this.whiteSpr.isVisible()) {
+            this.whiteSpr.runAction(cc.sequence(
+                cc.callFunc(function () {
+                    //Efx sparkle
+                    let pos = UIUtils.getWorldPosition(this);
+                    let nodeTLFX = gv.createTLFX(
+                        "fx_blink_meta",
+                        pos,
+                        this.getParent(),
+                        this.getLocalZOrder() - 1
+                    );
+                    nodeTLFX.setScale(0.5 + Math.random() * 0.1);
+                }.bind(this)),
+                cc.fadeOut(CoreGame.Config.CONVERGE_DURATION).easing(cc.easeOut(2.5)),
+                cc.hide()
+            ));
         }
     },
 

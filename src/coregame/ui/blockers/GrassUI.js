@@ -65,7 +65,8 @@ CoreGame.GrassUI = CoreGame.ElementUI.extend({
      * Play explosion effect for Grass
      */
     playTakeDamageEffect: function () {
-        cc.log("Run here playTakeDamageEffect Grass ========  ");
+        fr.Sound.playSoundEffect(resSound.grass, false);
+
         // VFX: "grass_block"
         if (typeof gv !== 'undefined' && typeof gv.createTLFX === 'function') {
             var posEff = this.getParent().convertToWorldSpace(this.getPosition());

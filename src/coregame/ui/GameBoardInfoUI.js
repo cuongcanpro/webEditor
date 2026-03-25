@@ -3,7 +3,6 @@
 CoreGame.GameBoardInfoUI = BaseLayer.extend({
     nodeInfo: null,
     alert_180min_18: null,
-    bgTop: null,
 
     pInfo: null,
     nodeMain: null,
@@ -11,34 +10,199 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     lbMove: null,
     pObjective: null,
 
+    nodeCat: null,
+
     iconCollect: null,
     btnTest: null,
-    nodeTest: null,
+    btnTestSetMove: null,
     nodeTest: null,
 
     listNode: [],
 
-    ctor: function (mainScene) {
+    pIntro: null,
+    pFogIntroObjective: null,
+    nodeObjectives: null,
+    imgCatObj: null,
+    bgObjIntro: null,
+    pObjectiveIntro: null,
+
+    nodeMonster: null,
+    imgMonsterBg: null,
+    nodeMonsterSprite: null,
+    lbMonsterName: null,
+
+    lbTextBubble: null,
+    lbTextBubblePhantom: null,
+
+
+    ctor: function (gameUI) {
         this._super();
-        this.mainScene = mainScene;
+        this.gameUI = gameUI;
 
         this.initWithJsonFile(CoreGame.GameBoardInfoUI.JSON);
     },
 
     initLayer: function () {
-        this.lbLevel.setString(this.mainScene ? this.mainScene.getLevel() : "-");
-        this.setScale(cc.winSize.width / this.bgTop.width);
-        this.setPositionOnNotchIOS();
-
         this.spine_cat = gv.createSpineAnimation(resAni.char_gui_board_info);
-        this.spine_cat.setPosition(-260, -165);
-        this.nodeMain.addChild(this.spine_cat);
+        this.spine_cat.setPosition(0, 0);
+        this.nodeCat.addChild(this.spine_cat);
         this.spine_cat.setAnimation(0, 'idle', true);
 
+        for (let node of this.listNode) {
+            node.removeFromParent();
+        }
+        this.listNode = [];
+
         this._initTest();
+
+        this.pIntro.setVisible(false);
+
+        this.nodeMonster.setVisible(false);
+
+        this.lbTextBubble.setVisible(false);
     },
 
-    initItemCount: function (type, lbl) {
+    //region EFX
+    efxIn: function (delayTime = 0) {
+        let efxTime = 0.5;
+        let lifeTime = 1.5;
+
+        if (this.nodeMonster.isVisible()) {
+            let efxTimeMonster = 0.5;
+            let deltaTimeMonster = 0.25;
+            delayTime += 1;
+
+            this.imgMonsterBg.stopAllActions();
+            this.imgMonsterBg.setOpacity(0);
+            this.imgMonsterBg.setPosition(this.imgMonsterBg.rawPos);
+            this.imgMonsterBg.x -= cc.winSize.width;
+            this.imgMonsterBg.runAction(cc.sequence(
+                cc.delayTime(delayTime),
+                cc.spawn(
+                    cc.fadeIn(efxTimeMonster),
+                    cc.moveTo(efxTimeMonster, this.imgMonsterBg.rawPos).easing(cc.easeBackOut())
+                )
+            ));
+
+            this.lbMonsterName.stopAllActions();
+            this.lbMonsterName.setOpacity(0);
+            this.lbMonsterName.setScale(2.5);
+            this.lbMonsterName.runAction(cc.sequence(
+                cc.delayTime(delayTime + efxTimeMonster + deltaTimeMonster),
+                cc.spawn(
+                    cc.fadeIn(efxTimeMonster),
+                    cc.scaleTo(efxTimeMonster, 1).easing(cc.easeIn(5))
+                )
+            ));
+
+            this.nodeMonsterSprite.stopAllActions();
+            this.nodeMonsterSprite.setOpacity(0);
+            this.nodeMonsterSprite.setScale(2.5);
+            this.nodeMonsterSprite.runAction(cc.sequence(
+                cc.delayTime(delayTime + efxTimeMonster + 2 * deltaTimeMonster),
+                cc.spawn(
+                    cc.fadeIn(efxTimeMonster),
+                    cc.scaleTo(efxTimeMonster, 1).easing(cc.easeIn(5))
+                )
+            ));
+
+            delayTime += delayTime + efxTimeMonster + 2 * deltaTimeMonster + 1;
+        } else {
+            //Intro
+            let efxObjTime = 0.25;
+            let efxObjTimeDelta = 0.05;
+            let delayShowObj = efxObjTime - efxObjTimeDelta + 1;
+            let listNodeIntro = this.pObjectiveIntro.getChildren();
+            for (let i = 0; i < listNodeIntro.length; i++) {
+                let node = listNodeIntro[i].bg;
+                if (node.isVisible()) {
+                    node.stopAllActions();
+                    node.setOpacity(0);
+                    node.setScale(2.5);
+                    node.runAction(cc.sequence(
+                        cc.delayTime(delayTime + efxTime + efxObjTimeDelta * i),
+                        cc.spawn(
+                            cc.fadeIn(efxObjTime),
+                            cc.scaleTo(efxObjTime, 1).easing(cc.easeIn(5))
+                        )
+                    ));
+
+                    delayShowObj += efxObjTimeDelta;
+                }
+            }
+
+            this.nodeObjectives.stopAllActions();
+            this.nodeObjectives.setOpacity(0);
+            this.nodeObjectives.setPosition(this.nodeObjectives.rawPos);
+            this.nodeObjectives.x -= cc.winSize.width;
+            this.nodeObjectives.runAction(cc.sequence(
+                cc.delayTime(delayTime),
+                cc.spawn(
+                    cc.moveTo(efxTime, this.nodeObjectives.rawPos).easing(cc.easeBackOut()),
+                    cc.fadeIn(efxTime).easing(cc.easeOut(2.5)),
+                    cc.delayTime(delayShowObj + lifeTime)
+                ),
+                cc.spawn(
+                    cc.moveBy(efxTime, cc.winSize.width, 0).easing(cc.easeBackIn()),
+                    cc.fadeOut(efxTime).easing(cc.easeOut(2.5))
+                )
+            ));
+        }
+
+
+
+        //FOG
+        this.pFogIntroObjective.stopAllActions();
+        this.pFogIntroObjective.setOpacity(0);
+        this.pFogIntroObjective.runAction(cc.sequence(
+            cc.delayTime(delayTime),
+            cc.spawn(
+                cc.fadeIn(efxTime).easing(cc.easeOut(2.5)),
+                cc.delayTime(delayShowObj + lifeTime)
+            ),
+            cc.fadeOut(efxTime).easing(cc.easeOut(2.5))
+        ));
+        //end FOG
+
+        //PANEL INTRO
+        this.pIntro.stopAllActions();
+        this.pIntro.setVisible(true);
+        this.pIntro.runAction(cc.sequence(
+            cc.delayTime(delayTime + 2 * efxTime + delayShowObj + lifeTime),
+            cc.hide()
+        ));
+        //END PANEL INTRO
+
+        this.pInfo.stopAllActions();
+        this.pInfo.setPosition(this.pInfo.rawPos);
+        this.pInfo.y += 250;
+        this.pInfo.runAction(cc.sequence(
+            cc.delayTime(delayTime + 2 * efxTime + delayShowObj + lifeTime),
+            cc.moveTo(efxTime, this.pInfo.rawPos).easing(cc.easeBackOut())
+        ));
+    },
+
+    efxNpcGuide: function (config) {
+        this.lbTextBubble.stopAllActions();
+        this.lbTextBubble.setString(config["dialog"]);
+        this.lbTextBubblePhantom.setString(config["dialog"]);
+        ccui.Helper.doLayout(this.lbTextBubble);
+
+        let efxTime = 0.25;
+        this.lbTextBubble.stopAllActions();
+        this.lbTextBubble.setScale(0);
+        this.lbTextBubble.runAction(cc.sequence(
+            cc.delayTime(config["delayTime"]),
+            cc.show(),
+            cc.scaleTo(efxTime, 1).easing(cc.easeBackOut()),
+            cc.delayTime(config["lifeTime"]),
+            cc.scaleTo(efxTime, 0).easing(cc.easeBackIn()),
+            cc.hide()
+        ))
+    },
+    //endregion EFX
+
+    initItemCount: function(type, lbl) {
         this.nodeMain.getChildByName('itemCount').setVisible(true);
         this.nodeMain.getChildByName('itemCount').getChildByName('icon')
             .loadTexture('game/element/icon/' + type + '.png', ccui.Widget.LOCAL_TEXTURE);
@@ -58,14 +222,6 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         this.nodeMain.getChildByName('itemCount').setVisible(false);
     },
 
-    setPositionOnNotchIOS: function () {
-        cc.log("setPositionOnNotchIOS", cc.winSize.height / cc.winSize.width)
-        if (fr.platformWrapper.isIOSHaveNotch()) {
-            this.bgTop.height += GUIConst.IOS_NOTCH_HEIGHT;
-            this.nodeMain.y -= GUIConst.IOS_NOTCH_HEIGHT;
-        }
-    },
-
     setMove: function (move) {
         cc.log("GameBoardInfoUI move", move);
         this.lbMove.setString(move);
@@ -78,43 +234,94 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     },
 
     setListTarget: function (targetElements) {
-        for (let node of this.listNode) {
-            node.removeFromParent(true);
+        this.pObjective.width = CoreGame.GameBoardInfoUI.TARGET_SIZE * targetElements.length;
+        ccui.Helper.doLayout(this.pObjective);
+
+        for (let i = 0; i < Math.max(this.listNode.length, targetElements.length); i++) {
+            if (i >= this.listNode.length) {
+                this.createTarget(this.pObjective, this.listNode);
+            }
+
+            if (i >= targetElements.length) {
+                this.listNode[i].setVisible(false);
+            } else {
+                this.listNode[i].setVisible(true);
+                this.setInfoTarget(this.listNode[i], targetElements[i].id, targetElements[i].count);
+                this.listNode[i].x = i * CoreGame.GameBoardInfoUI.TARGET_SIZE;
+                this.listNode[i].y = - 0.5 * CoreGame.GameBoardInfoUI.TARGET_SIZE;
+            }
         }
 
-        this.listNode = [];
-        var count = 0, numTarget = targetElements.length;
-        for (var element of targetElements) {
-            var node = this.createTarget(element.id, element.count);
-            node.setPosition(this['nodeDemo_' + numTarget + '_' + (count++)].getPosition());
-            node.y -= 2;
-            this.nodeMain.addChild(node);
-            this.listNode.push(node);
+        this.pObjectiveIntro.width = CoreGame.GameBoardInfoUI.TARGET_SIZE * targetElements.length;
+        ccui.Helper.doLayout(this.pObjectiveIntro);
+        let listNodeIntro = this.pObjectiveIntro.getChildren();
+        for (let i = 0; i < Math.max(listNodeIntro.length, targetElements.length); i++) {
+            if (i >= listNodeIntro.length) {
+                this.createTarget(this.pObjectiveIntro, listNodeIntro);
+            }
+
+            if (i >= targetElements.length) {
+                listNodeIntro[i].setVisible(false);
+            } else {
+                listNodeIntro[i].setVisible(true);
+                this.setInfoTarget(listNodeIntro[i], targetElements[i].id, targetElements[i].count);
+                listNodeIntro[i].x = i * CoreGame.GameBoardInfoUI.TARGET_SIZE;
+                listNodeIntro[i].y = - 0.5 * CoreGame.GameBoardInfoUI.TARGET_SIZE;
+            }
         }
 
-        for (var i = 0; i < numTarget - 1; i++) {
-            this['dash_' + numTarget + '_' + i].setVisible(true);
+        let baseMonster = 10000;
+
+        this.nodeMonster.setVisible(false);
+        for (let element of targetElements) {
+            if (element.id >= baseMonster) {
+                //Set Info
+                this.nodeMonster.setVisible(true);
+                this.lbMonsterName.setString("Khỉ\nHiếu Chiến");
+                this.lbMonsterName.setTextColor(cc.color("#db7000"));
+                this.lbMonsterName.enableOutline(cc.color("#301c02"), 7);
+
+                this.nodeMonsterSprite.removeAllChildren();
+                let spine = gv.createSpineAnimation(resAni["spine_" + element.id + "_main"]);
+                this.nodeMonsterSprite.addChild(spine);
+                spine.setAnimation(0, "idle", true);
+                spine.setScale(0.25);
+                spine.y -= 125;
+
+                let randRot = (0.5 - Math.random()) * 20;
+                this.nodeMonster.setRotation(randRot);
+                this.nodeMonsterSprite.setRotation(-randRot);
+                this.lbMonsterName.setRotation(-randRot);
+            }
         }
-        this.numTarget = numTarget;
     },
 
-    createTarget: function (type, number) {
-        var node = new cc.Node();
+    createTarget: function (parent, list) {
+        let newTargetNode = ccs.load("zcsd/game/GameBoardInfoObjectiveSlot.json", res.ZCSD_ROOT).node;
+        newTargetNode.setContentSize(cc.size(
+            CoreGame.GameBoardInfoUI.TARGET_SIZE,
+            CoreGame.GameBoardInfoUI.TARGET_SIZE
+        ));
+        ccui.Helper.doLayout(newTargetNode);
 
-        node.spr = new cc.Sprite("game/element/icon/" + type + ".png");
-        node.spr.setPosition(5, 5);
-        node.addChild(node.spr);
+        newTargetNode.bg = null;
+        newTargetNode.spr = null;
+        newTargetNode.label = null;
+        newTargetNode.check = null;
 
-        node.lbl = new NumberLabel(res.FONT_GAME_BOLD, 40, number);
-        node.lbl.label.enableOutline(cc.color(76, 86, 121, 255));
-        node.lbl.setPosition(10, -20);
-        node.addChild(node.lbl);
-        node.setScale(0.8);
+        parent.addChild(newTargetNode);
 
-        node.check = new cc.Sprite(check_icon);
-        node.check.setPosition(10, -20);
+        BaseLayer._syncInNode(newTargetNode, newTargetNode);
+
+        list.push(newTargetNode);
+    },
+
+    setInfoTarget: function (node, type, number) {
+        node.spr.ignoreContentAdaptWithSize(true);
+        node.spr.loadTexture("game/element/icon/" + type + ".png");
+
+        node.lbl = new NumberLabelClass(node.label, number);
         node.check.setVisible(false);
-        node.addChild(node.check);
 
         node.type = type;
         node.target = number;
@@ -162,7 +369,6 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             cc.log("unCollect number=" + node.number);
             node.addValue(amount)
         };
-        return node;
     },
 
     getNodeTarget: function (type) {
@@ -174,7 +380,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         cc.log("suckElement " + element.id, this.mainScene.mainBoard.listCurTarget[CoreGame.Config.ElementType.GOLD_BONUS]);
 
         if (element.getCurState() == Element.State.NONE) return;
-        cc.log("element " + element.id + " suck " + element.type + ' ' + element.isCollected)
+        cc.log("element " + element.id + " suck " + element.type +' '+ element.isCollected)
         var nodeTarget = this.getNodeTarget(element.getType());
         if (nodeTarget == null) return;
         if (!element.isCollectible()) {
@@ -187,7 +393,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         element.getBoard().removeElement(element);
         for (let i = 0; i < element.width; i++)
             for (let j = 0; j < element.height; j++) {
-                this.board.getSlot(element.row - i, element.col - j).removeElement(element);
+                this.board.getSlot(element.row-i, element.col-j).removeElement(element);
             }
 
         UIUtils.changeParent(element, cc.director.getRunningScene());
@@ -215,9 +421,10 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             cc.delayTime(timeDelay),
             cc.callFunc(function () {
                 element.setCurState(Element.State.NONE);
-                if (element.getType() >= CoreGame.Config.ElementType.GREEN && element.getType() <= CoreGame.Config.ElementType.CYAN) {
+                if(element.getType() >= CoreGame.Config.ElementType.GREEN && element.getType() <= CoreGame.Config.ElementType.CYAN){
                     element.shadow = new CoreGame.GameBoardInfoUI.NodeShadow(element, timeMove, "icon_" + element.getType() + "_shadow.png");
-                } else {
+                }else
+                {
                     element.shadow = new CoreGame.GameBoardInfoUI.NodeShadow(element, timeMove);
                 }
                 element.shadow.setShadowZOder(BoardConst.zOrder.OBJECTIVE + zOrderInc - 1);
@@ -252,16 +459,12 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
 
     initCoinCollect: function (amount) {
         this.showObjectiveBar(true);
-        for (var i = 0; i < this.numTarget - 1; i++) this['dash_' + this.numTarget + '_' + i].setVisible(false);
-        for (var i in this.listNode) {
-            this.listNode[i].removeFromParent(true);
-        }
 
-        var coin = this.createTarget("coin", amount || 0);
-        coin.setPosition(this['nodeDemo_1_0']);
-        // this.mainScene.mainBoard.reward = amount || 0;
-        this.coinTarget = coin;
-        this.nodeMain.addChild(coin);
+        this.setListTarget([{
+            id: "coin",
+            count: amount || 0
+        }]);
+        this.coinTarget = this.listNode[0];
     },
 
     collectCoin: function (amount, position, zoomOut, delayAnim) {
@@ -287,8 +490,8 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
                     coin.runAction(cc.scaleTo(timeMove * 0.4, 100 / 80, 100 / 80));
                 }
                 var actionScaleShadow = cc.sequence(
-                    cc.scaleTo(timeMove / 2, 1.5),
-                    cc.scaleTo(timeMove - timeMove / 2, 1.0)
+                    cc.scaleTo(timeMove/2, 1.5),
+                    cc.scaleTo(timeMove - timeMove/2, 1.0)
                 )
                 coin.shadow = new CoreGame.GameBoardInfoUI.NodeShadow(coin, timeMove, null, actionScaleShadow);
                 coin.runAction(cc.sequence(
@@ -315,17 +518,10 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
 
     showObjectiveBar: function (isShow) {
         this.pObjective.setVisible(isShow);
-        for (let i in this.listNode)
+        for (let i in this.listNode) {
             this.listNode[i].setVisible(isShow);
-        this.spine_cat.setVisible(isShow);
-        if (!isShow) { // ballon resize top bar
-            this.bgTop.height = 50;
-            if (fr.platformWrapper.isIOSHaveNotch()) {
-                this.bgTop.height = 50 + GUIConst.IOS_NOTCH_HEIGHT
-            }
-        } else {
-            this.bgTop.height = 75;
         }
+        this.spine_cat.setVisible(isShow);
     },
 
     onShowSpineCatTalking: function (newParent, zOrder) {
@@ -341,7 +537,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     },
 
     stopSpineCatTalking: function () {
-        if (this.spineCatData != null) {
+        if (this.spineCatData != null){
             UIUtils.changeParent(this.spine_cat, this.spineCatData.parent, 1);
             this.spine_cat.setAnimation(0, 'idle', true);
             this.spine_cat.setVisible(this.spineCatData.visible);
@@ -366,9 +562,9 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         };
         this.btnTest.addClickEventListener(this.showTest.bind(this));
         this.onTestSetMove = function () {
-            if (!gv.isRelease) {
+            if (!gv.isRelease){
                 var inputMove = Number(this.tfTestSetMove.getString());
-                if (1 <= inputMove && inputMove <= 100) {
+                if (1 <= inputMove && inputMove <= 100){
                     this.board.setMove(inputMove);
                 }
             }
@@ -378,6 +574,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
 
 });
 CoreGame.GameBoardInfoUI.JSON = "zcsd/game/GameBoardInfoUI.json";
+CoreGame.GameBoardInfoUI.TARGET_SIZE = 100;
 
 /**
  * Create shadowFake, add child to object Flying
@@ -392,52 +589,53 @@ CoreGame.GameBoardInfoUI.NodeShadow = cc.Node.extend({
      * @param shadowZOrder: ZOder shadow
      * @param timeMove: total time move animation
      */
-    ctor: function (objectFly, timeMove, shadowResourcesPath, actionScale) {
+    ctor:function (objectFly, timeMove, shadowResourcesPath, actionScale ) {
         this._super();
         objectFly.getParent().addChild(this);
         this.objectFly = objectFly;
 
         //init shadow resources path
-        if (_.isUndefined(shadowResourcesPath) || shadowResourcesPath == null) {
+        if(_.isUndefined(shadowResourcesPath) || shadowResourcesPath == null){
             shadowResourcesPath = res.img_shadow;
         }
 
         this._shadow = UIUtils.createSprite(shadowResourcesPath, objectFly.getParent());
-        this._shadow.setLocalZOrder(objectFly.getLocalZOrder() - 1);
+        this._shadow.setLocalZOrder(objectFly.getLocalZOrder()-1);
         // run action scale custom, if actionScale = null then scale on update with scale rate = object fly'scale rate
-        if (!_.isUndefined(actionScale) && actionScale != null) {
+        if(!_.isUndefined(actionScale) && actionScale !=  null)
+        {
             this.actionScaleCustome = actionScale;
             this._shadow.runAction(actionScale);
         }
         this.timeMove = timeMove;
-        if (_.isUndefined(timeMove) || timeMove == null) {
+        if(_.isUndefined(timeMove) || timeMove == null){
             this.timeMove = 1.0;
         }
 
 
         this._shadow.getParent().runAction(cc.sequence(
-            cc.delayTime(timeMove * 0.9),
+            cc.delayTime(timeMove*0.9),
             cc.callFunc(function () {
                 this.remove();
             }.bind(this))
         ))
 
 
-        this.distance = { x: 0, y: 0 };
+        this.distance = {x: 0, y : 0};
         this.delta = 5;
         this.timeFly = 0;
         this.scheduleUpdate();
 
     },
-    setShadowZOder: function (shadowZOrder) {
+    setShadowZOder:function(shadowZOrder){
         this._shadow.setLocalZOrder(shadowZOrder);
     },
     /**
      * remove after fly done
      */
-    remove: function () {
+    remove:function(){
 
-        if (this._shadow == null) return;
+        if(this._shadow == null) return;
 
         this._shadow.setVisible(false);
         this._shadow.removeFromParent(false);
@@ -448,32 +646,32 @@ CoreGame.GameBoardInfoUI.NodeShadow = cc.Node.extend({
     /**
      * Update _shadow position along to shadowFake position.
      */
-    update: function (dt) {
-        if (_.isUndefined(this._shadow) || this._shadow == null) return;
+    update:function (dt) {
+        if(_.isUndefined(this._shadow) || this._shadow == null) return;
 
-        this.timeFly += dt;
+        this.timeFly+= dt;
 
-        if (this.timeFly < this.timeMove / 2) {
+        if(this.timeFly < this.timeMove/2){
             this.distance.y -= this.delta;
             this.distance.x -= this.delta;
         }
-        else {
+        else{
             this.distance.y += this.delta;
             this.distance.x += this.delta;
         }
-        if (!cc.sys.isObjectValid(this.objectFly)) {
+        if(!cc.sys.isObjectValid(this.objectFly)){
             return;
         }
         this._shadow.x = this.objectFly.x + this.distance.x;
         this._shadow.y = this.objectFly.y + this.distance.y;
-        if (this._shadow.y > this.objectFly.y) {
+        if(this._shadow.y > this.objectFly.y){
             this._shadow.y = this.objectFly.y;
         }
-        if (this._shadow.x > this.objectFly.x) {
+        if(this._shadow.x > this.objectFly.x){
             this._shadow.x = this.objectFly.x;
         }
 
-        if (_.isUndefined(this.actionScaleCustome)) {
+        if(_.isUndefined(this.actionScaleCustome)){
 
             this._shadow.setScale(this.objectFly.getScaleX(), this.objectFly.getScaleY());
         }
@@ -490,4 +688,4 @@ CoreGame.GameBoardBg = BaseLayer.extend({
         this.initWithJsonFile(CoreGame.GameBoardBg.JSON);
     }
 });
-CoreGame.GameBoardBg.JSON = "res/zcsd/game/GameBoardBg.json";
+CoreGame.GameBoardBg.JSON = "zcsd/game/GameBoardBg.json";

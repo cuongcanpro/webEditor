@@ -166,15 +166,15 @@ CoreGame.ElementObject = cc.Class.extend({
         this.setState(CoreGame.ElementState.MOVING);
 
         if (!this.ui) {
-            // this.setState(CoreGame.ElementState.IDLE);
+            this.setState(CoreGame.ElementState.IDLE);
             return;
         }
 
         this.ui.playMoveToAnim(targetPixelPos, duration, delayTime);
 
-        // CoreGame.TimedActionMgr.addAction(duration, function () {
-        //     this.setState(CoreGame.ElementState.IDLE);
-        // }.bind(this));
+        CoreGame.TimedActionMgr.addAction(duration, function () {
+            this.setState(CoreGame.ElementState.IDLE);
+        }.bind(this));
     },
 
     /**
@@ -295,7 +295,7 @@ CoreGame.ElementObject = cc.Class.extend({
         var duration = CoreGame.Config.CONVERGE_DURATION;
 
         // Move to target position with scale effect
-        this.ui.playConvergeAnim(targetPixelPos, duration);
+        duration = this.ui.playConvergeAnim(targetPixelPos, duration);
 
         CoreGame.TimedActionMgr.addAction(duration + 0.1, function () {
             self.remove();
@@ -327,6 +327,8 @@ CoreGame.ElementObject = cc.Class.extend({
      * Set element state
      */
     setState: function (state) {
+        if(this.state == CoreGame.ElementState.REMOVING)
+            return;
         this.state = state;
     },
 

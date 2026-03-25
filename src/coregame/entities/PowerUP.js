@@ -53,7 +53,7 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
      */
     active: function (data) {
         cc.log("Active Size attachments " + this.attachments.length);
-        if(this.state == CoreGame.ElementState.MATCHING)
+        if(this.state == CoreGame.ElementState.REMOVING)
             return;
         if (this.attachments.length > 0) {
             cc.log("State === " + JSON.stringify(this.attachments[0].blockBaseAction));
@@ -63,7 +63,7 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
             return;
         }
 
-        this.setState(CoreGame.ElementState.MATCHING);
+        this.setState(CoreGame.ElementState.REMOVING);
         this.activeLogic(data);
         CoreGame.TimedActionMgr.addAction(0.2, function () {
             this.remove();

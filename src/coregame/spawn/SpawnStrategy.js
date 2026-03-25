@@ -25,5 +25,20 @@ CoreGame.DropStrategy.SpawnStrategy = cc.Class.extend({
      */
     getGemType: function (row, col, boardMgr) {
         return -1;
+    },
+
+    /**
+     * Returns the list of gem type IDs that may be spawned.
+     * Uses boardMgr.gemTypes when available, otherwise falls back to [1..NUM_COLORS].
+     * @param {BoardMgr} boardMgr
+     * @returns {number[]}
+     */
+    _gemTypes: function (boardMgr) {
+        if (boardMgr && boardMgr.gemTypes && boardMgr.gemTypes.length > 0) {
+            return boardMgr.gemTypes;
+        }
+        var types = [];
+        for (var i = 1; i <= CoreGame.Config.NUM_COLORS; i++) types.push(i);
+        return types;
     }
 });

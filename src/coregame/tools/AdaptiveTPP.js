@@ -89,11 +89,11 @@ CoreGame.AdaptiveTPP = {
      * the baseline strategy immediately.
      *
      * @param {BoardMgr} boardMgr
-     * @param {Object}   levelConfig  { maxMoves: number, targets: {typeId: count} }
+     * @param {Object}   levelConfig  { targetMoves: number, targets: {typeId: count} }
      */
     init: function (boardMgr, levelConfig) {
         this._boardMgr       = boardMgr;
-        this._totalMoves     = levelConfig.maxMoves || 25;
+        this._totalMoves     = levelConfig.targetMoves || 25;
         this._initialTargets = this._sumTargets(levelConfig.targets);
         this._assistStreak   = 0;
         this._currentName    = "baseline";
@@ -192,6 +192,21 @@ CoreGame.AdaptiveTPP = {
             CoreGame.EventMgr.off('powerUpCreated', this._puHandler);
             this._puHandler = null;
         }
+
+        var m = this.getMetrics();
+        var d = m.deviation_distribution;
+        cc.log("[AdaptiveTPP] ── End-of-level metrics ───────────────────────");
+        cc.log("[AdaptiveTPP] Deviation  mean=" + d.mean.toFixed(3)
+            + "  median=" + d.median.toFixed(3)
+            + "  P25="    + d.p25.toFixed(3)
+            + "  P75="    + d.p75.toFixed(3));
+        cc.log("[AdaptiveTPP] Switches   boost=" + m.boost_switches
+            + "  suppress=" + m.suppress_switches
+            + "  baseline=" + m.trigger_counts.baseline);
+        cc.log("[AdaptiveTPP] Result     " + (completed ? "WIN" : "LOSE")
+            + "  surplus=" + m.move_surplus
+            + "  pu_rate=" + m.pu_rate.toFixed(3));
+        cc.log("[AdaptiveTPP] ────────────────────────────────────────────────");
     },
 
     /**
@@ -199,15 +214,19 @@ CoreGame.AdaptiveTPP = {
      *
      * @returns {Object}
      *   deviation_distribution: { mean, median, p25, p75 }
-     *   trigger_counts:         { baseline, dominant_boost, no_powerup, no_powerup_l2 }
+     *   trigger_counts:         { baseline, yes_pu_l1, yes_pu_l2, no_pu_l1, no_pu_l2 }
+     *   boost_switches:         number — times a boost strategy (yes_pu_*) was applied
+     *   suppress_switches:      number — times a suppress strategy (no_pu_*) was applied
      *   completed_in_budget:    boolean — finished within _totalMoves
      *   retry_count:            number  — times init() was called for same levelId
      *   move_surplus:           number  — positive = moves left, negative = over budget
+     *   pu_count:               number  — total power-ups created this level
      *   pu_rate:                number  — power-ups per turn (or 0 if no turns)
      */
     getMetrics: function () {
         var log = this._deviationLog || [];
         var sorted = log.slice().sort(function (a, b) { return a - b; });
+        var tc = this._triggerCounts || {};
 
         return {
             deviation_distribution: {
@@ -216,10 +235,13 @@ CoreGame.AdaptiveTPP = {
                 p25:    this._percentile(sorted, 25),
                 p75:    this._percentile(sorted, 75)
             },
-            trigger_counts:      this._triggerCounts || {},
+            trigger_counts:      tc,
+            boost_switches:      (tc.yes_pu_l1 || 0) + (tc.yes_pu_l2 || 0),
+            suppress_switches:   (tc.no_pu_l1  || 0) + (tc.no_pu_l2  || 0),
             completed_in_budget: !!this._levelCompleted,
             retry_count:         this._retryCount,
             move_surplus:        this._totalMoves - (this._movesUsedFinal || 0),
+            pu_count:            this._puCount || 0,
             pu_rate:             this._turnCount > 0 ? this._puCount / this._turnCount : 0
         };
     },

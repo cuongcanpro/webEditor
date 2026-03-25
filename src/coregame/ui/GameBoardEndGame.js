@@ -1,60 +1,30 @@
-﻿var CoreGame = CoreGame || {};
+let GameBoardEndGame = BaseLayer.extend({
+    pMain: null,
+    bg: null,
 
-CoreGame.GameBoardEndGame = cc.Node.extend({
+    close: null,
+    btnPlay: null,
+    btnReplay: null,
+
     ctor: function (gameUI) {
         this.gameUI = gameUI;
-        
+
         this._super();
         this.targetNode = [];
 
-        this.initUI();
+        this.initWithJsonFile(res.ZCSD_GUI_END_GAME);
+
         this.winStreakLevelBeforeLose = 0;
         this.blockButton = false;
     },
 
-    onEnter: function(){
-        this._super();
-        this.addListenerUpdateResource();
-    },
-
-    addListenerUpdateResource: function(){
-        var listenerUpdateResource = cc.EventListenerCustom.create(
-            GameEvent.UPDATE_RESOURCE,
-            function(event) {
-                var resourceId = event.getUserData().resourceId;
-                var oldVal = event.getUserData().oldVal;
-                var newVal = event.getUserData().newVal;
-                if (resourceId == ResourceType.GOLD){
-                    this.gold.getChildByName('label').setString(newVal.formatAsMoney());
-                }
-                else if(resourceId == ResourceType.G){
-                    this.g.getChildByName('label').setString(newVal.formatAsMoney());
-                }
-            }.bind(this)
-        );
-        cc.eventManager.addEventListenerWithSceneGraphPriority(listenerUpdateResource, this);
-    },
-
-    initUI: function () {
-        var json = ccs.load(res.ZCSD_GUI_END_GAME, res.ZCSD_ROOT);
-        this._rootNode = json.node;
-        m3.log(JSON.stringify(cc.winSize))
-        this.addChild(this._rootNode);
-        UIUtils.mappingChildren(this._rootNode, this);
-
-        this.gold.setPosition(cc.winSize.width * -0.09, cc.winSize.height * 0.49);
-        this.g.setPosition(cc.winSize.width * 0.25, cc.winSize.height * 0.49);
+    initLayer: function () {
+        // this.gold.setPosition(cc.winSize.width * -0.09, cc.winSize.height * 0.49);
+        // this.g.setPosition(cc.winSize.width * 0.25, cc.winSize.height * 0.49);
         if (fr.platformWrapper.isIOSHaveNotch()) {
             this.gold.y -= GUIConst.IOS_NOTCH_HEIGHT;
             this.g.y -= GUIConst.IOS_NOTCH_HEIGHT;
         }
-
-        this.bg.getChildByName('close').setLocalZOrder(CoreGame.GameBoardEndGame.ELEMENT_ZORDER.CLOSE_BUTTON);
-
-        this.bg.getChildByName("close").addClickEventListener(this.onClickClose.bind(this));
-        this.bg.getChildByName("btnPlay").addClickEventListener(this.onClickPlayNext.bind(this));
-        this.bg.getChildByName("btnReplay").addClickEventListener(this.onClickBuyMove.bind(this));
-
 
         // create Character
         this.char_win = gv.createSpineAnimation(resAni.char_win);
@@ -66,25 +36,72 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         this.char_lose.setAnimation(0, "lose_cat", true);
         this.char_lose.setPosition(this.bg.width / 2, 580);
         this.bg.addChild(this.char_lose, -1);
+
+        this.enableFog();
+    },
+
+    onEnterFinish: function () {
+        this.setShowHideAnimate(this.bg);
+
+        let efxTime = 0.25;
+        let elements = [this.g, this.gold];
+        for (let i = 0; i < elements.length; i++) {
+            let element = elements[i];
+            element.stopAllActions();
+            element.setPosition(element.rawPos);
+            element.y += 200;
+            element.setOpacity(0);
+
+            element.runAction(cc.sequence(
+                cc.delayTime(0.333 + i * 0.15),
+                cc.spawn(
+                    cc.moveTo(efxTime, element.rawPos).easing(cc.easeBackOut()),
+                    cc.fadeIn(efxTime)
+                )
+            ));
+        }
+
+        this.addListenerUpdateResource();
+    },
+
+    onButtonRelease: function (btn, id) {
+        cc.log("onButtonRelease", btn.getName());
+        switch (btn) {
+            case this.close:
+                this.onClickClose();
+                break;
+
+            case this.btnPlay:
+                this.onClickPlayNext();
+                break;
+
+            case this.btnReplay:
+                this.onClickBuyMove();
+                break;
+        }
+    },
+
+    addListenerUpdateResource: function () {
+        var listenerUpdateResource = cc.EventListenerCustom.create(
+            GameEvent.UPDATE_RESOURCE,
+            function (event) {
+                var resourceId = event.getUserData().resourceId;
+                var oldVal = event.getUserData().oldVal;
+                var newVal = event.getUserData().newVal;
+                if (resourceId == ResourceType.GOLD) {
+                    this.gold.getChildByName('label').setString(newVal.formatAsMoney());
+                } else if (resourceId == ResourceType.G) {
+                    this.g.getChildByName('label').setString(newVal.formatAsMoney());
+                }
+            }.bind(this)
+        );
+        cc.eventManager.addEventListenerWithSceneGraphPriority(listenerUpdateResource, this);
     },
 
     onClickClose: function () {
         if (this.blockButton) return;
 
-        //back to design tool
-        // if (this.gameUI.isEditMode) {
-        //     var scene = new SceneEditBoardV2;
-        //     scene.layer.levelId = this.gameUI.levelId;
-        //     scene.layer.initWithJson(this.gameUI.levelCfg);
-        //     cc.director.runScene(scene);
-        //     return;
-        // }
-        //back to share tool
-        // if (this.gameUI.isShareMode) {
-        //     cc.director.runScene(new SceneMapShare());
-        //     return;
-        // }
-
+        cc.log("onClickClose", this.isWin);
         if (this.isWin) {
             this.onClickCloseWin();
         } else {
@@ -94,58 +111,36 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
 
     onClickCloseWin: function () {
         cc.log("onClickCloseWin");
-        // if (!this.gameUI.isEditMode && !this.gameUI.isShareMode && !this.gameUI.isBossRun) {
-        //     //send log vote
-        //     //metricPoint | time | uId | typeEvent | level | versionLevel | levelWithVer | point | version
-        //     gv.clientNetwork.connector.sendMetricLevel([
-        //         Number(ActionType.LOG_VOTE),
-        //         this.gameUI.getLevel(),
-        //         this.gameUI.levelCfg.version,
-        //         this.gameUI.getLevelWithVer(),
-        //         userInfo.getNumPlay(this.gameUI.mapPlay),
-        //         fr.platformWrapper.getVersionCode(),
-        //         this.reactionId || 0,
-        //     ]);
-        // }
-
         this.hide();
 
-        // if (this.guiCurrentStreakShowed)
-        //     this.gameUI.guiCurrentStreak.hide();
-
-        // let rewardCoin = this.gameUI.levelConfig.mapConfig.reward;
         let rewardCoin = 10;
         this.onEarnCoin(rewardCoin);
 
         this.runAction(cc.sequence(
             cc.delayTime(0.3),
             cc.callFunc(function () {
-                const sceneLobby = new SceneLobby;
-                sceneLobby.setName(GameScene.LOBBY);
-                if (this.gameUI.isBossRun){
-                    BossRunMgr.onUserWinBossRunLevel(this.gameUI.getLevel());
-                } else{
-                    sceneLobby.fakeGold = userInfo.getGold() - this.gameUI.levelConfig.mapConfig.reward;
-                    let mapReward = {
-                        gold: Number(this.gameUI.levelConfig.mapConfig.reward),
-                        star: 1
-                    }
-                    sceneLobby.addActionOnEnter(LOBBY_ACTION_ID.ADD_GOLD, mapReward);
-                    fr.piggybank.manager.onEventUserWinLevel(this.gameUI.levelId, sceneLobby);
-                    gv.eventAdvtMgr.onUserWinLevel(this.gameUI.levelId);
-                }
+                userInfo.isJustWin = true;
+                sceneMgr.openScene(SceneLobby.className);
 
-                cc.director.runScene(sceneLobby);
+                // let mapReward = {
+                //     gold: Number(this.gameUI.levelConfig.mapConfig.reward),
+                //     star: 1
+                // }
+                // sceneLobby.addActionOnEnter(LOBBY_ACTION_ID.ADD_GOLD, mapReward);
             }.bind(this))
         ))
     },
 
     onClickCloseLose: function () {
+        this.onEventLose();
+        sceneMgr.openScene(SceneLobby.className);
+
+        return;
         // check last heart realtime when user click close
-        if (this.popupList.length == 0 && !this.isCheckedLastHeart){
+        if (this.popupList.length == 0 && !this.isCheckedLastHeart) {
             this.isCheckedLastHeart = true;
             if (userInfo.getHeartWithUpdate() == 1 && !FreeFunction.getInstance().isInFreeResourceDuration(ResourceType.HEART)) {
-                this.popupList.push(NodePopupCoreGame.GameBoardEndGame.POPUP_TYPE.OUT_OF_HEART);
+                this.popupList.push(NodePopupGUIEndGame.POPUP_TYPE.OUT_OF_HEART);
             }
         }
 
@@ -177,39 +172,40 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
             } else {
                 this.processLoseGame();
             }
-        }
-        else {
+        } else {
             this.bg.getChildByName('lblLose').setVisible(false);
             if (this.popup) this.popup.hide();
-            this.popup = new NodePopupCoreGame.GameBoardEndGame(this);
-            this.popup.setPosition(this.bg.width/2, this.bg.height * 0.72);
-            this.bg.addChild(this.popup, CoreGame.GameBoardEndGame.ELEMENT_ZORDER.POPUP);
+            this.popup = new NodePopupGUIEndGame(this);
+            this.popup.setPosition(this.bg.width / 2, this.bg.height * 0.72);
+            this.bg.addChild(this.popup, GameBoardEndGame.ELEMENT_ZORDER.POPUP);
             this.popup.show(this.popupList[0]);
             this.popupList.shift();
         }
     },
 
     processLoseGame: function () {
-        this.runAction(cc.sequence(
-            cc.delayTime(0.1),
-            cc.callFunc(function () {
-                this.onEventLose();
-                this.gameUI.getGUI(gv.GUI_ID.LEVEL_INFO).show(true,this.gameUI.levelCfg,
-                    this.gameUI.isBossRun, this.gameUI.bossRunLevelName, this.gameUI.bossRunLevelId
-                );
-
-                if (!this.gameUI.isBossRun){
-                    this.gameUI.guiCurrentStreak.showLoseWinStreak(this.winStreakLevelBeforeLose);
-                    this.gameUI.guiCurrentStreak.introduceMacFactoryCallback = function () {
-                        this.gameUI.getGUI(gv.GUI_ID.LEVEL_INFO).hide();
-                        this.gameUI.introduceWinStreak();
-                    }.bind(this);
-                    this.gameUI.getGUI(gv.GUI_ID.MAC_FACTORY_INFO).closeCallback = function () {
-                        this.gameUI.getGUI(gv.GUI_ID.LEVEL_INFO).reShow();
-                    }.bind(this);
-                }
-            }.bind(this))
-        ))
+        sceneMgr.openScene(SceneLobby.className);
+        // this.runAction(cc.sequence(
+        //     cc.delayTime(0.1),
+        //     cc.callFunc(function () {
+        //
+        //         // this.onEventLose();
+        //         // this.gameUI.getGUI(gv.GUI_ID.LEVEL_INFO).show(true, this.gameUI.levelCfg,
+        //         //     this.gameUI.isBossRun, this.gameUI.bossRunLevelName, this.gameUI.bossRunLevelId
+        //         // );
+        //         //
+        //         // if (!this.gameUI.isBossRun) {
+        //         //     this.gameUI.guiCurrentStreak.showLoseWinStreak(this.winStreakLevelBeforeLose);
+        //         //     this.gameUI.guiCurrentStreak.introduceMacFactoryCallback = function () {
+        //         //         this.gameUI.getGUI(gv.GUI_ID.LEVEL_INFO).hide();
+        //         //         this.gameUI.introduceWinStreak();
+        //         //     }.bind(this);
+        //         //     this.gameUI.getGUI(gv.GUI_ID.MAC_FACTORY_INFO).closeCallback = function () {
+        //         //         this.gameUI.getGUI(gv.GUI_ID.LEVEL_INFO).reShow();
+        //         //     }.bind(this);
+        //         // }
+        //     }.bind(this))
+        // ));
     },
 
     onClickReplay: function () {
@@ -217,24 +213,29 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
     },
 
     onClickPlayNext: function () {
+        cc.log("onClickPlayNext", this.blockButton, this.isEnableWinStreak());
+
         if (this.blockButton) return;
         if (this.isEnableWinStreak()) this.gameUI.guiCurrentStreak.hide();
         this.onClickClose();
     },
 
     hide: function () {
-        fr.hideTopPanel(this.gameUI);
-        this.g.setVisible(false);
-        this.gold.setVisible(false);
-        this.bg.runAction(cc.sequence(
-            cc.spawn(
-                cc.scaleTo(0.25, 0.3, 0.3),
-                cc.fadeOut(0.25)
-            ),
-            cc.callFunc(function () {
-                this.setVisible(false);
-            }.bind(this))
-        ))
+        this.onClose();
+
+        let efxTime = 0.25;
+        let elements = [this.g, this.gold];
+        for (let i = 0; i < elements.length; i++) {
+            let element = elements[i];
+            element.stopAllActions();
+            element.runAction(cc.sequence(
+                cc.delayTime(i * 0.15),
+                cc.spawn(
+                    cc.moveTo(efxTime, cc.p(element.rawPos.x, element.rawPos.y + 200)).easing(cc.easeBackIn()),
+                    cc.fadeOut(efxTime).easing(cc.easeOut(2.5))
+                )
+            ));
+        }
     },
 
     show: function (delayTime = 0) {
@@ -242,6 +243,8 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
 
         // if (this.gameUI.mainBoard.skipLbl)
         //     this.gameUI.mainBoard.skipLbl.setVisible(false);
+
+        return;
 
         let efxTime = 0.25;
         this.bg.scale = 2;
@@ -270,22 +273,15 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         fr.Sound.playSoundEffect(resSound.end_level_positive, false);
     },
 
-    showResult: function (result, levelConfig, delayTime = 0) {
-        if (this.isVisible()) return;
-
-        this.setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
+    showResult: function (result, targets, delayTime = 0) {
         this.isWin = result == BoardResult.WIN;
 
-        if (this.isWin) {
-            userInfo.setLevel(userInfo.getLevel() + 1);
-        }
+        cc.log("GameBoardEndGame showResult", JSON.stringify(targets));
 
-        cc.log("CoreGame.GameBoardEndGame showResult", JSON.stringify(levelConfig));
-
-        if (this.isWin && levelConfig["endScript"]) {
-            gv.tutMgr.startScript(levelConfig["endScript"]);
-            return;
-        }
+        // if (this.isWin && levelConfig["endScript"]) {
+        //     gv.tutMgr.startScript(levelConfig["endScript"]);
+        //     return;
+        // }
 
         this.showReaction(false);
         // this.showReaction(this.isWin);
@@ -303,22 +299,12 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         this.clearTarget();
         this.reAlignGui(this.isWin);
         if (this.isWin) {
-            // event collect
-            // cc.log('countExplodeByType', JSON.stringify(this.gameUI.mainBoard.countExplodeByType));
-            // PortalQuest.collectItem(this.gameUI.mainBoard.countExplodeByType[ElementType.RED]);
-            // if (this.gameUI.isBossRun){
-            //     EvtCollectMgr.getInstance().saveCollectItem(this.gameUI.mainBoard.countExplodeByType);
-            // }
-            // else{
-            //     EvtCollectMgr.getInstance().wantToCollect(this.gameUI.mainBoard.countExplodeByType, true);
-            // }
             this.showReward();
-        }
-        else{
-            this.showTarget();
+        } else {
+            this.showTarget(targets);
         }
 
-        this.show(delayTime);
+        // this.show(delayTime);
 
         // mark as win
         if (this.isWin) {
@@ -345,19 +331,12 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         if (this.popup) this.popup.setVisible(false);
 
         let lblLevel;
-        // if (this.gameUI.isBossRun){
-        //     lblLevel = BossRunRes.getBossRunStage(BossRunMgr.getData().getBossInfo().getBossId(), this.gameUI.getLevel());
-        // }
-        // else{
-        //     lblLevel = fr.Localization.text('lang_level') + " " + this.gameUI.getLevel();
-        // }
-        lblLevel = fr.Localization.text('lang_level') + "---";
+        lblLevel = fr.Localization.text('lang_level') + this.gameUI.getLevel();
 
         this.bg.getChildByName("lblWin").setString(lblLevel);
-        if (lblLevel.length >= 16){
+        if (lblLevel.length >= 16) {
             this.bg.getChildByName("lblWin").setFontSize(34);
-        }
-        else {
+        } else {
             this.bg.getChildByName("lblWin").setFontSize(44);
         }
 
@@ -369,57 +348,13 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         nodeBgTarget.addChild(coin);
         listNode.push(coin);
 
-        // if (!this.gameUI.isBossRun){
-        //     let star = this.createTarget("star", this.gameUI.mainBoard.getEndStar());
-            let star = this.createTarget("star", 3);
-            nodeBgTarget.addChild(star);
-            listNode.push(star);
-            // if (this.isEnableWinStreak()) this.showWinStreak();
-        // }
+        let star = this.createTarget("star", this.gameUI.boardUI.boardMgr.endStar);
+        nodeBgTarget.addChild(star);
+        listNode.push(star);
 
         for (let i in listNode) {
             listNode[i].setPosition(rootPos.x + (i - (listNode.length - 1) / 2) * padding, rootPos.y);
         }
-
-        // if (modePlay && AdsMgr.getInstance().canShowWheelWinGame(this.gameUI.levelCfg['difficulty'], reward)) {
-        //     this.blockButton = true;
-        //     this.runAction(cc.sequence(
-        //         cc.delayTime(2.0),
-        //         cc.callFunc(function () {
-        //             this.setLocalZOrder(this.gameUI.topPanelZOrder-1);
-        //
-        //             if (this.isEnableWinStreak()) this.gameUI.getGUI(gv.GUI_ID.CURRENT_WIN_STREAK).setLocalZOrder(this.gameUI.topPanelZOrder-1);
-        //
-        //             if (!this.wheel) {
-        //                 this.wheel = new NodeLuckyWheel(this.gameUI);
-        //                 this.gameUI.addChild(this.wheel, GUIConst.GUI_ZORDER);
-        //                 this.wheel.setPosition(cc.winSize.width/2, cc.winSize.height/2);
-        //             }
-        //
-        //             this.wheel.show(reward);
-        //             this.wheel.onFinishSpinCallback = function (finalReward) {
-        //                 this.setLocalZOrder(MainScene.ZORDER.END_GAME);
-        //                 if (this.isEnableWinStreak()) this.gameUI.getGUI(gv.GUI_ID.CURRENT_WIN_STREAK).setLocalZOrder(MainScene.ZORDER.CURRENT_STREAK);
-        //                 coin.runAction(cc.sequence(
-        //                     cc.delayTime(0.25),
-        //                     cc.callFunc(function () {
-        //                         let delta = finalReward - reward;
-        //                         coin.lbl.addValue(delta);
-        //                     }.bind(this)),
-        //                     cc.scaleTo(0.25, 1.2, 1.2),
-        //                     cc.scaleTo(0.25, 1.0, 1.0)
-        //                 ))
-        //                 this.blockButton = false;
-        //                 this.gameUI.mainBoard.reward = finalReward;
-        //             }.bind(this);
-        //             this.wheel.closeCallBack = function () {
-        //                 this.setLocalZOrder(MainScene.ZORDER.END_GAME);
-        //                 if (this.isEnableWinStreak()) this.gameUI.getGUI(gv.GUI_ID.CURRENT_WIN_STREAK).setLocalZOrder(MainScene.ZORDER.CURRENT_STREAK);
-        //                 this.blockButton = false;
-        //             }.bind(this);
-        //         }.bind(this))
-        //     ))
-        // }
     },
 
     onEarnCoin: function (goldReward) {
@@ -443,7 +378,7 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
 
     showWinStreak: function () {
         this.bg.getChildByName("btnPlay").setVisible(false);
-        if (userInfo.isNeedShowIncreaseWinStreak()){
+        if (userInfo.isNeedShowIncreaseWinStreak()) {
             this.gameUI.guiCurrentStreak.performIncrease = true;
             userInfo.setIsNeedShowIncreaseWinStreak(false);
         }
@@ -477,9 +412,9 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         ))
     },
 
-    showTarget: function () {
-        this.gameUI.guiBoardInfo.spine_cat.setAnimation(0, 'sad', true);
-        this.gameUI.hideToolGuis();
+    showTarget: function (targets) {
+        this.gameUI.gameBoardInfoUI.spine_cat.setAnimation(0, 'sad', true);
+        // this.gameUI.hideToolGuis();
 
         // init popupList
         this.popupList = [];
@@ -488,54 +423,70 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
             this.popup.removeFromParent(true);
             this.popup = false;
         }
+
         // win streak
-        if (this.isEnableWinStreak() && userInfo.getWinStreakLevel() > 0) {
-            this.popupList.push(NodePopupGUIEndGame.GameBoardEndGame.POPUP_TYPE.WIN_STREAK);
-        }
-        this.winStreakLevelBeforeLose = userInfo.getWinStreakLevel();
+        // if (this.isEnableWinStreak() && userInfo.getWinStreakLevel() > 0) {
+        //     this.popupList.push(NodePopupGUIEndGame.GameBoardEndGame.POPUP_TYPE.WIN_STREAK);
+        // }
+        // this.winStreakLevelBeforeLose = userInfo.getWinStreakLevel();
+
         // event collect
-        let targetType = EvtCollectMgr.getInstance().targetType;
-        if (targetType && this.gameUI.mainBoard.countCollectedGemByType(targetType) > 0) {
-            this.popupList.push(NodePopupGUIEndGame.GameBoardEndGame.POPUP_TYPE.EVENT_COLLECT);
-        }
+        // let targetType = EvtCollectMgr.getInstance().targetType;
+        // if (targetType && this.gameUI.mainBoard.countCollectedGemByType(targetType) > 0) {
+        //     this.popupList.push(NodePopupGUIEndGame.GameBoardEndGame.POPUP_TYPE.EVENT_COLLECT);
+        // }
 
         // target
         fr.Sound.playSoundEffect(resSound.game_fail, false);
+
         this.bg.getChildByName("lblTarget").setString(fr.Localization.text('lang_target'));
-        var target = this.gameUI.levelCfg["listTarget"];
         let nodeBgTarget = this.bg.getChildByName('bg_target');
         var rootPos = {x: nodeBgTarget.width / 2, y: nodeBgTarget.height / 2 - 5}, padding = 100;
         var listNode = [];
-        for (var type in target) {
-            var amountTarget = target[type];
-            var currentAmount = this.gameUI.mainBoard.listCurTarget[type];
+        for (var target of targets) {
+            let type = target["id"];
+            var amountTarget = target["count"];
+            var currentAmount = target["current"];
+
             var nodeInfo = null;
             var node = null;
             if (currentAmount < amountTarget) nodeInfo = currentAmount + "/" + amountTarget;
-            if (ElementUtils.isProgressTypeElement(type)) {
-                let listElement = this.gameUI.mainBoard.elementFactory.elementByType[type];
-                for (let i = 0; i < listElement.length; i++){
-                    nodeInfo = this.gameUI.mainBoard.elementFactory.elementByType[type][i].getProgress();
-                    node = this.createTarget(type, nodeInfo);
-                    nodeBgTarget.addChild(node, CoreGame.GameBoardEndGame.ELEMENT_ZORDER.TARGET);
-                    listNode.push(node);
-                }
-            }
-            else{
+            // if (ElementUtils.isProgressTypeElement(type)) {
+            //     let listElement = this.gameUI.mainBoard.elementFactory.elementByType[type];
+            //     for (let i = 0; i < listElement.length; i++) {
+            //         nodeInfo = this.gameUI.mainBoard.elementFactory.elementByType[type][i].getProgress();
+            //         node = this.createTarget(type, nodeInfo);
+            //         nodeBgTarget.addChild(node, GameBoardEndGame.ELEMENT_ZORDER.TARGET);
+            //         listNode.push(node);
+            //     }
+            // } else {
                 node = this.createTarget(type, nodeInfo);
-                nodeBgTarget.addChild(node, CoreGame.GameBoardEndGame.ELEMENT_ZORDER.TARGET);
+                nodeBgTarget.addChild(node, GameBoardEndGame.ELEMENT_ZORDER.TARGET);
                 listNode.push(node);
-            }
+            // }
         }
-        padding += (4-listNode.length) * 10;
-        for (var i in listNode) listNode[i].setPosition(rootPos.x + (i - (listNode.length - 1) / 2) * padding, rootPos.y);
+        padding += (4 - listNode.length) * 10;
+        for (var i in listNode) {
+            listNode[i].setPosition(
+                rootPos.x + (i - (listNode.length - 1) / 2) * padding,
+                rootPos.y
+            );
+        }
 
         // buy move
         this.showBuyMove();
 
         // metric
-        if (this.gameUI.boughtMoveTurn == 0 && !this.gameUI.isEditMode && !this.gameUI.isShareMode)
-            this.addMetricLoseTarget();
+        // if (this.gameUI.boughtMoveTurn == 0 && !this.gameUI.isEditMode && !this.gameUI.isShareMode)
+        //     this.addMetricLoseTarget();
+    },
+
+    getMovePrice: function () {
+        var price = gv.itemPriceCfg.getMovePrice(Math.min(this.gameUI.boughtMoveTurn, 4));
+        price = {
+            gold: 10
+        }
+        return price;
     },
 
     showBuyMove: function () {
@@ -545,7 +496,7 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         this.g.getChildByName('label').setString(userInfo.G.formatAsMoney());
 
         // Price
-        var price = gv.itemPriceCfg.getMovePrice(Math.min(this.gameUI.boughtMoveTurn, 4));
+        var price = this.getMovePrice();
         var btnReplay = this.bg.getChildByName('btnReplay');
         var gold = price['gold'];
         var g = price['G'];
@@ -554,34 +505,37 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         let icon = btnReplay.getChildByName('icon');
         let costLbl = btnReplay.getChildByName('cost');
         icon.setTexture(g != null ? 'lobby/icon_g.png' : 'lobby/icon_gold.png');
-        icon.setScale(0.8*scale);
+        icon.setScale(0.8 * scale);
         costLbl.setString(cost.formatAsMoney());
         costLbl.setScale(scale);
         if (scale == 0.8) costLbl.setPosition(290, 52);
         else costLbl.setPosition(299, 52);
 
         // Bonus
-        if (!this.guiBuyMoveBonus) {
-            this.guiBuyMoveBonus = new GUIBuyMoveBonus();
-            this.bg.addChild(this.guiBuyMoveBonus);
-            this.guiBuyMoveBonus.setPosition(this.bg.width/2, 100);
-        }
-        let bonus = Utility.deepCopyObject(gv.itemPriceCfg.getMovePrice(this.gameUI.boughtMoveTurn)["PUs"]);
-        bonus.unshift("move");
-        this.guiBuyMoveBonus.setBonus(bonus);
-        this.guiBuyMoveBonus.hide();
-        this.runAction(cc.sequence(
-            cc.delayTime(0.5),
-            cc.callFunc(function () {
-                this.guiBuyMoveBonus.show();
-            }.bind(this))
-        ))
+        // if (!this.guiBuyMoveBonus) {
+        //     this.guiBuyMoveBonus = new GUIBuyMoveBonus();
+        //     this.bg.addChild(this.guiBuyMoveBonus);
+        //     this.guiBuyMoveBonus.setPosition(this.bg.width / 2, 100);
+        // }
+        // let bonus = Utility.deepCopyObject(gv.itemPriceCfg.getMovePrice(this.gameUI.boughtMoveTurn)["PUs"]);
+        //
+        // bonus.unshift("move");
+        // this.guiBuyMoveBonus.setBonus(bonus);
+        // this.guiBuyMoveBonus.hide();
+        // this.runAction(cc.sequence(
+        //     cc.delayTime(0.5),
+        //     cc.callFunc(function () {
+        //         this.guiBuyMoveBonus.show();
+        //     }.bind(this))
+        // ))
     },
 
     createTarget: function (type, lbl) {
+        cc.log("Create Target", type, lbl);
+
         var node = new cc.Node();
 
-        var spr = new cc.Sprite("game/element/icon/" + type + ".png");
+        var spr = new ccui.ImageView("res/high/game/element/icon/" + type + ".png");
         spr.setPosition(0, 20);
         node.addChild(spr);
         node.spr = spr;
@@ -593,19 +547,18 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
             node.lbl.setPosition(0, -33);
             node.addChild(node.lbl);
 
-            if (ElementUtils.isBossElement(type) && lbl.length > 0){
+            if (ElementUtils.isBossElement(type) && lbl.length > 0) {
                 // add heart icon
-                var heart = new cc.Sprite("game/gui/end_game/heart.png");
-                let lastLetter = node.lbl.label.getVirtualRenderer().getLetter(lbl.length-1);
-                heart.setPosition(node.lbl.getPositionX() + lastLetter.getPositionX()/2 + 10, node.lbl.getPositionY());
+                var heart = new ccui.ImageView("res/high/game/gui/end_game/heart.png");
+                let lastLetter = node.lbl.label.getVirtualRenderer().getLetter(lbl.length - 1);
+                heart.setPosition(node.lbl.getPositionX() + lastLetter.getPositionX() / 2 + 10, node.lbl.getPositionY());
                 heart.setScale(0.7);
                 node.heart = heart;
                 node.addChild(heart);
                 node.lbl.setPositionX(-12);
             }
-
         } else {
-            node.lbl = new cc.Sprite(check_icon);
+            node.lbl = new ccui.ImageView(check_icon);
             node.lbl.setScale(0.6);
             node.lbl.setPosition(0, -30);
             node.addChild(node.lbl);
@@ -619,20 +572,23 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         if (this.onBuyingMove || this.blockButton)
             return;
 
-        let config = gv.itemPriceCfg.getMovePrice(this.gameUI.boughtMoveTurn);
+        let config = this.getMovePrice();
         let costType = config['gold'] ? "gold" : "g"
         if (this.checkPriceBuyMove(this.gameUI.boughtMoveTurn)) {
             this.onBuyingMove = true;
             let data = [this.gameUI.boughtMoveTurn, costType, config['gold'] || config['g'], this.gameUI.getLevel(), this.gameUI.isBossRun];
             eventProcessor.addNewAction(ActionType.BUY_MOVE, data);
-        }
-        else {
-            gv.alert.showNotEnoughGoldG(ResourceType.GOLD, null);
+        } else {
+            // if (gv.alert && gv.alert.showNotEnoughGoldG) {
+            //     gv.alert.showNotEnoughGoldG(ResourceType.GOLD, null);
+            // } else {
+                LogLayer.show("Not enough gold!");
+            // }
         }
     },
 
     checkPriceBuyMove: function (turn) {
-        let price = gv.itemPriceCfg.getMovePrice(turn)['gold'];
+        var price = this.getMovePrice()['gold'];
         cc.log("checkPriceBuyMove", ResourceType.GOLD, price, userInfo.getResByType(ResourceType.GOLD));
         return price <= userInfo.getResByType(ResourceType.GOLD);
     },
@@ -670,58 +626,51 @@ CoreGame.GameBoardEndGame = cc.Node.extend({
         let listRequire = [];
         let listNotEnough = [];
         for (let type in target) {
-            if (ElementUtils.isProgressTypeElement(type)){
+            if (ElementUtils.isProgressTypeElement(type)) {
                 let listElement = this.gameUI.mainBoard.elementFactory.elementByType[type];
-                for (let i = 0; i < listElement.length; i++){
+                for (let i = 0; i < listElement.length; i++) {
                     let progress = this.gameUI.mainBoard.elementFactory.elementByType[type][i].getProgress();
                     let cur = progress.split("/")[0], need = progress.split("/")[1];
                     listRequire.push(need);
-                    listNotEnough.push((Number(need)-Number(cur)).toString());
+                    listNotEnough.push((Number(need) - Number(cur)).toString());
                     numTarget++;
                 }
-            }
-            else{
+            } else {
                 let cur = this.gameUI.mainBoard.listCurTarget[type], need = target[type];
                 listRequire.push(need);
-                listNotEnough.push((Number(need)-Number(cur)).toString());
+                listNotEnough.push((Number(need) - Number(cur)).toString());
                 numTarget++;
             }
         }
         // form data, send to sv
         dataArr.push(numTarget);
-        for (let i = 0; i < listRequire.length; i++){
+        for (let i = 0; i < listRequire.length; i++) {
             dataArr.push(listRequire[i]);
             dataArr.push(listNotEnough[i]);
         }
         gv.clientNetwork.connector.sendMetricLevel(dataArr);
     },
 
-    isEnableWinStreak: function (){
+    isEnableWinStreak: function () {
+        return false;
         if (this.gameUI.isBossRun) return false;
         return Cheat.getInstance().enableWinStreak && userInfo.getLevel() >= Cheat.getInstance().levelWinStreak;
     },
 
-    showReaction:function(isShow){
+    showReaction: function (isShow) {
         this.nodeReaction.setVisible(false);
-        // return;
-        //
-        // this.nodeReaction.setVisible(isShow);
-        // if(!isShow) return;
-        // this.bg.y += 150;
-        // this.nodeReaction.y += 150;
-        // this.reactionId = 0;
     },
 
-    onClickReact:function (sender) {
+    onClickReact: function (sender) {
         let btnId = Number(sender.getName().split("btnReact")[1]);
         cc.log("onClickReact", btnId)
         for (let i = 1; i <= 5; i++) this['btnReact' + i].setOpacity(150);
-        this['btnReact'+btnId].setOpacity(255);
+        this['btnReact' + btnId].setOpacity(255);
         this.reactionId = btnId;
     }
 });
-
-CoreGame.GameBoardEndGame.ELEMENT_ZORDER = {
+GameBoardEndGame.className = "GameBoardEndGame";
+GameBoardEndGame.ELEMENT_ZORDER = {
     TARGET: 9,
     POPUP: 10,
     CLOSE_BUTTON: 11

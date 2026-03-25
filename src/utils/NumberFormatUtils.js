@@ -24,7 +24,7 @@ Number.prototype.formatAsTime = function(){
     } else if(Number(obj.hours) > 0)
         str = Number(obj.hours) + 'h' + Number(obj.minute) + 'm';
     else
-        str = Number(obj.minute) + 'm' + Number(obj.second) + 's';
+        str = Number(obj.minute) + ':' + Number(obj.second);
 
     return str;
 };

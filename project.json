@@ -72,9 +72,14 @@
         "src/framework/EmailReport.js",
         "src/framework/Framework.js",
         "src/framework/gui/Avatar.js",
+        "src/framework/gui/BaseComponent.js",
         "src/framework/gui/BaseLayer.js",
+        "src/framework/gui/BaseScene.js",
+        "src/framework/gui/BaseUINode.js",
         "src/framework/gui/GuiMgr.js",
         "src/framework/gui/GuiUtils.js",
+        "src/framework/gui/SceneMgr.js",
+        "src/framework/gui/Toast.js",
         "src/framework/HttpRequest.js",
         "src/framework/libs/aes.js",
         "src/framework/libs/ahmac-sha256.js",
@@ -214,6 +219,7 @@
         "src/coregame/ui/PowerUp/PlaneUI.js",
         "src/coregame/ui/PowerUp/RainbowUI.js",
         "src/coregame/ui/PowerUp/RocketUI.js",
+        "src/coregame/ui/SceneBoard.js",
         "src/coregame/ui/SpineElementUI.js",
         "src/coregame/ui/SpriteElementUI.js",
         "src/coregame/utils/EventMgr.js",
@@ -250,6 +256,7 @@
         "src/utils/tool/LogLayer.js",
         "src/utils/tool/SetElementConfigUI.js",
         "src/utils/tool/TargetListUI.js",
+        "src/utils/tool/TestProgressDialog.js",
         "src/utils/UIUtils.js"
     ]
 }

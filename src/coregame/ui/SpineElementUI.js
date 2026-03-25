@@ -20,6 +20,7 @@ CoreGame.SpineElementUI = CoreGame.ElementUI.extend({
      * Override initSprite to create Spine animation instead of a standard sprite
      */
     initSprite: function () {
+        cc.log("WHAT IS THIS SPINE", cc.log(this.spinePath));
         var spinePath = this.spinePath;
         if (spinePath) {
             if (typeof gv !== "undefined" && gv.createSpineAnimation) {

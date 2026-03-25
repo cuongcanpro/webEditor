@@ -11,7 +11,8 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
     },
 
     /**
-     * Activate square/paper plane effect - clear 2x2 area
+     * Activate paper plane effect - explode adjacent cells,
+     * then fly to a priority target (level objectives first, random gem as fallback).
      */
     activeLogic: function () {
         const EXPLODE = [[-1, 0], [1, 0], [0, -1], [0, 1]];

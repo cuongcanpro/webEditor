@@ -19,21 +19,21 @@ CoreGame.DropStrategy = CoreGame.DropStrategy || {};
 CoreGame.DropStrategy.NoPUSpawnL2v2 = CoreGame.DropStrategy.NoPUSpawnL1v2.extend({
 
     getGemType: function (row, col, boardMgr) {
-        var numColors = CoreGame.Config.NUM_COLORS;
+        var types = this._gemTypes(boardMgr);
 
-        // Step 1: L1-safe colors (no immediate PU at spawn position)
+        // Step 1: L1-safe types (no immediate PU at spawn position)
         var l1Safe = [];
-        for (var t = 1; t <= numColors; t++) {
-            if (!this._wouldCreatePowerUp(row, col, t, boardMgr)) {
-                l1Safe.push(t);
+        for (var i = 0; i < types.length; i++) {
+            if (!this._wouldCreatePowerUp(row, col, types[i], boardMgr)) {
+                l1Safe.push(types[i]);
             }
         }
 
-        // Step 2: L2-safe colors (no PU even after one swap)
+        // Step 2: L2-safe types (no PU even after one swap)
         var l2Safe = [];
-        for (var i = 0; i < l1Safe.length; i++) {
-            if (!this._anySwapCreatesPowerUp(row, col, l1Safe[i], boardMgr)) {
-                l2Safe.push(l1Safe[i]);
+        for (var j = 0; j < l1Safe.length; j++) {
+            if (!this._anySwapCreatesPowerUp(row, col, l1Safe[j], boardMgr)) {
+                l2Safe.push(l1Safe[j]);
             }
         }
 
@@ -44,7 +44,7 @@ CoreGame.DropStrategy.NoPUSpawnL2v2 = CoreGame.DropStrategy.NoPUSpawnL1v2.extend
         if (l1Safe.length > 0) {
             return l1Safe[boardMgr.random.nextInt32Bound(l1Safe.length)];
         }
-        return boardMgr.random.nextInt32Bound(numColors) + 1;
+        return types[boardMgr.random.nextInt32Bound(types.length)];
     },
 
     /**

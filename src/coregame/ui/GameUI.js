@@ -10,6 +10,9 @@ CoreGame.GameUI = cc.Layer.extend({
     boardUI: null,
     objectivesPanel: null,
     objectives: null,  // Array of {type, name, target, current}
+    boughtMoveTurn: 0,
+    isBossRun: false,
+    levelId: 0,
 
     /**
      * Constructor
@@ -45,15 +48,6 @@ CoreGame.GameUI = cc.Layer.extend({
         // Remove BoardUI's built-in back button (we'll add our own)
         // The back button is at z-order 999 in BoardUI
 
-        // Center board on screen
-        var winSize = cc.director.getWinSize();
-        var boardWidth = CoreGame.Config.BOARD_COLS * CoreGame.Config.CELL_SIZE;
-        var boardHeight = CoreGame.Config.BOARD_ROWS * CoreGame.Config.CELL_SIZE;
-
-        CoreGame.Config.BOARD_OFFSET_X = (winSize.width - boardWidth) / 2;
-        CoreGame.Config.BOARD_OFFSET_Y = (winSize.height - boardHeight) / 2;
-
-
         // Create BoardBg
         this.gameBoardBg = new CoreGame.GameBoardBg();
         this.addChild(this.gameBoardBg);
@@ -76,17 +70,16 @@ CoreGame.GameUI = cc.Layer.extend({
             this.createObjectivesPanel();
         }
 
-        // Create BoardInfo UI
-        this.gameBoardInfoUI = new CoreGame.GameBoardInfoUI();
-        this.addChild(this.gameBoardInfoUI);
-        this.gameBoardInfoUI.initData(levelConfig);
-
         // Create BoardTool UI
         if (cc.sys.isNative) {
             this.gameBoardToolUI = new CoreGame.GameBoardToolUI(this);
             this.addChild(this.gameBoardToolUI);
         }
 
+
+        // Create BoardInfo UI
+        this.gameBoardInfoUI = new CoreGame.GameBoardInfoUI(this);
+        this.addChild(this.gameBoardInfoUI);
         this.gameBoardInfoUI.initData(levelConfig);
 
         // Create EffectLayer
@@ -94,12 +87,35 @@ CoreGame.GameUI = cc.Layer.extend({
         this.addChild(this.gameBoardEffectLayer);
 
         this.boardUI.boardMgr.gameUI = this;
+        this.levelId = this.boardUI.boardMgr.getLevelId();
+
+        this.boardUI.setVisible(false);
+        this.gameBoardInfoUI.setVisible(false);
+        if (this.gameBoardToolUI) {
+            this.gameBoardToolUI.setVisible(false);
+        }
+        this.gameBoardEffectLayer.setVisible(false);
         this.boardUI.boardMgr.setMove(levelConfig.mapConfig ? (levelConfig.mapConfig.numMove || 0) : 0);
 
         // Apply spawn strategy from map config if specified
         var stratKey = levelConfig.mapConfig && levelConfig.mapConfig.spawnStrategy;
         if (stratKey && CoreGame.DropStrategy[stratKey] && this.boardUI.boardMgr.dropMgr) {
             this.boardUI.boardMgr.dropMgr.setSpawnStrategy(new CoreGame.DropStrategy[stratKey]());
+        }
+
+        // Init AdaptiveTPP dynamic difficulty
+        if (CoreGame.AdaptiveTPP) {
+            var mapCfg = levelConfig.mapConfig || {};
+            var tppTargets = {};
+            var boardTEs = this.boardUI.boardMgr.targetElements || [];
+            for (var ti = 0; ti < boardTEs.length; ti++) {
+                tppTargets[boardTEs[ti].id] = boardTEs[ti].count;
+            }
+            CoreGame.AdaptiveTPP.init(this.boardUI.boardMgr, {
+                targetMoves: mapCfg.targetMove || mapCfg.numMove || 30,
+                targets:  tppTargets,
+                levelId:  mapCfg.levelId || null
+            });
         }
     },
 
@@ -118,6 +134,7 @@ CoreGame.GameUI = cc.Layer.extend({
             if (type === ccui.Widget.TOUCH_ENDED) {
                 // var toolScene = new cc.Scene();
                 // toolScene.addChild(new BlockCreatorUI());
+                cc.log("Back button clicked - returning to TestScene");
                 SceneLoading.openWithBuffer(CoreGame.TestScene);
             }
         });
@@ -299,21 +316,134 @@ CoreGame.GameUI = cc.Layer.extend({
     },
 
     /**
+     * Update remained move(s)
+     */
+    onUpdateMove: function (numbMove) {
+        cc.log("onUpdateMove", numbMove);
+        let node = this.gameBoardInfoUI.setMove(numbMove);
+    },
+
+    /**
+     * Happy Cheese and confetti
+     */
+    showEndGameWinEffect: function () {
+        this.gameBoardEffectLayer.showLevelCompleteLabel();
+    },
+
+    /**
      * Check the type and decrease
      */
-    onEndGame: function (isWin = true) {
+    onEndGame: function (isWin = true, targets) {
+        let guiEndGame = sceneMgr.openGUI(GameBoardEndGame.className);
+        guiEndGame.gameUI = this;
+
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        if (CoreGame.AdaptiveTPP && bm) {
+            CoreGame.AdaptiveTPP.onLevelEnd(bm._tppMovesUsed || 0, !!isWin);
+        }
+
+        this.sendMetrics(this._buildMetrics(isWin));
+
         if (isWin) {
             this.gameBoardEffectLayer.showLevelCompleteLabel();
-
-            let guiEndGame = new CoreGame.GameBoardEndGame(this);
-            this.addChild(guiEndGame, MainScene.ZORDER.END_GAME, MainScene.TagLayer.END_GAME);
-            guiEndGame.setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
-            guiEndGame.setVisible(false);
             guiEndGame.showResult(BoardResult.WIN, this.levelConfig, 1.5);
         } else {
-
+            guiEndGame.showResult(BoardResult.LOSE, targets);
         }
     },
+
+    /**
+     * Play trail effects from source to each target gem, transforming them into PowerUps.
+     * @param {Array} targets - Array of {row, col} positions
+     * @param {Object} boardMgr - Reference to BoardMgr
+     */
+    playBonusTrailEffect: function (targets, boardMgr) {
+        var boardUI = CoreGame.BoardUI.getInstance();
+        var parent = boardUI;
+
+        // Source position: lbMove label position converted to boardUI space
+        var lbMove = this.gameBoardInfoUI.lbMove;
+        var lbMoveWorldPos = lbMove.getParent().convertToWorldSpace(lbMove.getPosition());
+        var sourcePos = parent.convertToNodeSpace(lbMoveWorldPos);
+
+        // Track displayed moves for countdown
+        var displayedMoves = boardMgr.numMove;
+
+        var self = this;
+        var delayPerRay = 0.15;
+        var rayTravelTime = 0.2;
+
+        for (var i = 0; i < targets.length; i++) {
+            (function (index) {
+                var target = targets[index];
+                var targetPos = boardMgr.gridToPixel(target.row, target.col);
+                var delay = index * delayPerRay;
+
+                CoreGame.TimedActionMgr.addAction(delay, function () {
+                    // Decrease displayed moves by 1 on each ray fired
+                    displayedMoves--;
+                    self.gameBoardInfoUI.setMove(Math.max(0, displayedMoves));
+
+                    self.createBonusRay(sourcePos, targetPos, parent);
+
+                    CoreGame.TimedActionMgr.addAction(rayTravelTime, function () {
+                        boardMgr.transformGemToPowerUp(target.row, target.col);
+                        self.createBonusHitEffect(targetPos, parent);
+                    });
+                });
+            })(i);
+        }
+
+        // After all rays + transforms complete, activate all bonus PowerUps
+        var totalDuration = targets.length * delayPerRay + rayTravelTime + 0.5;
+        CoreGame.TimedActionMgr.addAction(totalDuration, function () {
+            boardMgr.activateBonusPowerUps();
+        });
+    },
+
+    /**
+     * Create a single rainbow ray from source to target position.
+     */
+    createBonusRay: function (fromPos, toPos, parent) {
+        fr.Sound.playSoundEffect(resSound.disco_shot, false);
+
+        var ray = gv.createSpineAnimation(resAni.rainbow_ray_spine);
+        ray.setPosition(fromPos);
+        parent.addChild(ray, CoreGame.ZORDER_BOARD_EFFECT);
+
+        var dir = cc.p(fromPos.x - toPos.x, fromPos.y - toPos.y);
+        var angle = Math.atan2(dir.x, dir.y) * (180 / Math.PI) - 180;
+        ray.setRotation(angle);
+
+        var distance = cc.pDistance(fromPos, toPos);
+        ray.setScale(1.0, Math.abs(distance / 200));
+        ray.setAnimation(0, "run", false);
+
+        ray.runAction(cc.sequence(
+            cc.delayTime(0.3),
+            cc.removeSelf()
+        ));
+    },
+
+    /**
+     * Create a hit visual effect at the target position.
+     */
+    createBonusHitEffect: function (pos, parent) {
+        var hit = gv.createSpineAnimation(resAni.rainbow_hit_spine);
+        hit.setPosition(pos);
+        parent.addChild(hit, CoreGame.ZORDER_BOARD_EFFECT);
+        hit.setAnimation(0, "run", false);
+        gv.removeSpineAfterRun(hit);
+
+        var boardUI = CoreGame.BoardUI.getInstance();
+        var efkManager = (boardUI && boardUI.efkManager) ? boardUI.efkManager : null;
+        if (efkManager && typeof gv.createEfk === "function") {
+            var emitter = gv.createEfk(efkManager, resAni.rainbow_hit_efk);
+            emitter.setPosition3D(cc.math.vec3(pos.x, pos.y, 0));
+            parent.addChild(emitter, CoreGame.ZORDER_BOARD_EFFECT);
+        }
+    },
+
     onDifficultySelected: function (diffName) {
         cc.log("GameUI: Applying strategy: " + diffName);
         if (CoreGame.DropStrategy[diffName]) {
@@ -323,5 +453,144 @@ CoreGame.GameUI = cc.Layer.extend({
                 LogLayer.show("Strategy changed to: " + diffName);
             }
         }
+    },
+
+    /**
+     * Called when buy-move purchase succeeds.
+     * Hides end game GUI, adds extra moves, updates UI, resumes gameplay.
+     */
+    onBuyMoveSuccess: function () {
+        cc.log("GameUI onBuyMoveSuccess");
+
+        // Hide end game GUI
+        var guiEndGame = sceneMgr.getGUIByClassName(GameBoardEndGame.className);
+        if (guiEndGame) {
+            guiEndGame.onClose();
+        }
+
+        // Add extra moves to BoardMgr
+        var extraMoves = ConfigResource.EXTRA_MOVE;
+        this.boardUI.boardMgr.addMoves(extraMoves);
+
+        // Update UI move counter
+        this.onUpdateMove(this.boardUI.boardMgr.numMove);
+
+        // Increment bought turn for price scaling
+        this.boughtMoveTurn++;
+
+        // Resume board to allow swapping again
+        this.boardUI.boardMgr.state = CoreGame.BoardState.IDLE;
+    },
+
+    /**
+     * Send end-game lose action to server (subtract heart).
+     * Ported from MainScene.addActionEndGameLose.
+     */
+    addActionEndGameLose: function (logType) {
+        userInfo.setJustStart(-1);
+        let heartBefore = userInfo.getHeartWithUpdate();
+        let heartAfter;
+        if (heartBefore == 0) {
+            heartAfter = 0;
+        } else if (FreeFunction.getInstance().isInFreeResourceDuration(ResourceType.HEART)) {
+            heartAfter = heartBefore;
+        } else {
+            heartAfter = heartBefore - 1;
+        }
+
+        let levelId = this.getLevel();
+        let dataArr = [levelId, ResourceType.HEART, heartBefore, heartAfter, heartAfter - heartBefore];
+        let actionType = this.isBossRun ? ActionType.BOSS_RUN_END_GAME_LOSE : ActionType.END_GAME_LOSE;
+        eventProcessor.addNewAction(actionType, dataArr);
+
+        if (logType == ActionType.LOG_LOSE_SUBTRACT_HEART) {
+            gv.clientNetwork.connector.sendMetricLevel([
+                Number(ActionType.LOG_LOSE_SUBTRACT_HEART),
+                this.getLevel(),
+                0, // version
+                this.getLevelWithVer(),
+                0, // numPlay
+                fr.platformWrapper.getVersionCode(),
+                0, // winStreakLevel
+                FreeFunction.getInstance().getResourceFreeTimeRemainInSec(ResourceType.HEART),
+                heartAfter
+            ]);
+        }
+    },
+
+    //region GET
+    getLevel: function () {
+        return this.boardUI.boardMgr.getLevelId();
+    },
+
+    getLevelWithVer: function () {
+        return this.getLevel();
+    },
+    //endregion GET
+
+    //region EFX
+    efxStartSpecial: function (delayTime = 0) {
+        //Dolly Zoom
+        let efxTime = 1;
+        //Moving bg
+        this.gameBoardBg.stopAllActions();
+        this.gameBoardBg.setScale(1.5);
+        this.gameBoardBg.runAction(cc.sequence(
+            cc.delayTime(delayTime),
+            cc.scaleTo(efxTime, 1).easing(cc.easeOut(2.5))
+        ));
+
+        //Moving Core board
+        this.boardUI.stopAllActions();
+        this.boardUI.setScale(2.5);
+        this.boardUI.runAction(cc.sequence(
+            cc.delayTime(delayTime),
+            cc.scaleTo(efxTime, 1).easing(cc.easeBackOut())
+        ));
+
+        //Tool and info layer
+        this.gameBoardToolUI.efxIn(delayTime + 1);
+        this.gameBoardInfoUI.efxIn(delayTime + 1.1);
+    },
+
+    efxStart: function (efxTime = 0.5, delayTime = 0) {
+        //Dolly Zoom
+
+        //Moving bg
+        this.gameBoardBg.stopAllActions();
+        this.gameBoardBg.setVisible(true);
+        this.gameBoardBg.setScale(1.5);
+        this.gameBoardBg.runAction(cc.sequence(
+            cc.delayTime(delayTime),
+            cc.scaleTo(efxTime, 1).easing(cc.easeOut(2.5))
+        ));
+
+        //Moving Core board
+        this.boardUI.stopAllActions();
+        this.boardUI.setVisible(true);
+        this.boardUI.setScale(2.5);
+        this.boardUI.runAction(cc.sequence(
+            cc.delayTime(delayTime),
+            cc.scaleTo(efxTime, 1).easing(cc.easeBackOut())
+        ));
+
+        //Tool and info layer
+        this.gameBoardToolUI.setVisible(true);
+        this.gameBoardInfoUI.setVisible(true);
+        this.gameBoardToolUI.efxIn(delayTime + efxTime + 0.5, efxTime);
+        this.gameBoardInfoUI.efxIn(delayTime + efxTime + 1, efxTime);
+    },
+
+    startNow: function () {
+        this.gameBoardBg.stopAllActions();
+        this.gameBoardBg.setVisible(true);
+        this.gameBoardBg.setScale(1);
+        this.boardUI.stopAllActions();
+        this.boardUI.setVisible(true);
+        this.boardUI.setScale(1);
+        if (this.gameBoardToolUI)
+            this.gameBoardToolUI.setVisible(true);
+        this.gameBoardInfoUI.setVisible(true);
     }
+    //endregion EFX
 });

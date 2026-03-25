@@ -72,19 +72,22 @@
             "ctype": "PanelObjectData"
           },
           {
-            "FileData": {
-              "Type": "Normal",
-              "Path": "game/gui/tool/tool_tray.png",
-              "Plist": ""
+            "ClipAble": false,
+            "BackColorAlpha": 102,
+            "SingleColor": {
+              "R": 150,
+              "G": 200
             },
-            "Scale9Enable": true,
-            "Scale9OriginX": 237,
-            "Scale9OriginY": 24,
-            "Scale9Width": 246,
-            "Scale9Height": 27,
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
             "AnchorPoint": {
-              "ScaleX": 0.5,
-              "ScaleY": 0.5
+              "ScaleX": 0.5
             },
             "Position": {
               "X": 360.0,
@@ -97,7 +100,6 @@
             "CColor": {},
             "IconVisible": false,
             "PositionPercentXEnabled": true,
-            "PositionPercentYEnabled": true,
             "PrePosition": {
               "X": 0.5,
               "Y": 0.0
@@ -106,12 +108,57 @@
             "PercentWidthEnabled": true,
             "PreSize": {
               "X": 1.0,
-              "Y": 0.1094
+              "Y": 0.1461
             },
-            "TopMargin": 1210.0,
-            "BottomMargin": -70.0,
-            "Tag": 331,
+            "TopMargin": 1093.0,
+            "Tag": 40,
             "Children": [
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/gui/tool/tool_tray.png",
+                  "Plist": ""
+                },
+                "Scale9Enable": true,
+                "Scale9OriginX": 237,
+                "Scale9OriginY": 114,
+                "Scale9Width": 246,
+                "Scale9Height": 49,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 1.0
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 187.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 1.0
+                },
+                "PercentWidthEnable": true,
+                "PercentWidthEnabled": true,
+                "PreSize": {
+                  "X": 1.0,
+                  "Y": 2.6738
+                },
+                "BottomMargin": -313.0,
+                "Tag": 331,
+                "ActionTag": 1505114756,
+                "Size": {
+                  "X": 720.0,
+                  "Y": 500.0
+                },
+                "Name": "bgToolTray",
+                "ctype": "ImageViewObjectData"
+              },
               {
                 "FontSize": 14,
                 "ButtonText": "",
@@ -158,7 +205,7 @@
                 },
                 "Position": {
                   "X": 70.0,
-                  "Y": 127.0
+                  "Y": 125.0
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -168,17 +215,17 @@
                 "IconVisible": false,
                 "PrePosition": {
                   "X": 0.0972,
-                  "Y": 0.9071
+                  "Y": 0.6684
                 },
                 "PreSize": {
                   "X": 0.1306,
-                  "Y": 0.6786
+                  "Y": 0.508
                 },
                 "VerticalEdge": "TopEdge",
                 "LeftMargin": 22.7086,
                 "RightMargin": 603.2914,
-                "TopMargin": -34.5,
-                "BottomMargin": 79.5,
+                "TopMargin": 14.5,
+                "BottomMargin": 77.5,
                 "UserData": "-press_action-c-onClickPause-c-",
                 "Tag": 329,
                 "Children": [
@@ -681,6 +728,8 @@
                 "ColorVector": {
                   "ScaleY": 1.0
                 },
+                "Scale9Width": 1,
+                "Scale9Height": 1,
                 "TouchEnable": true,
                 "StretchWidthEnable": true,
                 "AnchorPoint": {
@@ -688,7 +737,7 @@
                 },
                 "Position": {
                   "X": 420.0,
-                  "Y": 140.0
+                  "Y": 126.0
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -696,10 +745,9 @@
                 },
                 "CColor": {},
                 "IconVisible": false,
-                "PositionPercentYEnabled": true,
                 "PrePosition": {
                   "X": 0.5833,
-                  "Y": 1.0
+                  "Y": 0.6738
                 },
                 "PreSize": {
                   "X": 0.4861,
@@ -708,7 +756,8 @@
                 "HorizontalEdge": "BothEdge",
                 "LeftMargin": 245.0,
                 "RightMargin": 125.0,
-                "BottomMargin": 140.0,
+                "TopMargin": 61.0,
+                "BottomMargin": 126.0,
                 "Tag": 365,
                 "Children": [
                   {
@@ -1581,19 +1630,19 @@
                 "ctype": "PanelObjectData"
               }
             ],
-            "ActionTag": 1505114756,
+            "ActionTag": -1293581577,
             "Size": {
               "X": 720.0,
-              "Y": 140.0
+              "Y": 187.0
             },
             "Name": "toolTray",
-            "ctype": "ImageViewObjectData"
+            "ctype": "PanelObjectData"
           },
           {
             "AnchorPoint": {},
             "Position": {
               "X": 360.0,
-              "Y": 640.0
+              "Y": 704.0
             },
             "Scale": {
               "ScaleX": 1.0,
@@ -1605,7 +1654,7 @@
             "PositionPercentYEnabled": true,
             "PrePosition": {
               "X": 0.5,
-              "Y": 0.5
+              "Y": 0.55
             },
             "PreSize": {
               "X": 0.0,
@@ -1613,8 +1662,8 @@
             },
             "LeftMargin": 360.0,
             "RightMargin": 360.0,
-            "TopMargin": 640.0,
-            "BottomMargin": 640.0,
+            "TopMargin": 576.0,
+            "BottomMargin": 704.0,
             "Tag": 300,
             "Children": [
               {

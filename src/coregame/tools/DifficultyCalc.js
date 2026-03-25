@@ -54,8 +54,8 @@ CoreGame.Bots.GreedyBot = {
 
         for (var i = 0; i < moves.length; i++) {
             var move   = moves[i];
-            var result = boardMgr.simulateSwap(move.position, move.moveDirect);
-            var score  = this._calcScore(result, move, targetTypes, boardMgr.rows);
+            var result = this._simulateWithDamage(boardMgr, move.position, move.moveDirect, targetTypes);
+            var score  = this._calcScore(result, move, targetTypes, boardMgr);
 
             var isBetter = (score > bestScore) ||
                            (Math.abs(score - bestScore) < 1e-9 && result.tilesRemoved > bestTilesRemoved);
@@ -69,16 +69,74 @@ CoreGame.Bots.GreedyBot = {
         return bestAction;
     },
 
-    _calcScore: function (simResult, move, targetTypes, numRows) {
+    _simulateWithDamage: function (boardMgr, pos, dir, targetTypes) {
+        // Get HP before swap
+        var hpBefore = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            hpBefore[t] = this._getTotalHP(boardMgr, t);
+        }
+
+        // Run simulation
+        var savedState = boardMgr.getBoardState();
+        boardMgr.quickSwap(pos, dir, true);
+
+        // Get HP after swap (before restore)
+        var hpAfter = {};
+        var damageInfo = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            hpAfter[t] = this._getTotalHP(boardMgr, t);
+            var dmg = hpBefore[t] - hpAfter[t];
+            if (dmg > 0) damageInfo[t] = dmg;
+        }
+
+        var result = {
+            removedTypes: boardMgr.removedElementTypes.slice(),
+            tilesRemoved: boardMgr.removedElementTypes.length,
+            comboCount: Math.max(0, boardMgr.cascadeCount - 1),
+            damageInfo: damageInfo
+        };
+
+        // Restore state
+        boardMgr.setBoardState(savedState);
+        return result;
+    },
+
+    _getTotalHP: function (boardMgr, targetType) {
+        var totalHP = 0;
+        for (var r = 0; r < boardMgr.rows; r++) {
+            for (var c = 0; c < boardMgr.cols; c++) {
+                var slot = boardMgr.mapGrid[r] && boardMgr.mapGrid[r][c];
+                if (slot && slot.gem && slot.gem.type === targetType) {
+                    totalHP += (slot.gem.hp || 0);
+                }
+            }
+        }
+        return totalHP;
+    },
+
+    _calcScore: function (simResult, move, targetTypes, boardMgr) {
         var targetsCleared = 0;
         var removedTypes   = simResult.removedTypes;
         for (var i = 0; i < removedTypes.length; i++) {
             if (targetTypes.indexOf(removedTypes[i]) !== -1) targetsCleared++;
         }
-        var rows     = numRows || 8;
+
+        // Bonus for damaging boss/HP targets
+        var bossDamageBonus = 0;
+        if (simResult.damageInfo) {
+            for (var typeId in simResult.damageInfo) {
+                if (targetTypes.indexOf(parseInt(typeId)) !== -1) {
+                    bossDamageBonus += simResult.damageInfo[typeId] * 5;
+                }
+            }
+        }
+
+        var rows     = boardMgr.rows || 8;
         var rowScore = (rows - move.position.x) * 0.1;
         return (simResult.tilesRemoved * 1.0) + (simResult.comboCount * 2.0) +
-               (targetsCleared * 10.0) + rowScore - 0.1;
+               (targetsCleared * 10.0) + bossDamageBonus + rowScore - 0.1;
     }
 };
 
@@ -95,10 +153,49 @@ CoreGame.Bots.SmartBot = {
         var tt   = CoreGame.DifficultyCalc._extractTargetTypes(levelConfig);
         var best = -Infinity, bestMove = null;
         for (var i = 0; i < moves.length; i++) {
-            var s = this._score(boardMgr.simulateSwap(moves[i].position, moves[i].moveDirect), moves[i], tt, boardMgr);
+            var sim = this._simulateWithDamage(boardMgr, moves[i].position, moves[i].moveDirect, tt);
+            var s = this._score(sim, moves[i], tt, boardMgr);
             if (s > best) { best = s; bestMove = moves[i]; }
         }
         return bestMove;
+    },
+
+    _simulateWithDamage: function (boardMgr, pos, dir, targetTypes) {
+        var hpBefore = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            hpBefore[t] = this._getTotalHP(boardMgr, t);
+        }
+        var savedState = boardMgr.getBoardState();
+        boardMgr.quickSwap(pos, dir, true);
+        var damageInfo = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            var hpAfter = this._getTotalHP(boardMgr, t);
+            var dmg = hpBefore[t] - hpAfter[t];
+            if (dmg > 0) damageInfo[t] = dmg;
+        }
+        var result = {
+            removedTypes: boardMgr.removedElementTypes.slice(),
+            tilesRemoved: boardMgr.removedElementTypes.length,
+            comboCount: Math.max(0, boardMgr.cascadeCount - 1),
+            damageInfo: damageInfo
+        };
+        boardMgr.setBoardState(savedState);
+        return result;
+    },
+
+    _getTotalHP: function (boardMgr, targetType) {
+        var totalHP = 0;
+        for (var r = 0; r < boardMgr.rows; r++) {
+            for (var c = 0; c < boardMgr.cols; c++) {
+                var slot = boardMgr.mapGrid[r] && boardMgr.mapGrid[r][c];
+                if (slot && slot.gem && slot.gem.type === targetType) {
+                    totalHP += (slot.gem.hp || 0);
+                }
+            }
+        }
+        return totalHP;
     },
 
     _score: function (sim, move, tt, boardMgr) {
@@ -106,6 +203,16 @@ CoreGame.Bots.SmartBot = {
         var cleared = 0;
         for (var i = 0; i < sim.removedTypes.length; i++)
             if (tt.indexOf(sim.removedTypes[i]) !== -1) cleared++;
+
+        // Boss damage bonus
+        var bossDamage = 0;
+        if (sim.damageInfo) {
+            for (var typeId in sim.damageInfo) {
+                if (tt.indexOf(parseInt(typeId)) !== -1) {
+                    bossDamage += sim.damageInfo[typeId] * 0.5;
+                }
+            }
+        }
 
         // PU creation bonus from match size (4 → Rocket/Boom, 5+ → Rainbow)
         var puB = 0;
@@ -118,7 +225,7 @@ CoreGame.Bots.SmartBot = {
         var off = this._DIR[move.moveDirect];
         if (off && this._gem(boardMgr, r + off.x, c + off.y) >= this.PU_MIN) puB += 15;
 
-        return cleared * 15 + puB + combos * 3 + tiles + r * 0.05;
+        return cleared * 15 + puB + combos * 3 + tiles + bossDamage + r * 0.05;
     },
 
     _gem: function (boardMgr, r, c) {
@@ -139,10 +246,49 @@ CoreGame.Bots.ObjectiveBot = {
         var tt   = CoreGame.DifficultyCalc._extractTargetTypes(levelConfig);
         var best = -Infinity, bestMove = null;
         for (var i = 0; i < moves.length; i++) {
-            var s = this._score(boardMgr.simulateSwap(moves[i].position, moves[i].moveDirect), moves[i], tt, boardMgr);
+            var sim = this._simulateWithDamage(boardMgr, moves[i].position, moves[i].moveDirect, tt);
+            var s = this._score(sim, moves[i], tt, boardMgr);
             if (s > best) { best = s; bestMove = moves[i]; }
         }
         return bestMove;
+    },
+
+    _simulateWithDamage: function (boardMgr, pos, dir, targetTypes) {
+        var hpBefore = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            hpBefore[t] = this._getTotalHP(boardMgr, t);
+        }
+        var savedState = boardMgr.getBoardState();
+        boardMgr.quickSwap(pos, dir, true);
+        var damageInfo = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            var hpAfter = this._getTotalHP(boardMgr, t);
+            var dmg = hpBefore[t] - hpAfter[t];
+            if (dmg > 0) damageInfo[t] = dmg;
+        }
+        var result = {
+            removedTypes: boardMgr.removedElementTypes.slice(),
+            tilesRemoved: boardMgr.removedElementTypes.length,
+            comboCount: Math.max(0, boardMgr.cascadeCount - 1),
+            damageInfo: damageInfo
+        };
+        boardMgr.setBoardState(savedState);
+        return result;
+    },
+
+    _getTotalHP: function (boardMgr, targetType) {
+        var totalHP = 0;
+        for (var r = 0; r < boardMgr.rows; r++) {
+            for (var c = 0; c < boardMgr.cols; c++) {
+                var slot = boardMgr.mapGrid[r] && boardMgr.mapGrid[r][c];
+                if (slot && slot.gem && slot.gem.type === targetType) {
+                    totalHP += (slot.gem.hp || 0);
+                }
+            }
+        }
+        return totalHP;
     },
 
     _score: function (sim, move, tt, boardMgr) {
@@ -151,12 +297,22 @@ CoreGame.Bots.ObjectiveBot = {
         for (var i = 0; i < sim.removedTypes.length; i++)
             if (tt.indexOf(sim.removedTypes[i]) !== -1) cleared++;
 
+        // Boss damage bonus
+        var bossDamage = 0;
+        if (sim.damageInfo) {
+            for (var typeId in sim.damageInfo) {
+                if (tt.indexOf(parseInt(typeId)) !== -1) {
+                    bossDamage += sim.damageInfo[typeId] * 2;
+                }
+            }
+        }
+
         var r = move.position.x, c = move.position.y;
         var srcType = this._gem(boardMgr, r, c);
         var targetColorBonus = (tt.indexOf(srcType) !== -1) ? 10 : 0;
         var puBonus           = (srcType >= this.PU_MIN)      ? 20 : 0;
 
-        return cleared * 50 + targetColorBonus + puBonus + tiles * 0.5 + r * 0.02;
+        return cleared * 50 + targetColorBonus + puBonus + bossDamage + tiles * 0.5 + r * 0.02;
     },
 
     _gem: function (boardMgr, r, c) {
@@ -178,10 +334,49 @@ CoreGame.Bots.ObjectivePUBot = {
         var tt   = CoreGame.DifficultyCalc._extractTargetTypes(levelConfig);
         var best = -Infinity, bestMove = null;
         for (var i = 0; i < moves.length; i++) {
-            var s = this._score(boardMgr.simulateSwap(moves[i].position, moves[i].moveDirect), moves[i], tt, boardMgr);
+            var sim = this._simulateWithDamage(boardMgr, moves[i].position, moves[i].moveDirect, tt);
+            var s = this._score(sim, moves[i], tt, boardMgr);
             if (s > best) { best = s; bestMove = moves[i]; }
         }
         return bestMove;
+    },
+
+    _simulateWithDamage: function (boardMgr, pos, dir, targetTypes) {
+        var hpBefore = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            hpBefore[t] = this._getTotalHP(boardMgr, t);
+        }
+        var savedState = boardMgr.getBoardState();
+        boardMgr.quickSwap(pos, dir, true);
+        var damageInfo = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            var hpAfter = this._getTotalHP(boardMgr, t);
+            var dmg = hpBefore[t] - hpAfter[t];
+            if (dmg > 0) damageInfo[t] = dmg;
+        }
+        var result = {
+            removedTypes: boardMgr.removedElementTypes.slice(),
+            tilesRemoved: boardMgr.removedElementTypes.length,
+            comboCount: Math.max(0, boardMgr.cascadeCount - 1),
+            damageInfo: damageInfo
+        };
+        boardMgr.setBoardState(savedState);
+        return result;
+    },
+
+    _getTotalHP: function (boardMgr, targetType) {
+        var totalHP = 0;
+        for (var r = 0; r < boardMgr.rows; r++) {
+            for (var c = 0; c < boardMgr.cols; c++) {
+                var slot = boardMgr.mapGrid[r] && boardMgr.mapGrid[r][c];
+                if (slot && slot.gem && slot.gem.type === targetType) {
+                    totalHP += (slot.gem.hp || 0);
+                }
+            }
+        }
+        return totalHP;
     },
 
     _score: function (sim, move, tt, boardMgr) {
@@ -189,6 +384,16 @@ CoreGame.Bots.ObjectivePUBot = {
         var cleared = 0;
         for (var i = 0; i < sim.removedTypes.length; i++)
             if (tt.indexOf(sim.removedTypes[i]) !== -1) cleared++;
+
+        // Boss damage bonus
+        var bossDamage = 0;
+        if (sim.damageInfo) {
+            for (var typeId in sim.damageInfo) {
+                if (tt.indexOf(parseInt(typeId)) !== -1) {
+                    bossDamage += sim.damageInfo[typeId] * 2;
+                }
+            }
+        }
 
         // Tiny PU tiebreaker — only separates equal-scored moves
         var r = move.position.x, c = move.position.y;
@@ -200,7 +405,7 @@ CoreGame.Bots.ObjectivePUBot = {
             if (off && this._gem(boardMgr, r + off.x, c + off.y) >= this.PU_MIN) puTie = 3;
         }
 
-        return cleared * 50 + tiles * 1.5 + combos * 2 + puTie + r * 0.02;
+        return cleared * 50 + tiles * 1.5 + combos * 2 + bossDamage + puTie + r * 0.02;
     },
 
     _gem: function (boardMgr, r, c) {
@@ -244,7 +449,7 @@ CoreGame.Bots.ObjectivePUBotV3 = {
         // Score all candidate moves
         var scored = [];
         for (var i = 0; i < moves.length; i++) {
-            var sim = boardMgr.simulateSwap(moves[i].position, moves[i].moveDirect);
+            var sim = this._simulateWithDamage(boardMgr, moves[i].position, moves[i].moveDirect, tt);
             scored.push({ score: self._eval(sim, moves[i], tt, boardMgr), move: moves[i] });
         }
         scored.sort(function (a, b) { return b.score - a.score; });
@@ -275,11 +480,59 @@ CoreGame.Bots.ObjectivePUBotV3 = {
         return { score: bestTot, move: bestMove };
     },
 
+    _simulateWithDamage: function (boardMgr, pos, dir, targetTypes) {
+        var hpBefore = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            hpBefore[t] = this._getTotalHP(boardMgr, t);
+        }
+        var savedState = boardMgr.getBoardState();
+        boardMgr.quickSwap(pos, dir, true);
+        var damageInfo = {};
+        for (var ti = 0; ti < targetTypes.length; ti++) {
+            var t = targetTypes[ti];
+            var hpAfter = this._getTotalHP(boardMgr, t);
+            var dmg = hpBefore[t] - hpAfter[t];
+            if (dmg > 0) damageInfo[t] = dmg;
+        }
+        var result = {
+            removedTypes: boardMgr.removedElementTypes.slice(),
+            tilesRemoved: boardMgr.removedElementTypes.length,
+            comboCount: Math.max(0, boardMgr.cascadeCount - 1),
+            damageInfo: damageInfo
+        };
+        boardMgr.setBoardState(savedState);
+        return result;
+    },
+
+    _getTotalHP: function (boardMgr, targetType) {
+        var totalHP = 0;
+        for (var r = 0; r < boardMgr.rows; r++) {
+            for (var c = 0; c < boardMgr.cols; c++) {
+                var slot = boardMgr.mapGrid[r] && boardMgr.mapGrid[r][c];
+                if (slot && slot.gem && slot.gem.type === targetType) {
+                    totalHP += (slot.gem.hp || 0);
+                }
+            }
+        }
+        return totalHP;
+    },
+
     _eval: function (sim, move, tt, boardMgr) {
         var tiles = sim.tilesRemoved, combos = sim.comboCount;
         var cleared = 0;
         for (var i = 0; i < sim.removedTypes.length; i++)
             if (tt.indexOf(sim.removedTypes[i]) !== -1) cleared++;
+
+        // Boss damage bonus
+        var bossDamage = 0;
+        if (sim.damageInfo) {
+            for (var typeId in sim.damageInfo) {
+                if (tt.indexOf(parseInt(typeId)) !== -1) {
+                    bossDamage += sim.damageInfo[typeId] * 2;
+                }
+            }
+        }
 
         var r       = move.position.x, c = move.position.y;
         var srcType = this._gem(boardMgr, r, c);
@@ -304,7 +557,7 @@ CoreGame.Bots.ObjectivePUBotV3 = {
         // Light tiebreaker for any PU involvement
         var puTie = (puAtSrc || puAtDst) ? 3 : 0;
 
-        return cleared * 50 + tiles * 1.5 + combos * 2 + hitboxB + comboB + puTie + r * 0.02;
+        return cleared * 50 + tiles * 1.5 + combos * 2 + hitboxB + comboB + bossDamage + puTie + r * 0.02;
     },
 
     _hitbox: function (boardMgr, r, c, puType, tt) {
@@ -465,8 +718,14 @@ CoreGame.DifficultyCalc = {
         var targets      = levelConfig.targets  || {};
         var targetTypes  = levelConfig.targetTypes || self._extractTargetTypes(levelConfig);
 
+        // remainingTargets: { typeId: count } — count là số lượng cần destroy
         var remainingTargets = {};
         for (var t in targets) remainingTargets[parseInt(t)] = targets[t];
+
+        // bossHP: { typeId: totalHP } — track HP cho boss/element có HP > 1
+        // Dùng để phát hiện damage khi boss chưa chết
+        var bossHP = {};
+        var targetTypesArr = Object.keys(remainingTargets).map(Number);
 
         var movesUsed        = 0;
         var win              = false;
@@ -496,11 +755,22 @@ CoreGame.DifficultyCalc = {
                     return;
                 }
 
+                // Get boss HP before swap to detect damage
+                var bossHPBefore = {};
+                for (var ti = 0; ti < targetTypesArr.length; ti++) {
+                    var targetType = targetTypesArr[ti];
+                    if (remainingTargets[targetType] > 0) {
+                        bossHPBefore[targetType] = self._getTotalBossHP(boardMgr, targetType);
+                    }
+                }
+
                 boardMgr.quickSwap(action.position, action.moveDirect, true);
                 movesUsed++;
 
                 var removedTypes = boardMgr.removedElementTypes;
                 var hadProgress  = false;
+
+                // 1. Check destroyed elements (normal case)
                 for (var i = 0; i < removedTypes.length; i++) {
                     var type = removedTypes[i];
                     if (remainingTargets[type] !== undefined && remainingTargets[type] > 0) {
@@ -508,6 +778,26 @@ CoreGame.DifficultyCalc = {
                         hadProgress = true;
                     }
                 }
+
+                // 2. Check boss damage (boss type with HP > 1)
+                //    Boss damage làm giảm HP nhưng không destroy ngay
+                for (var ti = 0; ti < targetTypesArr.length; ti++) {
+                    var targetType = targetTypesArr[ti];
+                    if (remainingTargets[targetType] > 0) {
+                        var totalBossHP = self._getTotalBossHP(boardMgr, targetType);
+                        if (bossHPBefore[targetType] !== undefined) {
+                            if (totalBossHP < bossHPBefore[targetType]) {
+                                // Boss đã bị damage!
+                                hadProgress = true;
+                                // Nếu boss HP về 0, coi như đã destroy 1 con
+                                if (totalBossHP === 0) {
+                                    remainingTargets[targetType]--;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (!hadProgress) noProgressTurns++;
 
                 if (self._allTargetsMet(remainingTargets)) {
@@ -522,6 +812,22 @@ CoreGame.DifficultyCalc = {
         }
 
         setTimeout(runSlice, 0);
+    },
+
+    // -----------------------------------------------------------------------
+    // Internal — helper to get total HP of all bosses of a given type
+    // -----------------------------------------------------------------------
+    _getTotalBossHP: function (boardMgr, targetType) {
+        var totalHP = 0;
+        for (var r = 0; r < boardMgr.rows; r++) {
+            for (var c = 0; c < boardMgr.cols; c++) {
+                var slot = boardMgr.mapGrid[r] && boardMgr.mapGrid[r][c];
+                if (slot && slot.gem && slot.gem.type === targetType) {
+                    totalHP += (slot.gem.hp || 0);
+                }
+            }
+        }
+        return totalHP;
     },
 
     // -----------------------------------------------------------------------

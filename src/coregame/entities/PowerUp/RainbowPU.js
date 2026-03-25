@@ -10,7 +10,7 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
         this._super();
     },
     /**
-     * Clear all gems of target color
+     * Clear all gems of target color and deal damage to orthogonally adjacent blockers.
      */
     activeLogic: function (typeToClear) {
         var targetSlots = this.collectTargets(typeToClear);
@@ -29,6 +29,8 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
             let context = { type: "normal" };
             for (var i = 0; i < targetSlots.length; i++) {
                 targetSlots[i].matchElement(context);
+                // Deal damage to orthogonally adjacent blockers
+                this.boardMgr.matchMgr.notifyNearbySlots(targetSlots[i].row, targetSlots[i].col, context);
             }
             this.boardMgr.getSlot(this.position.x, this.position.y).matchElement(context);
         }.bind(this));

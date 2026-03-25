@@ -52,7 +52,7 @@ CoreGame.CookieUI = CoreGame.ElementUI.extend({
         // VFX: rock_blocker
         if (typeof gv !== 'undefined' && typeof gv.createTLFX === 'function') {
             gv.createTLFX(
-                "rock_blocker",
+                "runEgg1",
                 this.getParent().convertToWorldSpace(this.getPosition()),
                 this.getParent(),
                 BoardConst.zOrder.EFF_MATCHING

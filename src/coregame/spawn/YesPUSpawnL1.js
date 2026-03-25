@@ -20,27 +20,27 @@ CoreGame.DropStrategy = CoreGame.DropStrategy || {};
 CoreGame.DropStrategy.YesPUSpawnL1 = CoreGame.DropStrategy.SpawnStrategy.extend({
 
     getGemType: function (row, col, boardMgr) {
-        var numColors = CoreGame.Config.NUM_COLORS;
-        var puColors = [];     // colors that immediately form PU
-        var safeColors = [];   // colors that don't
+        var types = this._gemTypes(boardMgr);
+        var puTypes  = [];  // types that immediately form PU
+        var safeTypes = []; // types that don't
 
-        for (var t = 1; t <= numColors; t++) {
-            if (this._wouldCreatePowerUp(row, col, t, boardMgr)) {
-                puColors.push(t);
+        for (var i = 0; i < types.length; i++) {
+            if (this._wouldCreatePowerUp(row, col, types[i], boardMgr)) {
+                puTypes.push(types[i]);
             } else {
-                safeColors.push(t);
+                safeTypes.push(types[i]);
             }
         }
 
-        // Prefer PU-creating colors
-        if (puColors.length > 0) {
-            return puColors[boardMgr.random.nextInt32Bound(puColors.length)];
+        // Prefer PU-creating types
+        if (puTypes.length > 0) {
+            return puTypes[boardMgr.random.nextInt32Bound(puTypes.length)];
         }
         // Fallback: random from safe
-        if (safeColors.length > 0) {
-            return safeColors[boardMgr.random.nextInt32Bound(safeColors.length)];
+        if (safeTypes.length > 0) {
+            return safeTypes[boardMgr.random.nextInt32Bound(safeTypes.length)];
         }
-        return boardMgr.random.nextInt32Bound(numColors) + 1;
+        return types[boardMgr.random.nextInt32Bound(types.length)];
     },
 
     /**

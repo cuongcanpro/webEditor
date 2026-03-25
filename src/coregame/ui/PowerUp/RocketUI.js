@@ -1,5 +1,6 @@
-﻿CoreGame.RocketUI = CoreGame.PowerUpUI.extend({
+CoreGame.RocketUI = CoreGame.PowerUpUI.extend({
     resAnim: resAni.pu4_v,
+    bullet_rot: 0,
 
     targetSlot: null,
 
@@ -22,11 +23,16 @@
 
     initSprite: function () {
         this.root = new cc.Node();
-        if (this.type == CoreGame.PowerUPType.MATCH_4_H) {
+        if (this.isHorizontal()) {
             this.resAnim = resAni.pu4_h;
+            this.bullet_rot = 90;
         }
 
         this._super();
+    },
+
+    isHorizontal: function () {
+        return this.type == CoreGame.PowerUPType.MATCH_4_H;
     },
 
     startActive: function () {
@@ -50,25 +56,30 @@
 
     calculateFirstDistance: function () {
         var wPos = this.getParent().convertToWorldSpace(this.getPosition());
-        if (this.type == CoreGame.PowerUPType.MATCH_4_H) {
+
+        if (this.isHorizontal()) {
             return (cc.winSize.width - wPos.x + 300);
+        } else {
+            return (cc.winSize.height - wPos.y + 300);
         }
-        return (cc.winSize.height - wPos.y + 300);
     },
 
     calculateNextDistance: function () {
         var wPos = this.getParent().convertToWorldSpace(this.getPosition());
-        if (this.type == CoreGame.PowerUPType.MATCH_4_H) {
+
+        if (this.isHorizontal()) {
             return (-(wPos.x + 300));
+        } else {
+            return (-(wPos.y + 300));
         }
-        return (-(wPos.y + 300));
     },
 
     getDistanceList: function (distFirst, distNext) {
-        if (this.type == CoreGame.PowerUPType.MATCH_4_H) {
+        if (this.isHorizontal()) {
             return [cc.p(distFirst, 0), cc.p(distNext, 0)];
+        } else {
+            return [cc.p(0, distFirst), cc.p(0, distNext)];
         }
-        return [cc.p(0, distFirst), cc.p(0, distNext)];
     },
 
     showEffectExplode: function () {
@@ -90,14 +101,13 @@
         for (let i = 0; i < bulletNum; i++) {
             let bullet = gv.createSpineAnimation(resAni.pu4_h_bullet);
             bullet.setPosition(this.x, this.y);
-            if (this.type == CoreGame.PowerUPType.MATCH_4_H)
-                bullet.setRotation(90);
+            bullet.setRotation(this.bullet_rot);
             bullet.setScale(this.getScale());
 
             this.getParent().addChild(bullet, BoardConst.zOrder.MATCH_4_EXPLODE);
             bullet.setScaleY(flip);
 
-            bullet.setAnimation(0, "run", true);
+            bullet.setAnimation(0, "run", false);
             bullet.setVisible(true);
             bullet.runAction(cc.sequence(
                 cc.moveBy(times[i], distances[i].x, distances[i].y),

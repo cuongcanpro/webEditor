@@ -17,9 +17,7 @@ CoreGame.DropStrategy.RandomSpawnStrategy = CoreGame.DropStrategy.SpawnStrategy.
      * @returns {number} Random gem type in [1, NUM_COLORS]
      */
     getGemType: function (row, col, boardMgr) {
-        if (boardMgr && boardMgr.gemTypes && boardMgr.gemTypes.length > 0) {
-            return boardMgr.gemTypes[boardMgr.random.nextInt32Bound(boardMgr.gemTypes.length)];
-        }
-        return boardMgr.random.nextInt32Bound(CoreGame.Config.NUM_GEN) + 1;
+        var types = this._gemTypes(boardMgr);
+        return types[boardMgr.random.nextInt32Bound(types.length)];
     }
 });

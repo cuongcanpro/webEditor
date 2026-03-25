@@ -11,14 +11,6 @@ CoreGame.TestScene = cc.Scene.extend({
     ctor: function () {
         this._super();
 
-        // Center board on screen
-        var winSize = cc.director.getWinSize();
-        var boardWidth = CoreGame.Config.BOARD_COLS * CoreGame.Config.CELL_SIZE;
-        var boardHeight = CoreGame.Config.BOARD_ROWS * CoreGame.Config.CELL_SIZE;
-
-        CoreGame.Config.BOARD_OFFSET_X = (winSize.width - boardWidth) / 2;
-        CoreGame.Config.BOARD_OFFSET_Y = (winSize.height - boardHeight) / 2;
-
         // Create UI
         this.boardUI = CoreGame.BoardUI.getInstance();
         // this.boardUI = new BlockCreatorUI();

@@ -94,28 +94,34 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
                 targetAnimKey = group[randomIndex];
             }
 
-            if (this.animations[targetAnimKey]) {
-                var action = this.animations[targetAnimKey];
-                var time = action.getDuration();
-                var speed = action.getTimeSpeed() || 1;
-                var duration = Math.max(0.2, time / 60 * speed);
+            try {
+                if (this.animations[targetAnimKey]) {
+                    var action = this.animations[targetAnimKey];
+                    var time = action.getDuration();
+                    var speed = action.getTimeSpeed() || 1;
+                    var duration = Math.max(0.2, time / 60 * speed);
 
 
-                if (this.animations[this.lastActionName])
-                    this.animations[this.lastActionName].pause();
-                cc.log("CustomElementUI playAnimation: " + targetAnimKey);
-                this.lastActionName = targetAnimKey;
-                action.gotoFrameAndPlay(1, action.getDuration(), 0, false);
+                    if (this.animations[this.lastActionName])
+                        this.animations[this.lastActionName].pause();
+                    cc.log("CustomElementUI playAnimation: " + targetAnimKey);
+                    this.lastActionName = targetAnimKey;
+                    action.gotoFrameAndPlay(1, action.getDuration(), 0, false);
 
-                // Set last frame callback to automatically return to idle
-                action.setLastFrameCallFunc(this._onAnimationFinish.bind(this, actionType, callback));
+                    // Set last frame callback to automatically return to idle
+                    action.setLastFrameCallFunc(this._onAnimationFinish.bind(this, actionType, callback));
 
-                return duration;
-            } else if (targetAnimKey === actionType) {
-                // If we couldn't find the exact animation and it wasn't a randomized key, finish immediately
-                if (callback) callback();
-                return 0;
+                    return duration;
+                } else if (targetAnimKey === actionType) {
+                    // If we couldn't find the exact animation and it wasn't a randomized key, finish immediately
+                    if (callback) callback();
+                    return 0;
+                }
             }
+            catch (e) {
+                cc.log("Error playing animation " + targetAnimKey + ": " + e);
+            }
+            
         }
 
         // Fallback to main action if it has timelines

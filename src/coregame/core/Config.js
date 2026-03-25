@@ -27,11 +27,7 @@ CoreGame.Config = {
     DROP_DELTA_DELAY_COL: 0.01,
 
     // Match requirements
-    MIN_MATCH: 3,
-
-    // Board position offset
-    BOARD_OFFSET_X: 0,
-    BOARD_OFFSET_Y: 0
+    MIN_MATCH: 3
 };
 
 /**

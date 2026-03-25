@@ -446,13 +446,17 @@ var UIUtils = {
     },
 
     // set node position to center of parent
-    positioningToCenter: function(node){
-        if (typeof node.getParent != "function" || !node.getParent()){
+    posToCenter: function (node) {
+        if (typeof node.getParent != "function" || !node.getParent()) {
             return;
         }
         let parent = node.getParent();
-        node.setPosition(parent.getContentSize().width/2, parent.getContentSize().height/2);
+        node.setPosition(parent.getContentSize().width / 2, parent.getContentSize().height / 2);
     },
+
+    enableCubicBezierCurves: function (textLabel, p0, p1, p2, p3, align = 3) {
+        textLabel.enableCubicBezierCurves(p0, p1, p2, p3, align);
+    }
 };
 
 var PointUtils = {
