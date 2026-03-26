@@ -365,7 +365,7 @@ var EditMapSceneNew = cc.Layer.extend({
             var btnLoadGist = new ccui.Button();
             btnLoadGist.setScale9Enabled(true);
             btnLoadGist.setContentSize(90, 50);
-            btnLoadGist.setTitleText("Load Gist");
+            btnLoadGist.setTitleText("Load Cloud");
             btnLoadGist.setTitleFontSize(13);
             btnLoadGist.setTitleColor(cc.color(209, 209, 217));
             btnLoadGist.setColor(cc.color(40, 140, 80));
