@@ -60,17 +60,20 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         this.nodeMonster.setVisible(false);
 
         this.lbTextBubble.setVisible(false);
+
+        this.lbTextBubble.ignoreContentAdaptWithSize(true);
+        this.lbTextBubblePhantom.ignoreContentAdaptWithSize(true);
     },
 
     //region EFX
     efxIn: function (delayTime = 0) {
         let efxTime = 0.5;
-        let lifeTime = 1.5;
+        let waitShowTime = 1;
+        let lifeTime = 0;
 
         if (this.nodeMonster.isVisible()) {
             let efxTimeMonster = 0.5;
             let deltaTimeMonster = 0.25;
-            delayTime += 1;
 
             this.imgMonsterBg.stopAllActions();
             this.imgMonsterBg.setOpacity(0);
@@ -88,7 +91,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             this.lbMonsterName.setOpacity(0);
             this.lbMonsterName.setScale(2.5);
             this.lbMonsterName.runAction(cc.sequence(
-                cc.delayTime(delayTime + efxTimeMonster + deltaTimeMonster),
+                cc.delayTime(delayTime + deltaTimeMonster),
                 cc.spawn(
                     cc.fadeIn(efxTimeMonster),
                     cc.scaleTo(efxTimeMonster, 1).easing(cc.easeIn(5))
@@ -99,14 +102,21 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             this.nodeMonsterSprite.setOpacity(0);
             this.nodeMonsterSprite.setScale(2.5);
             this.nodeMonsterSprite.runAction(cc.sequence(
-                cc.delayTime(delayTime + efxTimeMonster + 2 * deltaTimeMonster),
+                cc.delayTime(delayTime + 2 * deltaTimeMonster),
                 cc.spawn(
                     cc.fadeIn(efxTimeMonster),
                     cc.scaleTo(efxTimeMonster, 1).easing(cc.easeIn(5))
                 )
             ));
 
-            delayTime += delayTime + efxTimeMonster + 2 * deltaTimeMonster + 1;
+            lifeTime = efxTimeMonster + 2 * deltaTimeMonster + waitShowTime;
+            this.nodeMonster.stopAllActions();
+            this.nodeMonster.setVisible(true);
+            this.nodeMonster.setOpacity(255);
+            this.nodeMonster.runAction(cc.sequence(
+                cc.delayTime(delayTime + lifeTime),
+                cc.fadeOut(efxTimeMonster).easing(cc.easeOut(2.5))
+            ));
         } else {
             //Intro
             let efxObjTime = 0.25;
@@ -132,6 +142,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             }
 
             this.nodeObjectives.stopAllActions();
+            this.nodeObjectives.setVisible(true);
             this.nodeObjectives.setOpacity(0);
             this.nodeObjectives.setPosition(this.nodeObjectives.rawPos);
             this.nodeObjectives.x -= cc.winSize.width;
@@ -140,16 +151,16 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
                 cc.spawn(
                     cc.moveTo(efxTime, this.nodeObjectives.rawPos).easing(cc.easeBackOut()),
                     cc.fadeIn(efxTime).easing(cc.easeOut(2.5)),
-                    cc.delayTime(delayShowObj + lifeTime)
+                    cc.delayTime(delayShowObj + waitShowTime)
                 ),
                 cc.spawn(
                     cc.moveBy(efxTime, cc.winSize.width, 0).easing(cc.easeBackIn()),
                     cc.fadeOut(efxTime).easing(cc.easeOut(2.5))
                 )
             ));
+
+            lifeTime = waitShowTime + delayShowObj;
         }
-
-
 
         //FOG
         this.pFogIntroObjective.stopAllActions();
@@ -158,7 +169,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             cc.delayTime(delayTime),
             cc.spawn(
                 cc.fadeIn(efxTime).easing(cc.easeOut(2.5)),
-                cc.delayTime(delayShowObj + lifeTime)
+                cc.delayTime(lifeTime)
             ),
             cc.fadeOut(efxTime).easing(cc.easeOut(2.5))
         ));
@@ -168,7 +179,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         this.pIntro.stopAllActions();
         this.pIntro.setVisible(true);
         this.pIntro.runAction(cc.sequence(
-            cc.delayTime(delayTime + 2 * efxTime + delayShowObj + lifeTime),
+            cc.delayTime(delayTime + efxTime + lifeTime),
             cc.hide()
         ));
         //END PANEL INTRO
@@ -177,7 +188,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         this.pInfo.setPosition(this.pInfo.rawPos);
         this.pInfo.y += 250;
         this.pInfo.runAction(cc.sequence(
-            cc.delayTime(delayTime + 2 * efxTime + delayShowObj + lifeTime),
+            cc.delayTime(delayTime + efxTime + lifeTime),
             cc.moveTo(efxTime, this.pInfo.rawPos).easing(cc.easeBackOut())
         ));
     },
@@ -277,21 +288,24 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             if (element.id >= baseMonster) {
                 //Set Info
                 this.nodeMonster.setVisible(true);
-                this.lbMonsterName.setString("Khỉ\nHiếu Chiến");
+                this.lbMonsterName.setString(CoreGame.GameBoardInfoUI.animMonster[element.id].name);
                 this.lbMonsterName.setTextColor(cc.color("#db7000"));
                 this.lbMonsterName.enableOutline(cc.color("#301c02"), 7);
 
                 this.nodeMonsterSprite.removeAllChildren();
                 let spine = gv.createSpineAnimation(resAni["spine_" + element.id + "_main"]);
                 this.nodeMonsterSprite.addChild(spine);
-                spine.setAnimation(0, "idle", true);
-                spine.setScale(0.25);
-                spine.y -= 125;
+                spine.setAnimation(0, CoreGame.GameBoardInfoUI.animMonster[element.id].anim, true);
+                spine.setScale(CoreGame.GameBoardInfoUI.animMonster[element.id].scale);
+                spine.setPosition(CoreGame.GameBoardInfoUI.animMonster[element.id].offset);
 
                 let randRot = (0.5 - Math.random()) * 20;
                 this.nodeMonster.setRotation(randRot);
                 this.nodeMonsterSprite.setRotation(-randRot);
                 this.lbMonsterName.setRotation(-randRot);
+
+                //
+                this.nodeObjectives.setVisible(false);
             }
         }
     },
@@ -575,6 +589,20 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
 });
 CoreGame.GameBoardInfoUI.JSON = "zcsd/game/GameBoardInfoUI.json";
 CoreGame.GameBoardInfoUI.TARGET_SIZE = 100;
+CoreGame.GameBoardInfoUI.animMonster = {
+    15000: {
+        name: "Khỉ\nHung hăng",
+        scale: 0.25,
+        offset: cc.p(0, -125),
+        anim: "idle"
+    },
+    10000: {
+        name: "Kông\nKhổng Lồ",
+        scale: 1.5,
+        offset: cc.p(0, -125),
+        anim: "anim0_idle"
+    }
+};
 
 /**
  * Create shadowFake, add child to object Flying

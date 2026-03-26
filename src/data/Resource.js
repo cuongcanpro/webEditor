@@ -106,7 +106,7 @@ var res = {
     ZCSD_GUI_SUGGEST: "zcsd/game/GUISuggest.json",
     ZCSD_GUI_LOADING_BOARD: "zcsd/game/GUILoadingBoard.json",
     ZCSD_GUI_END_GAME: "zcsd/game/GUIEndGame.json",
-    ZCSD_GUI_LEVEL_INFO: "zcsd/game/GUILevelInfo.json",
+    ZCSD_GUI_LEVEL_INFO: "zcsd/game/popup/GUILevelInfo.json",
     ZCSD_GUI_QUIT_GAME: "zcsd/game/GUIQuitGame.json",
     ZCSD_NODE_COMPLETE_TEXT: "zcsd/game/NodeCompleteText.json",
     ZCSD_NODE_ITEM_BONUS_BUY_MOVE: "zcsd/game/NodeItemBonusBuyMove.json",

@@ -1092,7 +1092,14 @@ CoreGame.BoardMgr = cc.Class.extend({
             }
         } else {
             for (var i = 0; i < gems.length; i++) {
-                gem[i].updateType(types[i]);
+                var gem = gems[i];
+                // var target = slots[i];
+                // gem.position.x = target.r;
+                // gem.position.y = target.c;
+                // var targetSlot = this.getSlot(target.r, target.c);
+                // if (targetSlot) targetSlot.addElement(gem);
+                // gem.type = types[i];
+                if (gem.ui) gem.ui.updateType(types[i]);
             }
         }
 
@@ -1224,42 +1231,46 @@ CoreGame.BoardMgr = cc.Class.extend({
             }
         }
 
-        if (isWin) {
-            
-
-          
-			if (cc.sys.isNative) {
+        if (cc.sys.isNative) {
+            if (isWin) {
                 this.setEndStar();
                 this.setLevel();
                 if (this.gameUI) {
                     this.gameUI.showEndGameWinEffect(true);
                 }
 
-	            let endGameEfxTime = 1.5;
+                let endGameEfxTime = 1.5;
 
-	            if (this.numMove > 0) {
-	                this.state = CoreGame.BoardState.REMAINING_MOVES_BONUS;
-	                setTimeout(function () {
-	                    this.startRemainingMovesBonus();
-	                }.bind(this), endGameEfxTime * 1000);
-	            } else {
-	                this.state = CoreGame.BoardState.END_GAME;
-	                setTimeout(function () {
-	                    if (this.gameUI) {
-	                        this.gameUI.onEndGame(true);
-	                    }
-	                }.bind(this), endGameEfxTime * 1000);
-	            }
-            }
-            else {
+                if (this.numMove > 0) {
+                    this.state = CoreGame.BoardState.REMAINING_MOVES_BONUS;
+                    setTimeout(function () {
+                        this.startRemainingMovesBonus();
+                    }.bind(this), endGameEfxTime * 1000);
+                } else {
+                    this.state = CoreGame.BoardState.END_GAME;
+                    setTimeout(function () {
+                        if (this.gameUI) {
+                            this.gameUI.onEndGame(true);
+                        }
+                    }.bind(this), endGameEfxTime * 1000);
+                }
                 alert("Level Complete!");
-            }
 
-        } else {
-            if (this.numMove <= 0) {
-                this.state = CoreGame.BoardState.END_GAME;
-                if (this.gameUI) {
-                    this.gameUI.onEndGame(false, this.targetElements);
+            } else {
+                if (this.numMove <= 0) {
+                    this.state = CoreGame.BoardState.END_GAME;
+                    if (this.gameUI) {
+                        this.gameUI.onEndGame(false, this.targetElements);
+                    }
+                }
+            }
+        }
+        else {
+            if (isWin) {
+                alert("Level Complete!");
+            } else {
+                if (this.numMove <= 0) {
+                    alert("Game Over!");
                 }
             }
         }

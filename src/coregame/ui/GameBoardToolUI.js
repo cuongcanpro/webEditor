@@ -177,14 +177,19 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
 
     onQuitGame: function () {
         cc.log("onQuitGame");
-        // tang so lan thua len 1 o mode tuong ung
-        // userInfo.setNumLose(userInfo.getNumLose(this.mapPlay) + 1, this.mapPlay);
-        // let logType;
-        // if (this.mainBoard.getMove() > 0) logType = ActionType.LOG_OUT_GAME;
-        // else logType = ActionType.LOG_LOSE_SUBTRACT_HEART;
-        // this.addActionEndGameLose(logType);
-        // UI flow
-        cc.director.runScene(new SceneLobby());
+
+        // Subtract heart on abandon (same as lose)
+        var boardMgr = this.mainScene.boardUI.boardMgr;
+        var logType;
+        if (boardMgr.numMove > 0) {
+            logType = ActionType.LOG_OUT_GAME;
+        } else {
+            logType = ActionType.LOG_LOSE_SUBTRACT_HEART;
+        }
+        this.mainScene.addActionEndGameLose(logType);
+
+        // Return to lobby
+        sceneMgr.openScene(SceneLobby.className);
     },
 
     // click event registered in cocos studio

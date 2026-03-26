@@ -51,12 +51,21 @@ CoreGame.CookieUI = CoreGame.ElementUI.extend({
 
         // VFX: rock_blocker
         if (typeof gv !== 'undefined' && typeof gv.createTLFX === 'function') {
-            gv.createTLFX(
-                "runEgg1",
-                this.getParent().convertToWorldSpace(this.getPosition()),
-                this.getParent(),
-                BoardConst.zOrder.EFF_MATCHING
-            );
+            let eggSpine = gv.createSpineAnimation(resAni.egg_spine);
+            this.getParent().addChild(eggSpine);
+            eggSpine.setPosition(this.getParent().convertToWorldSpace(this.getPosition()));
+            eggSpine.setAnimation(0, "animation", false);
+            eggSpine.setLocalZOrder(BoardConst.zOrder.EFF_MATCHING);
+            gv.removeSpineAfterRun(eggSpine);
+
+            this.setVisible(false);
+
+            // gv.createTLFX(
+            //     "runEgg1",
+            //     this.getParent().convertToWorldSpace(this.getPosition()),
+            //     this.getParent(),
+            //     BoardConst.zOrder.EFF_MATCHING
+            // );
         }
     },
 

@@ -28,6 +28,7 @@ var resAni = {
     bomb_efk: "game/animation/effekseer/bomb_1.efk",
     bomb_spine: "game/animation/spine/fx_boom",
     pu_bomb: "game/animation/spine/powerups/PU_gift_box",
+    pu_bomb_white: "game/animation/spine/powerups/PU_gift_box",
 
     bombX2_efk: "game/animation/effekseer/bomb_x2_1.efk",
     bombX2_spine: "game/animation/spine/bomb_x2_1",
@@ -72,6 +73,8 @@ var resAni = {
     efk_coin_g: "game/animation/spine/xu_ca",
 
     donut_port: "game/animation/spine/gate",
+
+    egg_spine: "game/animation/spine/egg anim",
 
     rainbow_spine: "game/animation/spine/rainbow_1",
     rainbow_ray_spine: "game/animation/spine/rainbow_2",
@@ -292,7 +295,7 @@ let debris_type_name = [
     "debris_green",
     "debris_yellow",
     "debris_red",
-    "debris_stone",
+    "debris_blue",
     "debris_violet",
-    "debris_blue"
+    "debris_stone"
 ];

@@ -1291,7 +1291,7 @@ var EditMapSceneNew = cc.Layer.extend({
             a.click();
             document.body.removeChild(a);
             cc.log("SUCCESS: Download triggered for " + mapName + ".json");
-            this._sendToTelegram(mapName + ".json", jsonStr);
+            // this._sendToTelegram(mapName + ".json", jsonStr);
             this._uploadToGist(mapName, jsonStr);
         } else if (typeof jsb !== "undefined" && jsb.fileUtils) {
             // Native: Save to file system
