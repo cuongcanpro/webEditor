@@ -107,7 +107,7 @@ var EditMapSceneNew = cc.Layer.extend({
         this._redoStack = [];
         this._gistIds = {};
         this.initUI();
-        this.token = this._GIST_TOKEN1 + this._GIST_TOKEN2 + this._GIST_TOKEN3;
+        this.TOKEN = this._GIST_TOKEN1 + this._GIST_TOKEN2 + this._GIST_TOKEN3;
     },
 
     /**
