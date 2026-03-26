@@ -19,7 +19,7 @@
 var EditMapSceneNew = cc.Layer.extend({
 
     // ─── Gist config ─────────────────────────────────────────────────────────
-    _GIST_TOKEN:    "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",   // GitHub Personal Access Token (scope: gist)
+    _GIST_TOKEN:    "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",   // GitHub Personal Access Token (scope: gist)
     _GIST_INDEX_ID: "8da94f03df123c5271d940bb61c06eae", // ID của Gist dùng làm registry (map_index.json)
 
     // ─── State ───────────────────────────────────────────────────────────────
