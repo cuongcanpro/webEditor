@@ -307,6 +307,18 @@ var EditMapSceneNew = cc.Layer.extend({
                         self.boardUI.removeAllElements();
                         self._targetEntries = [];
                         if (self.targetListUI) self.targetListUI.setEntries([]);
+                        if (self._tfMapName) {
+                            cc.log("Clearing map name field");
+                            self._tfMapName.setString("");
+                        }
+                        if (self._tfSaveName) {
+                            cc.log("Clearing save name field");
+                            self._tfSaveName.setString("");
+                        }
+                        if (self._tfNotes) {
+                            cc.log("Clearing notes field");
+                            self._tfNotes.setString("");
+                        }
                         self.updateMetrics();
                     }
                 });
@@ -1279,7 +1291,7 @@ var EditMapSceneNew = cc.Layer.extend({
             a.click();
             document.body.removeChild(a);
             cc.log("SUCCESS: Download triggered for " + mapName + ".json");
-            // this._sendToTelegram(mapName + ".json", jsonStr);
+            this._sendToTelegram(mapName + ".json", jsonStr);
             this._uploadToGist(mapName, jsonStr);
         } else if (typeof jsb !== "undefined" && jsb.fileUtils) {
             // Native: Save to file system
