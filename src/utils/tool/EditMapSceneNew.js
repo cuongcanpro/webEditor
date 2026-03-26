@@ -19,8 +19,8 @@
 var EditMapSceneNew = cc.Layer.extend({
 
     // ─── Gist config ─────────────────────────────────────────────────────────
-    _GIST_TOKEN:    "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",   // GitHub Personal Access Token (scope: gist)
-    _GIST_INDEX_ID: "615831f1b096fda3996dff5186bfc4e5", // ID của Gist dùng làm registry (map_index.json)
+    _GIST_TOKEN:    "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",   // GitHub Personal Access Token (scope: gist)
+    _GIST_INDEX_ID: "8da94f03df123c5271d940bb61c06eae", // ID của Gist dùng làm registry (map_index.json)
 
     // ─── State ───────────────────────────────────────────────────────────────
     _gistIds: null,   // { mapName: gistId } — tracks Gist ID per map in this session
@@ -374,7 +374,7 @@ var EditMapSceneNew = cc.Layer.extend({
                 if (type === ccui.Widget.TOUCH_ENDED) self._loadFromGist();
             });
             pFunc.addChild(btnLoadGist);
-            btnLoadGist.setVisible(false);
+            // btnLoadGist.setVisible(false);
         }
 
         var pName = this.pTop.getChildByName("pNameLevel");
@@ -1276,7 +1276,7 @@ var EditMapSceneNew = cc.Layer.extend({
             document.body.removeChild(a);
             cc.log("SUCCESS: Download triggered for " + mapName + ".json");
             // this._sendToTelegram(mapName + ".json", jsonStr);
-            // this._uploadToGist(mapName, jsonStr);
+            this._uploadToGist(mapName, jsonStr);
         } else if (typeof jsb !== "undefined" && jsb.fileUtils) {
             // Native: Save to file system
             if (jsb.fileUtils.writeStringToFile(jsonStr, filePath)) {
@@ -1368,7 +1368,7 @@ var EditMapSceneNew = cc.Layer.extend({
                 return;
             }
             var mapNames = Object.keys(index).sort();
-            var dialog = new SelectDialog("Select Map to Load", mapNames, function (mapName) {
+            var dialog = new GistMapSelectDialog("Select Map to Load", mapNames, function (mapName) {
                 var gistId = index[mapName];
                 self._fetchMapFromGist(gistId, mapName);
             });
