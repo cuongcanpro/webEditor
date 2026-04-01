@@ -34,6 +34,8 @@
             anim.addAnimation(0, "run", true);
         }
 
+        this.spawnHaptic();
+
         if (this.whiteSpr.isVisible()) {
             this.whiteSpr.runAction(cc.sequence(
                 cc.callFunc(function () {
@@ -51,6 +53,16 @@
                 cc.hide()
             ));
         }
+    },
+
+    spawnHaptic: function (delay = 0) {
+        this.runAction(cc.sequence(
+            cc.delayTime(delay),
+            cc.callFunc(function () {
+                fr.platformWrapper.hapticTouch(HAPTIC_TOUCH_TYPE.RIGID);
+            }.bind(this))
+        ));
+
     },
 
     /**

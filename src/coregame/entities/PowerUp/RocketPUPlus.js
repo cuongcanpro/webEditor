@@ -11,6 +11,12 @@
     },
 
     createUI2: function (parent) {
+        if (this.type === CoreGame.PowerUPType.MATCH_4_V) {
+            this.type = CoreGame.PowerUPType.MATCH_4_H;
+        } else {
+            this.type = CoreGame.PowerUPType.MATCH_4_V;
+        }
+
         this.ui2 = new CoreGame.RocketUI(this);
         if (this.boardMgr) {
             this.ui2.setPosition(this.boardMgr.gridToPixel(this.position.x, this.position.y));

@@ -177,6 +177,10 @@ var EditMapSceneNew = cc.Layer.extend({
             self.pTool = self.rootNode.getChildByName("pTool");
             self.pRight = self.rootNode.getChildByName("pRight");
             self.pBottom = self.rootNode.getChildByName("pBottom");
+            self.pLeft = self.rootNode.getChildByName("pLeft");
+            cc.log("width left " + self.pLeft.getContentSize().width);
+            cc.log("width pTool " + self.pTool.getContentSize().width);
+            self.pLeft.setContentSize(self.pTool.getContentSize().width, self.pLeft.getContentSize().height);
 
             // pBottom removed — all sections now live in pRight (built programmatically)
 
@@ -297,8 +301,8 @@ var EditMapSceneNew = cc.Layer.extend({
             var btnRedo = UIUtils.seekWidgetByName(pFunc, "btnRedo");
 
             // Visual styling
-            if (btnSave) { btnSave.setColor(cc.color(40, 110, 220)); }
-            if (btnPlay) { btnPlay.setColor(cc.color(35, 170, 75)); }
+            // if (btnSave) { btnSave.setColor(cc.color(40, 110, 220)); }
+            // if (btnPlay) { btnPlay.setColor(cc.color(35, 170, 75)); }
 
             // Handlers
             if (btnNew) {
@@ -367,6 +371,7 @@ var EditMapSceneNew = cc.Layer.extend({
             btnIndex.setScale9Enabled(true);
             btnIndex.setContentSize(80, 50);
             btnIndex.setTitleText("Index");
+            btnIndex.setTitleFontName("font/BalooPaaji2-Regular.ttf");
             btnIndex.setTitleFontSize(14);
             btnIndex.setTitleColor(cc.color(209, 209, 217));
             btnIndex.setPosition(redoPos.x + 84, redoPos.y);
@@ -381,10 +386,11 @@ var EditMapSceneNew = cc.Layer.extend({
             var btnLoadGist = new ccui.Button();
             btnLoadGist.setScale9Enabled(true);
             btnLoadGist.setContentSize(90, 50);
+            btnLoadGist.setTitleFontName("font/BalooPaaji2-Regular.ttf");
             btnLoadGist.setTitleText("Load Cloud");
             btnLoadGist.setTitleFontSize(13);
             btnLoadGist.setTitleColor(cc.color(209, 209, 217));
-            btnLoadGist.setColor(cc.color(40, 140, 80));
+            // btnLoadGist.setColor(cc.color(40, 140, 80));
             btnLoadGist.setPosition(redoPos.x + 84 + 94, redoPos.y);
             btnLoadGist.addTouchEventListener(function (sender, type) {
                 if (type === ccui.Widget.TOUCH_ENDED) self._loadFromGist();
@@ -490,7 +496,13 @@ var EditMapSceneNew = cc.Layer.extend({
 
     _updateBtnColor: function (btn, active) {
         if (!btn) return;
-        btn.setColor(active ? cc.color(100, 220, 100) : cc.color(255, 255, 255));
+        var color = active ? cc.color(100, 220, 100) : cc.color(255, 255, 255);
+        var titleRenderer = btn.getTitleRenderer && btn.getTitleRenderer();
+        if (titleRenderer) {
+            titleRenderer.setColor(color);
+        } else {
+            btn.setTitleColor(color);
+        }
     },
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -509,7 +521,7 @@ var EditMapSceneNew = cc.Layer.extend({
         var curY = H - topH; // start sections just below pTop
 
         // ── 1. OBJECTIVE ─────────────────────────────────────────────────
-        var objH = 100;
+        var objH = 80;
         curY -= objH;
         var pObj = this._makeRightPanel(W, objH, curY);
         this.pRight.addChild(pObj);
@@ -523,7 +535,7 @@ var EditMapSceneNew = cc.Layer.extend({
         this._buildGemColorSection(pGem);
 
         // ── 3. GAME CONFIG (Turn / TPP / Spawn / TargetMove) ─────────────
-        var cfgH = 118;
+        var cfgH = 132;
         curY -= cfgH;
         var pCfg = this._makeRightPanel(W, cfgH, curY, cc.color(25, 32, 58));
         this.pRight.addChild(pCfg);
@@ -566,11 +578,16 @@ var EditMapSceneNew = cc.Layer.extend({
 
     _makeRightPanel: function (w, h, y, bgColor) {
         var panel = new ccui.Layout();
-        panel.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
-        panel.setBackGroundColor(bgColor || cc.color(21, 28, 53));
+        //panel.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        //panel.setBackGroundColor(bgColor || cc.color(21, 28, 53));
+        panel.setBackGroundImageScale9Enabled(true);
+        panel.setBackGroundImage("res/tool/res/bgWhite.png");
+        panel.setColor(cc.color("#191E2F"));
         panel.setContentSize(w, h);
         panel.setAnchorPoint(cc.p(0, 0));
-        panel.setPosition(0, y);
+        panel.setPosition(2, y);
+        // load texture for 9-slice scaling (optional)
+        
         return panel;
     },
 
@@ -578,14 +595,20 @@ var EditMapSceneNew = cc.Layer.extend({
         var W = parent.getContentSize().width;
         var HDR_H = 22;
         var hdr = new ccui.Layout();
-        hdr.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
-        hdr.setBackGroundColor(cc.color(28, 35, 60));
+        // hdr.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        // hdr.setBackGroundColor(cc.color(28, 35, 60));
+
+        hdr.setBackGroundImageScale9Enabled(true);
+        hdr.setBackGroundImage("res/tool/res/bgWhite.png");
+        hdr.setColor(cc.color(28, 35, 60));
+        hdr.setColor(cc.color("#282e44"));
+
         hdr.setContentSize(W, HDR_H);
         hdr.setAnchorPoint(cc.p(0, 1));
         hdr.setPosition(0, parent.getContentSize().height);
         parent.addChild(hdr, 1);
 
-        var lb = new ccui.Text(title, "font/BalooPaaji2-Regular.ttf", 11);
+        var lb = new ccui.Text(title, "font/BalooPaaji2-Bold.ttf", 11);
         lb.setColor(cc.color(160, 180, 220));
         lb.setAnchorPoint(cc.p(0, 0.5));
         lb.setPosition(6, HDR_H / 2);
@@ -623,7 +646,7 @@ var EditMapSceneNew = cc.Layer.extend({
         // Turn
         var y1 = H - HDR_H - 13;
         var lb1 = new ccui.Text("Turn:", "font/BalooPaaji2-Regular.ttf", 12);
-        lb1.setColor(cc.color(170, 170, 190)); lb1.setAnchorPoint(cc.p(0, 0.5));
+        lb1.setColor(cc.color(200, 200, 220)); lb1.setAnchorPoint(cc.p(0, 0.5));
         lb1.setPosition(6, y1); panel.addChild(lb1, 1);
         this.tfMoves = this._makeField(panel, "30", TF_X, y1, TF_W, ROW);
         this.tfMoves.setString("30");
@@ -631,7 +654,7 @@ var EditMapSceneNew = cc.Layer.extend({
         // TPP
         var y2 = y1 - ROW - 5;
         var lb2 = new ccui.Text("TPP:", "font/BalooPaaji2-Regular.ttf", 12);
-        lb2.setColor(cc.color(170, 170, 190)); lb2.setAnchorPoint(cc.p(0, 0.5));
+        lb2.setColor(cc.color(200, 200, 220)); lb2.setAnchorPoint(cc.p(0, 0.5));
         lb2.setPosition(6, y2); panel.addChild(lb2, 1);
         this._tfTPP = this._makeField(panel, "1.0", TF_X, y2, TF_W, ROW);
         this._tfTPP.setString("1.0");
@@ -639,7 +662,7 @@ var EditMapSceneNew = cc.Layer.extend({
         // TargetMove (hidden difficulty metric — not shown to players)
         var y3 = y2 - ROW - 5;
         var lb3tm = new ccui.Text("TgtMove:", "font/BalooPaaji2-Regular.ttf", 12);
-        lb3tm.setColor(cc.color(150, 150, 120)); lb3tm.setAnchorPoint(cc.p(0, 0.5));
+        lb3tm.setColor(cc.color(200, 200, 220)); lb3tm.setAnchorPoint(cc.p(0, 0.5));
         lb3tm.setPosition(6, y3); panel.addChild(lb3tm, 1);
         this._tfTargetMove = this._makeField(panel, "0", TF_X, y3, TF_W, ROW);
         this._tfTargetMove.setString("0");
@@ -647,10 +670,10 @@ var EditMapSceneNew = cc.Layer.extend({
         // Spawn
         var y4 = y3 - ROW - 5;
         var lb3 = new ccui.Text("Spawn:", "font/BalooPaaji2-Regular.ttf", 12);
-        lb3.setColor(cc.color(170, 170, 190)); lb3.setAnchorPoint(cc.p(0, 0.5));
+        lb3.setColor(cc.color(200, 200, 220)); lb3.setAnchorPoint(cc.p(0, 0.5));
         lb3.setPosition(6, y4); panel.addChild(lb3, 1);
         this._btnSpawnStrategy = new ccui.Button();
-        this._btnSpawnStrategy.loadTextureNormal("res/tool/res/bgTf.png");
+        this._btnSpawnStrategy.loadTextureNormal("res/tool/res/btnGrey.png");
         this._btnSpawnStrategy.setScale9Enabled(true);
         this._btnSpawnStrategy.setContentSize(TF_W, ROW);
         this._btnSpawnStrategy.setAnchorPoint(cc.p(0, 0.5));
@@ -658,6 +681,7 @@ var EditMapSceneNew = cc.Layer.extend({
         this._btnSpawnStrategy.setTitleText(this._spawnStrategyKey);
         this._btnSpawnStrategy.setTitleFontSize(11);
         this._btnSpawnStrategy.setTitleColor(cc.color(220, 220, 255));
+        this._btnSpawnStrategy.setTitleFontName("font/BalooPaaji2-Regular.ttf");
         // this._btnSpawnStrategy.setTitleAlignment(cc.TEXT_ALIGNMENT_LEFT);
         panel.addChild(this._btnSpawnStrategy, 1);
         var self = this;
@@ -830,10 +854,10 @@ var EditMapSceneNew = cc.Layer.extend({
         var AGENT_KEYS = Object.keys(CoreGame.Bots || {});
         var y1 = H - HDR_H - 13;
         var lb1 = new ccui.Text("Agent:", "font/BalooPaaji2-Regular.ttf", 12);
-        lb1.setColor(cc.color(170, 170, 190)); lb1.setAnchorPoint(cc.p(0, 0.5));
+        lb1.setColor(cc.color(200, 200, 220)); lb1.setAnchorPoint(cc.p(0, 0.5));
         lb1.setPosition(6, y1); panel.addChild(lb1, 1);
         this._btnAgent = new ccui.Button();
-        this._btnAgent.loadTextureNormal("res/tool/res/bgTf.png");
+        this._btnAgent.loadTextureNormal("res/tool/res/btnGrey.png");
         this._btnAgent.setScale9Enabled(true);
         this._btnAgent.setContentSize(TF_W, ROW);
         this._btnAgent.setAnchorPoint(cc.p(0, 0.5));
@@ -841,6 +865,7 @@ var EditMapSceneNew = cc.Layer.extend({
         this._btnAgent.setTitleText(this._agentKey);
         this._btnAgent.setTitleFontSize(11);
         this._btnAgent.setTitleColor(cc.color(220, 220, 255));
+        this._btnAgent.setTitleFontName("font/BalooPaaji2-Regular.ttf");
         panel.addChild(this._btnAgent, 1);
         this._btnAgent.addTouchEventListener(function (sender, type) {
             if (type !== ccui.Widget.TOUCH_ENDED) return;
@@ -855,19 +880,20 @@ var EditMapSceneNew = cc.Layer.extend({
         // Episodes
         var y2 = y1 - ROW - 5;
         var lb2 = new ccui.Text("Episodes:", "font/BalooPaaji2-Regular.ttf", 12);
-        lb2.setColor(cc.color(170, 170, 190)); lb2.setAnchorPoint(cc.p(0, 0.5));
+        lb2.setColor(cc.color(200, 200, 220)); lb2.setAnchorPoint(cc.p(0, 0.5));
         lb2.setPosition(6, y2); panel.addChild(lb2, 1);
         this._tfPlayTest = this._makeField(panel, "1", TF_X, y2, TF_W, ROW);
         this._tfPlayTest.setString("1");
 
         // Run Test button
         var btnY = y2 - ROW / 2 - BTN_H / 2 - 4;
-        var btnRun = new ccui.Button();
+        var btnRun = new ccui.Button("res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png");
         btnRun.setScale9Enabled(true);
         btnRun.setContentSize(W - 12, BTN_H);
         btnRun.setTitleText("Run Test");
+        btnRun.setTitleFontName("font/BalooPaaji2-Regular.ttf");
         btnRun.setTitleFontSize(13);
-        btnRun.setColor(cc.color(40, 100, 210));
+        // btnRun.setColor(cc.color(40, 100, 210));
         btnRun.setAnchorPoint(cc.p(0, 0.5));
         btnRun.setPosition(6, btnY);
         btnRun.addTouchEventListener(function (sender, type) {
@@ -898,12 +924,13 @@ var EditMapSceneNew = cc.Layer.extend({
         panel.addChild(lbJson, 1);
 
         // Save button
-        var btnSave = new ccui.Button();
+        var btnSave =  new ccui.Button("res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png");
         btnSave.setScale9Enabled(true);
         btnSave.setContentSize(W - 12, BTN_H);
         btnSave.setTitleText("Save to .json");
         btnSave.setTitleFontSize(13);
-        btnSave.setColor(cc.color(40, 100, 210));
+        btnSave.setTitleFontName("font/BalooPaaji2-Regular.ttf");
+        // btnSave.setColor(cc.color(40, 100, 210));
         btnSave.setAnchorPoint(cc.p(0, 0.5));
         btnSave.setPosition(6, BTN_H / 2 + 3);
         btnSave.addTouchEventListener(function (sender, type) {
@@ -930,6 +957,7 @@ var EditMapSceneNew = cc.Layer.extend({
         var botH = 0; // no bottom panel
         var topH = this.pTop ? this.pTop.getContentSize().height : 50;
         var CREATE_BTN_H = 38;
+        CREATE_BTN_H = 0;
         var toolTopY = toolPos.y;
         var selectorH = toolTopY - botH - topH - CREATE_BTN_H;
 
@@ -984,6 +1012,7 @@ var EditMapSceneNew = cc.Layer.extend({
             }
         });
         this.rootNode.addChild(btnCreate, 5);
+        btnCreate.setVisible(false);
 
         // Refresh button to reload element list (useful after adding new blockers/elements)
         var btnRefresh = new ccui.Button();
@@ -1000,6 +1029,7 @@ var EditMapSceneNew = cc.Layer.extend({
             }
         });
         this.rootNode.addChild(btnRefresh, 5);
+        btnRefresh.setVisible(false);
     },
 
     // ─────────────────────────────────────────────────────────────────────────

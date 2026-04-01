@@ -62,18 +62,19 @@ var TargetListUI = cc.Node.extend({
         // ── Header row ──────────────────────────────────────────────────────
         var headerBg = new ccui.Layout();
         headerBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
-        headerBg.setBackGroundColor(cc.color(30, 30, 40));
+        headerBg.setBackGroundColor(cc.color("#282e44"));
+        // hdr.setColor(cc.color("#282e44"));
         headerBg.setContentSize(W, HEADER_H);
         headerBg.setPosition(0, H - HEADER_H);
         this.addChild(headerBg, 1);
 
-        var lbTitle = new cc.LabelTTF("OBJECTIVE", "font/BalooPaaji2-Regular.ttf", 12);
+        var lbTitle = new ccui.Text("OBJECTIVE", "font/BalooPaaji2-Bold.ttf", 11);
         lbTitle.setColor(cc.color(180, 220, 255));
         lbTitle.setAnchorPoint(cc.p(0, 0.5));
         lbTitle.setPosition(6, HEADER_H / 2);
         headerBg.addChild(lbTitle);
 
-        var btnAdd = this._makeBtn("+ Add", 52, HEADER_H - 4, cc.color(150, 240, 160));
+        var btnAdd = this._makeBtnBg("+ Add", 52, HEADER_H - 4, cc.color(150, 240, 160));
         btnAdd.setAnchorPoint(cc.p(1, 0.5));
         btnAdd.setPosition(W - 4, HEADER_H / 2);
         btnAdd.addTouchEventListener(function (sender, type) {
@@ -86,7 +87,7 @@ var TargetListUI = cc.Node.extend({
         headerBg.addChild(btnAdd);
 
         // Button: Add From Map (collect blockers/gems present on current EditMap)
-        var btnFromMap = this._makeBtn("From Map", 80, HEADER_H - 6, cc.color(120, 200, 250));
+        var btnFromMap = this._makeBtnBg("From Map", 80, HEADER_H - 6, cc.color(120, 200, 250));
         btnFromMap.setAnchorPoint(cc.p(1, 0.5));
         // place to the left of +Add (leave a small gap)
         btnFromMap.setPosition(W - 62, HEADER_H / 2);
@@ -245,7 +246,7 @@ var TargetListUI = cc.Node.extend({
         });
 
         // ── Delete button ─────────────────────────────────────────────────
-        var btnDel = this._makeBtn("✕", 22, 22, cc.color(240, 40, 40));
+        var btnDel = this._makeBtn("X", 22, 22, cc.color(240, 40, 40));
         // Position between idBtn and count area
         btnDel.setPosition(120, ITEM_H / 2);
         bg.addChild(btnDel);
@@ -323,7 +324,7 @@ var TargetListUI = cc.Node.extend({
             panel.addChild(this._selectorUI);
 
             // Close button (✕)
-            var btnClose = this._makeBtn("✕", 32, 32, cc.color(240, 40, 40));
+            var btnClose = this._makeBtn("X", 32, 32, cc.color(240, 40, 40));
             btnClose.setPosition(panelW - 20, panelH - 18);
             btnClose.addTouchEventListener(function (sender, type) {
                 if (type === ccui.Widget.TOUCH_ENDED) {
@@ -417,8 +418,10 @@ var TargetListUI = cc.Node.extend({
             cc.eventManager.addListener(outerListener, this._mapPickerLayer);
 
             var panel = new ccui.Layout();
-            panel.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
-            panel.setBackGroundColor(cc.color(35, 37, 50));
+            // panel.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+            // panel.setBackGroundColor(cc.color(35, 37, 50));
+            panel.setBackGroundImageScale9Enabled(true);
+            panel.setBackGroundImage("res/tool/res/popup.png");
             panel.setContentSize(panelW, panelH);
             panel.setPosition(sz.width / 2 - panelW / 2, sz.height / 2 - panelH / 2);
 
@@ -469,9 +472,9 @@ var TargetListUI = cc.Node.extend({
             panel.addChild(btnAddAll);
 
             // Close button (✕)
-            var btnClose = this._makeBtn("✕", 28, 28, cc.color(240, 40, 40));
-            btnClose.setAnchorPoint(cc.p(1, 0.5));
-            btnClose.setPosition(panelW - 100, panelH - 18);
+            var btnClose = this._makeBtnBg("Close", 100, 40, cc.color(240, 40, 40));
+            btnClose.setAnchorPoint(cc.p(0.5, 0.5));
+            btnClose.setPosition(panelW * 0.5, 50);
             btnClose.addTouchEventListener(function (sender, type) {
                 if (type === ccui.Widget.TOUCH_ENDED) {
                     self._mapPickerLayer.setVisible(false);
@@ -562,8 +565,20 @@ var TargetListUI = cc.Node.extend({
         btn.setScale9Enabled(true);
         btn.setContentSize(w, h);
         btn.setTitleText(text);
-        btn.setTitleFontSize(16);
+        btn.setTitleFontSize(12);
         btn.setColor(color || cc.color(70, 72, 88));
+        btn.setTitleFontName("font/BalooPaaji2-Regular.ttf");
+        return btn;
+    },
+
+    _makeBtnBg: function (text, w, h, color) {
+        var btn = new ccui.Button("res/tool/res/btnGrey.png", "res/tool/res/btnGrey.png", "res/tool/res/btnGrey.png");
+        btn.setScale9Enabled(true);
+        btn.setContentSize(w, h);
+        btn.setTitleText(text);
+        btn.setTitleFontSize(12);
+        btn.setTitleFontName("font/BalooPaaji2-Regular.ttf");
+        // btn.setColor(color || cc.color(70, 72, 88));
         return btn;
     },
 

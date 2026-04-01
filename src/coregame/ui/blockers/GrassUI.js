@@ -19,7 +19,7 @@ CoreGame.GrassUI = CoreGame.ElementUI.extend({
 
         // 1. Background piece (grass_piece_0.png) - Stationary base
         this.sprBg = fr.createSprite("grass_piece_0.png");
-        // this.sprBg.setScale(1.0); 
+        this.sprBg.setScale(1.0); 
 
         // this.sprBg.setVisible(false);
 

@@ -67,8 +67,10 @@ var LevelSelectorUI = cc.LayerColor.extend({
 
         // Create popup background
         this.popupBg = new ccui.Layout();
-        this.popupBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
-        this.popupBg.setBackGroundColor(cc.color(40, 40, 50));
+        // this.popupBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        // this.popupBg.setBackGroundColor(cc.color(40, 40, 50));
+        this.popupBg.setBackGroundImageScale9Enabled(true);
+        this.popupBg.setBackGroundImage("res/tool/res/popup.png");
         this.popupBg.setContentSize(this.POPUP_WIDTH, this.POPUP_HEIGHT);
         this.popupBg.setPosition(cc.winSize.width / 2 - this.POPUP_WIDTH / 2,
             cc.winSize.height / 2 - this.POPUP_HEIGHT / 2);
@@ -82,11 +84,12 @@ var LevelSelectorUI = cc.LayerColor.extend({
 
         // Add close button
         var closeBtn = new ccui.Button();
-        closeBtn.loadTextureNormal("res/tool/res/bgCell.png");
+        closeBtn.loadTextureNormal("res/tool/res/btnRed.png");
         closeBtn.setScale9Enabled(true);
         closeBtn.setContentSize(80, 40);
         closeBtn.setTitleText("Close");
         closeBtn.setTitleFontSize(18);
+        closeBtn.setTitleFontName("font/BalooPaaji2-Regular.ttf");
         closeBtn.setPosition(this.POPUP_WIDTH / 2, 30);
         closeBtn.addTouchEventListener(function (sender, type) {
             if (type === ccui.Widget.TOUCH_ENDED) {
@@ -106,8 +109,9 @@ var LevelSelectorUI = cc.LayerColor.extend({
         this.filterField = new ccui.TextField();
         this.filterField.setPlaceHolder("Filter levels...");
         this.filterField.setFontSize(18);
+        this.filterField.setFontName("font/BalooPaaji2-Regular.ttf");
         this.filterField.setContentSize(this.POPUP_WIDTH - 40, 36);
-        this.filterField.setPosition(0, 5);
+        this.filterField.setPosition(5, 5);
         this.filterField.setAnchorPoint(cc.p(0, 0));
         this.filterField.setMaxLength(50);
         this.filterField.setMaxLengthEnabled(true);
@@ -224,7 +228,7 @@ var LevelSelectorUI = cc.LayerColor.extend({
         var self = this;
 
         var btn = new ccui.Button();
-        btn.loadTextureNormal("res/tool/res/bgCell.png");
+        btn.loadTextureNormal("res/tool/res/btnGrey.png");
         btn.setScale9Enabled(true);
         btn.setContentSize(this.container.getContentSize().width - 20, this.ITEM_HEIGHT);
 
@@ -236,7 +240,8 @@ var LevelSelectorUI = cc.LayerColor.extend({
         // Set label
         btn.setTitleText(level.name);
         btn.setTitleFontSize(20);
-        btn.setColor(cc.color(100, 200, 255));
+        btn.setTitleFontName("font/BalooPaaji2-Regular.ttf");
+        // btn.setColor(cc.color(100, 200, 255));
 
         // Store level data
         btn.levelName = level.filename;

@@ -85,12 +85,12 @@ var BenchDiffDialog = cc.LayerColor.extend({
 
     _makeButton: function (text, w, h, bgColor) {
         var btn = new ccui.Button();
-        btn.loadTextureNormal("res/tool/res/bgCell.png");
+        btn.loadTextureNormal("res/tool/res/btnRed.png");
         btn.setScale9Enabled(true);
         btn.setContentSize(w, h);
         btn.setTitleText(text);
         btn.setTitleFontSize(20);
-        btn.setColor(bgColor);
+        // btn.setColor(bgColor);
         return btn;
     },
 

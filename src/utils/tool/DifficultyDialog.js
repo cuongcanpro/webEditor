@@ -38,8 +38,10 @@ var SelectDialog = cc.LayerColor.extend({
     _build: function () {
         var W = this.POPUP_W, H = this.POPUP_H, PAD = this.PAD;
         this.popupBg = new ccui.Layout();
-        this.popupBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
-        this.popupBg.setBackGroundColor(cc.color(45, 45, 55));
+        // this.popupBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        // this.popupBg.setBackGroundColor(cc.color(45, 45, 55));
+        this.popupBg.setBackGroundImageScale9Enabled(true);
+        this.popupBg.setBackGroundImage("res/tool/res/popup.png");
         this.popupBg.setContentSize(W, H);
         this.popupBg.setPosition(cc.winSize.width / 2 - W / 2, cc.winSize.height / 2 - H / 2);
         this.addChild(this.popupBg);
@@ -53,13 +55,13 @@ var SelectDialog = cc.LayerColor.extend({
         for (var i = 0; i < this._items.length; i++) {
             var key = this._items[i];
             var btn = new ccui.Button();
-            btn.loadTextureNormal("res/tool/res/bgCell.png");
+            btn.loadTextureNormal("res/tool/res/btnGrey.png");
             btn.setScale9Enabled(true);
             btn.setContentSize(W - PAD * 2, this.ITEM_H);
             btn.setTitleText(key);
             btn.setTitleFontSize(20);
             btn.setTitleColor(cc.color(255, 255, 255));
-            btn.setColor(cc.color(170, 170, 180));
+            // btn.setColor(cc.color(170, 170, 180));
             btn.setPosition(W / 2, startY - i * (this.ITEM_H + 10));
             btn.itemKey = key;
             btn.addTouchEventListener(function (sender, type) {
@@ -72,12 +74,12 @@ var SelectDialog = cc.LayerColor.extend({
         }
 
         var btnCancel = new ccui.Button();
-        btnCancel.loadTextureNormal("res/tool/res/bgCell.png");
+        btnCancel.loadTextureNormal("res/tool/res/btnRed.png");
         btnCancel.setScale9Enabled(true);
         btnCancel.setContentSize(120, 40);
         btnCancel.setTitleText("Cancel");
         btnCancel.setTitleFontSize(18);
-        btnCancel.setColor(cc.color(120, 120, 130));
+        // btnCancel.setColor(cc.color(120, 120, 130));
         btnCancel.setPosition(W / 2, 40);
         btnCancel.addTouchEventListener(function (sender, type) {
             if (type === ccui.Widget.TOUCH_ENDED) this.hide();
@@ -131,8 +133,10 @@ var GistMapSelectDialog = cc.LayerColor.extend({
         var LIST_H  = H - TITLE_H - TF_H - CANCEL_H - PAD * 3;
 
         this.popupBg = new ccui.Layout();
-        this.popupBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
-        this.popupBg.setBackGroundColor(cc.color(38, 40, 55));
+        // this.popupBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        // this.popupBg.setBackGroundColor(cc.color(38, 40, 55));
+        this.popupBg.setBackGroundImageScale9Enabled(true);
+        this.popupBg.setBackGroundImage("res/tool/res/popup.png");
         this.popupBg.setContentSize(W, H);
         this.popupBg.setPosition(
             cc.winSize.width  / 2 - W / 2,
@@ -148,7 +152,7 @@ var GistMapSelectDialog = cc.LayerColor.extend({
 
         // Filter TextField
         var tfY = H - TITLE_H - PAD - TF_H / 2;
-        var tfBg = new ccui.Scale9Sprite("res/tool/res/bgTf.png");
+        var tfBg = new ccui.Scale9Sprite("res/tool/res/btnGrey.png");
         tfBg.setContentSize(W - PAD * 2, TF_H);
         tfBg.setAnchorPoint(cc.p(0, 0.5));
         tfBg.setPosition(PAD, tfY);
@@ -179,12 +183,13 @@ var GistMapSelectDialog = cc.LayerColor.extend({
 
         // Cancel button
         var btnCancel = new ccui.Button();
-        btnCancel.loadTextureNormal("res/tool/res/bgCell.png");
+        btnCancel.loadTextureNormal("res/tool/res/btnRed.png");
         btnCancel.setScale9Enabled(true);
         btnCancel.setContentSize(120, 36);
         btnCancel.setTitleText("Cancel");
         btnCancel.setTitleFontSize(16);
         btnCancel.setColor(cc.color(100, 100, 110));
+        btnCancel.setTitleFontName("font/BalooPaaji2-Regular.ttf");
         btnCancel.setPosition(W / 2, CANCEL_H / 2);
         btnCancel.addTouchEventListener(function (sender, type) {
             if (type === ccui.Widget.TOUCH_ENDED) self.hide();
@@ -220,7 +225,7 @@ var GistMapSelectDialog = cc.LayerColor.extend({
             var key  = items[i];
             var yPos = innerH - (i + 1) * (ITEM_H + GAP) + GAP;
             var btn  = new ccui.Button();
-            btn.loadTextureNormal("res/tool/res/bgCell.png");
+            btn.loadTextureNormal("res/tool/res/btnGrey.png");
             btn.setScale9Enabled(true);
             btn.setContentSize(W, ITEM_H);
             btn.setTitleText(key);
@@ -287,8 +292,10 @@ var DifficultyDialog = cc.LayerColor.extend({
     _build: function () {
         var W = this.POPUP_W, H = this.POPUP_H, PAD = this.PAD;
         this.popupBg = new ccui.Layout();
-        this.popupBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
-        this.popupBg.setBackGroundColor(cc.color(45, 45, 55));
+        // this.popupBg.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        // this.popupBg.setBackGroundColor(cc.color(45, 45, 55));
+        this.popupBg.setBackGroundImageScale9Enabled(true);
+        this.popupBg.setBackGroundImage("res/tool/res/popup.png");
         this.popupBg.setContentSize(W, H);
         this.popupBg.setPosition(cc.winSize.width / 2 - W / 2, cc.winSize.height / 2 - H / 2);
         this.addChild(this.popupBg);
@@ -325,7 +332,7 @@ var DifficultyDialog = cc.LayerColor.extend({
 
     _makeDifficultyButton: function (text, w, h) {
         var btn = new ccui.Button();
-        btn.loadTextureNormal("res/tool/res/bgCell.png");
+        btn.loadTextureNormal("res/tool/res/btnGrey.png");
         btn.setScale9Enabled(true);
         btn.setContentSize(w, h);
         btn.setTitleText(text);
@@ -337,12 +344,12 @@ var DifficultyDialog = cc.LayerColor.extend({
 
     _makeButton: function (text, w, h, bgColor) {
         var btn = new ccui.Button();
-        btn.loadTextureNormal("res/tool/res/bgCell.png");
+        btn.loadTextureNormal("res/tool/res/btnRed.png");
         btn.setScale9Enabled(true);
         btn.setContentSize(w, h);
         btn.setTitleText(text);
         btn.setTitleFontSize(18);
-        btn.setColor(bgColor);
+        // btn.setColor(bgColor);
         return btn;
     },
 

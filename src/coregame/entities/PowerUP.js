@@ -65,8 +65,13 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
 
         this.setState(CoreGame.ElementState.REMOVING);
         this.activeLogic(data);
+        this.removeAfterActivate();
+    },
+
+    removeAfterActivate: function () {
         CoreGame.TimedActionMgr.addAction(0.2, function () {
             this.remove();
+            CoreGame.BoardUI.getInstance().boardMgr.state = CoreGame.BoardState.MATCHING;
         }.bind(this));
     },
 

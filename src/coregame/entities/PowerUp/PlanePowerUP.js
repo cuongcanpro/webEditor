@@ -24,9 +24,54 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
             }
         }
         var listTarget = this.boardMgr.findListPriorityTarget();
-        if (listTarget.length > 0) {
-            this.targetSlot = listTarget[this.boardMgr.random.nextInt32Bound(listTarget.length)];
+
+        // Filter out slots already fully claimed by other planes this turn
+        if (!this.boardMgr._planeClaimCounts) {
+            this.boardMgr._planeClaimCounts = [];
         }
+        var claimCounts = this.boardMgr._planeClaimCounts;
+        var available = [];
+        for (var i = 0; i < listTarget.length; i++) {
+            var slot = listTarget[i];
+            // Count how many planes already claimed this slot
+            var claimedCount = 0;
+            for (var j = 0; j < claimCounts.length; j++) {
+                if (claimCounts[j].slot === slot) {
+                    claimedCount = claimCounts[j].count;
+                    break;
+                }
+            }
+            // Check remaining HP of the slot's blocker/element
+            var maxClaims = 1;
+            for (var e = 0; e < slot.listElement.length; e++) {
+                var el = slot.listElement[e];
+                if (el.hitPoints && el.hitPoints > maxClaims) {
+                    maxClaims = el.hitPoints;
+                }
+            }
+            if (claimedCount < maxClaims) {
+                available.push(slot);
+            }
+        }
+        // Fall back to full list if all targets are fully claimed
+        if (available.length === 0) available = listTarget;
+
+        if (available.length > 0) {
+            this.targetSlot = available[this.boardMgr.random.nextInt32Bound(available.length)];
+            // Update claim count
+            var found = false;
+            for (var k = 0; k < claimCounts.length; k++) {
+                if (claimCounts[k].slot === this.targetSlot) {
+                    claimCounts[k].count++;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                claimCounts.push({ slot: this.targetSlot, count: 1 });
+            }
+        }
+
         this.ui.startActive(this.targetSlot);
         this.ui = undefined;
         //WARNING, need recheck, should activce slot atleast once

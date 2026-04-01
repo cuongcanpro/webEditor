@@ -17,7 +17,7 @@
           {
             "FileData": {
               "Type": "Normal",
-              "Path": "gui_background/bg_buy_in_game.png",
+              "Path": "lobby/bg_level_info_normal.png",
               "Plist": ""
             },
             "BlendFunc": {
@@ -45,65 +45,18 @@
               "Y": 0.5
             },
             "PreSize": {
-              "X": 1.0306,
-              "Y": 0.5336
+              "X": 0.9819,
+              "Y": 0.6016
             },
-            "LeftMargin": -11.0,
-            "RightMargin": -11.0,
-            "TopMargin": 298.5,
-            "BottomMargin": 298.5,
+            "LeftMargin": 6.5,
+            "RightMargin": 6.5,
+            "TopMargin": 255.0,
+            "BottomMargin": 255.0,
             "Tag": 171,
             "Children": [
               {
-                "FileData": {
-                  "Type": "Normal",
-                  "Path": "gui_background/bg_buy_in_game_02.png",
-                  "Plist": ""
-                },
-                "BlendFunc": {
-                  "Src": 1,
-                  "Dst": 771
-                },
-                "AnchorPoint": {
-                  "ScaleX": 0.5,
-                  "ScaleY": 0.5
-                },
-                "Position": {
-                  "X": 371.0,
-                  "Y": 385.895
-                },
-                "Scale": {
-                  "ScaleX": 1.0,
-                  "ScaleY": 1.0
-                },
-                "CColor": {},
-                "IconVisible": false,
-                "PositionPercentXEnabled": true,
-                "PositionPercentYEnabled": true,
-                "PrePosition": {
-                  "X": 0.5,
-                  "Y": 0.565
-                },
-                "PreSize": {
-                  "X": 0.8275,
-                  "Y": 0.7379
-                },
-                "LeftMargin": 64.0,
-                "RightMargin": 64.0,
-                "TopMargin": 45.105,
-                "BottomMargin": 133.895,
-                "Tag": 172,
-                "ActionTag": -150494393,
-                "Size": {
-                  "X": 614.0,
-                  "Y": 504.0
-                },
-                "Name": "bg_01",
-                "ctype": "SpriteObjectData"
-              },
-              {
                 "IsCustomSize": true,
-                "FontSize": 40,
+                "FontSize": 50,
                 "LabelText": "lang_gui_quitgame_title",
                 "FontResource": {
                   "Type": "Normal",
@@ -126,14 +79,13 @@
                 },
                 "ShadowOffsetX": 1.0,
                 "ShadowOffsetY": -1.0,
-                "ShadowEnabled": true,
                 "AnchorPoint": {
                   "ScaleX": 0.5,
                   "ScaleY": 0.5
                 },
                 "Position": {
-                  "X": 371.0,
-                  "Y": 633.3459
+                  "X": 353.5,
+                  "Y": 695.5
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -142,24 +94,24 @@
                 "CColor": {},
                 "IconVisible": false,
                 "PositionPercentXEnabled": true,
-                "PositionPercentYEnabled": true,
                 "PrePosition": {
                   "X": 0.5,
-                  "Y": 0.9273
+                  "Y": 0.9032
                 },
                 "PreSize": {
-                  "X": 0.4043,
-                  "Y": 0.1171
+                  "X": 0.7921,
+                  "Y": 0.0896
                 },
-                "LeftMargin": 221.0,
-                "RightMargin": 221.0,
-                "TopMargin": 9.6541,
-                "BottomMargin": 593.3459,
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": 73.5,
+                "RightMargin": 73.5,
+                "TopMargin": 40.0,
+                "BottomMargin": 661.0,
                 "Tag": 173,
                 "ActionTag": 1918671642,
                 "Size": {
-                  "X": 300.0,
-                  "Y": 80.0
+                  "X": 560.0,
+                  "Y": 69.0
                 },
                 "Name": "title",
                 "ctype": "TextObjectData"
@@ -167,7 +119,7 @@
               {
                 "FileData": {
                   "Type": "Normal",
-                  "Path": "lobby/bg_target.png",
+                  "Path": "lobby/bg_target_normal.png",
                   "Plist": ""
                 },
                 "BlendFunc": {
@@ -179,8 +131,8 @@
                   "ScaleY": 0.5
                 },
                 "Position": {
-                  "X": 371.0,
-                  "Y": 457.61
+                  "X": 353.5,
+                  "Y": 500.5
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -189,24 +141,24 @@
                 "CColor": {},
                 "IconVisible": false,
                 "PositionPercentXEnabled": true,
-                "PositionPercentYEnabled": true,
                 "PrePosition": {
                   "X": 0.5,
-                  "Y": 0.67
+                  "Y": 0.65
                 },
                 "PreSize": {
-                  "X": 0.558,
-                  "Y": 0.1816
+                  "X": 0.7383,
+                  "Y": 0.2169
                 },
-                "LeftMargin": 164.0,
-                "RightMargin": 164.0,
-                "TopMargin": 163.39,
-                "BottomMargin": 395.61,
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": 92.5,
+                "RightMargin": 92.5,
+                "TopMargin": 186.0,
+                "BottomMargin": 417.0,
                 "Tag": 174,
                 "ActionTag": -485161811,
                 "Size": {
-                  "X": 414.0,
-                  "Y": 124.0
+                  "X": 522.0,
+                  "Y": 167.0
                 },
                 "Name": "target",
                 "ctype": "SpriteObjectData"
@@ -237,8 +189,8 @@
                   "ScaleY": 0.5
                 },
                 "Position": {
-                  "X": 371.0,
-                  "Y": 546.4
+                  "X": 353.5,
+                  "Y": 603.5
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -251,31 +203,31 @@
                 },
                 "IconVisible": false,
                 "PositionPercentXEnabled": true,
-                "PositionPercentYEnabled": true,
                 "PrePosition": {
                   "X": 0.5,
-                  "Y": 0.8
+                  "Y": 0.7838
                 },
                 "PreSize": {
-                  "X": 0.2022,
-                  "Y": 0.0776
+                  "X": 0.7779,
+                  "Y": 0.0558
                 },
-                "LeftMargin": 296.0,
-                "RightMargin": 296.0,
-                "TopMargin": 110.1,
-                "BottomMargin": 519.9,
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": 78.5,
+                "RightMargin": 78.5,
+                "TopMargin": 145.0,
+                "BottomMargin": 582.0,
                 "Tag": 175,
                 "ActionTag": -1206968710,
                 "Size": {
-                  "X": 150.0,
-                  "Y": 53.0
+                  "X": 550.0,
+                  "Y": 43.0
                 },
                 "Name": "lblTarget",
                 "ctype": "TextObjectData"
               },
               {
                 "IsCustomSize": true,
-                "FontSize": 32,
+                "FontSize": 35,
                 "LabelText": "lang_gui_quitgame_des",
                 "FontResource": {
                   "Type": "Normal",
@@ -298,11 +250,11 @@
                 "ShadowOffsetY": -2.0,
                 "AnchorPoint": {
                   "ScaleX": 0.5,
-                  "ScaleY": 0.5
+                  "ScaleY": 1.0
                 },
                 "Position": {
-                  "X": 371.0,
-                  "Y": 321.01
+                  "X": 353.5,
+                  "Y": 426.888
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -318,21 +270,21 @@
                 "PositionPercentYEnabled": true,
                 "PrePosition": {
                   "X": 0.5,
-                  "Y": 0.47
+                  "Y": 0.5544
                 },
                 "PreSize": {
-                  "X": 0.6065,
-                  "Y": 0.1903
+                  "X": 0.8487,
+                  "Y": 0.2
                 },
-                "LeftMargin": 146.0,
-                "RightMargin": 146.0,
-                "TopMargin": 296.99,
-                "BottomMargin": 256.01,
+                "LeftMargin": 53.5,
+                "RightMargin": 53.5,
+                "TopMargin": 343.112,
+                "BottomMargin": 272.888,
                 "Tag": 176,
                 "ActionTag": -2046062353,
                 "Size": {
-                  "X": 450.0,
-                  "Y": 130.0
+                  "X": 600.0,
+                  "Y": 154.0
                 },
                 "Name": "info",
                 "ctype": "TextObjectData"
@@ -363,8 +315,8 @@
                 "Scale9Enable": true,
                 "Scale9OriginX": 15,
                 "Scale9OriginY": 11,
-                "Scale9Width": 326,
-                "Scale9Height": 82,
+                "Scale9Width": 395,
+                "Scale9Height": 123,
                 "OutlineColor": {
                   "G": 0,
                   "B": 0
@@ -382,8 +334,8 @@
                   "ScaleY": 0.5
                 },
                 "Position": {
-                  "X": 371.0,
-                  "Y": 211.73
+                  "X": 353.5,
+                  "Y": 205.0
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -392,24 +344,24 @@
                 "CColor": {},
                 "IconVisible": false,
                 "PositionPercentXEnabled": true,
-                "PositionPercentYEnabled": true,
                 "PrePosition": {
                   "X": 0.5,
-                  "Y": 0.31
+                  "Y": 0.2662
                 },
                 "PreSize": {
-                  "X": 0.4798,
-                  "Y": 0.1523
+                  "X": 0.6011,
+                  "Y": 0.1883
                 },
-                "LeftMargin": 193.0,
-                "RightMargin": 193.0,
-                "TopMargin": 419.27,
-                "BottomMargin": 159.73,
+                "VerticalEdge": "BottomEdge",
+                "LeftMargin": 141.0,
+                "RightMargin": 141.0,
+                "TopMargin": 492.5,
+                "BottomMargin": 132.5,
                 "UserData": "-press_action",
                 "Tag": 177,
                 "Children": [
                   {
-                    "FontSize": 44,
+                    "FontSize": 47,
                     "LabelText": "lang_btn_continue_play",
                     "FontResource": {
                       "Type": "Normal",
@@ -436,8 +388,8 @@
                       "ScaleY": 0.5
                     },
                     "Position": {
-                      "X": 178.0,
-                      "Y": 52.0
+                      "X": 212.5,
+                      "Y": 78.3
                     },
                     "Scale": {
                       "ScaleX": 1.0,
@@ -449,21 +401,21 @@
                     "PositionPercentYEnabled": true,
                     "PrePosition": {
                       "X": 0.5,
-                      "Y": 0.5
+                      "Y": 0.54
                     },
                     "PreSize": {
-                      "X": 1.3596,
-                      "Y": 0.5673
+                      "X": 1.2188,
+                      "Y": 0.4345
                     },
-                    "LeftMargin": -64.0,
-                    "RightMargin": -64.0,
-                    "TopMargin": 22.5,
-                    "BottomMargin": 22.5,
+                    "LeftMargin": -46.5,
+                    "RightMargin": -46.5,
+                    "TopMargin": 35.2,
+                    "BottomMargin": 46.8,
                     "Tag": 178,
                     "ActionTag": 1865599961,
                     "Size": {
-                      "X": 484.0,
-                      "Y": 59.0
+                      "X": 518.0,
+                      "Y": 63.0
                     },
                     "Name": "Text_22",
                     "ctype": "TextObjectData"
@@ -471,8 +423,8 @@
                 ],
                 "ActionTag": 1969626203,
                 "Size": {
-                  "X": 356.0,
-                  "Y": 104.0
+                  "X": 425.0,
+                  "Y": 145.0
                 },
                 "Name": "btnContinue",
                 "ctype": "ButtonObjectData"
@@ -503,8 +455,8 @@
                 "Scale9Enable": true,
                 "Scale9OriginX": 15,
                 "Scale9OriginY": 11,
-                "Scale9Width": 284,
-                "Scale9Height": 82,
+                "Scale9Width": 297,
+                "Scale9Height": 122,
                 "OutlineColor": {
                   "G": 0,
                   "B": 0
@@ -522,8 +474,8 @@
                   "ScaleY": 0.5
                 },
                 "Position": {
-                  "X": 371.0,
-                  "Y": 75.13
+                  "X": 353.5,
+                  "Y": 58.0
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -532,24 +484,24 @@
                 "CColor": {},
                 "IconVisible": false,
                 "PositionPercentXEnabled": true,
-                "PositionPercentYEnabled": true,
                 "PrePosition": {
                   "X": 0.5,
-                  "Y": 0.11
+                  "Y": 0.0753
                 },
                 "PreSize": {
-                  "X": 0.4232,
-                  "Y": 0.1523
+                  "X": 0.4625,
+                  "Y": 0.187
                 },
-                "LeftMargin": 214.0,
-                "RightMargin": 214.0,
-                "TopMargin": 555.87,
-                "BottomMargin": 23.13,
+                "VerticalEdge": "BottomEdge",
+                "LeftMargin": 190.0,
+                "RightMargin": 190.0,
+                "TopMargin": 640.0,
+                "BottomMargin": -14.0,
                 "UserData": "-press_action",
                 "Tag": 179,
                 "Children": [
                   {
-                    "FontSize": 44,
+                    "FontSize": 47,
                     "LabelText": "lang_btn_quit_game",
                     "FontResource": {
                       "Type": "Normal",
@@ -576,8 +528,8 @@
                       "ScaleY": 0.5
                     },
                     "Position": {
-                      "X": 157.0,
-                      "Y": 52.0
+                      "X": 163.5,
+                      "Y": 76.32
                     },
                     "Scale": {
                       "ScaleX": 1.0,
@@ -589,21 +541,21 @@
                     "PositionPercentYEnabled": true,
                     "PrePosition": {
                       "X": 0.5,
-                      "Y": 0.5
+                      "Y": 0.53
                     },
                     "PreSize": {
-                      "X": 1.3153,
-                      "Y": 0.5673
+                      "X": 1.3486,
+                      "Y": 0.4375
                     },
-                    "LeftMargin": -49.5,
-                    "RightMargin": -49.5,
-                    "TopMargin": 22.5,
-                    "BottomMargin": 22.5,
+                    "LeftMargin": -57.0,
+                    "RightMargin": -57.0,
+                    "TopMargin": 36.18,
+                    "BottomMargin": 44.82,
                     "Tag": 180,
                     "ActionTag": 1322393526,
                     "Size": {
-                      "X": 413.0,
-                      "Y": 59.0
+                      "X": 441.0,
+                      "Y": 63.0
                     },
                     "Name": "Text_23",
                     "ctype": "TextObjectData"
@@ -623,29 +575,31 @@
                       "ScaleY": 0.5
                     },
                     "Position": {
-                      "X": 0.0,
-                      "Y": 83.2
+                      "X": 20.5029,
+                      "Y": 119.7216
                     },
                     "Scale": {
                       "ScaleX": 1.0,
                       "ScaleY": 1.0
                     },
+                    "RotationSkewX": -15.6596,
+                    "RotationSkewY": -15.66,
                     "CColor": {},
                     "IconVisible": false,
                     "PositionPercentXEnabled": true,
                     "PositionPercentYEnabled": true,
                     "PrePosition": {
-                      "X": 0.0,
-                      "Y": 0.8
+                      "X": 0.0627,
+                      "Y": 0.8314
                     },
                     "PreSize": {
-                      "X": 0.1783,
-                      "Y": 0.5096
+                      "X": 0.1713,
+                      "Y": 0.3681
                     },
-                    "LeftMargin": -28.0,
-                    "RightMargin": 286.0,
-                    "TopMargin": -5.7,
-                    "BottomMargin": 56.7,
+                    "LeftMargin": -7.4971,
+                    "RightMargin": 278.4971,
+                    "TopMargin": -2.2216,
+                    "BottomMargin": 93.2216,
                     "Tag": 181,
                     "ActionTag": -537239745,
                     "Size": {
@@ -658,8 +612,8 @@
                 ],
                 "ActionTag": 639360059,
                 "Size": {
-                  "X": 314.0,
-                  "Y": 104.0
+                  "X": 327.0,
+                  "Y": 144.0
                 },
                 "Name": "btnQuitGame",
                 "ctype": "ButtonObjectData"
@@ -667,8 +621,8 @@
             ],
             "ActionTag": 1485092126,
             "Size": {
-              "X": 742.0,
-              "Y": 683.0
+              "X": 707.0,
+              "Y": 770.0
             },
             "Name": "bg",
             "ctype": "SpriteObjectData"
@@ -687,9 +641,8 @@
         "../../common/lose_life.png",
         "../../font/BalooPaaji2-Bold.ttf",
         "../../font/BalooPaaji2-SemiBold.ttf",
-        "../../gui_background/bg_buy_in_game.png",
-        "../../gui_background/bg_buy_in_game_02.png",
-        "../../lobby/bg_target.png"
+        "../../lobby/bg_level_info_normal.png",
+        "../../lobby/bg_target_normal.png"
       ],
       "ctype": "GameFileData"
     }

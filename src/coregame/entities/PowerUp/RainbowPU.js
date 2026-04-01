@@ -5,10 +5,10 @@
 var CoreGame = CoreGame || {};
 
 CoreGame.RainbowPU = CoreGame.PowerUP.extend({
-
     ctor: function () {
         this._super();
     },
+
     /**
      * Clear all gems of target color and deal damage to orthogonally adjacent blockers.
      */
@@ -70,7 +70,7 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
 
 CoreGame.RainbowPUPlus = CoreGame.RainbowPU.extend({
     /**
-     * Clear all elements on the board
+     * Collect all slots on the board (gems + blockers)
      */
     collectTargets: function () {
         var targetSlots = [];
@@ -79,16 +79,64 @@ CoreGame.RainbowPUPlus = CoreGame.RainbowPU.extend({
                 var slot = this.boardMgr.getSlot(r, c);
                 if (!slot) continue;
 
-                // Collect all slots that have matchable elements
                 if (slot.getMatchableElement()) {
                     targetSlots.push(slot);
                 } else if (slot.hasBlocker()) {
-                    // Also target blockers
                     targetSlots.push(slot);
                 }
             }
         }
         return targetSlots;
+    },
+
+    removeAfterActivate: function () {
+        CoreGame.TimedActionMgr.addAction(CoreGame.RainbowPlusUI.EXPLODE_TIME, function () {
+            this.remove();
+            CoreGame.BoardUI.getInstance().boardMgr.state = CoreGame.BoardState.MATCHING;
+        }.bind(this));
+    },
+
+    /**
+     * Override activeLogic: match gems normally, but only deal 1 damage to blockers
+     */
+    activeLogic: function (typeToClear) {
+        var targetSlots = this.collectTargets(typeToClear);
+        var targets = targetSlots.map(function (slot) {
+            return this.boardMgr.gridToPixel(slot.row, slot.col);
+        }.bind(this));
+
+        var duration = 0;
+        if (this.ui && typeof this.ui.setTargets === 'function') {
+            this.ui.setTargets(targets);
+            duration = this.ui.startActive();
+            this.ui = undefined;
+        }
+
+        CoreGame.TimedActionMgr.addAction(duration, function () {
+            let context = { type: "normal" };
+            for (var i = 0; i < targetSlots.length; i++) {
+                var slot = targetSlots[i];
+
+                if (slot.hasBlocker()) {
+                    // Deal 1 damage to blockers instead of destroying them
+                    for (var j = 0; j < slot.listElement.length; j++) {
+                        var el = slot.listElement[j];
+                        if (el instanceof CoreGame.Blocker && el.canTakeDamage()) {
+                            el.takeDamage(1, null, slot.row, slot.col);
+                        }
+                    }
+                } else {
+                    // Match gems normally
+                    slot.matchElement(context);
+                    // this.boardMgr.matchMgr.notifyNearbySlots(slot.row, slot.col, context);
+                }
+            }
+            this.boardMgr.getSlot(this.position.x, this.position.y).matchElement(context);
+        }.bind(this));
+    },
+
+    createUIInstance: function () {
+        return new CoreGame.RainbowPlusUI(this);
     }
 });
 

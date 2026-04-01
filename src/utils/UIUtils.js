@@ -456,6 +456,14 @@ var UIUtils = {
 
     enableCubicBezierCurves: function (textLabel, p0, p1, p2, p3, align = 3) {
         textLabel.enableCubicBezierCurves(p0, p1, p2, p3, align);
+    },
+
+    getLabelWidth: function (label) {
+        var tempStr = new ccui.Text();
+        tempStr.setFontName(label.getFontName());
+        tempStr.setFontSize(label.getFontSize());
+        tempStr.setString(label.getString());
+        return tempStr.getContentSize().width;
     }
 };
 

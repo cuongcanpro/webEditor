@@ -105,16 +105,30 @@ CoreGame.GameUI = cc.Layer.extend({
 
         // Init AdaptiveTPP dynamic difficulty
         if (CoreGame.AdaptiveTPP) {
-            var mapCfg = levelConfig.mapConfig || {};
-            var tppTargets = {};
-            var boardTEs = this.boardUI.boardMgr.targetElements || [];
-            for (var ti = 0; ti < boardTEs.length; ti++) {
-                tppTargets[boardTEs[ti].id] = boardTEs[ti].count;
+            var mapCfg    = levelConfig.mapConfig || {};
+            var boardTEs  = this.boardUI.boardMgr.targetElements || [];
+
+            // Build HP-per-type map from level elements (bosses have hp > 1)
+            var hpPerType = {};
+            var mapElems  = mapCfg.elements || [];
+            for (var ei = 0; ei < mapElems.length; ei++) {
+                var me = mapElems[ei];
+                if (me.hp && me.hp > 1) {
+                    hpPerType[me.type] = me.hp;
+                }
             }
+
+            // Weight each target by HP so bosses count proportionally
+            var tppTargets = {};
+            for (var ti = 0; ti < boardTEs.length; ti++) {
+                var te = boardTEs[ti];
+                tppTargets[te.id] = te.count * (hpPerType[te.id] || 1);
+            }
+
             CoreGame.AdaptiveTPP.init(this.boardUI.boardMgr, {
                 targetMoves: mapCfg.targetMove || mapCfg.numMove || 30,
-                targets:  tppTargets,
-                levelId:  mapCfg.levelId || null
+                targets:     tppTargets,
+                levelId:     mapCfg.levelId || null
             });
         }
     },
@@ -444,6 +458,81 @@ CoreGame.GameUI = cc.Layer.extend({
         }
     },
 
+    /**
+     * Assembles the full end-of-level metrics payload.
+     * @param {boolean} isWin
+     * @returns {Object}
+     */
+    _buildMetrics: function (isWin) {
+        var bm  = this.boardUI && this.boardUI.boardMgr;
+        var tpp = (CoreGame.AdaptiveTPP) ? CoreGame.AdaptiveTPP.getMetrics() : null;
+
+        var deviceId = "";
+        try { deviceId = fr.platformWrapper ? fr.platformWrapper.getDeviceID() : ""; } catch (e) {}
+
+        var bd = {
+            device_id: deviceId,
+            is_win:    !!isWin,
+            pu_count:  tpp ? tpp.pu_count : 0
+        };
+
+        var ad = null;
+        if (tpp) {
+            var d = tpp.deviation_distribution;
+            ad = {
+                deviation_mean:    d.mean,
+                deviation_median:  d.median,
+                deviation_p25:     d.p25,
+                deviation_p75:     d.p75,
+                boost_switches:    tpp.boost_switches,
+                suppress_switches: tpp.suppress_switches,
+                move_surplus:      tpp.move_surplus,
+                pu_rate:           tpp.pu_rate,
+                retry_count:       tpp.retry_count
+            };
+        }
+
+        return { board: bd, adaptive: ad };
+    },
+
+    /**
+     * POST end-of-level metrics to the local LogServer (dev-only).
+     * URL: http://127.0.0.1:8081/metrics
+     * Run bare:   cd client/LogServer && node server.js
+     * Run docker: cd client/LogServer && docker compose up -d
+     * @param {Object} metrics  Result of _buildMetrics()
+     */
+    sendMetrics: function (metrics) {
+        var mapCfg  = this.levelConfig && this.levelConfig.mapConfig;
+        var levelId = (mapCfg && mapCfg.levelId != null) ? mapCfg.levelId : "unknown";
+        var ad      = metrics.adaptive || {};
+        var bd      = metrics.board    || {};
+
+        var payload = {
+            level_id:          levelId,
+            device_id:         bd.device_id          || "",
+            is_win:            bd.is_win ? 1 : 0,
+            pu_count:          bd.pu_count            || 0,
+            pu_rate:           ad.pu_rate             || 0,
+            move_surplus:      ad.move_surplus        || 0,
+            boost_switches:    ad.boost_switches      || 0,
+            suppress_switches: ad.suppress_switches   || 0,
+            deviation_mean:    ad.deviation_mean      || 0,
+            deviation_median:  ad.deviation_median    || 0,
+            deviation_p25:     ad.deviation_p25       || 0,
+            deviation_p75:     ad.deviation_p75       || 0,
+            retry_count:       ad.retry_count         || 0
+        };
+
+        try {
+            fr.Network.xmlHttpRequestPost("http://120.138.72.4:8081/metrics", payload, function (result) {
+                cc.log("[GameUI] sendMetrics →", result ? "OK" : "FAIL");
+            });
+        } catch (e) {
+            cc.log("[GameUI] sendMetrics error:", e);
+        }
+    },
+
     onDifficultySelected: function (diffName) {
         cc.log("GameUI: Applying strategy: " + diffName);
         if (CoreGame.DropStrategy[diffName]) {
@@ -529,11 +618,19 @@ CoreGame.GameUI = cc.Layer.extend({
     //endregion GET
 
     //region EFX
-    efxStartSpecial: function (delayTime = 0) {
+    /**
+     * Boss intro effect: find the boss element on the board, make it jump
+     * from off-screen to the top of the board, then jump back to its slot.
+     * @param {number} config - Effect's config
+     * @returns {number} Total duration of the effect
+     */
+    efxBossShowUp: function (config) {
         //Dolly Zoom
-        let efxTime = 1;
+        let delayTime = config["delayTime"];
+        let efxTime = 0.75;
         //Moving bg
         this.gameBoardBg.stopAllActions();
+        this.gameBoardBg.setVisible(true);
         this.gameBoardBg.setScale(1.5);
         this.gameBoardBg.runAction(cc.sequence(
             cc.delayTime(delayTime),
@@ -542,18 +639,251 @@ CoreGame.GameUI = cc.Layer.extend({
 
         //Moving Core board
         this.boardUI.stopAllActions();
+        this.boardUI.setVisible(true);
         this.boardUI.setScale(2.5);
         this.boardUI.runAction(cc.sequence(
             cc.delayTime(delayTime),
             cc.scaleTo(efxTime, 1).easing(cc.easeBackOut())
         ));
 
+        delayTime += efxTime + 0.5;
+
+        var boardMgr = this.boardUI.boardMgr;
+
+        let bossLowId = 10000;
+        // Find boss element on the board
+        var bossElement = null;
+        for (var r = 0; r < boardMgr.rows; r++) {
+            for (var c = 0; c < boardMgr.cols; c++) {
+                var slot = boardMgr.getSlot(r, c);
+                if (!slot) continue;
+                for (var i = 0; i < slot.listElement.length; i++) {
+                    var el = slot.listElement[i];
+                    if (el.type >= bossLowId) {
+                        bossElement = el;
+                        break;
+                    }
+                }
+                if (bossElement) break;
+            }
+            if (bossElement) break;
+        }
+
+        if (!bossElement || !bossElement.ui) {
+            cc.log("efxBossShowUp: no boss found");
+            return 0;
+        }
+
+        var bossUI = bossElement.ui;
+        var originalPos = bossUI.getPosition();
+
+        // --- Create fake gems at the boss's grid cells ---
+        var bossCells = bossElement.cells || [];
+        cc.log("BOSS CELLS", JSON.stringify(bossCells), JSON.stringify(bossElement.size));
+        if (bossCells.length === 0) {
+            for (let i = 0; i < bossElement.size.width; i++) {
+                for (let j = 0; j < bossElement.size.height; j++) {
+                    bossCells.push({
+                        r: bossElement.position.x + i,
+                        c: bossElement.position.y + j
+                    });
+                }
+            }
+        }
+
+        var fakeGems = [];
+        var boardParent = bossUI.getParent();
+
+        for (var fi = 0; fi < bossCells.length; fi++) {
+            var cell = bossCells[fi];
+            var gemType = Math.floor(Math.random() * CoreGame.Config.NUM_GEN * 0.5) + 1;
+            var gemPath = "res/high/game/element/" + gemType + ".png";
+            var fakeGem = fr.createSprite(gemType + ".png", gemPath);
+
+            var cellPos = boardMgr.gridToPixel(cell.r, cell.c);
+            fakeGem.setPosition(cellPos);
+            fakeGem.setLocalZOrder(BoardConst.zOrder.GEM);
+            fakeGem._fakeGemType = gemType;
+            boardParent.addChild(fakeGem);
+            fakeGems.push(fakeGem);
+        }
+        // --- End fake gems creation ---
+
+        // Top of boardUI + offset above the board
+        var boardTop = boardMgr.rows * CoreGame.Config.CELL_SIZE + boardMgr.boardOffsetY;
+        var showUpPos = cc.p(originalPos.x - 250, boardTop);
+        // let animConfig =  CoreGame.GameBoardInfoUI.animMonster[bossElement.type];
+        // showUpPos.x += animConfig.offset.x / animConfig.scale;
+        // showUpPos.y += animConfig.offset.y / animConfig.scale;
+
+        // Off-screen start position (above the visible area)
+        var offScreenPos = cc.p(cc.winSize.width + 250, boardTop + 500);
+
+        var jumpDuration = 0.8;
+        var pauseDuration = 3.8;
+        var returnDuration = 1;
+
+        bossUI.setLocalZOrder(CoreGame.ZORDER_BOARD_EFFECT);
+        bossUI.setPosition(offScreenPos);
+        bossUI.setVisible(false);
+        bossUI["Sprite2D"].setVisible(false);
+
+        bossUI.runAction(cc.sequence(
+            cc.delayTime(delayTime),
+
+            //Animation appear_01
+            cc.show(),
+            cc.callFunc(function () {
+                bossUI.setHijacked(true);
+                bossUI["ccSpine"].setAnimation(0, "Appear_01", false);
+            }.bind(bossUI)),
+            // Jump down from off-screen to top of board
+            cc.jumpTo(
+                jumpDuration,
+                showUpPos,
+                150,
+                1
+            ).easing(cc.easeBezierAction(0, 0.39, 1.23, 1.0)),
+
+            cc.callFunc(function () {
+                // Screen shake on first landing
+                CoreGame.BoardUI.getInstance().shakeScreen(1);
+            }),
+
+            // Bounce taunt at the top
+            // cc.sequence(
+            //     cc.scaleTo(0.15, 1.2, 0.85),
+            //     cc.scaleTo(0.15, 0.9, 1.15),
+            //     cc.scaleTo(0.1, 1.0, 1.0)
+            // ),
+            cc.delayTime(pauseDuration),
+
+            //Animation appear_02
+            cc.callFunc(function () {
+                bossUI["ccSpine"].setAnimation(0, "Appear_02", false);
+            }.bind(bossUI)),
+            // Jump back to original slot position
+            cc.spawn(
+                cc.jumpTo(returnDuration, originalPos, cc.winSize.height * 0.25, 1).easing(
+                    cc.easeBezierAction(0, 0.1, 0.9, 1.0)
+                ),
+                cc.scaleTo(returnDuration, 1.0, 1.0)
+            ),
+            cc.callFunc(function () {
+                bossUI.setLocalZOrder(BoardConst.zOrder.BOSS);
+                bossUI["Sprite2D"].setVisible(true);
+                bossUI.setHijacked(false);
+                bossUI._onAnimationFinish();
+
+                // Crush fake gems on landing
+                for (var gi = 0; gi < fakeGems.length; gi++) {
+                    var fg = fakeGems[gi];
+                    var fgType = fg._fakeGemType;
+
+                    // Debris particles
+                    if (fgType < debris_type_name.length) {
+                        for (var di = 0; di < 2; di++) {
+                            var debrisPos = cc.p(
+                                fg.x + (0.5 - Math.random()) * 20,
+                                fg.y + (0.5 - Math.random()) * 20
+                            );
+                            var wPos = boardParent.convertToWorldSpace(debrisPos);
+                            var nodeTLFX = gv.createTLFX(
+                                debris_type_name[fgType],
+                                wPos,
+                                boardParent,
+                                BoardConst.zOrder.EFF_EXPLODE
+                            );
+                            nodeTLFX.setScale(2 + Math.random() * 0.5);
+                        }
+                    }
+
+                    // Squash and remove
+                    fg.runAction(cc.sequence(
+                        cc.spawn(
+                            cc.scaleTo(0.15, 1.3, 0.3).easing(cc.easeOut(2.5)),
+                            cc.fadeOut(0.15)
+                        ),
+                        cc.removeSelf()
+                    ));
+                }
+
+                // Screen shake on landing
+                CoreGame.BoardUI.getInstance().shakeScreen(8);
+
+                // --- Shockwave: displace nearby gems radially outward, then return ---
+                var bossCenter = cc.p(originalPos.x, originalPos.y);
+                var shockRadius = CoreGame.Config.CELL_SIZE * 3.5; // affect gems within ~3.5 cells
+                var shockStrength = CoreGame.Config.CELL_SIZE * 1.25; // max displacement in pixels
+                var shockOutTime = 0.3;
+                var shockReturnTime = 0.7;
+
+                // Build set of boss cell keys to exclude
+                cc.log("BOSS CELLS SHOCKWAVE", JSON.stringify(bossCells), JSON.stringify(bossElement.size));
+                var bossCellSet = {};
+                for (var bi = 0; bi < bossCells.length; bi++) {
+                    bossCellSet[bossCells[bi].r + "," + bossCells[bi].c] = true;
+                }
+
+                for (var sr = 0; sr < boardMgr.rows; sr++) {
+                    for (var sc = 0; sc < boardMgr.cols; sc++) {
+                        // Skip boss cells
+                        if (bossCellSet[sr + "," + sc]) continue;
+
+                        var sSlot = boardMgr.getSlot(sr, sc);
+                        if (!sSlot) continue;
+
+                        for (var si = 0; si < sSlot.listElement.length; si++) {
+                            var sEl = sSlot.listElement[si];
+                            if (!sEl || !sEl.ui || sEl.type >= bossLowId) continue;
+
+                            var gemUI = sEl.ui;
+                            var gemPos = gemUI.getPosition();
+                            var dx = gemPos.x - bossCenter.x;
+                            var dy = gemPos.y - bossCenter.y;
+                            var dist = Math.sqrt(dx * dx + dy * dy);
+
+                            if (dist < 1 || dist > shockRadius) continue;
+
+                            // Displacement falls off with distance
+                            var factor = 1.0 - (dist / shockRadius);
+                            var displaceAmount = shockStrength * factor * factor;
+                            var angle = Math.atan2(dy, dx);
+                            var offsetX = Math.cos(angle) * displaceAmount;
+                            var offsetY = Math.sin(angle) * displaceAmount;
+
+                            cc.log("FOUND A ACTUAL GEM TO DISPLACE", offsetX, offsetY);
+                            gemUI.setColor(cc.BLACK);
+
+                            var displacedPos = cc.p(gemPos.x + offsetX, gemPos.y + offsetY);
+
+                            gemUI.stopActionByTag(CoreGame.TAG_MOVE_ACTION);
+                            var shockAction = cc.sequence(
+                                cc.moveTo(shockOutTime, displacedPos).easing(cc.easeOut(2.5)),
+                                cc.moveTo(shockReturnTime, gemPos).easing(cc.easeElasticOut(2.5))
+                            );
+                            shockAction.setTag(CoreGame.TAG_MOVE_ACTION);
+                            gemUI.runAction(shockAction);
+                        }
+                    }
+                }
+                // --- End shockwave ---
+            })
+        ));
+
+        let totalTime = delayTime + jumpDuration + pauseDuration + returnDuration;
+
         //Tool and info layer
-        this.gameBoardToolUI.efxIn(delayTime + 1);
-        this.gameBoardInfoUI.efxIn(delayTime + 1.1);
+        this.gameBoardToolUI.setVisible(true);
+        this.gameBoardToolUI.efxIn(totalTime + 0.5, efxTime);
+
+        this.gameBoardInfoUI.setVisible(true);
+        this.gameBoardInfoUI.efxIn(totalTime + 1.5, true);
+
+        return totalTime;
     },
 
-    efxStart: function (efxTime = 0.5, delayTime = 0) {
+    efxStart: function (efxTime = 0.5, delayTime = 0, monsterBanner = false) {
         //Dolly Zoom
 
         //Moving bg
@@ -576,9 +906,10 @@ CoreGame.GameUI = cc.Layer.extend({
 
         //Tool and info layer
         this.gameBoardToolUI.setVisible(true);
-        this.gameBoardInfoUI.setVisible(true);
         this.gameBoardToolUI.efxIn(delayTime + efxTime + 0.5, efxTime);
-        this.gameBoardInfoUI.efxIn(delayTime + efxTime + 1, efxTime);
+        
+        this.gameBoardInfoUI.setVisible(true);
+        this.gameBoardInfoUI.efxIn(delayTime + efxTime + 1, monsterBanner);
     },
 
     startNow: function () {

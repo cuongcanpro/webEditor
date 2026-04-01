@@ -11,7 +11,8 @@ CoreGame.BoardState = {
     DROPPING: 3,
     REFILLING: 4,
     END_GAME: 5,
-    REMAINING_MOVES_BONUS: 6
+    REMAINING_MOVES_BONUS: 6,
+    MERGE_PU: 7,
 };
 
 CoreGame.Direction = {
@@ -37,6 +38,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
     lastSwapSource: null,
     lastSwapDest: null,
+
+    gameEnded: false,
 
     ctor: function () {
         this.rows = CoreGame.Config.BOARD_ROWS;
@@ -71,6 +74,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         this.calculateBoardOffset(mapConfig);
         this.initGrid(mapConfig, testBoxes);
         this.initEventListeners();
+        this.gameEnded = false;
         return this;
     },
 
@@ -141,6 +145,16 @@ CoreGame.BoardMgr = cc.Class.extend({
             this.numMove = mapConfig["numMove"] || 0;
             this.totalMove = this.numMove;
             this.mapConfig = mapConfig;
+
+            // Build HP-per-type map for AdaptiveTPP boss-progress tracking
+            this._tppTargetInitHp = {};
+            var initElems = mapConfig["elements"] || [];
+            for (var _ei = 0; _ei < initElems.length; _ei++) {
+                var _me = initElems[_ei];
+                if (_me.hp && _me.hp > 1) {
+                    this._tppTargetInitHp[_me.type] = _me.hp;
+                }
+            }
         }
 
         // var slotMap = [
@@ -769,7 +783,9 @@ CoreGame.BoardMgr = cc.Class.extend({
      */
     canInteract: function () {
         return this.state !== CoreGame.BoardState.END_GAME &&
-            this.state !== CoreGame.BoardState.REMAINING_MOVES_BONUS;
+            this.state !== CoreGame.BoardState.REMAINING_MOVES_BONUS &&
+            !this.gameEnded &&
+            this.numMove > 0;
     },
 
     /**
@@ -788,6 +804,7 @@ CoreGame.BoardMgr = cc.Class.extend({
      */
     addMoves: function (count = 0) {
         this.numMove += count;
+        this.gameEnded = false;
         if (this.gameUI) {
             this.gameUI.onUpdateMove(this.numMove);
         }
@@ -1163,6 +1180,11 @@ CoreGame.BoardMgr = cc.Class.extend({
      * Override this or set as callback
      */
     onFinishTurn: function () {
+        // Clear plane claimed targets for next turn
+        this._planeClaimCounts = [];
+
+        // Trigger END_TURN actions on all elements
+        // This handles behaviors like Cloud spreading, etc.
         // Decrement move count only for real player swaps (not shuffle)
         if (this.didPlayerSwap) {
             this.didPlayerSwap = false;
@@ -1215,8 +1237,18 @@ CoreGame.BoardMgr = cc.Class.extend({
         if (CoreGame.AdaptiveTPP) {
             var tppCleared = 0;
             for (var ti = 0; ti < this.targetElements.length; ti++) {
-                var el = this.targetElements[ti];
-                tppCleared += Math.max(0, el.count - el.current);
+                var el     = this.targetElements[ti];
+                var initHp = (this._tppTargetInitHp && this._tppTargetInitHp[el.id]) || 1;
+                if (initHp > 1) {
+                    // HP-weighted: fully dead instances + damage dealt to alive ones
+                    tppCleared += Math.max(0, el.count - el.current) * initHp;
+                    var alive = this.getElementsByType(el.id);
+                    for (var ai = 0; ai < alive.length; ai++) {
+                        tppCleared += initHp - (alive[ai].hp || 0);
+                    }
+                } else {
+                    tppCleared += Math.max(0, el.count - el.current);
+                }
             }
             CoreGame.AdaptiveTPP.onTurnEnd(this._tppMovesUsed, tppCleared);
         }
@@ -1232,13 +1264,15 @@ CoreGame.BoardMgr = cc.Class.extend({
         }
 
         if (cc.sys.isNative) {
+
             if (isWin) {
+                this.gameEnded = true;
                 this.setEndStar();
                 this.setLevel();
+
                 if (this.gameUI) {
                     this.gameUI.showEndGameWinEffect(true);
                 }
-
                 let endGameEfxTime = 1.5;
 
                 if (this.numMove > 0) {
@@ -1254,19 +1288,17 @@ CoreGame.BoardMgr = cc.Class.extend({
                         }
                     }.bind(this), endGameEfxTime * 1000);
                 }
-                alert("Level Complete!");
-
             } else {
                 if (this.numMove <= 0) {
+                    this.gameEnded = true;
                     this.state = CoreGame.BoardState.END_GAME;
                     if (this.gameUI) {
                         this.gameUI.onEndGame(false, this.targetElements);
                     }
                 }
             }
-        }
-        else {
-            if (isWin) {
+        } else {
+             if (isWin) {
                 alert("Level Complete!");
             } else {
                 if (this.numMove <= 0) {
@@ -1448,6 +1480,11 @@ CoreGame.BoardMgr = cc.Class.extend({
         }
     },
 
+    isStateDropAble: function () {
+        return this.state !== CoreGame.BoardState.REMAINING_MOVES_BONUS
+            && this.state !== CoreGame.BoardState.MERGE_PU;
+    },
+
     // ========= Update Loop =========
 
     /**
@@ -1461,14 +1498,15 @@ CoreGame.BoardMgr = cc.Class.extend({
         var allIdle = this.areAllElementsIdle();
         var hasPendingActions = CoreGame.TimedActionMgr.hasPendingActions();
 
-        if (allIdle && this.state !== CoreGame.BoardState.REMAINING_MOVES_BONUS) {
+        // if (allIdle && this.isStateDropAble()) {
             if (this.requiredRefill) {
+                cc.log("CALL REFILL MAP - From Update");
                 this.refillMap();
             } else if (this.requiredMatching) {
                 this.requiredMatching = false;
                 this.doMatch();
             }
-        }
+        // }
 
         // Check if turn is finished (all element animations complete)
         if (this.playerMoved)

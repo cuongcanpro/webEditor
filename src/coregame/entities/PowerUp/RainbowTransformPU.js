@@ -76,8 +76,15 @@ CoreGame.RainbowTransformPU = CoreGame.CustomCreatorPU.extend({
         this.ui.setTargets(targets);
         duration = this.ui.startActive();
         this.ui = undefined;
-
+        this.duration = duration;
         CoreGame.TimedActionMgr.addAction(duration, this._super.bind(this, typeToClear));
+    },
+
+    removeAfterActivate: function () {
+        CoreGame.TimedActionMgr.addAction(this.duration, function () {
+            this.remove();
+            CoreGame.BoardUI.getInstance().boardMgr.state = CoreGame.BoardState.MATCHING;
+        }.bind(this));
     },
 
     onTargetHit: function (index) {

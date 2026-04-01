@@ -9,6 +9,8 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
     animations: null,
     lastActionName: "",
     visualState: "",
+    hijackedAnimation: false,
+
     /**
      * @param {CoreGame.ElementObject} element - Reference to the logically represented element
      * @param {string} jsonPath - Path to the Cocos Studio JSON file (e.g., "res/high/game/anim/special.json")
@@ -34,6 +36,9 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
                 if (this.jsonNode) {
                     this.addChild(this.jsonNode);
                     // Standard scale for elements is 0.5
+
+                    //Elements name?
+                    BaseLayer._syncInNode(result.node, this);
 
                     // Load additional animations from meta if Cocot utility is available
                     this.animations = Cocot.load_animations_from_meta(this.jsonNode, "res/newBlock/BlockUI/");
@@ -111,6 +116,8 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
                     // Set last frame callback to automatically return to idle
                     action.setLastFrameCallFunc(this._onAnimationFinish.bind(this, actionType, callback));
 
+                    this.setHijacked(false);
+
                     return duration;
                 } else if (targetAnimKey === actionType) {
                     // If we couldn't find the exact animation and it wasn't a randomized key, finish immediately
@@ -141,13 +148,18 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
         return this._super(actionType, callback);
     },
 
+    setHijacked: function (isHijacked = false) {
+        this.hijackedAnimation = isHijacked;
+    },
+
     /**
      * Internal helper called when an animation finishes
      * @private
      */
     _onAnimationFinish: function (actionType, callback) {
-        if (this.animations && (this.animations["idle"] || this.animations["idle_0"]))
+        if (!this.hijackedAnimation && this.animations && (this.animations["idle"] || this.animations["idle_0"]))
             this.playAnimation("idle", this.visualState);
+
         if (callback) callback();
     },
 

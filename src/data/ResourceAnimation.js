@@ -48,6 +48,7 @@ var resAni = {
     pu4_pult_explosion_efk: "game/animation/effekseer/pu4_pult_explosion.efk",
 
     pus_rainbow: "game/animation/spine/powerups/PU_pinwheel",
+    pu_rainbow: "game/animation/spine/pu_disco",
 
     pus_spine: "game/animation/spine/powerups/PU_balloon",
     pus_balloon_fx: "game/animation/spine/powerups/PU_balloon_fx",
@@ -115,7 +116,7 @@ var resAni = {
     efk_900: "game/animation/effekseer/cloud_blocker_@.efk",
     efk_900_appear: "game/animation/effekseer/cloud_blocker_appeare.efk",
 
-    spine_10000_main:"game/animation/spine/gorilla",
+    spine_10000_main:"res/newBlock/BlockUI/spine/gorilla_old/gorilla",
     spine_11000_main:"game/animation/spine/gorilla_ice",
     spine_12000_main:"game/animation/spine/gorilla_fire",
     spine_13000_main:"game/animation/spine/rat_one_eyed/mouse_purple",

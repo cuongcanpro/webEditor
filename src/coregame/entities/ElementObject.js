@@ -1,4 +1,4 @@
-/**
+﻿/**
  * ElementObject - Base class for all game elements
  * Part of Match-3 Core Game
  */
@@ -677,6 +677,14 @@ CoreGame.ElementObject = cc.Class.extend({
 
         var scaleX = targetWidth / elementWidth;
         var scaleY = targetHeight / elementHeight;
+
+        if (this.layerBehavior == CoreGame.LayerBehavior.OVERLAY || this.layerBehavior == CoreGame.LayerBehavior.BACKGROUND) {
+            // For overlay elements, we want to ensure they don't exceed the target size even after scaling
+            // So we take the smaller scale and apply padding to it
+            if (this.ui && this.ui.sprBg) {
+                this.ui.sprBg.setScale(0.8);
+            }
+        }
 
         return Math.min(scaleX, scaleY) * padding;
     }

@@ -141,7 +141,7 @@
                     "Children": [
                       {
                         "IsCustomSize": true,
-                        "FontSize": 45,
+                        "FontSize": 65,
                         "LabelText": "25",
                         "FontResource": {
                           "Type": "Normal",
@@ -186,18 +186,18 @@
                           "Y": 0.3704
                         },
                         "PreSize": {
-                          "X": 0.7812,
-                          "Y": 0.463
+                          "X": 0.5469,
+                          "Y": 0.75
                         },
-                        "LeftMargin": 14.49,
-                        "RightMargin": 13.51,
-                        "TopMargin": 43.0,
-                        "BottomMargin": 15.0,
+                        "LeftMargin": 29.343,
+                        "RightMargin": 28.657,
+                        "TopMargin": 27.5,
+                        "BottomMargin": -0.5,
                         "Tag": 519,
                         "ActionTag": -1809123306,
                         "Size": {
-                          "X": 100.0,
-                          "Y": 50.0
+                          "X": 70.0,
+                          "Y": 81.0
                         },
                         "Name": "lbMove",
                         "ctype": "TextObjectData"
@@ -247,7 +247,7 @@
                           "Y": 0.8333
                         },
                         "PreSize": {
-                          "X": 0.7812,
+                          "X": 0.7813,
                           "Y": 0.463
                         },
                         "LeftMargin": 14.49,
@@ -437,11 +437,11 @@
                       "Y": 0.4885
                     },
                     "PreSize": {
-                      "X": 0.3852,
+                      "X": 0.1208,
                       "Y": 0.0
                     },
-                    "LeftMargin": 197.5,
-                    "RightMargin": 209.5,
+                    "LeftMargin": 285.0,
+                    "RightMargin": 297.0,
                     "TopMargin": 89.0,
                     "BottomMargin": 85.0,
                     "Tag": 139,
@@ -453,9 +453,9 @@
                           "Plist": ""
                         },
                         "Scale9Enable": true,
-                        "Scale9OriginX": 120,
+                        "Scale9OriginX": 40,
                         "Scale9OriginY": 36,
-                        "Scale9Width": 125,
+                        "Scale9Width": 285,
                         "Scale9Height": 39,
                         "StretchWidthEnable": true,
                         "AnchorPoint": {
@@ -463,7 +463,7 @@
                           "ScaleY": 0.5
                         },
                         "Position": {
-                          "X": 127.5,
+                          "X": 40.0,
                           "Y": 0.0
                         },
                         "Scale": {
@@ -477,18 +477,18 @@
                           "Y": 0.0
                         },
                         "PreSize": {
-                          "X": 1.2941,
+                          "X": 1.25,
                           "Y": 0.0
                         },
                         "HorizontalEdge": "BothEdge",
-                        "LeftMargin": -37.5,
-                        "RightMargin": -37.5,
+                        "LeftMargin": -10.0,
+                        "RightMargin": -10.0,
                         "TopMargin": -55.5,
                         "BottomMargin": -55.5,
                         "Tag": 148,
                         "ActionTag": 953529432,
                         "Size": {
-                          "X": 330.0,
+                          "X": 100.0,
                           "Y": 111.0
                         },
                         "Name": "bgObjective",
@@ -497,7 +497,7 @@
                     ],
                     "ActionTag": 1563789114,
                     "Size": {
-                      "X": 255.0,
+                      "X": 80.0,
                       "Y": 0.0
                     },
                     "Name": "pObjective",
@@ -1404,10 +1404,12 @@
                     "Scale9OriginY": 87,
                     "Scale9Width": 112,
                     "Scale9Height": 92,
-                    "AnchorPoint": {},
+                    "AnchorPoint": {
+                      "ScaleX": 0.5
+                    },
                     "Position": {
-                      "X": -382.0,
-                      "Y": 85.0
+                      "X": -220.0,
+                      "Y": 105.0
                     },
                     "Scale": {
                       "ScaleX": 1.0,
@@ -1427,8 +1429,8 @@
                     "VerticalEdge": "TopEdge",
                     "LeftMargin": -382.0,
                     "RightMargin": 58.0,
-                    "TopMargin": -351.0,
-                    "BottomMargin": 85.0,
+                    "TopMargin": -371.0,
+                    "BottomMargin": 105.0,
                     "Tag": 287,
                     "ActionTag": -1775750152,
                     "Size": {
@@ -1446,8 +1448,8 @@
                     },
                     "Scale9OriginX": 272,
                     "Scale9OriginY": 62,
-                    "Scale9Width": 281,
-                    "Scale9Height": 66,
+                    "Scale9Width": 322,
+                    "Scale9Height": 175,
                     "AnchorPoint": {
                       "ScaleX": 0.5,
                       "ScaleY": 0.5
@@ -1470,15 +1472,76 @@
                       "X": 0.0,
                       "Y": 0.0
                     },
-                    "LeftMargin": -412.5,
-                    "RightMargin": -412.5,
-                    "TopMargin": -95.0,
-                    "BottomMargin": -95.0,
+                    "LeftMargin": -433.0,
+                    "RightMargin": -433.0,
+                    "TopMargin": -149.5,
+                    "BottomMargin": -149.5,
                     "Tag": 286,
+                    "Children": [
+                      {
+                        "FontSize": 35,
+                        "LabelText": "Objectives",
+                        "FontResource": {
+                          "Type": "Normal",
+                          "Path": "font/BalooPaaji2-ExtraBold.ttf",
+                          "Plist": ""
+                        },
+                        "OutlineColor": {
+                          "G": 0,
+                          "B": 0
+                        },
+                        "ShadowColor": {
+                          "R": 110,
+                          "G": 110,
+                          "B": 110
+                        },
+                        "ShadowOffsetX": 2.0,
+                        "ShadowOffsetY": -2.0,
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 175.0,
+                          "Y": 149.5
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {
+                          "R": 159,
+                          "G": 75,
+                          "B": 70
+                        },
+                        "IconVisible": false,
+                        "PositionPercentYEnabled": true,
+                        "PrePosition": {
+                          "X": 0.2021,
+                          "Y": 0.5
+                        },
+                        "PreSize": {
+                          "X": 0.2009,
+                          "Y": 0.1472
+                        },
+                        "LeftMargin": 88.0,
+                        "RightMargin": 604.0,
+                        "TopMargin": 127.5,
+                        "BottomMargin": 127.5,
+                        "Tag": 78,
+                        "ActionTag": 1228366625,
+                        "Size": {
+                          "X": 174.0,
+                          "Y": 44.0
+                        },
+                        "Name": "lbObjectives",
+                        "ctype": "TextObjectData"
+                      }
+                    ],
                     "ActionTag": -343939790,
                     "Size": {
-                      "X": 825.0,
-                      "Y": 190.0
+                      "X": 866.0,
+                      "Y": 299.0
                     },
                     "Name": "bgObjIntro",
                     "ctype": "ImageViewObjectData"
@@ -1501,11 +1564,10 @@
                     "Scale9Width": 1,
                     "Scale9Height": 1,
                     "AnchorPoint": {
-                      "ScaleX": 0.5,
-                      "ScaleY": 0.5
+                      "ScaleX": 0.5
                     },
                     "Position": {
-                      "X": 0.0,
+                      "X": 83.5,
                       "Y": 0.0
                     },
                     "Scale": {
@@ -1522,12 +1584,12 @@
                       "X": 0.0,
                       "Y": 0.0
                     },
-                    "LeftMargin": -100.0,
-                    "RightMargin": -100.0,
+                    "LeftMargin": -160.0,
+                    "RightMargin": -327.0,
                     "Tag": 290,
                     "ActionTag": 469528977,
                     "Size": {
-                      "X": 200.0,
+                      "X": 487.0,
                       "Y": 0.0
                     },
                     "Name": "pObjectiveIntro",

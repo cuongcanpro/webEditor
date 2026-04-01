@@ -189,6 +189,7 @@ var ElementSelectorUI = cc.Node.extend({
             displayName = displayName.substring(0, 7) + "..";
         }
         btn.setTitleText(displayName);
+        btn.setTitleText("");
         btn.setTitleFontSize(14);
 
         // Visual indicator for gem vs blocker

@@ -66,12 +66,12 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     },
 
     //region EFX
-    efxIn: function (delayTime = 0) {
+    efxIn: function (delayTime = 0, monsterBanner = false) {
         let efxTime = 0.5;
         let waitShowTime = 1;
         let lifeTime = 0;
 
-        if (this.nodeMonster.isVisible()) {
+        if (monsterBanner && this.nodeMonster.isVisible()) {
             let efxTimeMonster = 0.5;
             let deltaTimeMonster = 0.25;
 
@@ -118,6 +118,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
                 cc.fadeOut(efxTimeMonster).easing(cc.easeOut(2.5))
             ));
         } else {
+            this.nodeMonster.setVisible(false);
             //Intro
             let efxObjTime = 0.25;
             let efxObjTimeDelta = 0.05;
@@ -157,6 +158,14 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
                     cc.moveBy(efxTime, cc.winSize.width, 0).easing(cc.easeBackIn()),
                     cc.fadeOut(efxTime).easing(cc.easeOut(2.5))
                 )
+            ));
+
+            this.imgCatObj.stopAllActions();
+            this.imgCatObj.setScale(0);
+            this.imgCatObj.runAction(cc.sequence(
+                cc.delayTime(delayTime),
+                cc.scaleTo(efxTime * 0.5, 0.8, 1.2).easing(cc.easeOut(2.5)),
+                cc.scaleTo(efxTime, 1).easing(cc.easeElasticOut(2.5))
             ));
 
             lifeTime = waitShowTime + delayShowObj;
@@ -263,12 +272,13 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             }
         }
 
-        this.pObjectiveIntro.width = CoreGame.GameBoardInfoUI.TARGET_SIZE * targetElements.length;
+        let elementSizeIntro = CoreGame.GameBoardInfoUI.TARGET_SIZE * 1.2;
+        this.pObjectiveIntro.width = elementSizeIntro * targetElements.length;
         ccui.Helper.doLayout(this.pObjectiveIntro);
         let listNodeIntro = this.pObjectiveIntro.getChildren();
         for (let i = 0; i < Math.max(listNodeIntro.length, targetElements.length); i++) {
             if (i >= listNodeIntro.length) {
-                this.createTarget(this.pObjectiveIntro, listNodeIntro);
+                this.createTarget(this.pObjectiveIntro, listNodeIntro, true);
             }
 
             if (i >= targetElements.length) {
@@ -276,8 +286,8 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             } else {
                 listNodeIntro[i].setVisible(true);
                 this.setInfoTarget(listNodeIntro[i], targetElements[i].id, targetElements[i].count);
-                listNodeIntro[i].x = i * CoreGame.GameBoardInfoUI.TARGET_SIZE;
-                listNodeIntro[i].y = - 0.5 * CoreGame.GameBoardInfoUI.TARGET_SIZE;
+                listNodeIntro[i].x = i * elementSizeIntro + (elementSizeIntro - CoreGame.GameBoardInfoUI.TARGET_SIZE) * 0.5;
+                listNodeIntro[i].y = - 0.5 * CoreGame.GameBoardInfoUI.TARGET_SIZE + 20;
             }
         }
 
@@ -310,8 +320,11 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         }
     },
 
-    createTarget: function (parent, list) {
-        let newTargetNode = ccs.load("zcsd/game/GameBoardInfoObjectiveSlot.json", res.ZCSD_ROOT).node;
+    createTarget: function (parent, list, isIntro = false) {
+        let newTargetNode = ccs.load(
+            "zcsd/game/GameBoardInfoObjectiveSlot" + (isIntro? "Intro" : "") + ".json",
+            res.ZCSD_ROOT
+        ).node;
         newTargetNode.setContentSize(cc.size(
             CoreGame.GameBoardInfoUI.TARGET_SIZE,
             CoreGame.GameBoardInfoUI.TARGET_SIZE
@@ -474,11 +487,11 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     initCoinCollect: function (amount) {
         this.showObjectiveBar(true);
 
-        this.setListTarget([{
-            id: "coin",
-            count: amount || 0
-        }]);
-        this.coinTarget = this.listNode[0];
+        // this.setListTarget([{
+        //     id: "coin",
+        //     count: amount || 0
+        // }]);
+        // this.coinTarget = this.listNode[0];
     },
 
     collectCoin: function (amount, position, zoomOut, delayAnim) {
@@ -585,19 +598,18 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         };
         this.btnTestSetMove.addClickEventListener(this.onTestSetMove.bind(this));
     },
-
 });
 CoreGame.GameBoardInfoUI.JSON = "zcsd/game/GameBoardInfoUI.json";
-CoreGame.GameBoardInfoUI.TARGET_SIZE = 100;
+CoreGame.GameBoardInfoUI.TARGET_SIZE = 90;
 CoreGame.GameBoardInfoUI.animMonster = {
     15000: {
-        name: "Khỉ\nHung hăng",
+        name: "Mischievous\nMonkeys",
         scale: 0.25,
         offset: cc.p(0, -125),
         anim: "idle"
     },
     10000: {
-        name: "Kông\nKhổng Lồ",
+        name: "Giant\nKong",
         scale: 1.5,
         offset: cc.p(0, -125),
         anim: "anim0_idle"

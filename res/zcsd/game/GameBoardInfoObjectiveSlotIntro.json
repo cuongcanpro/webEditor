@@ -1,0 +1,243 @@
+{
+  "ID": "328e89a1-6fd6-46f2-8012-cb9f1afa73a8",
+  "Version": "2.3.4",
+  "Name": "GameBoardInfoObjectiveSlotIntro",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 141,
+        "Children": [
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 102,
+            "SingleColor": {
+              "R": 150,
+              "G": 200
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 50.0,
+              "Y": 50.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PreSize": {
+              "X": 0.77,
+              "Y": 0.77
+            },
+            "LeftMargin": 11.5,
+            "RightMargin": 11.5,
+            "TopMargin": 11.5,
+            "BottomMargin": 11.5,
+            "Tag": 84,
+            "Children": [
+              {
+                "FileData": {
+                  "Type": "Default",
+                  "Path": "Default/ImageFile.png",
+                  "Plist": ""
+                },
+                "Scale9Width": 46,
+                "Scale9Height": 46,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 38.5,
+                  "Y": 38.5
+                },
+                "Scale": {
+                  "ScaleX": 1.4,
+                  "ScaleY": 1.4
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PreSize": {
+                  "X": 0.5974,
+                  "Y": 0.5974
+                },
+                "LeftMargin": 15.5,
+                "RightMargin": 15.5,
+                "TopMargin": 15.5,
+                "BottomMargin": 15.5,
+                "Tag": 152,
+                "ActionTag": 909658317,
+                "Size": {
+                  "X": 46.0,
+                  "Y": 46.0
+                },
+                "Name": "spr",
+                "ctype": "ImageViewObjectData"
+              },
+              {
+                "IsCustomSize": true,
+                "FontSize": 45,
+                "LabelText": "100",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-ExtraBold.ttf",
+                  "Plist": ""
+                },
+                "HorizontalAlignmentType": "HT_Center",
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineSize": 3,
+                "OutlineColor": {
+                  "R": 71,
+                  "G": 77,
+                  "B": 149
+                },
+                "OutlineEnabled": true,
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 38.5,
+                  "Y": -35.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": -0.4545
+                },
+                "PreSize": {
+                  "X": 2.5974,
+                  "Y": 0.7792
+                },
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": -61.5,
+                "RightMargin": -61.5,
+                "TopMargin": 82.0,
+                "BottomMargin": -65.0,
+                "Tag": 143,
+                "ActionTag": 435714521,
+                "Size": {
+                  "X": 200.0,
+                  "Y": 60.0
+                },
+                "Name": "label",
+                "ctype": "TextObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "lobby/icon_check.png",
+                  "Plist": ""
+                },
+                "Scale9OriginX": 15,
+                "Scale9OriginY": 15,
+                "Scale9Width": 17,
+                "Scale9Height": 17,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 64.5,
+                  "Y": 12.5
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.8377,
+                  "Y": 0.1623
+                },
+                "PreSize": {
+                  "X": 0.6104,
+                  "Y": 0.6104
+                },
+                "HorizontalEdge": "RightEdge",
+                "VerticalEdge": "BottomEdge",
+                "LeftMargin": 41.0,
+                "RightMargin": -11.0,
+                "TopMargin": 41.0,
+                "BottomMargin": -11.0,
+                "Tag": 153,
+                "ActionTag": 2094937776,
+                "Size": {
+                  "X": 47.0,
+                  "Y": 47.0
+                },
+                "VisibleForFrame": false,
+                "Name": "check",
+                "ctype": "ImageViewObjectData"
+              }
+            ],
+            "ActionTag": 271345187,
+            "Size": {
+              "X": 77.0,
+              "Y": 77.0
+            },
+            "Name": "bg",
+            "ctype": "PanelObjectData"
+          }
+        ],
+        "Size": {
+          "X": 100.0,
+          "Y": 100.0
+        },
+        "Name": "Layer",
+        "ctype": "LayerObjectData"
+      },
+      "UsedResources": [
+        "../../Default/ImageFile.png",
+        "../../font/BalooPaaji2-ExtraBold.ttf",
+        "../../lobby/icon_check.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

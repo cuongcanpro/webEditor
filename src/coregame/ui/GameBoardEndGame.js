@@ -1,10 +1,25 @@
 let GameBoardEndGame = BaseLayer.extend({
     pMain: null,
+    nodeMain: null,
+
     bg: null,
 
     close: null,
     btnPlay: null,
     btnReplay: null,
+    btnExit: null,
+
+    lblWin: null,
+    lblLose: null,
+
+    bgLose: null,
+    lblTargetLose: null,
+    bg_target_lose: null,
+    lblLevel: null,
+
+    bg_target: null,
+
+    nodeStars: null,
 
     ctor: function (gameUI) {
         this.gameUI = gameUI;
@@ -29,19 +44,28 @@ let GameBoardEndGame = BaseLayer.extend({
         // create Character
         this.char_win = gv.createSpineAnimation(resAni.char_win);
         this.char_win.setAnimation(0, "win_cat", true);
-        this.char_win.setPosition(this.bg.width / 2, 414);
+        this.char_win.setPosition(this.lblWin.getPosition());
+        this.char_win.y -= 100;
         this.char_win.setScale(0.7);
         this.bg.addChild(this.char_win, -1);
+
         this.char_lose = gv.createSpineAnimation(resAni.char_lose);
         this.char_lose.setAnimation(0, "lose_cat", true);
-        this.char_lose.setPosition(this.bg.width / 2, 580);
-        this.bg.addChild(this.char_lose, -1);
+        this.char_lose.setPosition(this.lblLevel.getPosition());
+        this.bgLose.addChild(this.char_lose, -1);
+
+        this.stars = this.nodeStars.getChildren();
+        for (let node of this.stars) {
+            node.slot = null;
+            node.star = null;
+            BaseLayer._syncInNode(node, node);
+        }
 
         this.enableFog();
     },
 
     onEnterFinish: function () {
-        this.setShowHideAnimate(this.bg);
+        this.setShowHideAnimate(this.nodeMain);
 
         let efxTime = 0.25;
         let elements = [this.g, this.gold];
@@ -67,6 +91,10 @@ let GameBoardEndGame = BaseLayer.extend({
     onButtonRelease: function (btn, id) {
         cc.log("onButtonRelease", btn.getName());
         switch (btn) {
+            case this.btnExit:
+                this.onClickClose();
+                break;
+
             case this.close:
                 this.onClickClose();
                 break;
@@ -283,21 +311,21 @@ let GameBoardEndGame = BaseLayer.extend({
         //     return;
         // }
 
+        // if (this.guiBuyMoveBonus) this.guiBuyMoveBonus.setVisible(!this.isWin);
+
         this.showReaction(false);
         // this.showReaction(this.isWin);
-        this.bg.getChildByName("btnPlay").setVisible(this.isWin);
-        this.bg.getChildByName("btnReplay").setVisible(!this.isWin);
-        if (this.guiBuyMoveBonus) this.guiBuyMoveBonus.setVisible(!this.isWin);
-        this.bg.getChildByName("lblWin").setVisible(this.isWin);
-        this.bg.getChildByName("lblLose").setVisible(!this.isWin);
+        this.btnPlay.setVisible(this.isWin);
+        this.btnReplay.setVisible(!this.isWin);
+        this.lblWin.setVisible(this.isWin);
+        this.lblLose.setVisible(!this.isWin);
         this.g.setVisible(!this.isWin);
         this.gold.setVisible(!this.isWin);
         this.char_win.setVisible(this.isWin);
         this.char_lose.setVisible(!this.isWin);
-        this.bg.getChildByName("close").setVisible(!this.isWin);
 
         this.clearTarget();
-        this.reAlignGui(this.isWin);
+        // this.reAlignGui(this.isWin);
         if (this.isWin) {
             this.showReward();
         } else {
@@ -320,41 +348,61 @@ let GameBoardEndGame = BaseLayer.extend({
     },
 
     reAlignGui: function (isWin) {
-        this.bg.height = isWin ? 534 : 608;
-        this.bg.getChildByName('bg_target_1').setPositionY(isWin ? 350 : 430);
-        this.bg.getChildByName('bg_target').setPositionY(isWin ? 300 : 380);
-        this.bg.getChildByName('lblTarget').setPositionY(isWin ? 400 : 490);
-        this.bg.getChildByName('close').setPositionY(isWin ? 520 : 576);
+        // this.bg.height = isWin ? 534 : 608;
+        // this.bg.getChildByName('bg_target_1').setPositionY(isWin ? 350 : 430);
+        // this.bg.getChildByName('bg_target').setPositionY(isWin ? 300 : 380);
+        // this.bg.getChildByName('lblTarget').setPositionY(isWin ? 400 : 490);
+        // this.bg.getChildByName('close').setPositionY(isWin ? 520 : 576);
     },
 
     showReward: function () {
+        this.bg.setVisible(true);
+        this.bgLose.setVisible(false);
+
         if (this.popup) this.popup.setVisible(false);
 
         let lblLevel;
-        lblLevel = fr.Localization.text('lang_level') + this.gameUI.getLevel();
+        lblLevel = fr.Localization.text('lang_level') + " " + this.gameUI.getLevel();
 
-        this.bg.getChildByName("lblWin").setString(lblLevel);
-        if (lblLevel.length >= 16) {
-            this.bg.getChildByName("lblWin").setFontSize(34);
-        } else {
-            this.bg.getChildByName("lblWin").setFontSize(44);
-        }
+        this.lblWin.setString(lblLevel);
 
         var reward = this.gameUI.levelConfig.mapConfig.reward;
-        let nodeBgTarget = this.bg.getChildByName('bg_target');
-        var rootPos = {x: nodeBgTarget.width / 2, y: nodeBgTarget.height / 2 - 5}, padding = 120;
+        reward = 10;
+        var rootPos = {x: this.bg_target.width / 2, y: this.bg_target.height / 2 - 5}, padding = 120;
         var listNode = [];
         var coin = this.createTarget("coin", reward);
-        nodeBgTarget.addChild(coin);
+        this.bg_target.addChild(coin);
         listNode.push(coin);
-
-        let star = this.createTarget("star", this.gameUI.boardUI.boardMgr.endStar);
-        nodeBgTarget.addChild(star);
-        listNode.push(star);
 
         for (let i in listNode) {
             listNode[i].setPosition(rootPos.x + (i - (listNode.length - 1) / 2) * padding, rootPos.y);
         }
+
+        for (let i = 0; i < this.stars.length; i++) {
+            let star = this.stars[i].star;
+            star.setVisible(i < this.gameUI.boardUI.boardMgr.endStar);
+
+            if (star.isVisible()) {
+                star.stopAllActions();
+                star.setOpacity(0);
+                star.setPosition(star.rawPos);
+                star.y += 250;
+                star.setScale(2);
+
+                let efxTime = 0.25;
+                star.runAction(cc.sequence(
+                    cc.delayTime(0.5 + 0.25 * i),
+                    cc.spawn(
+                        cc.moveTo(efxTime, star.rawPos).easing(cc.easeIn(5)),
+                        cc.rotateBy(efxTime, 360).easing(cc.easeBackOut()),
+                        cc.scaleTo(efxTime, 1).easing(cc.easeBackOut()),
+                        cc.fadeIn(efxTime)
+                    )
+                ));
+            }
+        }
+        // nodeBgTarget.addChild(star);
+        // listNode.push(star);
     },
 
     onEarnCoin: function (goldReward) {
@@ -413,6 +461,13 @@ let GameBoardEndGame = BaseLayer.extend({
     },
 
     showTarget: function (targets) {
+        let lblLevel;
+        lblLevel = fr.Localization.text('lang_level') + " " + this.gameUI.getLevel();
+        this.lblLevel.setString(lblLevel);
+
+        this.bg.setVisible(false);
+        this.bgLose.setVisible(true);
+
         this.gameUI.gameBoardInfoUI.spine_cat.setAnimation(0, 'sad', true);
         // this.gameUI.hideToolGuis();
 
@@ -439,14 +494,16 @@ let GameBoardEndGame = BaseLayer.extend({
         // target
         fr.Sound.playSoundEffect(resSound.game_fail, false);
 
-        this.bg.getChildByName("lblTarget").setString(fr.Localization.text('lang_target'));
-        let nodeBgTarget = this.bg.getChildByName('bg_target');
+        this.lblTargetLose.setString(fr.Localization.text('lang_target'));
+        let nodeBgTarget = this.bg_target_lose;
         var rootPos = {x: nodeBgTarget.width / 2, y: nodeBgTarget.height / 2 - 5}, padding = 100;
         var listNode = [];
         for (var target of targets) {
             let type = target["id"];
+            var currentAmount = target["count"] - target["current"];
             var amountTarget = target["count"];
-            var currentAmount = target["current"];
+            cc.log("SHOW TARGET LOSE", JSON.stringify(target));
+            cc.log("SHOW TARGET LOSE", type, amountTarget, currentAmount);
 
             var nodeInfo = null;
             var node = null;
@@ -492,24 +549,45 @@ let GameBoardEndGame = BaseLayer.extend({
     showBuyMove: function () {
         this.onBuyingMove = false;
         // User Gold
-        this.gold.getChildByName('label').setString(userInfo.gold.formatAsMoney());
+        let userGold = userInfo.gold;
+        this.gold.getChildByName('label').setString(userGold.formatAsMoney());
         this.g.getChildByName('label').setString(userInfo.G.formatAsMoney());
 
         // Price
         var price = this.getMovePrice();
-        var btnReplay = this.bg.getChildByName('btnReplay');
+        var btnReplay = this.btnReplay;
         var gold = price['gold'];
         var g = price['G'];
         let cost = g || gold;
-        let scale = cost >= 1000 ? 0.8 : 1.0;
-        let icon = btnReplay.getChildByName('icon');
-        let costLbl = btnReplay.getChildByName('cost');
+
+        let margin = 10;
+        let totalWidth = 0;
+        let centerNode = btnReplay.getChildByName('centerNode');
+
+        let label = centerNode.getChildByName('lblPlay');
+        label.x = totalWidth;
+        totalWidth += UIUtils.getLabelWidth(label) + margin;
+
+        let icon = centerNode.getChildByName('icon');
         icon.setTexture(g != null ? 'lobby/icon_g.png' : 'lobby/icon_gold.png');
-        icon.setScale(0.8 * scale);
+        icon.x = totalWidth;
+        totalWidth += icon.width + margin;
+
+        let costLbl = centerNode.getChildByName('cost');
         costLbl.setString(cost.formatAsMoney());
-        costLbl.setScale(scale);
-        if (scale == 0.8) costLbl.setPosition(290, 52);
-        else costLbl.setPosition(299, 52);
+        costLbl.x = totalWidth;
+        totalWidth += UIUtils.getLabelWidth(costLbl);
+
+        centerNode.x = centerNode.rawPos.x - totalWidth * 0.5;
+
+        this.btnReplay.setVisible(parseInt(userGold) >= parseInt(cost));
+        this.btnReplay.setPosition(this.btnReplay.rawPos);
+
+        this.btnExit.setVisible(true);
+        this.btnExit.setPosition(this.btnExit.rawPos);
+        if (!this.btnReplay.isVisible()) {
+            this.btnExit.x = this.bgLose.width * 0.5;
+        }
 
         // Bonus
         // if (!this.guiBuyMoveBonus) {

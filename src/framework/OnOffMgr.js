@@ -51,6 +51,7 @@ gv.onOffMgr = {
     },
 
     isMustUpdateVersion: function(){
+        return false;
         if (cc.sys.platform == cc.sys.WIN32) return false;
         if (gv.isOnPortal) return false;
         cc.log("game status: " + this.jsVersionStatus);
@@ -149,6 +150,7 @@ gv.onOffMgr = {
         // }
     },
     showAskReconnectGame: function(){
+        return;
         gv.alert.showTwoOptions(fr.Localization.text("lang_switch_to_online_ask"),
             fr.Localization.text("lang_btn_reconnect"),
             fr.Localization.text("lang_btn_cancel"),

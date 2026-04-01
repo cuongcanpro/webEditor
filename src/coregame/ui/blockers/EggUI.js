@@ -1,16 +1,16 @@
 ﻿/**
- * CookieUI - Specialized visual representation for Cookie
+ * EggUI - Specialized visual representation for Egg
  * Part of Match-3 Core Game
  */
 var CoreGame = CoreGame || {};
 
-CoreGame.CookieUI = CoreGame.ElementUI.extend({
+CoreGame.EggUI = CoreGame.ElementUI.extend({
 
     ctor: function (element) {
         this._super(element);
         // Ensure scale is 1.0 based on recent BoxUI changes
         if (this.sprite) {
-            this.sprite.setScale(0.5);
+            // this.sprite.setScale(0.5);
         }
 
         // Initial visual update based on HP
@@ -19,7 +19,7 @@ CoreGame.CookieUI = CoreGame.ElementUI.extend({
     },
 
     /**
-     * Update cookie sprite based on current hit points
+     * Update Egg sprite based on current hit points
      */
     updateVisual: function () {
         // We need the base type. Let's assume the passed 'type' in ctor was useful or we use BoardConst if available.
@@ -38,7 +38,7 @@ CoreGame.CookieUI = CoreGame.ElementUI.extend({
     },
 
     /**
-     * Play explosion effect for Cookie
+     * Play explosion effect for Egg
      */
     playTakeDamageEffect: function () {
         // Sound effect (rock_0 + hp)

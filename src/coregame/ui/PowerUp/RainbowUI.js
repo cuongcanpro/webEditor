@@ -1,5 +1,5 @@
 ﻿CoreGame.RainbowUI = CoreGame.PowerUpUI.extend({
-    resAnim: resAni.pus_rainbow,
+    resAnim: resAni.pu_rainbow,
     targetSlot: null,
 
     ctor: function (element) {
@@ -7,6 +7,12 @@
         this.listTargetPos = [];
         this.listHitFx = [];
         return true;
+    },
+
+    initSprite: function () {
+        this._super();
+        this.mainSpr.setScale(CoreGame.RainbowUI.DEFAULT_SCALE);
+        this.whiteSpr.setScale(CoreGame.RainbowUI.DEFAULT_SCALE);
     },
 
     setMixAnim: function () {
@@ -106,6 +112,7 @@
         ray.runAction(cc.sequence(
             cc.delayTime(0.1),
             cc.callFunc(function () {
+                fr.platformWrapper.hapticTouch(HAPTIC_TOUCH_TYPE.SOFT);
                 this.showHitEffect(toPos, index);
             }.bind(this)),
             cc.delayTime(0.2),
@@ -165,3 +172,85 @@
         this._super();
     }
 });
+CoreGame.RainbowUI.DEFAULT_SCALE = 0.5;
+
+/**
+ * RainbowPlusUI - UI for Rainbow+Rainbow combo.
+ * Only plays the center explosion, no per-target rays or hit effects.
+ */
+CoreGame.RainbowPlusUI = CoreGame.RainbowUI.extend({
+    startActive: function () {
+        this.setLocalZOrder(CoreGame.ZORDER_BOARD_EFFECT);
+        fr.Sound.playSoundEffect(resSound.active_disco, false);
+
+        this.mainSpr.setVisible(false);
+
+
+        var boardUI = CoreGame.BoardUI.getInstance();
+        var efkManager = (boardUI && boardUI.efkManager) ? boardUI.efkManager : null;
+        if (efkManager && typeof gv.createEfk === "function") {
+            var effParticle = gv.createEfk(efkManager, resAni.rainbowX2_explosion_efk);
+            effParticle.setPosition3D(cc.math.vec3(this.x, this.y, 0));
+            this.getParent().addChild(effParticle, BoardConst.zOrder.EFF_MATCHING);
+        }
+
+        //Disco combine
+        this.rainbowX2MergeSpine = gv.createSpineAnimation(resAni.rainbowX2_merge_spine);
+        this.rainbowX2MergeSpine.setPosition(this.x, this.y);
+        var zOrder = UIUtils.getLocalZOrderMax(this.getParent());
+        var fog = UIUtils.addFog(this.getParent(), zOrder, null, null, 0);
+        fog.runAction(cc.sequence(
+            cc.fadeTo(0.2, 200), cc.delayTime(1.8), cc.fadeOut(0.2), cc.removeSelf()
+        ));
+        this.getParent().addChild(this.rainbowX2MergeSpine, zOrder + 1);
+        this.rainbowX2MergeSpine.setAnimation(0, "active", false);
+        gv.removeSpineAfterRun(this.rainbowX2MergeSpine);
+
+        this.rainbowX2MergeSpine.runAction(cc.rotateBy(
+            CoreGame.RainbowPlusUI.EXPLODE_TIME, 360 * 5
+        ).easing(cc.easeIn(5)));
+
+        this.runAction(cc.sequence(
+            cc.delayTime(CoreGame.RainbowPlusUI.EXPLODE_TIME),
+            cc.callFunc(function () {
+                this.showEffectExplode();
+            }.bind(this))
+        ));
+
+        return CoreGame.RainbowPlusUI.EXPLODE_TIME;
+    },
+
+    showEffectExplode: function () {
+        fr.platformWrapper.hapticTouch(HAPTIC_TOUCH_TYPE.HEAVY);
+
+        var selfPos = this.getPosition();
+        var parent = this.getParent();
+
+        // Center explosion visuals only — no rays or hit effects
+        var spineExplode = gv.createSpineAnimation(resAni.rainbow_spine);
+        spineExplode.setPosition(selfPos);
+        parent.addChild(spineExplode, BoardConst.zOrder.MATCH_4_EXPLODE);
+        spineExplode.setAnimation(0, "run", false);
+        gv.removeSpineAfterRun(spineExplode);
+
+        if (typeof gv.createEfk === "function") {
+            var boardUI = CoreGame.BoardUI.getInstance();
+            var efkManager = (boardUI && boardUI.efkManager) ? boardUI.efkManager : null;
+            if (efkManager) {
+                var emitter = gv.createEfk(efkManager, resAni.rainbow_efk);
+                emitter.setPosition3D(cc.math.vec3(selfPos.x, selfPos.y, 0));
+                parent.addChild(emitter, BoardConst.zOrder.MATCH_4_EXPLODE);
+            }
+        }
+
+        // Cleanup after explosion
+        this.runAction(cc.sequence(
+            cc.delayTime(0.5),
+            cc.callFunc(function () {
+                fr.Sound.playSoundEffect(resSound.explosion_done, false);
+            }),
+            cc.removeSelf()
+        ));
+    }
+});
+CoreGame.RainbowPlusUI.EXPLODE_TIME = 2.3;
