@@ -41,6 +41,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
     gameEnded: false,
 
+    delayRefill: 0,
+
     ctor: function () {
         this.rows = CoreGame.Config.BOARD_ROWS;
         this.cols = CoreGame.Config.BOARD_COLS;
@@ -196,14 +198,30 @@ CoreGame.BoardMgr = cc.Class.extend({
             // Add elements from map config
             if (mapConfig.elements && mapConfig.elements.length > 0) {
                 cc.log("Adding " + mapConfig.elements.length + " elements from map config");
+
+                // Pre-build a lookup of fixed (non-type-7) neighbor types so that
+                // getValidTypeForPosition can see right-side and upper-row neighbors
+                // that haven't been placed on the grid yet.
+                this._pendingFixedTypes = {};
+                for (var pi = 0; pi < mapConfig.elements.length; pi++) {
+                    var pe = mapConfig.elements[pi];
+                    if (pe.type !== 7) {
+                        this._pendingFixedTypes[pe.row + ',' + pe.col] = pe.type;
+                    }
+                }
+
                 for (var i = 0; i < mapConfig.elements.length; i++) {
                     var elem = mapConfig.elements[i];
                     // Type 7 = Gem Random: resolve to a color that won't create a match
                     var spawnType = (elem.type === 7)
                         ? this.getValidTypeForPosition(elem.row, elem.col)
                         : elem.type;
+                    // Record the resolved type so subsequent type-7 elements can see it
+                    this._pendingFixedTypes[elem.row + ',' + elem.col] = spawnType;
                     this.addNewElement(elem.row, elem.col, spawnType, elem.hp, elem.cells || null);
                 }
+
+                this._pendingFixedTypes = null;
             }
         } else {
             this.fillBoardNoMatches();
@@ -438,6 +456,17 @@ CoreGame.BoardMgr = cc.Class.extend({
     /**
      * Get a type that won't create a match at position
      */
+    // Returns the type at (r,c): from the grid if placed, from _pendingFixedTypes if not yet placed.
+    _getNeighborType: function (r, c) {
+        var t = this.mapGrid[r][c].getType();
+        if (t >= 0) return t;
+        if (this._pendingFixedTypes) {
+            var planned = this._pendingFixedTypes[r + ',' + c];
+            return (planned !== undefined) ? planned : -1;
+        }
+        return -1;
+    },
+
     getValidTypeForPosition: function (row, col) {
         var pool = (this.gemTypes && this.gemTypes.length > 0)
             ? this.gemTypes.slice()
@@ -449,8 +478,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         // Check horizontal (left 2)
         if (col >= 2) {
-            var t1 = this.mapGrid[row][col - 1].getType();
-            var t2 = this.mapGrid[row][col - 2].getType();
+            var t1 = this._getNeighborType(row, col - 1);
+            var t2 = this._getNeighborType(row, col - 2);
             if (t1 >= 0 && t1 === t2) {
                 var idx = pool.indexOf(t1);
                 if (idx !== -1) pool.splice(idx, 1);
@@ -459,8 +488,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         // Check vertical (up 2)
         if (row >= 2) {
-            var t1 = this.mapGrid[row - 1][col].getType();
-            var t2 = this.mapGrid[row - 2][col].getType();
+            var t1 = this._getNeighborType(row - 1, col);
+            var t2 = this._getNeighborType(row - 2, col);
             if (t1 >= 0 && t1 === t2) {
                 var idx = pool.indexOf(t1);
                 if (idx !== -1) pool.splice(idx, 1);
@@ -469,8 +498,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         // Check horizontal (right 2)
         if (col + 2 < this.cols) {
-            var t1 = this.mapGrid[row][col + 1].getType();
-            var t2 = this.mapGrid[row][col + 2].getType();
+            var t1 = this._getNeighborType(row, col + 1);
+            var t2 = this._getNeighborType(row, col + 2);
             if (t1 >= 0 && t1 === t2) {
                 var idx = pool.indexOf(t1);
                 if (idx !== -1) pool.splice(idx, 1);
@@ -479,8 +508,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         // Check vertical (down 2)
         if (row + 2 < this.rows) {
-            var t1 = this.mapGrid[row + 1][col].getType();
-            var t2 = this.mapGrid[row + 2][col].getType();
+            var t1 = this._getNeighborType(row + 1, col);
+            var t2 = this._getNeighborType(row + 2, col);
             if (t1 >= 0 && t1 === t2) {
                 var idx = pool.indexOf(t1);
                 if (idx !== -1) pool.splice(idx, 1);
@@ -489,8 +518,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         // Check middle horizontal (left 1 + right 1)
         if (col >= 1 && col + 1 < this.cols) {
-            var t1 = this.mapGrid[row][col - 1].getType();
-            var t2 = this.mapGrid[row][col + 1].getType();
+            var t1 = this._getNeighborType(row, col - 1);
+            var t2 = this._getNeighborType(row, col + 1);
             if (t1 >= 0 && t1 === t2) {
                 var idx = pool.indexOf(t1);
                 if (idx !== -1) pool.splice(idx, 1);
@@ -499,8 +528,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         // Check middle vertical (up 1 + down 1)
         if (row >= 1 && row + 1 < this.rows) {
-            var t1 = this.mapGrid[row - 1][col].getType();
-            var t2 = this.mapGrid[row + 1][col].getType();
+            var t1 = this._getNeighborType(row - 1, col);
+            var t2 = this._getNeighborType(row + 1, col);
             if (t1 >= 0 && t1 === t2) {
                 var idx = pool.indexOf(t1);
                 if (idx !== -1) pool.splice(idx, 1);
@@ -995,6 +1024,13 @@ CoreGame.BoardMgr = cc.Class.extend({
      */
     setRefillRequired: function (value) {
         this.requiredRefill = value;
+    },
+
+    /**
+     * Set delayRefill time stamp
+     */
+    setDelayRefill: function (value) {
+        this.delayRefill = value;
     },
 
     /**
@@ -1495,18 +1531,26 @@ CoreGame.BoardMgr = cc.Class.extend({
         CoreGame.TimedActionMgr.update(dt);
 
         // Only process board logic when elements are idle (prevents race conditions)
-        var allIdle = this.areAllElementsIdle();
+        // var allIdle = this.areAllElementsIdle();
+        // var allIdle = this.areAllElementsIdle();
         var hasPendingActions = CoreGame.TimedActionMgr.hasPendingActions();
 
-        // if (allIdle && this.isStateDropAble()) {
+        let allIdle = true;
+        // if (this.isStateDropAble()) {
             if (this.requiredRefill) {
-                cc.log("CALL REFILL MAP - From Update");
-                this.refillMap();
+                if (this.delayRefill <= 0) {
+                    cc.log("CALL REFILL MAP - From Update");
+                    this.refillMap();
+                }
             } else if (this.requiredMatching) {
                 this.requiredMatching = false;
                 this.doMatch();
             }
         // }
+
+        if (this.delayRefill > 0) {
+            this.delayRefill -= dt;
+        }
 
         // Check if turn is finished (all element animations complete)
         if (this.playerMoved)

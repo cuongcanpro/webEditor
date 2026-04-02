@@ -496,13 +496,7 @@ var EditMapSceneNew = cc.Layer.extend({
 
     _updateBtnColor: function (btn, active) {
         if (!btn) return;
-        var color = active ? cc.color(100, 220, 100) : cc.color(255, 255, 255);
-        var titleRenderer = btn.getTitleRenderer && btn.getTitleRenderer();
-        if (titleRenderer) {
-            titleRenderer.setColor(color);
-        } else {
-            btn.setTitleColor(color);
-        }
+        btn.setTitleColor(active ? cc.color(100, 220, 100) : cc.color(255, 255, 255));
     },
 
     // ─────────────────────────────────────────────────────────────────────────

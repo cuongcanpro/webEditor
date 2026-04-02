@@ -11,6 +11,7 @@ CoreGame.BoardUI = cc.Layer.extend({
     touchStartPos: null,
     selectedSlot: null,
     isTouching: false,
+    swipeHandled: false,
     gridBorderMgr: null,
 
     ctor: function (mapConfig, testBoxes, noFill) {
@@ -18,6 +19,7 @@ CoreGame.BoardUI = cc.Layer.extend({
         this.touchStartPos = null;
         this.selectedSlot = null;
         this.isTouching = false;
+        this.swipeHandled = false;
 
         this.root = new cc.Node();
         this.addChild(this.root, 2);
@@ -236,6 +238,7 @@ CoreGame.BoardUI = cc.Layer.extend({
 
         this.touchStartPos = pos;
         this.isTouching = true;
+        this.swipeHandled = false;
 
         // Find the grid slot at touch position
         var gridPos = this.boardMgr.pixelToGrid(pos.x, pos.y);
@@ -253,7 +256,17 @@ CoreGame.BoardUI = cc.Layer.extend({
      * Called when touch moves
      */
     onTouchMoved: function (pos) {
-        if (!this.isTouching) return;
+        if (!this.isTouching || this.swipeHandled) return;
+
+        var dx = pos.x - this.touchStartPos.x;
+        var dy = pos.y - this.touchStartPos.y;
+        var threshold = CoreGame.Config.CELL_SIZE * 0.3;
+
+        if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
+            var direction = this.getSwipeDirection(dx, dy);
+            this.boardMgr.onInputDirection(direction);
+            this.swipeHandled = true;
+        }
     },
 
     /**
@@ -264,21 +277,23 @@ CoreGame.BoardUI = cc.Layer.extend({
      */
     onTouchEnd: function (pos) {
         if (this.isTouching) {
-            // Calculate swipe direction
-            var dx = pos.x - this.touchStartPos.x;
-            var dy = pos.y - this.touchStartPos.y;
-            var threshold = CoreGame.Config.CELL_SIZE * 0.3;
+            if (!this.swipeHandled) {
+                // No swipe detected during move — check final position
+                var dx = pos.x - this.touchStartPos.x;
+                var dy = pos.y - this.touchStartPos.y;
+                var threshold = CoreGame.Config.CELL_SIZE * 0.3;
 
-            // Check if swipe is large enough
-            if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
-                var direction = this.getSwipeDirection(dx, dy);
-                this.boardMgr.onInputDirection(direction);
-            } else {
-                this.boardMgr.onSelectLastGrid();
+                if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
+                    var direction = this.getSwipeDirection(dx, dy);
+                    this.boardMgr.onInputDirection(direction);
+                } else {
+                    this.boardMgr.onSelectLastGrid();
+                }
             }
         }
 
         this.isTouching = false;
+        this.swipeHandled = false;
     },
 
     /**

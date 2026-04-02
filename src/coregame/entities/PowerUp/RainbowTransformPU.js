@@ -41,10 +41,25 @@ CoreGame.RainbowTransformPU = CoreGame.CustomCreatorPU.extend({
             return;
         }
 
-        var targetColor = parseInt(availableColors[this.boardMgr.random.nextInt32Bound(availableColors.length)]);
+        // Pick the most abundant color
+        var targetColor = parseInt(availableColors[0]);
+        var maxCount = colorCounts[targetColor];
+        for (var k = 1; k < availableColors.length; k++) {
+            var col = parseInt(availableColors[k]);
+            if (colorCounts[col] > maxCount) {
+                maxCount = colorCounts[col];
+                targetColor = col;
+            }
+        }
 
         // 2. Build subPUData for all occurrences of that color
-        var data = [];
+        var data = [{
+            posX: this.position.x,
+            posY: this.position.y,
+            type: this.typeTransform[this.boardMgr.random.nextInt32Bound(this.typeTransform.length)],
+            delay: 0,
+            isSelf: true
+        }];
         var count = 0;
         for (var r = 0; r < this.boardMgr.rows; r++) {
             for (var c = 0; c < this.boardMgr.cols; c++) {
@@ -76,18 +91,30 @@ CoreGame.RainbowTransformPU = CoreGame.CustomCreatorPU.extend({
         this.ui.setTargets(targets);
         duration = this.ui.startActive();
         this.ui = undefined;
-        this.duration = duration;
+        this.transformDuration = duration;
+
         CoreGame.TimedActionMgr.addAction(duration, this._super.bind(this, typeToClear));
     },
 
     removeAfterActivate: function () {
-        CoreGame.TimedActionMgr.addAction(this.duration, function () {
+        CoreGame.TimedActionMgr.addAction(this.transformDuration, function () {
             this.remove();
-            CoreGame.BoardUI.getInstance().boardMgr.state = CoreGame.BoardState.MATCHING;
         }.bind(this));
     },
 
     onTargetHit: function (index) {
+        // Hide the original gem visual at this position
+        var data = this.subPUData[index];
+        if (data) {
+            var slot = this.boardMgr.getSlot(data.posX, data.posY);
+            if (slot) {
+                var gem = slot.getMatchableElement();
+                if (gem && gem.ui) {
+                    gem.ui.setVisible(false);
+                }
+            }
+        }
+        // Show the transformed power-up
         this.listSubPU[index].ui.setVisible(true);
     },
     /**

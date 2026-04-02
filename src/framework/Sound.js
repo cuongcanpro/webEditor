@@ -97,10 +97,11 @@ fr.Sound.addHideAndShowGameListener = function (scene) {
 }
 
 
-fr.Sound.playMusic = function(musicPath, isLoop){
-    if(!fr.Sound.musicOn)
+fr.Sound.playMusic = function (musicPath, isLoop) {
+    if (!fr.Sound.musicOn)
         return;
     if (fr.Sound.musicId != -1) jsb.AudioEngine.stop(fr.Sound.musicId);
+
     fr.Sound.musicId = jsb.AudioEngine.play2d(musicPath, isLoop, fr.Sound.musicVolume);
     // let tryCount = 0;
     // while (fr.Sound.musicId == -1) {
@@ -183,14 +184,12 @@ fr.Sound.turnOnSound = function () {
 fr.Sound.turnOnMusic = function () {
     fr.Sound.musicOn = !fr.Sound.musicOn;
     if (fr.Sound.musicOn) {
-        if (UIUtils.isScene(GameScene.MAIN_SCENE)){
-            let music = UIUtils.getCurScene(GameScene.MAIN_SCENE).mapPlay == MAP_PLAY.BOSS_RUN? resMusic.ingame_bossRun : resMusic.ingame;
-            fr.Sound.playMusic(music, true);
-        }
-        else
+        if (sceneMgr.getMainLayer() instanceof SceneBoard) {
+            fr.Sound.playMusic(resMusic.ingame, true);
+        } else {
             fr.Sound.playMusic(resMusic.lobby, true);
-    }
-    else
+        }
+    } else
         fr.Sound.stopMusic();
     fr.UserData.setBoolFromKey("sound_music", fr.Sound.musicOn);
     return fr.Sound.musicOn;

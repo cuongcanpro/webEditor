@@ -22,9 +22,10 @@ CoreGame.Config = {
     DROP_SPEED: 750,        // pixels per second
     MATCH_DELAY: 0.1,
     DESTROY_DURATION: 0.2,
-    CONVERGE_DURATION: 0.15,
-    DROP_DELTA_DELAY: 0.05,
-    DROP_DELTA_DELAY_COL: 0.01,
+    CONVERGE_DURATION: 0.2,
+    DROP_DELTA_DELAY: 0,
+    DROP_DELTA_DELAY_COL: 0,
+    DROP_DELAY_POWER_UP: 0.25,
 
     // Match requirements
     MIN_MATCH: 3

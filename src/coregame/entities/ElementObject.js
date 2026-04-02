@@ -180,13 +180,13 @@ CoreGame.ElementObject = cc.Class.extend({
     /**
      * Animate swap to target and back (Visual only)
      */
-    visualSwapBack: function (targetPixelPos, duration) {
+    visualSwapBack: function (targetPixelPos, duration, isFront = false) {
         if (!this.ui) {
             return;
         }
 
         var originalPixelPos = this.boardMgr.gridToPixel(this.position.x, this.position.y);
-        this.ui.playMoveAnBackAnim(targetPixelPos, originalPixelPos, duration);
+        this.ui.playMoveAnBackAnim(targetPixelPos, originalPixelPos, duration, isFront);
     },
 
     /**
@@ -281,7 +281,7 @@ CoreGame.ElementObject = cc.Class.extend({
     },
 
     /**
-     * Play converge animation (powerup match)
+     * Play converge animation (power-up match)
      * Gem moves to targetPos and waits for PowerUp spawn
      */
     playConvergeAnimation: function (targetPos) {
@@ -297,9 +297,12 @@ CoreGame.ElementObject = cc.Class.extend({
         // Move to target position with scale effect
         duration = this.ui.playConvergeAnim(targetPixelPos, duration);
 
-        CoreGame.TimedActionMgr.addAction(duration + 0.1, function () {
-            self.remove();
-        }.bind(this));
+        CoreGame.TimedActionMgr.addAction(
+            duration + 0.1,
+            function () {
+                self.remove();
+            }.bind(this)
+        );
     },
 
     onFinishTurn: function () {
@@ -402,6 +405,7 @@ CoreGame.ElementObject = cc.Class.extend({
             boardUI.refreshBorders();
         }
         this.doActionsType(CoreGame.ElementObject.ACTION_TYPE.REMOVE);
+
         this.boardMgr.setRefillRequired(true);
     },
 

@@ -4,7 +4,11 @@ let SceneBoard = BaseLayer.extend({
     },
 
     onEnterFinish: function () {
+        this.playMusic();
+    },
 
+    playMusic: function () {
+        fr.Sound.playMusic(resMusic.ingame, true);
     },
 
     setLevel: function (level) {

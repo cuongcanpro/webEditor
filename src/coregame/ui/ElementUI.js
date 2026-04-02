@@ -170,7 +170,8 @@ CoreGame.ElementUI = cc.Node.extend({
         nodeTLFX.setScale(0.5 + Math.random() * 0.1);
 
         this.runAction(cc.sequence(
-            cc.scaleTo(CoreGame.Config.DESTROY_DURATION, 0).easing(cc.easeBackIn()),
+            cc.scaleTo(CoreGame.Config.DESTROY_DURATION * 0.33, 1.5).easing(cc.easeIn(2.5)),
+            cc.scaleTo(CoreGame.Config.DESTROY_DURATION * 0.67, 0).easing(cc.easeOut(2.5)),
             cc.callFunc(this.efxDebris.bind(this))
         ));
 
@@ -263,12 +264,22 @@ CoreGame.ElementUI = cc.Node.extend({
     /**
      * Play move animation to target position and then move back
      */
-    playMoveAnBackAnim: function (targetPos, originalPos, duration) {
+    playMoveAnBackAnim: function (targetPos, originalPos, duration, isFront = false) {
         this.stopActionByTag(CoreGame.TAG_MOVE_ACTION);
 
         let seq = cc.sequence(
-            cc.moveTo(duration, targetPos).easing(cc.easeIn(2.5)),
-            cc.moveTo(duration, originalPos).easing(cc.easeOut(2.5))
+            cc.callFunc(function () {
+                if (!isFront) {
+                    this.setLocalZOrder(this.getLocalZOrder() - 1);
+                }
+            }.bind(this)),
+            cc.moveTo(duration, targetPos).easing(cc.easeInOut(2.5)),
+            cc.callFunc(function () {
+                if (!isFront) {
+                    this.setLocalZOrder(this.getLocalZOrder() + 1);
+                }
+            }.bind(this)),
+            cc.moveTo(duration, originalPos).easing(cc.easeInOut(2.5))
         );
 
         seq.setTag(CoreGame.TAG_MOVE_ACTION);
@@ -282,8 +293,15 @@ CoreGame.ElementUI = cc.Node.extend({
     playConvergeAnim: function (targetPos, duration) {
         this.stopActionByTag(CoreGame.TAG_MOVE_ACTION);
 
+        // Overshoot: pull back slightly away from target before converging
+        var curPos = this.getPosition();
+        var dx = targetPos.x - curPos.x;
+        var dy = targetPos.y - curPos.y;
+        var overshootPos = cc.p(curPos.x - dx * 0.15, curPos.y - dy * 0.15);
+
         var converge = cc.sequence(
-            cc.moveTo(duration, targetPos).easing(cc.easeIn(2.5)),
+            cc.moveTo(duration * 0.33, overshootPos).easing(cc.easeOut(2.5)),
+            cc.moveTo(duration * 0.67, targetPos).easing(cc.easeIn(2.5)),
             cc.scaleTo(duration, 0).easing(cc.easeBackIn()),
             cc.hide()
         );

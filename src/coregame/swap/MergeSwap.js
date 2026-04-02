@@ -36,9 +36,9 @@ CoreGame.MergeSwap = CoreGame.LogicSwap.extend({
 
         // Update Grid Data (Remove elements from slots as they are merging)
         if (this.boardMgr) {
-            this.boardMgr.state = CoreGame.BoardState.MERGE_PU;
+            // this.boardMgr.state = CoreGame.BoardState.MERGE_PU;
             this.boardMgr.removeElementFromBoard(element1);
-            this.boardMgr.removeElementFromBoard(element2);
+            // this.boardMgr.removeElementFromBoard(element2);
         }
 
         // Animate merge (move both to center)
@@ -87,7 +87,7 @@ CoreGame.MergeSwap = CoreGame.LogicSwap.extend({
 
         // Remove both power-ups
         this.element1.remove();
-        this.element2.remove();
+        // this.element2.remove();
     },
 
     /**

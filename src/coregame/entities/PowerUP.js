@@ -52,6 +52,8 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
      * Activate power-up effect
      */
     active: function (data) {
+        CoreGame.BoardUI.getInstance().boardMgr.setDelayRefill(CoreGame.Config.DROP_DELAY_POWER_UP);
+
         cc.log("Active Size attachments " + this.attachments.length);
         if(this.state == CoreGame.ElementState.REMOVING)
             return;
@@ -135,5 +137,4 @@ CoreGame.PowerUP.createCombined = function (type1, type2) {
         return element;
     }
     return null;
-    var zz = 0;
 }
