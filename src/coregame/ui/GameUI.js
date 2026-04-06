@@ -488,7 +488,8 @@ CoreGame.GameUI = cc.Layer.extend({
                 suppress_switches: tpp.suppress_switches,
                 move_surplus:      tpp.move_surplus,
                 pu_rate:           tpp.pu_rate,
-                retry_count:       tpp.retry_count
+                retry_count:       tpp.retry_count,
+                retry_factor:      tpp.retry_factor
             };
         }
 
@@ -521,7 +522,8 @@ CoreGame.GameUI = cc.Layer.extend({
             deviation_median:  ad.deviation_median    || 0,
             deviation_p25:     ad.deviation_p25       || 0,
             deviation_p75:     ad.deviation_p75       || 0,
-            retry_count:       ad.retry_count         || 0
+            retry_count:       ad.retry_count         || 0,
+            retry_factor:      ad.retry_factor        != null ? ad.retry_factor : 1
         };
 
         try {
@@ -619,6 +621,163 @@ CoreGame.GameUI = cc.Layer.extend({
 
     //region EFX
     /**
+     * Show elements being thrown from in front of the screen onto the board.
+     * Elements start large (as if close to camera) and fly to their grid position
+     * while shrinking to normal scale, with staggered timing.
+     * @param {Array} elementIds - Array of element type IDs to find and animate
+     * @param {number} delayTime - Initial delay before the effect starts
+     * @returns {number} Total duration of the effect
+     */
+    efxElementShowUp: function (elementIds, delayTime) {
+        delayTime = delayTime || 0;
+        var boardMgr = this.boardUI.boardMgr;
+
+        // Collect all matching elements with their UIs
+        var targets = [];
+        var processed = [];
+        for (var ei = 0; ei < elementIds.length; ei++) {
+            var id = elementIds[ei];
+            for (var r = 0; r < boardMgr.rows; r++) {
+                for (var c = 0; c < boardMgr.cols; c++) {
+                    var slot = boardMgr.getSlot(r, c);
+                    if (!slot) continue;
+                    for (var si = 0; si < slot.listElement.length; si++) {
+                        var el = slot.listElement[si];
+                        if (el.type === id && el.ui && processed.indexOf(el) < 0) {
+                            processed.push(el);
+                            targets.push(el);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (targets.length === 0) {
+            cc.log("efxElementShowUp: no matching elements found");
+            return 0;
+        }
+
+        // Board center as the "throw origin" point
+        var boardCenter = cc.p(
+            boardMgr.cols * CoreGame.Config.CELL_SIZE * 0.5,
+            boardMgr.rows * CoreGame.Config.CELL_SIZE * 0.5
+        );
+
+        var staggerDelay = 0.05;
+        var throwDuration = 0.5;
+        var startScale = 3.0;
+        var bounceTime = 0.15;
+
+        var boardParent = this.boardUI.root;
+
+        for (var i = 0; i < targets.length; i++) {
+            var el = targets[i];
+            var elUI = el.ui;
+            var originalPos = elUI.getPosition();
+            var originalScale = elUI.getScale();
+
+            // --- Create fake gems at this element's grid cells ---
+            var elCells = el.cells || [];
+            if (elCells.length === 0) {
+                if (el.size && el.size.width && el.size.height) {
+                    for (var sx = 0; sx < el.size.width; sx++) {
+                        for (var sy = 0; sy < el.size.height; sy++) {
+                            elCells.push({ r: el.position.x + sx, c: el.position.y + sy });
+                        }
+                    }
+                } else {
+                    elCells.push({ r: el.position.x, c: el.position.y });
+                }
+            }
+
+            var fakeGems = [];
+            for (var fi = 0; fi < elCells.length; fi++) {
+                var cell = elCells[fi];
+                var gemType = Math.floor(Math.random() * CoreGame.Config.NUM_GEN) + 1;
+                var gemPath = "res/high/game/element/" + gemType + ".png";
+                var fakeGem = fr.createSprite(gemType + ".png", gemPath);
+                var cellPos = boardMgr.gridToPixel(cell.r, cell.c);
+                fakeGem.setPosition(cellPos);
+                fakeGem.setLocalZOrder(BoardConst.zOrder.GEM);
+                fakeGem._fakeGemType = gemType;
+                boardParent.addChild(fakeGem);
+                fakeGems.push(fakeGem);
+            }
+
+            // Starting position: board center (as if thrown from the camera)
+            var startPos = cc.p(
+                boardCenter.x + (Math.random() - 0.5) * 500,
+                boardCenter.y + (Math.random() * 0.5) * 500
+            );
+
+            // Hide initially
+            elUI.setVisible(false);
+            elUI.setScale(startScale);
+            elUI.setPosition(startPos);
+            elUI.setOpacity(0);
+            elUI.setLocalZOrder(CoreGame.ZORDER_BOARD_EFFECT);
+            elUI.setRotation((Math.random() - 0.5) * 30 + 360);
+
+            var totalDelay = delayTime + i * staggerDelay;
+
+            elUI.runAction(cc.sequence(
+                cc.delayTime(totalDelay),
+                cc.show(),
+                cc.spawn(
+                    cc.fadeIn(throwDuration * 0.3).easing(cc.easeOut(2.5)),
+                    cc.moveTo(throwDuration, originalPos).easing(cc.easeOut(2.5)),
+                    cc.scaleTo(throwDuration, originalScale * 0.85).easing(cc.easeIn(5)),
+                    cc.rotateTo(throwDuration, 0).easing(cc.easeIn(1.5))
+                ),
+                // Landing: crush fake gems
+                cc.callFunc(function (gems, parent) {
+                    for (var gi = 0; gi < gems.length; gi++) {
+                        var fg = gems[gi];
+                        var fgType = fg._fakeGemType;
+
+                        // Debris particles
+                        if (fgType < debris_type_name.length) {
+                            for (var di = 0; di < 2; di++) {
+                                var debrisPos = cc.p(
+                                    fg.x + (0.5 - Math.random()) * 20,
+                                    fg.y + (0.5 - Math.random()) * 20
+                                );
+                                var wPos = parent.convertToWorldSpace(debrisPos);
+                                var nodeTLFX = gv.createTLFX(
+                                    debris_type_name[fgType],
+                                    wPos,
+                                    parent,
+                                    BoardConst.zOrder.EFF_EXPLODE
+                                );
+                                if (nodeTLFX) nodeTLFX.setScale(2 + Math.random() * 0.5);
+                            }
+                        }
+
+                        // Squash and remove
+                        fg.runAction(cc.sequence(
+                            cc.spawn(
+                                cc.scaleTo(0.15, 1.3, 0.3).easing(cc.easeOut(2.5)),
+                                cc.fadeOut(0.15)
+                            ),
+                            cc.removeSelf()
+                        ));
+                    }
+                }.bind(null, fakeGems, boardParent)),
+                // Landing bounce: squash then restore
+                cc.spawn(
+                    cc.scaleTo(bounceTime, originalScale * 1.15, originalScale * 0.85).easing(cc.easeOut(2.0))
+                ),
+                cc.scaleTo(bounceTime, originalScale).easing(cc.easeElasticOut(0.5)),
+                cc.callFunc(function (ui, zOrder) {
+                    ui.setLocalZOrder(zOrder);
+                }.bind(null, elUI, BoardConst.zOrder.GEM))
+            ));
+        }
+
+        return delayTime + targets.length * staggerDelay + throwDuration + bounceTime * 2;
+    },
+
+    /**
      * Boss intro effect: find the boss element on the board, make it jump
      * from off-screen to the top of the board, then jump back to its slot.
      * @param {number} config - Effect's config
@@ -643,7 +802,7 @@ CoreGame.GameUI = cc.Layer.extend({
         this.boardUI.setScale(2.5);
         this.boardUI.runAction(cc.sequence(
             cc.delayTime(delayTime),
-            cc.scaleTo(efxTime, 1).easing(cc.easeBackOut())
+            cc.scaleTo(efxTime, this.boardUI.rawScale).easing(cc.easeBackOut())
         ));
 
         delayTime += efxTime + 0.5;
@@ -711,7 +870,7 @@ CoreGame.GameUI = cc.Layer.extend({
 
         // Top of boardUI + offset above the board
         var boardTop = boardMgr.rows * CoreGame.Config.CELL_SIZE + boardMgr.boardOffsetY;
-        var showUpPos = cc.p(originalPos.x - 250, boardTop);
+        var showUpPos = cc.p(originalPos.x - CoreGame.Config.CELL_SIZE, boardTop);
         // let animConfig =  CoreGame.GameBoardInfoUI.animMonster[bossElement.type];
         // showUpPos.x += animConfig.offset.x / animConfig.scale;
         // showUpPos.y += animConfig.offset.y / animConfig.scale;
@@ -884,8 +1043,6 @@ CoreGame.GameUI = cc.Layer.extend({
     },
 
     efxStart: function (efxTime = 0.5, delayTime = 0, monsterBanner = false) {
-        //Dolly Zoom
-
         //Moving bg
         this.gameBoardBg.stopAllActions();
         this.gameBoardBg.setVisible(true);
@@ -901,7 +1058,7 @@ CoreGame.GameUI = cc.Layer.extend({
         this.boardUI.setScale(2.5);
         this.boardUI.runAction(cc.sequence(
             cc.delayTime(delayTime),
-            cc.scaleTo(efxTime, 1).easing(cc.easeBackOut())
+            cc.scaleTo(efxTime, this.boardUI.rawScale).easing(cc.easeBackOut())
         ));
 
         //Tool and info layer

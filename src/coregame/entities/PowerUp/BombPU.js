@@ -5,7 +5,7 @@
 var CoreGame = CoreGame || {};
 
 CoreGame.BombPU = CoreGame.PowerUP.extend({
-    area: 1,
+    area: 2,
     ctor: function () {
         this._super();
     },
@@ -30,7 +30,7 @@ CoreGame.BombPU = CoreGame.PowerUP.extend({
     },
 });
 CoreGame.BombPUPlus = CoreGame.BombPU.extend({
-    area: 2,
+    area: 3,
     createUI: function (parent) {
         this._super(parent);
         this.ui.setScale(2);

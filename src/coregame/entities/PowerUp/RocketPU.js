@@ -35,6 +35,10 @@ CoreGame.RocketPU = CoreGame.PowerUP.extend({
         });
         this.ui.startActive();
         this.ui = undefined;
+
+        CoreGame.BoardUI.getInstance().boardMgr.setDelayRefill(
+            (CoreGame.Config.DROP_DELAY_POWER_UP + this.DELAY_PER_CELL * listCell.length) * 0.5
+        );
     },
 
     /**
@@ -49,6 +53,10 @@ CoreGame.RocketPU = CoreGame.PowerUP.extend({
         });
         this.ui.startActive();
         this.ui = undefined;
+
+        CoreGame.BoardUI.getInstance().boardMgr.setDelayRefill(
+            (CoreGame.Config.DROP_DELAY_POWER_UP + this.DELAY_PER_CELL * listCell.length) * 0.5
+        );
     },
 
     /**

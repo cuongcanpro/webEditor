@@ -6,7 +6,7 @@ var CoreGame = CoreGame || {};
 
 CoreGame.Box = CoreGame.Blocker.extend({
     configData: {
-        maxHP: 6
+        maxHP: 5
     },
     ctor: function () {
         this._super();

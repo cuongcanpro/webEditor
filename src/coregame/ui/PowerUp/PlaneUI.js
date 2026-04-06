@@ -48,11 +48,25 @@
 
     startActive: function (targetGrid) {
         this.setLocalZOrder(CoreGame.ZORDER_BOARD_EFFECT);
-        fr.Sound.playSoundEffect(resSound.active_plane, false)
+        fr.Sound.playSoundEffect(resSound.active_plane, false);
 
         this.mainSpr.setAnimation(0, "active", true);
 
         this.showEffectExplode();
+
+        // [IMPROVEMENT] Guard: null target → plane activates visually but doesn't fly
+        if (!targetGrid) {
+            cc.log("[PlaneUI] No target found, skipping flight");
+            var self = this;
+            this.runAction(cc.sequence(
+                cc.delayTime(0.5),
+                cc.callFunc(function () {
+                    self.removeFromParent();
+                })
+            ));
+            return;
+        }
+
         var self = this;
         this.runAction(cc.sequence(
             cc.delayTime(0.2),
@@ -69,28 +83,31 @@
             this.trail.setVisible(true);
         }
 
-        // if (cc.sys.isObjectValid(this.planeSpine1)) {
-        //     this.planeSpine1.setVisible(this.explodeNeighbor);
-        //     this.planeSpine1.setAnimation(0, "run", false);
-        //     gv.removeSpineAfterRun(this.planeSpine1);
-        // }
-
         this.planeSpine = gv.createSpineAnimation(resAni.pus_bullet_1_spine);
         this.planeSpine.setPosition(this.x, this.y);
         this.getParent().addChild(this.planeSpine, BoardConst.zOrder.GEM_SWAP);
 
         this.planeSpine.setAnimation(0, "run", false);
         gv.removeSpineAfterRun(this.planeSpine);
-
-        // let emitter = gv.createEfk(this.board.efkManager, resAni.pus_bullet_1_efk)
-        // emitter.setPosition3D(cc.math.vec3(this.x, this.y, 0));
-        // this.getParent().addChild(emitter, BoardConst.zOrder.GEM_SWAP);
-
-        // this.planeSpine2.setAnimation(0, "run", true);
     },
 
+    /**
+     * Begin flight toward targetGrid.
+     *
+     * [IMPROVEMENT] Guard: if targetGrid slot is now empty (cleared between
+     * activeLogic pick and actual flight start 0.2s later), play a small
+     * "confused" effect and remove self rather than flying to an empty slot.
+     */
     startFlyTo: function (targetGrid) {
         if (!targetGrid) return;
+
+        // [IMPROVEMENT] Check if target became empty between pick and flight start.
+        // Can happen if another power-up chain cleared it in those 0.2s.
+        if (targetGrid.isEmpty && targetGrid.isEmpty()) {
+            cc.log("[PlaneUI] Target slot empty at flight start, cancelling");
+            this.removeFromParent();
+            return;
+        }
 
         this.targetSlot = targetGrid;
         this.stepStart = true;
@@ -145,8 +162,14 @@
         var offset = Math.min(this.RADIUS, len * 0.5);
         if (Math.random() < 0.5) offset = -offset;
 
-        var c1 = cc.p(startPos.x + dir.x * (len * 0.33) + perp.x * offset, startPos.y + dir.y * (len * 0.33) + perp.y * offset);
-        var c2 = cc.p(startPos.x + dir.x * (len * 0.66) + perp.x * offset, startPos.y + dir.y * (len * 0.66) + perp.y * offset);
+        var c1 = cc.p(
+            startPos.x + dir.x * (len * 0.33) + perp.x * offset,
+            startPos.y + dir.y * (len * 0.33) + perp.y * offset
+        );
+        var c2 = cc.p(
+            startPos.x + dir.x * (len * 0.66) + perp.x * offset,
+            startPos.y + dir.y * (len * 0.66) + perp.y * offset
+        );
 
         this.runAction(cc.sequence(
             cc.bezierTo(this.TIME_FLY, [c1, c2, this.desPos]).easing(cc.easeSineInOut()),
@@ -174,10 +197,8 @@
         this.planeSpine3 = gv.createSpineAnimation(resAni.pus_bullet_3_spine);
         this.planeSpine3.setPosition(this.getPosition());
         this.getParent().addChild(this.planeSpine3, this.getLocalZOrder() + 100);
-        //Run
         this.planeSpine3.setAnimation(0, "run", false);
         gv.removeSpineAfterRun(this.planeSpine3);
-
 
         let nodeTLFX = gv.createTLFX(
             'debris_balloon',

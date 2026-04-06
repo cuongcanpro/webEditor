@@ -13,7 +13,7 @@ fr.platformWrapper = {
             var pluginManager = plugin.PluginManager.getInstance();
             fr.platformWrapper.pluginPlatform = pluginManager.loadPlugin("PlatformWrapper");
         }
-
+        this.initGSNTracker();
         this.test();
     },
     test: function () {
@@ -51,7 +51,7 @@ fr.platformWrapper = {
         return "";
     },
 
-    getPhoneCount: function(){
+    getPhoneCount: function () {
         if (this.pluginPlatform != null) {
             return this.pluginPlatform.callIntFuncWithParam("getPhoneCount");
         }
@@ -96,7 +96,7 @@ fr.platformWrapper = {
     //connection type 0: ko co mang, 1: 3g, 2: wifi
     getConnectionStatus: function () {
         // test win32
-        if(cc.sys.platform == cc.sys.WIN32){
+        if (cc.sys.platform == cc.sys.WIN32) {
             return 1;
         }
 
@@ -172,7 +172,7 @@ fr.platformWrapper = {
             this.pluginPlatform.callFuncWithParam("addNotify",
                 new plugin.PluginParam(plugin.PluginParam.ParamType.TypeString, JSON.stringify(notify)));
         }
-        if (cc.sys.platform == cc.sys.WIN32){
+        if (cc.sys.platform == cc.sys.WIN32) {
             cc.log("TestLogicNotify win32: ", JSON.stringify(notify));
         }
 
@@ -182,9 +182,9 @@ fr.platformWrapper = {
             this.pluginPlatform.callFuncWithParam("resetNotifyExtraData");
         }
     },
-    getNotificationExtraData: function(){
+    getNotificationExtraData: function () {
         if (this.pluginPlatform != null) {
-            try{
+            try {
                 return this.pluginPlatform.callStringFuncWithParam("getNotificationExtraData");
             } catch (e) {
                 return "";
@@ -213,24 +213,24 @@ fr.platformWrapper = {
         // // test multiple device: change deviceID returned
         // return "11111";
 
-        let deviceId = this.getAAID().replace(/-/g,'');
+        let deviceId = this.getAAID().replace(/-/g, '');
         cc.log("getDeviceID: AAID " + deviceId);
 
-        if(fr.platformWrapper.getOsName() == "IOS" || _.isEmpty(deviceId)){
+        if (fr.platformWrapper.getOsName() == "IOS" || _.isEmpty(deviceId)) {
             if (this.pluginPlatform != null) {
                 deviceId = this.pluginPlatform.callStringFuncWithParam("getDeviceID");
                 if (deviceId == "") {
                     deviceId = this.getMailAccount();
                 }
             }
-            else{
+            else {
                 deviceId = fr.UserData.getStringFromKey("deviceID", "");
-                if (deviceId == ""){
+                if (deviceId == "") {
                     deviceId = fr.platformWrapper.genDeviceID();
                     fr.UserData.setStringFromKey("deviceID", deviceId);
                 }
             }
-            deviceId = deviceId.replace(/-/g,'');
+            deviceId = deviceId.replace(/-/g, '');
             cc.log("getDeviceID: deviceId ", deviceId);
         }
 
@@ -240,6 +240,20 @@ fr.platformWrapper = {
         cc.log("genDeviceId");
         var curTimeWithRandom = Date.now() + Math.floor(Math.random() * 1000000 + 1);
         return "954c5a5dba52e3fe" + curTimeWithRandom;
+    },
+    initGSNTracker: function () {
+        if (this.pluginPlatform != null) {
+            var partnerID = "GSN";
+            var appName = "m3new_vn";
+
+            var data = {
+                gsnPartnerId: partnerID,
+                gsnAppVersion: "1.0",
+                gsnAppName: appName
+            };
+            this.pluginPlatform.callFuncWithParam("initializeGSNTracker",
+                new plugin.PluginParam(plugin.PluginParam.ParamType.TypeString, JSON.stringify(data)));
+        }
     },
     //accountType: google , zingme , facebook , zalo
     //openAccount: socialID, voi zingme la username
@@ -403,7 +417,7 @@ fr.platformWrapper = {
             cc.log("PlatformWrapper copy2Clipboard: " + stringData);
         }
     },
-    openInAppReview:function () {
+    openInAppReview: function () {
         if (this.pluginPlatform != null) {
             this.pluginPlatform.callFuncWithParam("openInAppReview", null);
         }

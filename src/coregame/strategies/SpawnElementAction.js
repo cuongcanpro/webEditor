@@ -258,6 +258,7 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
                 var startWorldPos = UIUtils.getWorldPosition(endPointNode);
                 var startPos = boardUI.root.convertToNodeSpace(startWorldPos);
 
+                var lastFlyTime = 0;
                 for (var i = 0; i < targetSlots.length; i++) {
                     (function (index) {
                         var pos = targetSlots[index];
@@ -294,13 +295,28 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
                             }
                         }
                     })(i);
+                    lastFlyTime = 0.6 + i * 0.1;
                 }
+
+                // Check for available moves after all spawned elements land
+                CoreGame.TimedActionMgr.addAction(lastFlyTime + 0.05, function () {
+                    if (!boardMgr.gameEnded && boardMgr.hasPossibleMoves && !boardMgr.hasPossibleMoves()) {
+                        cc.log("No possible moves after spawn! Shuffling board...");
+                        boardMgr.shuffleBoard();
+                    }
+                });
             } else {
                 // Fallback to immediate spawn if no emitter node found
                 for (var i = 0; i < targetSlots.length; i++) {
                     var pos = targetSlots[i];
                     var currentTypeToSpawn = typeConfig[boardMgr.random.nextInt32Bound(typeConfig.length)];
                     var newElement = boardMgr.addNewElement(pos.row, pos.col, currentTypeToSpawn);
+                }
+
+                // Check for available moves after immediate spawn
+                if (!boardMgr.gameEnded && boardMgr.hasPossibleMoves && !boardMgr.hasPossibleMoves()) {
+                    cc.log("No possible moves after spawn! Shuffling board...");
+                    boardMgr.shuffleBoard();
                 }
             }
         }, this);

@@ -298,7 +298,7 @@ CoreGame.ElementObject = cc.Class.extend({
         duration = this.ui.playConvergeAnim(targetPixelPos, duration);
 
         CoreGame.TimedActionMgr.addAction(
-            duration + 0.1,
+            duration + 0.001,
             function () {
                 self.remove();
             }.bind(this)
@@ -361,6 +361,10 @@ CoreGame.ElementObject = cc.Class.extend({
      * @param {CoreGame.Strategies.NormalAction} action - The remove action
      */
     setRemoveAction: function (action) {
+        if (!action) {
+            this.actions[CoreGame.ElementObject.ACTION_TYPE.REMOVE] = [];
+            return;
+        }
         this.addAction(CoreGame.ElementObject.ACTION_TYPE.REMOVE, action);
     },
 

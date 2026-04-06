@@ -585,9 +585,9 @@ let GameBoardEndGame = BaseLayer.extend({
 
         this.btnExit.setVisible(true);
         this.btnExit.setPosition(this.btnExit.rawPos);
-        if (!this.btnReplay.isVisible()) {
-            this.btnExit.x = this.bgLose.width * 0.5;
-        }
+        // if (!this.btnReplay.isVisible()) {
+        //     this.btnExit.x = this.bgLose.width * 0.5;
+        // }
 
         // Bonus
         // if (!this.guiBuyMoveBonus) {

@@ -19,6 +19,7 @@ let SceneBoard = BaseLayer.extend({
         let mapData = {};
         let levelPath = "res/maps/level_" + (level) + ".json";
         mapData = JSON.parse(jsb.fileUtils.getStringFromFile(levelPath));
+        mapData["levelId"] = mapData["levelId"] || level;
 
         JSON.stringify("startPlayNewCore", JSON.stringify(mapData));
 

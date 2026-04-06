@@ -17,47 +17,77 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
     activeLogic: function () {
         const EXPLODE = [[-1, 0], [1, 0], [0, -1], [0, 1]];
         let context = { type: "normal" };
+
+        // ── Step 1: Launch burst + track exploded slots ───────────────────
+        // [IMPROVEMENT] Collect slots hit by launch so we can exclude them from
+        // target selection. matchElement is visually async — the element stays in
+        // listElement during its death animation, so findListPriorityTarget would
+        // still see it as a valid target without this exclusion.
+        var explodedByLaunch = [];
         for (var i = 0; i < EXPLODE.length; i++) {
-            var slot = this.boardMgr.getSlot(this.position.x + EXPLODE[i][0], this.position.y + EXPLODE[i][1]);
+            var slot = this.boardMgr.getSlot(
+                this.position.x + EXPLODE[i][0],
+                this.position.y + EXPLODE[i][1]
+            );
             if (slot) {
+                explodedByLaunch.push(slot);
                 slot.matchElement(context);
             }
         }
-        var listTarget = this.boardMgr.findListPriorityTarget();
 
-        // Filter out slots already fully claimed by other planes this turn
+        // ── Step 2: Get priority targets (excludes launch-exploded slots) ──
+        var listTarget = this.boardMgr.findListPriorityTarget(explodedByLaunch);
+
+        // ── Step 3: Filter by claim counts (multi-plane overkill prevention) ──
+        // _planeClaimCounts is reset in onFinishTurn, so it accumulates across
+        // all planes in the same turn (including staggered PlanePlusPU planes).
         if (!this.boardMgr._planeClaimCounts) {
             this.boardMgr._planeClaimCounts = [];
         }
         var claimCounts = this.boardMgr._planeClaimCounts;
         var available = [];
+        var availableScores = [];
+
         for (var i = 0; i < listTarget.length; i++) {
-            var slot = listTarget[i];
-            // Count how many planes already claimed this slot
+            var tSlot = listTarget[i];
             var claimedCount = 0;
             for (var j = 0; j < claimCounts.length; j++) {
-                if (claimCounts[j].slot === slot) {
+                if (claimCounts[j].slot === tSlot) {
                     claimedCount = claimCounts[j].count;
                     break;
                 }
             }
-            // Check remaining HP of the slot's blocker/element
+            // maxClaims = highest HP among elements in slot (default 1 for gems/unknown)
             var maxClaims = 1;
-            for (var e = 0; e < slot.listElement.length; e++) {
-                var el = slot.listElement[e];
+            for (var e = 0; e < tSlot.listElement.length; e++) {
+                var el = tSlot.listElement[e];
                 if (el.hitPoints && el.hitPoints > maxClaims) {
                     maxClaims = el.hitPoints;
                 }
             }
             if (claimedCount < maxClaims) {
-                available.push(slot);
+                available.push(tSlot);
+                // [IMPROVEMENT] Score: position in sorted list (findListPriorityTarget
+                // now returns sorted by priority). Earlier index = higher score.
+                // Reverse-index weight: first slot gets weight N, last gets 1.
+                availableScores.push(listTarget.length - i);
             }
         }
-        // Fall back to full list if all targets are fully claimed
-        if (available.length === 0) available = listTarget;
+
+        // Fallback: if all targets fully claimed, use full list (original behavior)
+        if (available.length === 0) {
+            available = listTarget.slice();
+            availableScores = available.map(function (_, idx) {
+                return available.length - idx;
+            });
+        }
 
         if (available.length > 0) {
-            this.targetSlot = available[this.boardMgr.random.nextInt32Bound(available.length)];
+            // [IMPROVEMENT] Weighted random: prefers earlier (higher-priority) slots
+            // but keeps variety so planes don't all stack on the same target.
+            var rdIdx = this.boardMgr._weightedRandomIndex(availableScores);
+            this.targetSlot = available[rdIdx];
+
             // Update claim count
             var found = false;
             for (var k = 0; k < claimCounts.length; k++) {
@@ -74,7 +104,7 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
 
         this.ui.startActive(this.targetSlot);
         this.ui = undefined;
-        //WARNING, need recheck, should activce slot atleast once
+        // WARNING: should activate slot at least once (original comment preserved)
         this.boardMgr.getSlot(this.position.x, this.position.y).matchElement(context);
         this.onMatch();
     },
@@ -90,7 +120,41 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
         CoreGame.TimedActionMgr.addAction(0.2, this._super, this);
         if (this.targetSlot) {
             CoreGame.TimedActionMgr.addAction(1.4, function () {
-                this.matchElement();
+                // this = targetSlot (GridSlot), bound by 3rd arg of addAction
+                // [IMPROVEMENT] Validate target is still alive before matching.
+                // Handles two cases:
+                //   a) Launch explosion already destroyed the target element (async visual,
+                //      element still in listElement at pick-time but gone by arrival)
+                //   b) Another plane or chain reaction cleared it between T+0 and T+1.4s
+
+                // Guard: slot completely empty
+                if (this.isEmpty()) return;
+
+                // Check if slot still has a live objective element
+                var bm = this.boardMgr;
+                var remainingTypes = [];
+                for (var i = 0; i < bm.targetElements.length; i++) {
+                    if (bm.targetElements[i].current > 0) {
+                        remainingTypes.push(bm.targetElements[i].id);
+                    }
+                }
+                var hasLiveTarget = false;
+                for (var e = 0; e < this.listElement.length; e++) {
+                    var el = this.listElement[e];
+                    if (remainingTypes.indexOf(el.type) >= 0) {
+                        // Additional HP check: if element has hitPoints, ensure it's still > 0
+                        if (el.hitPoints === undefined || el.hitPoints > 0) {
+                            hasLiveTarget = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Match if: still has live objective, OR at minimum a matchable gem
+                if (hasLiveTarget || this.getMatchableElement()) {
+                    this.matchElement();
+                }
+                // If neither, plane lands silently — VFX still plays in PlaneUI.onArrive
             }, this.targetSlot);
         }
     },

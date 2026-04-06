@@ -22,6 +22,9 @@ CoreGame.PatternFinder = {
             for (var c = 0; c < cols - 2; c++) {
                 if (visited[r][c]) continue;
 
+                // only check if grid is idle
+                if (!mapGrid[r][c].isIdle()) continue;
+
                 var type = mapGrid[r][c].getType();
                 if (type < 0) continue;
 
@@ -41,6 +44,9 @@ CoreGame.PatternFinder = {
             for (var r = 0; r < rows - 2; r++) {
                 if (visited[r][c]) continue;
 
+                // only check if grid is idle
+                if (!mapGrid[r][c].isIdle()) continue;
+
                 var type = mapGrid[r][c].getType();
                 if (type < 0) continue;
 
@@ -59,6 +65,9 @@ CoreGame.PatternFinder = {
         for (var r = 0; r < rows - 1; r++) {
             for (var c = 0; c < cols - 1; c++) {
                 if (visited[r][c]) continue;
+
+                // only check if grid is idle
+                if (!mapGrid[r][c].isIdle()) continue;
 
                 var type = mapGrid[r][c].getType();
                 if (type < 0) continue;

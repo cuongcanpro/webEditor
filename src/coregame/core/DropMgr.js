@@ -96,6 +96,14 @@ CoreGame.DropMgr = cc.Class.extend({
                     continue;
                 }
                 var elem = slot.getFirstInteractable(CoreGame.ElementObject.Action.DROP);
+                // Elements not in IDLE state (e.g. DROPPING, SWAPPING, MATCHING, REMOVING)
+                // are still in motion — treat them as immovable blockers this pass.
+                var elemNotIdle = elem && elem.state !== CoreGame.ElementState.IDLE;
+                if (elemNotIdle) {
+                    grid[r][c] = null;
+                    isBlocked[r][c] = true;
+                    continue;
+                }
                 grid[r][c] = elem;
                 isBlocked[r][c] = (elem == null && !slot.isEmptyToDrop());
 
@@ -367,8 +375,8 @@ CoreGame.DropMgr = cc.Class.extend({
         }
 
         var distance = Math.abs(currentPixelPos.y - targetPixelPos.y);
-        var duration = distance / speed;
-        // duration = 0.2;
+        // Gravity-based duration: t = sqrt(2d / g), where g = speed acts as gravity
+        var duration = Math.sqrt(2 * distance / speed);
 
         gem.setState(CoreGame.ElementState.DROPPING);
         gem.dropTo(targetSlot.row, targetSlot.col, duration, delayTime);

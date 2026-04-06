@@ -19,7 +19,7 @@ CoreGame.Config = {
 
     // Animation speeds
     SWAP_DURATION: 0.1,
-    DROP_SPEED: 750,        // pixels per second
+    DROP_SPEED: 5000,      // gravity in pixels/s² (duration = √(2d/g))
     MATCH_DELAY: 0.1,
     DESTROY_DURATION: 0.2,
     CONVERGE_DURATION: 0.2,

@@ -50,6 +50,9 @@ CoreGame.AdaptiveTPP = {
     /** Turns before the adaptive logic activates (early-game guard). */
     ADAPTIVE_START_TURN: 5,
 
+    /** Floor for the per-level retry mercy factor (50% → 25% max reduction). */
+    MIN_RETRY_FACTOR:    0.25,
+
     // ── Internal state ─────────────────────────────────────────────────────
 
     _boardMgr:       null,
@@ -82,6 +85,12 @@ CoreGame.AdaptiveTPP = {
     /** Bound PU event handler (kept for cleanup). */
     _puHandler:      null,
 
+    /**
+     * Per-level mercy factor. Starts at 1.0; halved on each loss (floor: MIN_RETRY_FACTOR);
+     * reset to 1.0 on win. Persisted in storage so it survives app restarts.
+     */
+    _retryFactor:    1.0,
+
     // ── Public API ─────────────────────────────────────────────────────────
 
     /**
@@ -92,20 +101,24 @@ CoreGame.AdaptiveTPP = {
      * @param {Object}   levelConfig  { targetMoves: number, targets: {typeId: count} }
      */
     init: function (boardMgr, levelConfig) {
-        this._boardMgr       = boardMgr;
-        this._totalMoves     = levelConfig.targetMoves || 25;
-        this._initialTargets = this._sumTargets(levelConfig.targets);
-        this._assistStreak   = 0;
-        this._currentName    = "baseline";
+        this._boardMgr     = boardMgr;
+        this._totalMoves   = levelConfig.targetMoves || 25;
+        this._assistStreak = 0;
+        this._currentName  = "baseline";
 
-        // ── Metrics init ──────────────────────────────────────────────────
+        // ── Retry / mercy factor ──────────────────────────────────────────
         var newId = levelConfig.levelId != null ? levelConfig.levelId : null;
         if (newId !== null && newId === this._levelId) {
             this._retryCount++;
+            // _retryFactor already updated by the previous onLevelEnd
         } else {
-            this._retryCount = 0;
-            this._levelId    = newId;
+            this._retryCount  = 0;
+            this._levelId     = newId;
+            this._retryFactor = this._loadRetryFactor(newId);
         }
+
+        // Apply mercy factor: effective targets shrink on repeated losses
+        this._initialTargets = this._sumTargets(levelConfig.targets) * this._retryFactor;
 
         this._deviationLog  = [];
         this._triggerCounts = { baseline: 0, yes_pu_l1: 0, yes_pu_l2: 0, no_pu_l1: 0, no_pu_l2: 0 };
@@ -178,6 +191,15 @@ CoreGame.AdaptiveTPP = {
     },
 
     /**
+     * Current mercy factor for this level (1.0 = full targets, 0.5 = half, 0.25 = quarter).
+     * GameUI can multiply board targetElements counts by this to reduce the actual win condition.
+     * @returns {number}
+     */
+    getRetryFactor: function () {
+        return this._retryFactor;
+    },
+
+    /**
      * Call when the level ends (win or out-of-moves).
      * Records completion status and move surplus/deficit.
      *
@@ -192,6 +214,14 @@ CoreGame.AdaptiveTPP = {
             CoreGame.EventMgr.off('powerUpCreated', this._puHandler);
             this._puHandler = null;
         }
+
+        // Update mercy factor: halve on loss (capped at floor), reset on win
+        if (!completed) {
+            this._retryFactor = Math.max(this.MIN_RETRY_FACTOR, this._retryFactor * 0.5);
+        } else {
+            this._retryFactor = 1.0;
+        }
+        this._saveRetryFactor(this._levelId, this._retryFactor);
 
         var m = this.getMetrics();
         var d = m.deviation_distribution;
@@ -242,7 +272,8 @@ CoreGame.AdaptiveTPP = {
             retry_count:         this._retryCount,
             move_surplus:        this._totalMoves - (this._movesUsedFinal || 0),
             pu_count:            this._puCount || 0,
-            pu_rate:             this._turnCount > 0 ? this._puCount / this._turnCount : 0
+            pu_rate:             this._turnCount > 0 ? this._puCount / this._turnCount : 0,
+            retry_factor:        this._retryFactor
         };
     },
 
@@ -328,6 +359,24 @@ CoreGame.AdaptiveTPP = {
         var frac = idx - lo;
         if (lo >= sorted.length - 1) return sorted[sorted.length - 1];
         return sorted[lo] + frac * (sorted[lo + 1] - sorted[lo]);
+    },
+
+    /** Load the persisted mercy factor for a level from storage. Defaults to 1.0. */
+    _loadRetryFactor: function (levelId) {
+        if (levelId == null) return 1.0;
+        try {
+            var raw = fr.UserData.getStringFromKey("tpp_rf_" + levelId, "1");
+            var f   = parseFloat(raw);
+            return (isNaN(f) || f <= 0 || f > 1) ? 1.0 : f;
+        } catch (e) { return 1.0; }
+    },
+
+    /** Persist the mercy factor for a level to storage. */
+    _saveRetryFactor: function (levelId, factor) {
+        if (levelId == null) return;
+        try {
+            fr.UserData.setStringFromKey("tpp_rf_" + levelId, String(factor));
+        } catch (e) {}
     },
 
     /** Sum all counts in a targets object { typeId: count }. */

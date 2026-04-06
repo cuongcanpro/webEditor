@@ -24,8 +24,9 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
             duration = this.ui.startActive();
             this.ui = undefined;
         }
+        this.activeDuration = duration;
 
-        CoreGame.TimedActionMgr.addAction(duration, function () {
+        CoreGame.TimedActionMgr.addAction(this.activeDuration, function () {
             let context = { type: "normal" };
             for (var i = 0; i < targetSlots.length; i++) {
                 targetSlots[i].matchElement(context);
@@ -33,6 +34,13 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
                 this.boardMgr.matchMgr.notifyNearbySlots(targetSlots[i].row, targetSlots[i].col, context);
             }
             this.boardMgr.getSlot(this.position.x, this.position.y).matchElement(context);
+        }.bind(this));
+    },
+
+    removeAfterActivate: function () {
+        CoreGame.TimedActionMgr.addAction(this.activeDuration, function () {
+            this.remove();
+            CoreGame.BoardUI.getInstance().boardMgr.state = CoreGame.BoardState.MATCHING;
         }.bind(this));
     },
 

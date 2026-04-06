@@ -22,6 +22,23 @@ CoreGame.ElementUI = cc.Node.extend({
 
         this.initSprite();
 
+        // Add background if defined in configData (e.g. for blockers from mapID.json)
+        if (this.element && this.element.configData && this.element.configData.grid_path) {
+            var bgPath = this.element.configData.grid_path;
+            try {
+                this.sprBg = new cc.Scale9Sprite(bgPath);
+                if (this.sprBg) {
+                    var cellSize = CoreGame.Config.CELL_SIZE;
+                    var elemSize = this.element.size || cc.size(1, 1);
+                    this.sprBg.setContentSize(cellSize * elemSize.width, cellSize * elemSize.height);
+                    this.addChild(this.sprBg, -1);
+                    cc.log("ElementUI: Added grid background:", bgPath);
+                }
+            } catch (e) {
+                cc.log("ElementUI: Failed to add grid background:", e);
+            }
+        }
+
         this.lbState = ccui.Text.create("", "font/BalooPaaji2-Bold.ttf", 20);
         this.lbState.enableOutline(cc.color(50, 50, 50), 2);
         this.lbState.setPosition(cc.p(0, -30));
@@ -246,19 +263,34 @@ CoreGame.ElementUI = cc.Node.extend({
     playDropToAnim: function (targetPos, duration, delayTime = 0) {
         this.stopActionByTag(CoreGame.TAG_MOVE_ACTION);
 
-        let extraBounce = 5;
-        let bouncePos = cc.p(targetPos.x, targetPos.y + extraBounce);
-        let speed = Math.abs(this.y - targetPos.y) / duration;
+        // Bounce height scales with drop distance for a natural feel
+        var dropDist = Math.abs(this.y - targetPos.y);
+        var bounceHeight = Math.min(dropDist * 0.06, 12);
+        var bouncePos = cc.p(targetPos.x, targetPos.y + bounceHeight);
+        var bounceUpTime = 0.08;
+        var bounceDownTime = 0.06;
+
         var move = cc.sequence(
             cc.delayTime(delayTime),
-            cc.moveTo(duration, targetPos).easing(cc.easeIn(1.5)),
-            cc.moveTo(extraBounce / (speed * 0.25), bouncePos).easing(cc.easeOut(1.5)),
-            cc.moveTo(extraBounce / (speed * 0.125), targetPos).easing(cc.easeIn(1.5))
+            // Quadratic easeIn mimics real gravity: position ∝ t²
+            cc.moveTo(duration, targetPos).easing(cc.easeIn(2.0)),
+            // Impact bounce
+            cc.moveTo(bounceUpTime, bouncePos).easing(cc.easeOut(2.0)),
+            cc.moveTo(bounceDownTime, targetPos).easing(cc.easeIn(1.5)),
+            // Squash on settle — offset Y down to fake bottom-anchor squash
+            cc.spawn(
+                cc.scaleTo(0.05, 1.05, 0.92),
+                cc.moveBy(0.05, 0, -CoreGame.Config.CELL_SIZE * 0.04)
+            ),
+            cc.spawn(
+                cc.scaleTo(0.08, 1.0, 1.0).easing(cc.easeOut(2.0)),
+                cc.moveTo(0.08, targetPos).easing(cc.easeOut(2.0))
+            )
         );
         move.setTag(CoreGame.TAG_MOVE_ACTION);
         this.runAction(move);
 
-        return duration + delayTime + extraBounce / (speed * 0.25);
+        return duration + delayTime + bounceUpTime + bounceDownTime;
     },
 
     /**

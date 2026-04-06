@@ -115,6 +115,9 @@ CoreGame.BoardMgr = cc.Class.extend({
         var boardWidth = activeCols * cell;
         var boardHeight = activeRows * cell;
 
+        this.activeRows = activeRows;
+        this.activeCols = activeCols;
+
         // Offset so the active area is centered on screen
         this.boardOffsetX = Math.round((cc.winSize.width - boardWidth) / 2 - minCol * cell);
         this.boardOffsetY = Math.round((cc.winSize.height - boardHeight) / 2 - minRow * cell);
@@ -765,13 +768,25 @@ CoreGame.BoardMgr = cc.Class.extend({
         return groups;
     },
 
+    
     /**
      * Find priority target slots for PlaneUP.
-     * Prioritizes slots containing level target elements that still need to be cleared.
-     * Falls back to all matchable slots if no target elements remain.
+     *
+     * [IMPROVEMENT v2] Two additions vs original:
+     *   1. excludeSlots param — slots just hit by launch explosion are excluded.
+     *      Reason: matchElement() is visually async; the element stays in listElement
+     *      during its death animation, so without exclusion the plane would fly to
+     *      an already-dying blocker that was already destroyed by its own launch.
+     *   2. Weighted scoring + sort — return list sorted by priority score so
+     *      downstream weighted-random picks higher-value targets more often.
+     *
+     * @param {CoreGame.GridSlot[]} excludeSlots - Slots to skip (just exploded by launch)
+     * @returns {CoreGame.GridSlot[]} Priority slots sorted by score desc, then fallback slots
      */
-    findListPriorityTarget: function () {
-        // Collect remaining target type IDs
+    findListPriorityTarget: function (excludeSlots) {
+        excludeSlots = excludeSlots || [];
+
+        // Collect remaining target type IDs (objectives with count > 0)
         var remainingTargetTypes = [];
         for (var i = 0; i < this.targetElements.length; i++) {
             if (this.targetElements[i].current > 0) {
@@ -779,30 +794,81 @@ CoreGame.BoardMgr = cc.Class.extend({
             }
         }
 
-        var priorityTargets = [];
-        var fallbackTargets = [];
+        var priorityTargets = [];   // [{slot, score}] — contain an objective element
+        var fallbackTargets = [];   // [{slot, score}] — any matchable gem
+
         for (var r = 0; r < this.rows; r++) {
             for (var c = 0; c < this.cols; c++) {
                 var slot = this.getSlot(r, c);
                 if (!slot || slot.isEmpty()) continue;
 
-                // Check all elements in the slot for target types
+                // [IMPROVEMENT] Skip slots just hit by the plane's launch explosion.
+                // These elements are dying but not yet removed from listElement.
+                if (excludeSlots.indexOf(slot) >= 0) continue;
+
+                var isTarget = false;
+                var lowestHP = Infinity; // track HP for score bonus
+
                 for (var e = 0; e < slot.listElement.length; e++) {
                     var element = slot.listElement[e];
                     if (remainingTargetTypes.indexOf(element.type) >= 0) {
-                        priorityTargets.push(slot);
-                        break;
+                        isTarget = true;
+                        // Track lowest HP in this slot (for "nearly dead" bonus)
+                        if (element.hitPoints !== undefined && element.hitPoints < lowestHP) {
+                            lowestHP = element.hitPoints;
+                        }
                     }
+                }
+
+                if (isTarget) {
+                    var score = this._calcPlaneTargetScore(r, c, lowestHP);
+                    priorityTargets.push({ slot: slot, score: score });
                 }
 
                 var matchable = slot.getMatchableElement();
                 if (matchable) {
-                    fallbackTargets.push(slot);
+                    fallbackTargets.push({ slot: slot, score: 1 });
                 }
             }
         }
 
-        return priorityTargets.length > 0 ? priorityTargets : fallbackTargets;
+        // Sort priority targets by score descending (highest priority first)
+        if (priorityTargets.length > 0) {
+            priorityTargets.sort(function (a, b) { return b.score - a.score; });
+            return priorityTargets.map(function (item) { return item.slot; });
+        }
+
+        // No objectives — fallback to any matchable gem (score=1, no sort needed)
+        return fallbackTargets.map(function (item) { return item.slot; });
+    },
+
+    _calcPlaneTargetScore: function (row, col, lowestHP) {
+        var score = 10; // base
+
+        // Nearly destroyed — plane finishes it off, no wasted HP
+        if (lowestHP !== Infinity && lowestHP === 1) score += 50;
+
+        // Edge/corner: harder to clear by natural matching, high-value to hit
+        var numRow = this.rows, numCol = this.cols;
+        if (row <= 1 || row >= numRow - 2 || col <= 1 || col >= numCol - 2) {
+            score += 20;
+        }
+
+        return score;
+    },
+
+    _weightedRandomIndex: function (scores) {
+        if (!scores || scores.length === 0) return 0;
+        var total = 0;
+        for (var i = 0; i < scores.length; i++) total += scores[i];
+        if (total <= 0) return Math.floor(Math.random() * scores.length);
+        var rand = Math.random() * total;
+        var cumulative = 0;
+        for (var i = 0; i < scores.length; i++) {
+            cumulative += scores[i];
+            if (rand <= cumulative) return i;
+        }
+        return scores.length - 1;
     },
 
     // ========= Interaction Methods =========
@@ -1221,14 +1287,10 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         // Trigger END_TURN actions on all elements
         // This handles behaviors like Cloud spreading, etc.
-        // Decrement move count only for real player swaps (not shuffle)
+        // useMove() already decremented numMove + _move and updated the UI,
+        // so just clear the flag here — no second decrement needed.
         if (this.didPlayerSwap) {
             this.didPlayerSwap = false;
-            var newMove = this.getMove() - 1;
-            this.setMove(newMove);
-            if (this.gameUI && this.gameUI.onMoveUpdate) {
-                this.gameUI.onMoveUpdate(newMove);
-            }
         }
 
         // Trigger END_TURN actions on all elements via global event

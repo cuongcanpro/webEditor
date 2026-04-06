@@ -1,4 +1,4 @@
-﻿/**
+/**
  * BlockerFactory - Factory class to create Blockers from configuration
  * Part of Match-3 Core Game
  */
@@ -12,6 +12,7 @@ CoreGame.BlockerFactory = cc.Class.extend({
 
 // Config cache for synchronous access
 CoreGame.BlockerFactory._configCache = {};
+CoreGame.BlockerFactory._mapIdData = null; // Store mapID.json contents
 
 /**
  * Create a blocker using configuration from typeId
@@ -22,133 +23,150 @@ CoreGame.BlockerFactory._configCache = {};
  * @param {function} callback - Callback function(err, blocker)
  */
 CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp) {
+    var blocker = null;
     if (CoreGame.ElementObject.map[typeId]) {
         // Use standard creation for registered types
-        return CoreGame.ElementObject.create(row, col, typeId, hp);
-    }
-    var config = CoreGame.BlockerFactory._configCache[typeId];
+        blocker = CoreGame.ElementObject.create(row, col, typeId, hp);
+    } else {
+        var config = CoreGame.BlockerFactory._configCache[typeId];
 
-    if (!config) {
-        cc.log("ERROR: Config for", typeId, "not preloaded. Call preloadConfig first.");
-        return null;
-    }
+        if (!config) {
+            cc.log("ERROR: Config for", typeId, "not preloaded. Call preloadConfig first.");
+            return null;
+        }
 
 
-    // Determine class based on type (string)
-    var blockerName = config.type;
-    var BlockerClass = CoreGame[blockerName];
-    if (!BlockerClass) {
-        if (typeof window !== 'undefined' && window[blockerName])
-            BlockerClass = window[blockerName];
-    }
+        // Determine class based on type (string)
+        var blockerName = config.type;
+        var BlockerClass = CoreGame[blockerName];
+        if (!BlockerClass) {
+            if (typeof window !== 'undefined' && window[blockerName])
+                BlockerClass = window[blockerName];
+        }
 
-    // Create Instance
-    var blocker = new BlockerClass();
-    if (!blocker) {
-        return null;
-    }
+        // Create Instance
+        blocker = new BlockerClass();
+        if (!blocker) {
+            return null;
+        }
 
-    blocker.configData = config.configData;
-    blocker.rawConfig = config;
+        blocker.configData = config.configData;
+        blocker.rawConfig = config;
 
-    // Initialize with default HP
-    blocker.init.apply(blocker, arguments);
+        // Initialize with default HP
+        blocker.init.apply(blocker, arguments);
 
-    // Set Size
-    if (config.width !== undefined && config.height !== undefined) {
-        blocker.size = cc.size(config.width, config.height);
-    }
+        // Set Size
+        if (config.width !== undefined && config.height !== undefined) {
+            blocker.size = cc.size(config.width, config.height);
+        }
 
-    // Set Layer Behavior
-    if (config.layerBehavior) {
-        var layerBehaviorMap = {
-            "CONTENT": CoreGame.LayerBehavior.CONTENT,
-            "OVERLAY": CoreGame.LayerBehavior.OVERLAY,
-            "EXCLUSIVE": CoreGame.LayerBehavior.EXCLUSIVE,
-            "BACKGROUND": CoreGame.LayerBehavior.BACKGROUND
+        // Set Layer Behavior
+        if (config.layerBehavior) {
+            var layerBehaviorMap = {
+                "CONTENT": CoreGame.LayerBehavior.CONTENT,
+                "OVERLAY": CoreGame.LayerBehavior.OVERLAY,
+                "EXCLUSIVE": CoreGame.LayerBehavior.EXCLUSIVE,
+                "BACKGROUND": CoreGame.LayerBehavior.BACKGROUND
+            };
+            blocker.layerBehavior = layerBehaviorMap[config.layerBehavior] || CoreGame.LayerBehavior.CONTENT;
+        }
+
+        // Map baseAction to haveBaseAction array
+        // Action enum: SWAP=0, MATCH=1, ACTIVE=2, DROP=3
+        var actionNameToIndex = {
+            "SWAP": CoreGame.ElementObject.Action.SWAP,
+            "MATCH": CoreGame.ElementObject.Action.MATCH,
+            "ACTIVE": CoreGame.ElementObject.Action.ACTIVE,
+            "DROP": CoreGame.ElementObject.Action.DROP
         };
-        blocker.layerBehavior = layerBehaviorMap[config.layerBehavior] || CoreGame.LayerBehavior.CONTENT;
-    }
 
-    // Map baseAction to haveBaseAction array
-    // Action enum: SWAP=0, MATCH=1, ACTIVE=2, DROP=3
-    var actionNameToIndex = {
-        "SWAP": CoreGame.ElementObject.Action.SWAP,
-        "MATCH": CoreGame.ElementObject.Action.MATCH,
-        "ACTIVE": CoreGame.ElementObject.Action.ACTIVE,
-        "DROP": CoreGame.ElementObject.Action.DROP
-    };
+        // Initialize arrays (default: blocker has no base actions, blocks all)
+        blocker.haveBaseAction = [0, 0, 0, 0];
+        blocker.blockBaseAction = [1, 1, 1, 1];
 
-    // Initialize arrays (default: blocker has no base actions, blocks all)
-    blocker.haveBaseAction = [0, 0, 0, 0];
-    blocker.blockBaseAction = [1, 1, 1, 1];
-
-    // Set haveBaseAction based on baseAction array
-    if (config.baseAction && Array.isArray(config.baseAction)) {
-        for (var i = 0; i < config.baseAction.length; i++) {
-            var actionName = config.baseAction[i];
-            var actionIndex = actionNameToIndex[actionName];
-            if (actionIndex !== undefined) {
-                blocker.haveBaseAction[actionIndex] = 1;
+        // Set haveBaseAction based on baseAction array
+        if (config.baseAction && Array.isArray(config.baseAction)) {
+            for (var i = 0; i < config.baseAction.length; i++) {
+                var actionName = config.baseAction[i];
+                var actionIndex = actionNameToIndex[actionName];
+                if (actionIndex !== undefined) {
+                    blocker.haveBaseAction[actionIndex] = 1;
+                }
             }
         }
-    }
 
-    // Set blockBaseAction based on unblockAction array
-    // unblockAction lists actions that should NOT be blocked (set to 0)
-    if (config.unblockAction && Array.isArray(config.unblockAction)) {
-        for (var i = 0; i < config.unblockAction.length; i++) {
-            var actionName = config.unblockAction[i];
-            var actionIndex = actionNameToIndex[actionName];
-            if (actionIndex !== undefined) {
-                blocker.blockBaseAction[actionIndex] = 0;
+        // Set blockBaseAction based on unblockAction array
+        // unblockAction lists actions that should NOT be blocked (set to 0)
+        if (config.unblockAction && Array.isArray(config.unblockAction)) {
+            for (var i = 0; i < config.unblockAction.length; i++) {
+                var actionName = config.unblockAction[i];
+                var actionIndex = actionNameToIndex[actionName];
+                if (actionIndex !== undefined) {
+                    blocker.blockBaseAction[actionIndex] = 0;
+                }
             }
         }
-    }
 
-    // Add Custom Actions
-    if (config.customAction) {
-        for (var actionType in config.customAction) {
-            var actionList = config.customAction[actionType];
-            if (Array.isArray(actionList)) {
-                for (var i = 0; i < actionList.length; i++) {
-                    var actionData = actionList[i];
-                    var actionName = null;
-                    var actionConfig = null;
+        // Add Custom Actions
+        if (config.customAction) {
+            for (var actionType in config.customAction) {
+                var actionList = config.customAction[actionType];
+                if (Array.isArray(actionList)) {
+                    for (var i = 0; i < actionList.length; i++) {
+                        var actionData = actionList[i];
+                        var actionName = null;
+                        var actionConfig = null;
 
-                    // Check format: string or object
-                    if (typeof actionData === 'string') {
-                        // Old format: "ActionName"
-                        actionName = actionData;
-                    } else if (actionData && typeof actionData === 'object') {
-                        // New format: { name: "ActionName", config: {...} }
-                        actionName = actionData.name;
-                        actionConfig = actionData.config;
-                    }
-
-                    if (!actionName) continue;
-
-                    var ActionClass = CoreGame.Strategies[actionName];
-
-                    // Fallback lookup if not in Strategies
-                    if (!ActionClass) {
-                        if (CoreGame[actionName]) ActionClass = CoreGame[actionName];
-                        else if (typeof window !== 'undefined' && window[actionName]) ActionClass = window[actionName];
-                    }
-
-                    if (ActionClass) {
-                        var actionInstance = new ActionClass(blocker);
-
-                        // Set config data if available
-                        if (actionConfig) {
-                            actionInstance.setConfigData(actionConfig);
+                        // Check format: string or object
+                        if (typeof actionData === 'string') {
+                            // Old format: "ActionName"
+                            actionName = actionData;
+                        } else if (actionData && typeof actionData === 'object') {
+                            // New format: { name: "ActionName", config: {...} }
+                            actionName = actionData.name;
+                            actionConfig = actionData.config;
                         }
 
-                        blocker.addAction(actionType, actionInstance);
-                        cc.log("BlockerFactory: Added action", actionName, "to", actionType);
-                    } else {
-                        cc.log("BlockerFactory: Action class not found: " + actionName);
+                        if (!actionName) continue;
+
+                        var ActionClass = CoreGame.Strategies[actionName];
+
+                        // Fallback lookup if not in Strategies
+                        if (!ActionClass) {
+                            if (CoreGame[actionName]) ActionClass = CoreGame[actionName];
+                            else if (typeof window !== 'undefined' && window[actionName]) ActionClass = window[actionName];
+                        }
+
+                        if (ActionClass) {
+                            var actionInstance = new ActionClass(blocker);
+
+                            // Set config data if available
+                            if (actionConfig) {
+                                actionInstance.setConfigData(actionConfig);
+                            }
+
+                            blocker.addAction(actionType, actionInstance);
+                            cc.log("BlockerFactory: Added action", actionName, "to", actionType);
+                        } else {
+                            cc.log("BlockerFactory: Action class not found: " + actionName);
+                        }
                     }
+                }
+            }
+        }
+    }
+
+    // Apply grid background for newBlock items
+    if (blocker) {
+        var mapData = CoreGame.BlockerFactory._mapIdData;
+        if (mapData) {
+            for (var key in mapData) {
+                if (mapData[key] == typeId) {
+                    blocker.configData = blocker.configData || {};
+                    blocker.configData.grid_path = "res/high/game/board/nen/tile_BG.png";
+                    cc.log("BlockerFactory: Injected tile_BG for", typeId);
+                    break;
                 }
             }
         }
@@ -202,6 +220,18 @@ CoreGame.BlockerFactory.preloadConfig = function (typeId, callback) {
             if (callback) callback(err);
             return;
         }
+        // Add logic to blocker which load from mapID.json to change the grid image
+        var mapData = CoreGame.BlockerFactory._mapIdData;
+        if (mapData) {
+            for (var key in mapData) {
+                if (mapData[key] == typeId) {
+                    config.configData = config.configData || {};
+                    config.configData.grid_path = "res/high/game/board/nen/tile_BG.png";
+                    cc.log("BlockerFactory: Applied tile_BG to", typeId);
+                    break;
+                }
+            }
+        }
 
         // Cache the config
         CoreGame.BlockerFactory._configCache[typeId] = config;
@@ -229,6 +259,9 @@ CoreGame.BlockerFactory.preloadAllConfigs = function (onProgress, onComplete) {
             if (onComplete) onComplete([]);
             return;
         }
+
+        // Store mapData for later use in preloadConfig/createBlocker
+        CoreGame.BlockerFactory._mapIdData = mapData;
 
         // Extract type IDs from mapID.json (values, not keys)
         var typeIds = [];

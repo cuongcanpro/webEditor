@@ -137,6 +137,7 @@ CoreGame.MatchMgr = cc.Class.extend({
                         group: group,
                         matchColor: matchColor
                     };
+                    cc.log("Element State when create PowerUp === " + element.state);
                 } else {
                     // Normal match - explode animation
                     matchContext = {
@@ -147,9 +148,12 @@ CoreGame.MatchMgr = cc.Class.extend({
 
                 if (targetPos.row == pos.row && targetPos.col == pos.col && shouldCreatePowerUp) {
                     var type = this.detectPowerUpType(group);
+                    cc.log("PowerUp Type: " + type + " at (" + targetPos.row + ", " + targetPos.col + ")");
                     element.setRemoveAction(new CoreGame.Strategies.SpawnElementAction(
                         type, pos.row, pos.col
                     ));
+                } else if (element && element.setRemoveAction) {
+                    element.setRemoveAction(null);
                 }
 
                 slot.matchElement(matchContext);

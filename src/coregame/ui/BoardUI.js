@@ -35,6 +35,14 @@ CoreGame.BoardUI = cc.Layer.extend({
 
         // Check if mapConfig is provided (from EditMapScene)
         this.boardMgr.init(this, mapConfig, testBoxes);
+
+        this.rawScale = Math.min(1.5, (9 / this.boardMgr.activeCols));
+        if (this.boardMgr.activeCols === 9) {
+            this.rawScale = 1.05;
+        }
+        cc.log("BOARD UI RAW SCALE", this.rawScale, this.boardMgr.activeCols);
+        this.setScale(this.rawScale);
+
         // if (mapConfig) {
         //     cc.log("Initializing board from mapConfig");
         //     this.boardMgr.init(this);
@@ -240,8 +248,9 @@ CoreGame.BoardUI = cc.Layer.extend({
         this.isTouching = true;
         this.swipeHandled = false;
 
-        // Find the grid slot at touch position
-        var gridPos = this.boardMgr.pixelToGrid(pos.x, pos.y);
+        // Convert world-space touch to board-local coordinates
+        var localPos = this.convertToNodeSpace(pos);
+        var gridPos = this.boardMgr.pixelToGrid(localPos.x, localPos.y);
 
         // Notify board manager
         this.boardMgr.onTouchBegan(gridPos);
