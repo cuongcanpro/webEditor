@@ -774,6 +774,7 @@ CoreGame.BoardMgr = cc.Class.extend({
 
                 var isTarget = false;
                 var lowestHP = Infinity; // track HP for score bonus
+                var isDonutTarget = false; // Donut needs slot below targeted
 
                 for (var e = 0; e < slot.listElement.length; e++) {
                     var element = slot.listElement[e];
@@ -782,6 +783,10 @@ CoreGame.BoardMgr = cc.Class.extend({
                         // Track lowest HP in this slot (for "nearly dead" bonus)
                         if (element.hitPoints !== undefined && element.hitPoints < lowestHP) {
                             lowestHP = element.hitPoints;
+                        }
+                        // Donut is immune to explosions — target slot below so it can fall
+                        if (element.type === CoreGame.Config.ElementType.DONUT) {
+                            isDonutTarget = true;
                         }
                     }
                     // Also check attachments — ATTACHMENT blockers  are stored as
@@ -800,8 +805,15 @@ CoreGame.BoardMgr = cc.Class.extend({
                 }
 
                 if (isTarget) {
-                    var score = this._calcPlaneTargetScore(r, c, lowestHP);
-                    priorityTargets.push({ slot: slot, score: score });
+                    var targetSlot = slot;
+                    if (isDonutTarget) {
+                        var slotBelow = this.getSlot(r - 1, c);
+                        if (slotBelow && !slotBelow.isEmpty() && slotBelow.getMatchableElement()) {
+                            targetSlot = slotBelow;
+                        }
+                    }
+                    var score = this._calcPlaneTargetScore(targetSlot.row, targetSlot.col, lowestHP);
+                    priorityTargets.push({ slot: targetSlot, score: score });
                 }
 
                 var matchable = slot.getMatchableElement();
