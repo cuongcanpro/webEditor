@@ -75,7 +75,7 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
         if (!this.arrayBg) this.arrayBg = [];
 
         for (var i = 0; i < cells.length; i++) {
-            this.sprite.setVisible(false); // Hide default sprite since we're using custom visuals
+            
             var newCell = cells[i];
 
             // Check if this cell is already handled
@@ -123,6 +123,7 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
                     this.cellsData.push({ r: newCell.r, c: newCell.c });
                     this.cellsNode.push(spriteTop);
                     this.arrayBg.push(spriteBottom);
+                    this.sprite.setVisible(false); // Hide default sprite since we're using custom visuals
                 }
             }
         }
