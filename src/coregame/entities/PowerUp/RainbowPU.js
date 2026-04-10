@@ -45,21 +45,39 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
     },
 
     collectTargets: function (typeToClear) {
+        // First pass: count gems per color to determine the most common
+        var colorCount = {};
+        for (var r = 0; r < this.boardMgr.rows; r++) {
+            for (var c = 0; c < this.boardMgr.cols; c++) {
+                var slot = this.boardMgr.getSlot(r, c);
+                if (!slot) continue;
+                var matchable = slot.getMatchableElement();
+                if (matchable && matchable instanceof CoreGame.GemObject) {
+                    colorCount[matchable.type] = (colorCount[matchable.type] || 0) + 1;
+                }
+            }
+        }
+
+        // If typeToClear is not a valid gem color on the board (e.g. swapped with a Blocker),
+        // fall back to the most common gem color
+        if (typeToClear === null || typeToClear === undefined || colorCount[typeToClear] === undefined) {
+            var bestType = null;
+            var bestCount = 0;
+            for (var t in colorCount) {
+                if (colorCount[t] > bestCount) {
+                    bestCount = colorCount[t];
+                    bestType = parseInt(t);
+                }
+            }
+            typeToClear = bestType;
+        }
+
+        // Second pass: collect all slots matching the target color
         var targetSlots = [];
         for (var r = 0; r < this.boardMgr.rows; r++) {
             for (var c = 0; c < this.boardMgr.cols; c++) {
                 var slot = this.boardMgr.getSlot(r, c);
                 if (!slot) continue;
-
-                // Pick first color if not provided
-                if (typeToClear === null || typeToClear === undefined) {
-                    var matchable = slot.getMatchableElement();
-                    if (matchable && matchable instanceof CoreGame.GemObject) {
-                        typeToClear = matchable.type;
-                    }
-                }
-
-                // Collect if it is the target color
                 if (typeToClear !== null && typeToClear !== undefined && slot.getType() === typeToClear) {
                     targetSlots.push(slot);
                 }

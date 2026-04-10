@@ -17,6 +17,8 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
         this.offsetsNode = []; // Store cc.Nodes
         this.setCascadeOpacityEnabled(true);
 
+        let spine = gv.createSpineAnimation(resAni['spine_' + 900]);
+
         // // 1. Background piece (Z-order lower)
         // this.sprBg = fr.createSprite("cloud_piece_00.png");
         // // this.sprBg.setScale(0.5); // Following Gem/Box scale convention
@@ -70,8 +72,10 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
         // Let's keep internal names to minimize diffs unless requested.
 
         if (!this.cellsNode) this.cellsNode = [];
+        if (!this.arrayBg) this.arrayBg = [];
 
         for (var i = 0; i < cells.length; i++) {
+            this.sprite.setVisible(false); // Hide default sprite since we're using custom visuals
             var newCell = cells[i];
 
             // Check if this cell is already handled
@@ -85,23 +89,40 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
 
             if (!exists) {
                 var path = "cloud_layer_1.png";
-                var sprite = fr.createSprite(path);
+                var spriteTop = fr.createSprite(path);
 
-                var sprBg = fr.createSprite("cloud_piece_00.png");
-                //sprBg.setScale(0.5); // Following Gem/Box scale convention
-                sprite.addChild(sprBg, -1);
-                sprBg.setPosition(sprite.getContentSize().width * 0.5, sprite.getContentSize().height * 0.5);
+                path = "cloud_piece_00.png";
+                var spriteBottom = fr.createSprite(path);
+
+                // var sprBg = fr.createSprite("cloud_piece_00.png");
+                // //sprBg.setScale(0.5); // Following Gem/Box scale convention
+                // sprite.addChild(sprBg, -1);
+                // sprBg.setPosition(sprite.getContentSize().width * 0.5, sprite.getContentSize().height * 0.5);
 
                 // Get Pixel Position from BoardMgr
                 // Ensure element exists to access boardMgr
                 if (this.element && this.element.boardMgr) {
                     var pixelPos = this.element.boardMgr.gridToPixel(newCell.r, newCell.c);
-                    sprite.setPosition(pixelPos);
-                    this.addChild(sprite);
+
+                    spriteTop.setPosition(pixelPos);
+                    this.addChild(spriteTop);
+
+                    spriteBottom.setPosition(pixelPos);
+                    this.getParent().addChild(spriteBottom, CoreGame.LayerBehavior.EXCLUSIVE - 3); // Behind the main layer
+
+                    // Play run_1 spine animation when a new cell is added
+                    if (resAni['spine_900']) {
+                        var spineAdd = gv.createSpineAnimation(resAni['spine_900']);
+                        spineAdd.setPosition(pixelPos);
+                        this.addChild(spineAdd, 2);
+                        spineAdd.setAnimation(0, 'run_2', false);
+                        gv.removeSpineAfterRun(spineAdd);
+                    }
 
                     // Add to trackers
                     this.cellsData.push({ r: newCell.r, c: newCell.c });
-                    this.cellsNode.push(sprite);
+                    this.cellsNode.push(spriteTop);
+                    this.arrayBg.push(spriteBottom);
                 }
             }
         }
@@ -125,20 +146,38 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
                 if (this.cellsData[i].r === row && this.cellsData[i].c === col) {
                     var node = this.cellsNode[i];
                     if (node) {
-                        // Play effect on node
-                        var seq = cc.sequence(
-                            cc.scaleTo(0.1, 1.2),
-                            cc.scaleTo(0.1, 0),
-                            cc.removeSelf()
-                        );
-                        node.runAction(seq);
+                        // Play run_2 spine animation on explode
+                        if (resAni['spine_900']) {
+                            var spineExplode = gv.createSpineAnimation(resAni['spine_900']);
+                            spineExplode.setPosition(node.getPosition());
+                            if (this.getParent()) {
+                                this.getParent().addChild(spineExplode, 2000);
+                            } else {
+                                this.addChild(spineExplode, 2000);
+                            }
+                            spineExplode.setAnimation(0, 'run_1', false);
+                            gv.removeSpineAfterRun(spineExplode);
+                        }
+                        node.removeFromParent();
                     }
+                    this.arrayBg[i].removeFromParent(); // Remove background piece immediately  
                     // Remove from arrays
                     this.cellsData.splice(i, 1);
                     this.cellsNode.splice(i, 1);
+                    this.arrayBg.splice(i, 1);
                     break;
                 }
             }
         }
+    },
+
+    removeFromParent: function (clean) {
+        for (var i = 0; i < this.arrayBg.length; i++) {
+            if (this.arrayBg[i] && this.arrayBg[i].getParent()) {
+                this.arrayBg[i].removeFromParent(clean);
+            }
+        }
+
+        this._super(clean);
     }
 });

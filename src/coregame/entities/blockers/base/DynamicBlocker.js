@@ -5,7 +5,6 @@
 var CoreGame = CoreGame || {};
 
 CoreGame.DynamicBlocker = CoreGame.Blocker.extend({
-    cells: null, // Array of {r, c} absolute grid positions
 
     ctor: function () {
         this._super();

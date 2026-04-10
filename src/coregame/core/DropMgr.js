@@ -466,7 +466,7 @@ CoreGame.DropMgr = cc.Class.extend({
             count = 0;
             for (var i = emptyTargets.length - 1; i >= 0; i--) {
                 var targetSlot = this.boardMgr.mapGrid[emptyTargets[i]][c];
-                var type = this.spawnStrategy.getGemType(r, c, this.boardMgr);
+                var type = this.spawnStrategy.getGemType(emptyTargets[i], c, this.boardMgr);
                 var gem = this.boardMgr.addNewElement(this.boardMgr.rows + count, c, type);
                 let delayTime = this.dropDelayCol[c] + CoreGame.Config.DROP_DELTA_DELAY_COL * c;
 
@@ -522,7 +522,7 @@ CoreGame.DropMgr = cc.Class.extend({
             var visualRow = spawnR - emptyTargets.length;
             for (var i = 0; i < emptyTargets.length; i++) {
                 var targetSlot = this.boardMgr.mapGrid[emptyTargets[i]][c];
-                var type = this.spawnStrategy.getGemType(r, c, this.boardMgr);
+                var type = this.spawnStrategy.getGemType(emptyTargets[i], c, this.boardMgr);
                 var gem = this.boardMgr.addNewElement(visualRow, c, type);
                 this.dropGemToSlot(gem, targetSlot);
                 visualRow++;

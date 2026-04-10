@@ -174,12 +174,13 @@ CoreGame.BoardMgr = cc.Class.extend({
         //     // ];
 
         // Create grid slots
+        // slotMap values: 0=disabled, 1=enabled, 2=enabled+canSpawn
         for (var r = 0; r < this.rows; r++) {
             this.mapGrid[r] = [];
             for (var c = 0; c < this.cols; c++) {
-                // slotMap values: 0=disabled, 1=enabled, 2=enabled+canSpawn
                 var enabled = true;
                 var spawnPoint = false;
+
                 if (slotMap && slotMap[r] && slotMap[r][c] !== undefined) {
                     var val = slotMap[r][c];
                     enabled = val >= 1;
@@ -260,41 +261,6 @@ CoreGame.BoardMgr = cc.Class.extend({
         // this.addTestingBlockers(testBoxes);
     },
 
-    /**
-     * Initialize board from map configuration (for map editor)
-     * @param {Object} mapConfig - {slotMap: [[]], elements: []}
-     */
-    initFromMapConfig: function (mapConfig) {
-        if (!mapConfig) {
-            cc.log("Warning: initFromMapConfig called with null mapConfig");
-            return;
-        }
-        //   cc.log("MapConfig " + JSON.stringify(mapConfig.slotMap));
-        // Initialize grid with slotMap
-        if (mapConfig.slotMap) {
-            this.initGrid(null, mapConfig.slotMap);
-        } else {
-            this.initGrid(null, null);
-        }
-
-        // Add elements from map config
-        if (mapConfig.elements && mapConfig.elements.length > 0) {
-            cc.log("Adding " + mapConfig.elements.length + " elements from map config");
-            for (var i = 0; i < mapConfig.elements.length; i++) {
-                var elem = mapConfig.elements[i];
-                cc.log("Element == " + JSON.stringify(elem));
-                // Pass cells array for DynamicBlocker support
-                this.addNewElement(elem.row, elem.col, elem.type, elem.hp, elem.cells || null);
-            }
-        }
-    },
-
-    /**
-     * Add some blockers for logic verification
-     */
-    /**
-     * Add some blockers for logic verification
-     */
     /**
      * Add some blockers for logic verification
      */
@@ -818,6 +784,19 @@ CoreGame.BoardMgr = cc.Class.extend({
                             lowestHP = element.hitPoints;
                         }
                     }
+                    // Also check attachments — ATTACHMENT blockers  are stored as
+                    // attachments on the CONTENT gem, not directly in slot.listElement
+                    if (element.attachments && element.attachments.length > 0) {
+                        for (var a = 0; a < element.attachments.length; a++) {
+                            var att = element.attachments[a];
+                            if (remainingTargetTypes.indexOf(att.type) >= 0) {
+                                isTarget = true;
+                                if (att.hitPoints !== undefined && att.hitPoints < lowestHP) {
+                                    lowestHP = att.hitPoints;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 if (isTarget) {
@@ -1316,6 +1295,7 @@ CoreGame.BoardMgr = cc.Class.extend({
 
                     // Mark as processed
                     processedElements.push(element);
+                    element.onFinishTurn();
 
                     if (element.cooldownSpawn > 0)
                         element.cooldownSpawn--;

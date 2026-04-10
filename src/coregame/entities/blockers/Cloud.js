@@ -9,7 +9,7 @@ CoreGame.Cloud = CoreGame.DynamicBlocker.extend({
 
     ctor: function () {
         this._super();
-        this.layerBehavior = CoreGame.LayerBehavior.EXCLUSIVE;
+        this.layerBehavior = CoreGame.LayerBehavior.OVERLAY;
         this.addAction(CoreGame.ElementObject.ACTION_TYPE.END_TURN, new CoreGame.Strategies.SpreadAction());
         this.addAction(CoreGame.ElementObject.ACTION_TYPE.SIDE_MATCH, new CoreGame.Strategies.TakeDamageAction());
         let action = new CoreGame.Strategies.SetDataAction();

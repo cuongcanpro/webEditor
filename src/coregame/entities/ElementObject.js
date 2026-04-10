@@ -16,8 +16,9 @@ CoreGame.ElementState = {
 CoreGame.LayerBehavior = {
     BACKGROUND: 10, // Grass
     CONTENT: 20,    // Gem
-    OVERLAY: 30,    // Chain
-    EXCLUSIVE: 40   // Box, Cookie, Cloud (Clears others)
+    ATTACHMENT: 30,
+    EXCLUSIVE: 40,   // Box, Cookie, Clears others
+    OVERLAY: 50    // Chain, Cloud
 };
 
 CoreGame.ElementObject = cc.Class.extend({
@@ -65,7 +66,7 @@ CoreGame.ElementObject = cc.Class.extend({
     addAction: function (key, action) {
         if (!this.actions[key]) {
             this.actions[key] = [];
-            CoreGame.EventMgr.on("custom" + key, this.doActionsType.bind(this, key), this);
+            // CoreGame.EventMgr.on("custom" + key, this.doActionsType.bind(this, key), this);
         }
         this.actions[key].push(action);
         if (action.setTargetElement) {
@@ -218,7 +219,7 @@ CoreGame.ElementObject = cc.Class.extend({
             }
         }
         //set visual state again because action may changed it
-        if(this.ui && this.ui.setVisualState)
+        if (this.ui && this.ui.setVisualState)
             this.ui.setVisualState((this.customData && this.customData.visualState) ? this.customData.visualState : "");
         // }.bind(this, type, extraData));
     },
@@ -330,7 +331,7 @@ CoreGame.ElementObject = cc.Class.extend({
      * Set element state
      */
     setState: function (state) {
-        if(this.state == CoreGame.ElementState.REMOVING)
+        if (this.state == CoreGame.ElementState.REMOVING)
             return;
         this.state = state;
     },
@@ -372,7 +373,7 @@ CoreGame.ElementObject = cc.Class.extend({
      * Remove element from game
      */
     remove: function () {
-       // cc.log("Remove Element === " + JSON.stringify(this.position) + " Name " + this.getTypeName());
+        // cc.log("Remove Element === " + JSON.stringify(this.position) + " Name " + this.getTypeName());
         this.setState(CoreGame.ElementState.REMOVING);
         var boardUI = this.boardMgr ? this.boardMgr.boardUI : null;
 
@@ -394,10 +395,10 @@ CoreGame.ElementObject = cc.Class.extend({
         }
 
         // Remove from board
-        // OVERLAY elements are attached to CONTENT elements, not in GridSlot.listElement
-        // So we only call removeElementFromBoard for non-OVERLAY elements
+        // ATTACHMENT elements are attached to CONTENT elements, not in GridSlot.listElement
+        // So we only call removeElementFromBoard for non-ATTACHMENT elements
         if (this.boardMgr) {
-            if (this.layerBehavior !== CoreGame.LayerBehavior.OVERLAY) {
+            if (this.layerBehavior !== CoreGame.LayerBehavior.ATTACHMENT) {
                 this.boardMgr.removeElementFromBoard(this);
             }
         }
@@ -432,8 +433,8 @@ CoreGame.ElementObject = cc.Class.extend({
                 this.initSubUI();
             }
 
-            // Determine parent for OVERLAY elements
-            if (this.layerBehavior === CoreGame.LayerBehavior.OVERLAY) {
+            // Determine parent for ATTACHMENT elements
+            if (this.layerBehavior === CoreGame.LayerBehavior.ATTACHMENT) {
                 // Try to find CONTENT element in same slot
                 if (this.boardMgr) {
                     var slot = this.boardMgr.getSlot(this.position.x, this.position.y);
@@ -444,7 +445,7 @@ CoreGame.ElementObject = cc.Class.extend({
                             if (elem.layerBehavior === CoreGame.LayerBehavior.CONTENT && elem.ui) {
                                 // Use content element UI as parent
                                 parent = elem.ui;
-                                cc.log("OVERLAY element", this.getTypeName(), "attached to CONTENT", elem.getTypeName());
+                                cc.log("ATTACHMENT element", this.getTypeName(), "attached to CONTENT", elem.getTypeName());
                                 break;
                             }
                         }
@@ -540,8 +541,8 @@ CoreGame.ElementObject = cc.Class.extend({
     updateVisualPosition: function () {
         if (!this.ui) return;
 
-        // OVERLAY elements attached to CONTENT parent use relative positioning
-        if (this.layerBehavior === CoreGame.LayerBehavior.OVERLAY) {
+        // ATTACHMENT elements attached to CONTENT parent use relative positioning
+        if (this.layerBehavior === CoreGame.LayerBehavior.ATTACHMENT) {
             // Check if UI parent is a content element (not BoardUI)
             var parent = this.ui.getParent();
             if (parent && parent !== this.boardMgr.boardUI) {
@@ -711,6 +712,7 @@ CoreGame.ElementObject.ACTION_TYPE = {
     SIDE_MATCH: "sideMatch",
     END_TURN: "endTurn",
     REMOVE: "remove",
+    ON_IDLE: "onIdle",
     CUSTOM_ACTION_0: "action_0",
     CUSTOM_ACTION_1: "action_1",
     CUSTOM_ACTION_2: "action_2",

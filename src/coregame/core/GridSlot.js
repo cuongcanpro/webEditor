@@ -1,4 +1,4 @@
-﻿/**
+/**
  * GridSlot - Single cell on the game board
  * Part of Match-3 Core Game
  */
@@ -16,7 +16,7 @@ CoreGame.GridSlot = cc.Class.extend({
     boardMgr: null,
 
     // State
-    enable: true,  // Whether this slot is active/playable
+    enable: true,   // Whether this slot is active/playable
     canSpawn: false, // Whether new gems can be spawned from this slot
 
     // Visual
@@ -65,7 +65,7 @@ CoreGame.GridSlot = cc.Class.extend({
         // Alternating visibility for bg2
         this.bg2 = fr.createSprite("light_nen_hat.png");
         this.bg2.setPosition(pixelPos);
-        this.bg2.setOpacity(this.row % 2 != this.col % 2? 255 : 0);
+        this.bg2.setOpacity(this.row % 2 != this.col % 2 ? 255 : 0);
         root.addChild(this.bg2, 0);
 
         this.setEnable(this.enable);
@@ -93,7 +93,28 @@ CoreGame.GridSlot = cc.Class.extend({
     getMatchableElement: function () {
         for (var i = 0; i < this.listElement.length; i++) {
             var element = this.listElement[i];
+
+            // If an element blocks the match action AND cannot process the match itself, it prevents matching entirely (e.g., Cloud, Box)
+            // If it can process the match (e.g. Chain), it absorbs the match but allows the slot to participate.
+            if (element.isStopAction(CoreGame.ElementObject.Action.MATCH) && !element.hasAction(CoreGame.ElementObject.Action.MATCH)) {
+                return null;
+            }
+
             if (element instanceof CoreGame.GemObject && element.canMatch()) {
+                // If the gem has an attachment that blocks matching but cannot process it
+                var blockedByAttachment = false;
+                if (element.attachments) {
+                    for (var a = 0; a < element.attachments.length; a++) {
+                        var att = element.attachments[a];
+                        if (att.isStopAction(CoreGame.ElementObject.Action.MATCH) && !att.hasAction(CoreGame.ElementObject.Action.MATCH)) {
+                            blockedByAttachment = true;
+                            break;
+                        }
+                    }
+                }
+                if (blockedByAttachment) {
+                    return null;
+                }
                 return element;
             }
         }
@@ -119,7 +140,7 @@ CoreGame.GridSlot = cc.Class.extend({
      *   - targetPos: {row, col} for converge animation (if type='powerup')
      *   - group: array of all matched positions
      */
-    matchElement: function (matchContext= { type: "normal" }, forceMatch = false) {
+    matchElement: function (matchContext = { type: "normal" }, forceMatch = false) {
         var dumpElement = this.listElement.slice();
         for (var i = 0; i < dumpElement.length; i++) {
             var element = dumpElement[i];
@@ -133,7 +154,7 @@ CoreGame.GridSlot = cc.Class.extend({
                 // if (element.hasAction(CoreGame.ElementObject.Action.MATCH)) {
                 let isStop = element.isStopAction(CoreGame.ElementObject.Action.MATCH) || element.isStopActionByAttachment(CoreGame.ElementObject.Action.MATCH);
                 // if (element.hasAction(CoreGame.ElementObject.Action.MATCH))
-                    element.onMatch(matchContext);
+                element.onMatch(matchContext);
                 if (isStop)
                     return;
             }
@@ -181,6 +202,7 @@ CoreGame.GridSlot = cc.Class.extend({
     addElement: function (element, silent) {
         if (this.listElement.indexOf(element) !== -1) return;
 
+        cc.log("Add Element in GridSlot " + element.getTypeName() + " to slot " + this.row + "," + this.col);
         // Default behavior if undefined
         var behavior = (typeof element.layerBehavior !== 'undefined') ?
             element.layerBehavior : CoreGame.LayerBehavior.CONTENT;
@@ -189,6 +211,7 @@ CoreGame.GridSlot = cc.Class.extend({
         if (behavior === CoreGame.LayerBehavior.EXCLUSIVE) {
             // Skip clearElements if in silent mode (temporary grid update)
             if (!silent) {
+                cc.log("Exclusive element added, clearing existing elements in slot " + this.row + "," + this.col);
                 this.clearElements();
             }
             this.listElement.push(element);
@@ -196,8 +219,8 @@ CoreGame.GridSlot = cc.Class.extend({
             return;
         }
 
-        // 2. Handle OVERLAY elements - attach to CONTENT element instead of adding to list
-        if (behavior === CoreGame.LayerBehavior.OVERLAY) {
+        // 2. Handle ATTACHMENT elements - attach to CONTENT element instead of adding to list
+        if (behavior === CoreGame.LayerBehavior.ATTACHMENT) {
             // Find CONTENT element to attach to
             var contentElement = null;
             for (var i = 0; i < this.listElement.length; i++) {
@@ -210,7 +233,7 @@ CoreGame.GridSlot = cc.Class.extend({
                 }
             }
 
-            // If we found a CONTENT element, attach overlay to it
+            // If we found a CONTENT element, attach attachment to it
             if (contentElement) {
                 element.boardMgr = this.boardMgr;
                 contentElement.addAttachment(element);
@@ -223,14 +246,14 @@ CoreGame.GridSlot = cc.Class.extend({
         // 2.5. Remove existing element with same layerBehavior
         // (Each slot can only have one BACKGROUND, one CONTENT, etc.)
         // OVERLAY is handled separately via attachments above
-        if (!silent && behavior !== CoreGame.LayerBehavior.OVERLAY &&
-            behavior !== CoreGame.LayerBehavior.EXCLUSIVE) {
+        if (!silent) {
             for (var i = this.listElement.length - 1; i >= 0; i--) {
                 var existingBehavior = (typeof this.listElement[i].layerBehavior !== 'undefined') ?
                     this.listElement[i].layerBehavior : CoreGame.LayerBehavior.CONTENT;
 
                 // If same layer behavior, remove the old element
                 if (existingBehavior === behavior) {
+                    cc.log("Remove existing element with same layerBehavior: " + this.listElement[i].getTypeName());
                     this.listElement[i].remove();
                     break; // Only remove one element
                 }

@@ -61,7 +61,7 @@ CoreGame.GridBorderMgr = cc.Class.extend({
                         if (type === CoreGame.Config.ElementType.GRASS)
                             zOrder = CoreGame.LayerBehavior.BACKGROUND - 1;
                         else
-                            zOrder = CoreGame.LayerBehavior.EXCLUSIVE;
+                            zOrder = CoreGame.LayerBehavior.EXCLUSIVE - 1;
                         this.boardUI.root.addChild(spr, zOrder);
                         this.renderedPieces[type].push(spr);
                     }

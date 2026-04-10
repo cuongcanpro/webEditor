@@ -400,25 +400,6 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
     },
 
     /**
-     * Refresh board display based on mapConfig
-     * Useful for real-time preview when editing
-     */
-    refreshFromMapConfig: function (mapConfig) {
-        if (!this.boardMgr || !mapConfig) return;
-
-        cc.log("Refreshing BoardEditUI from updated mapConfig");
-
-        // Clear current board state
-        this.boardMgr.clearBoard();
-
-        // Reinitialize from new config
-        this.boardMgr.initFromMapConfig(mapConfig);
-
-        // Refresh borders for connected elements
-        this.refreshBorders();
-    },
-
-    /**
      * Get current board state as mapConfig format
      * Useful for syncing back to EditMapScene
      */
@@ -471,7 +452,7 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
                     };
                     // Serialize cells for DynamicBlocker
                     if (elem instanceof CoreGame.DynamicBlocker && elem.cells) {
-                        elemData.cells = elem.cells;
+                        elemData.cells = elem.cells.map(function(c) { return { r: c.r, c: c.c }; });
                     }
                     config.elements.push(elemData);
 
