@@ -142,6 +142,8 @@ CoreGame.GridSlot = cc.Class.extend({
      */
     matchElement: function (matchContext = { type: "normal" }, forceMatch = false) {
         var dumpElement = this.listElement.slice();
+        matchContext.row = this.row;
+        matchContext.col = this.col;
         for (var i = 0; i < dumpElement.length; i++) {
             var element = dumpElement[i];
 

@@ -774,7 +774,6 @@ CoreGame.BoardMgr = cc.Class.extend({
 
                 var isTarget = false;
                 var lowestHP = Infinity; // track HP for score bonus
-                var isDonutTarget = false; // Donut needs slot below targeted
 
                 for (var e = 0; e < slot.listElement.length; e++) {
                     var element = slot.listElement[e];
@@ -783,10 +782,6 @@ CoreGame.BoardMgr = cc.Class.extend({
                         // Track lowest HP in this slot (for "nearly dead" bonus)
                         if (element.hitPoints !== undefined && element.hitPoints < lowestHP) {
                             lowestHP = element.hitPoints;
-                        }
-                        // Donut is immune to explosions — target slot below so it can fall
-                        if (element.type === CoreGame.Config.ElementType.DONUT) {
-                            isDonutTarget = true;
                         }
                     }
                     // Also check attachments — ATTACHMENT blockers  are stored as
@@ -805,15 +800,8 @@ CoreGame.BoardMgr = cc.Class.extend({
                 }
 
                 if (isTarget) {
-                    var targetSlot = slot;
-                    if (isDonutTarget) {
-                        var slotBelow = this.getSlot(r - 1, c);
-                        if (slotBelow && !slotBelow.isEmpty() && slotBelow.getMatchableElement()) {
-                            targetSlot = slotBelow;
-                        }
-                    }
-                    var score = this._calcPlaneTargetScore(targetSlot.row, targetSlot.col, lowestHP);
-                    priorityTargets.push({ slot: targetSlot, score: score });
+                    var score = this._calcPlaneTargetScore(r, c, lowestHP);
+                    priorityTargets.push({ slot: slot, score: score });
                 }
 
                 var matchable = slot.getMatchableElement();
@@ -937,6 +925,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         var targetSlot = this.getSlot(targetRow, targetCol);
         if (targetSlot) {
             this.trySwapSlots(this.selectedSlot, targetSlot);
+            
         }
         this.lastSwapSource = { row: this.selectedSlot.row, col: this.selectedSlot.col };
         this.lastSwapDest = { row: targetRow, col: targetCol };
@@ -1276,51 +1265,49 @@ CoreGame.BoardMgr = cc.Class.extend({
         // Clear plane claimed targets for next turn
         this._planeClaimCounts = [];
 
-        // Trigger END_TURN actions on all elements
-        // This handles behaviors like Cloud spreading, etc.
-        // useMove() already decremented numMove + _move and updated the UI,
-        // so just clear the flag here — no second decrement needed.
-        if (this.didPlayerSwap) {
-            this.didPlayerSwap = false;
-        }
+        // Only fire element END_TURN actions on real player swaps, not shuffle
+        var wasPlayerSwap = this.didPlayerSwap;
+        this.didPlayerSwap = false;
 
-        // Trigger END_TURN actions on all elements via global event
-        CoreGame.EventMgr.emit("custom" + CoreGame.ElementObject.ACTION_TYPE.END_TURN, {
-            boardMgr: this
-        });
+        if (wasPlayerSwap) {
+            // Trigger END_TURN actions on all elements via global event
+            CoreGame.EventMgr.emit("custom" + CoreGame.ElementObject.ACTION_TYPE.END_TURN, {
+                boardMgr: this
+            });
 
-        // Track processed elements to avoid duplicates (multi-cell elements like Cloud)
-        var processedElements = [];
+            // Track processed elements to avoid duplicates (multi-cell elements like Cloud)
+            var processedElements = [];
 
-        for (var r = 0; r < this.rows; r++) {
-            for (var c = 0; c < this.cols; c++) {
-                var slot = this.mapGrid[r][c];
-                var elements = slot.listElement;
+            for (var r = 0; r < this.rows; r++) {
+                for (var c = 0; c < this.cols; c++) {
+                    var slot = this.mapGrid[r][c];
+                    var elements = slot.listElement;
 
-                for (var i = 0; i < elements.length; i++) {
-                    var element = elements[i];
+                    for (var i = 0; i < elements.length; i++) {
+                        var element = elements[i];
 
-                    // Skip if already processed (e.g., DynamicBlocker in multiple slots)
-                    if (processedElements.indexOf(element) !== -1) {
-                        continue;
+                        // Skip if already processed (e.g., DynamicBlocker in multiple slots)
+                        if (processedElements.indexOf(element) !== -1) {
+                            continue;
+                        }
+
+                        // Mark as processed
+                        processedElements.push(element);
+                        element.onFinishTurn();
+
+                        if (element.cooldownSpawn > 0)
+                            element.cooldownSpawn--;
                     }
-
-                    // Mark as processed
-                    processedElements.push(element);
-                    element.onFinishTurn();
-
-                    if (element.cooldownSpawn > 0)
-                        element.cooldownSpawn--;
                 }
             }
+
+            cc.log("Turn finished - triggered END_TURN actions on", processedElements.length, "elements");
         }
 
         // Emit global event for other systems that need it
         CoreGame.EventMgr.emit('turnFinished', {
             boardMgr: this
         });
-
-        cc.log("Turn finished - triggered END_TURN actions on", processedElements.length, "elements");
 
         // AdaptiveTPP: track moves and update strategy
         this._tppMovesUsed = (this._tppMovesUsed || 0) + 1;
