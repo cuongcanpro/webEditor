@@ -613,6 +613,12 @@ CoreGame.GameBoardInfoUI.animMonster = {
         scale: 1.5,
         offset: cc.p(0, -125),
         anim: "anim0_idle"
+    },
+    11001: {
+        name: "Black\nMonkey",
+        scale: 0.25,
+        offset: cc.p(0, -125),
+        anim: "idle"
     }
 };
 

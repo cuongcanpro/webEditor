@@ -118,6 +118,7 @@ var resAni = {
 
     spine_10000_main:"res/newBlock/BlockUI/spine/gorilla_old/gorilla",
     spine_11000_main:"game/animation/spine/gorilla_ice",
+    spine_11001_main:"game/animation/spine/monkey_black/monkey_black",
     spine_12000_main:"game/animation/spine/gorilla_fire",
     spine_13000_main:"game/animation/spine/rat_one_eyed/mouse_purple",
     spine_14000_main:"game/animation/spine/rat_candy/mouse_yellow",
