@@ -1175,11 +1175,31 @@ var EditMapSceneNew = cc.Layer.extend({
         for (var i = 0; i < slot.listElement.length; i++) {
             if (slot.listElement[i].type === this.selectedType) return;
         }
+        // Nếu activeDynamicBlocker không còn hợp lệ (vd: sau PlayTest), tìm lại
+        // DynamicBlocker cùng type đang tồn tại trên board và restore về activeDynamicBlocker.
+        if (!this.activeDynamicBlocker || this.activeDynamicBlocker.type !== this.selectedType) {
+            var bm = this.boardUI.boardMgr;
+            var found = null;
+            outer: for (var r = 0; r < bm.rows; r++) {
+                for (var c = 0; c < bm.cols; c++) {
+                    var s = bm.mapGrid[r] && bm.mapGrid[r][c];
+                    if (!s) continue;
+                    for (var ei = 0; ei < s.listElement.length; ei++) {
+                        var el = s.listElement[ei];
+                        if (el instanceof CoreGame.DynamicBlocker && el.type === this.selectedType) {
+                            found = el;
+                            break outer;
+                        }
+                    }
+                }
+            }
+            this.activeDynamicBlocker = found;
+        }
+
         if (this.activeDynamicBlocker && this.activeDynamicBlocker.type === this.selectedType) {
             slot.clearElements();
             this.activeDynamicBlocker.addCell({ r: row, c: col });
             this.boardUI.enableSlot(row, col, true);
-           // this.boardUI.refreshGrid();
         } else {
             this.activeDynamicBlocker = this.boardUI.addElement(row, col, this.selectedType, this.selectedHP);
         }

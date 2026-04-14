@@ -958,6 +958,10 @@ CoreGame.BoardMgr = cc.Class.extend({
             if (this.playerMoved && this.playerMoved instanceof CoreGame.PowerUP) {
                 this.useMove();
             }
+            else {
+                this.playerMoved = false;
+                this.didPlayerSwap = false;
+            }
         }
     },
 
