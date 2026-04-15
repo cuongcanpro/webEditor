@@ -179,29 +179,36 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
      * @private
      */
     _getNoMatchColor: function (boardMgr, row, col) {
+        if (boardMgr.getValidTypeForPosition) {
+            return boardMgr.getValidTypeForPosition(row, col);
+        }
+
+        // Fallback: pick from gemTypes or 1..NUM_GEN avoiding nearby matches
+        var pool = (boardMgr.gemTypes && boardMgr.gemTypes.length > 0)
+            ? boardMgr.gemTypes.slice()
+            : (function () {
+                var a = [];
+                for (var i = 1; i <= CoreGame.Config.NUM_GEN; i++) a.push(i);
+                return a;
+            }());
+
         var nearbyTypes = [];
         var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-
         for (var i = 0; i < dirs.length; i++) {
             var r = row + dirs[i][0];
             var c = col + dirs[i][1];
             var slot = boardMgr.getSlot(r, c);
             if (slot) {
                 var type = slot.getType();
-                if (type > 0 && type <= CoreGame.Config.NUM_COLORS) {
-                    if (nearbyTypes.indexOf(type) === -1) nearbyTypes.push(type);
-                }
+                if (nearbyTypes.indexOf(type) === -1) nearbyTypes.push(type);
             }
         }
 
-        var availableTypes = [];
-        for (var i = 1; i <= CoreGame.Config.NUM_COLORS; i++) {
-            if (nearbyTypes.indexOf(i) === -1) {
-                availableTypes.push(i);
-            }
-        }
+        var availableTypes = pool.filter(function (t) {
+            return nearbyTypes.indexOf(t) === -1;
+        });
 
-        if (availableTypes.length === 0) return 1; // Fallback if all colors used (rare)
+        if (availableTypes.length === 0) return pool[boardMgr.random.nextInt32Bound(pool.length)];
         return availableTypes[boardMgr.random.nextInt32Bound(availableTypes.length)];
     }
 });

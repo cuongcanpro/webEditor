@@ -29,7 +29,7 @@
     "height": 2,
     "layerBehavior": "EXCLUSIVE",
     "configData": {
-        "maxHP": 5,
+        "maxHP": 10,
         "hitPoints": 1
     }
 }
