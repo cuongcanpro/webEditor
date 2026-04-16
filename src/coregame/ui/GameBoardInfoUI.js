@@ -619,7 +619,13 @@ CoreGame.GameBoardInfoUI.animMonster = {
         scale: 0.25,
         offset: cc.p(0, -125),
         anim: "idle"
-    }
+    },
+    17000: {
+        name: "Red\nKong",
+        scale: 1.5,
+        offset: cc.p(0, -125),
+        anim: "anim0_idle"
+    },
 };
 
 /**
