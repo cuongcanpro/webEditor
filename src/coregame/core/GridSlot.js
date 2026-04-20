@@ -192,6 +192,7 @@ CoreGame.GridSlot = cc.Class.extend({
             // Blocker (or element) onMatchNearby now receives context
             if (element.onMatchNearby) {
                 element.onMatchNearby(context);
+                break;
             }
         }
     },
@@ -214,7 +215,7 @@ CoreGame.GridSlot = cc.Class.extend({
             // Skip clearElements if in silent mode (temporary grid update)
             if (!silent) {
                 cc.log("Exclusive element added, clearing existing elements in slot " + this.row + "," + this.col);
-                this.clearElements();
+                this.clearElementsBelowExclusive();
             }
             this.listElement.push(element);
             element.boardMgr = this.boardMgr;
@@ -384,6 +385,16 @@ CoreGame.GridSlot = cc.Class.extend({
             this.listElement[i].remove();
         }
         this.listElement = [];
+    },
+
+    clearElementsBelowExclusive: function () {
+        for (var i = this.listElement.length - 1; i >= 0; i--) {
+            var behavior = (typeof this.listElement[i].layerBehavior !== 'undefined') ?
+                this.listElement[i].layerBehavior : CoreGame.LayerBehavior.CONTENT;
+            if (behavior < CoreGame.LayerBehavior.EXCLUSIVE) {
+                this.listElement[i].remove();
+            }
+        }
     },
 
     setEnable: function (enable) {

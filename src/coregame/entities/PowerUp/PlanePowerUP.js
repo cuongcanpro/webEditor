@@ -131,29 +131,29 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
                 if (this.isEmpty()) return;
 
                 // Check if slot still has a live objective element
-                var bm = this.boardMgr;
-                var remainingTypes = [];
-                for (var i = 0; i < bm.targetElements.length; i++) {
-                    if (bm.targetElements[i].current > 0) {
-                        remainingTypes.push(bm.targetElements[i].id);
-                    }
-                }
-                var hasLiveTarget = false;
-                for (var e = 0; e < this.listElement.length; e++) {
-                    var el = this.listElement[e];
-                    if (remainingTypes.indexOf(el.type) >= 0) {
-                        // Additional HP check: if element has hitPoints, ensure it's still > 0
-                        if (el.hitPoints === undefined || el.hitPoints > 0) {
-                            hasLiveTarget = true;
-                            break;
-                        }
-                    }
-                }
+                // var bm = this.boardMgr;
+                // var remainingTypes = [];
+                // for (var i = 0; i < bm.targetElements.length; i++) {
+                //     if (bm.targetElements[i].current > 0) {
+                //         remainingTypes.push(bm.targetElements[i].id);
+                //     }
+                // }
+                // var hasLiveTarget = false;
+                // for (var e = 0; e < this.listElement.length; e++) {
+                //     var el = this.listElement[e];
+                //     if (remainingTypes.indexOf(el.type) >= 0) {
+                //         // Additional HP check: if element has hitPoints, ensure it's still > 0
+                //         if (el.hitPoints === undefined || el.hitPoints > 0) {
+                //             hasLiveTarget = true;
+                //             break;
+                //         }
+                //     }
+                // }
 
-                // Match if: still has live objective, OR at minimum a matchable gem
-                if (hasLiveTarget || this.getMatchableElement()) {
+                // // Match if: still has live objective, OR at minimum a matchable gem
+                // if (hasLiveTarget || this.getMatchableElement()) {
                     this.matchElement();
-                }
+                // }
                 // If neither, plane lands silently — VFX still plays in PlaneUI.onArrive
             }, this.targetSlot);
         }

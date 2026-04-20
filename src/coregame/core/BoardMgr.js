@@ -808,7 +808,7 @@ CoreGame.BoardMgr = cc.Class.extend({
                     var targetSlot = slot;
                     if (isDonutTarget) {
                         var slotBelow = this.getSlot(r - 1, c);
-                        if (slotBelow && !slotBelow.isEmpty() && slotBelow.getMatchableElement()) {
+                        if (slotBelow && !slotBelow.isEmpty()) {
                             targetSlot = slotBelow;
                         }
                     }
