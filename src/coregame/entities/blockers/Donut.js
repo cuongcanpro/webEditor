@@ -21,7 +21,7 @@ CoreGame.Donut = CoreGame.Blocker.extend({
         // Participates in DropMgr gravity — falls like a gem
         this.haveBaseAction[CoreGame.ElementObject.Action.DROP] = 1;
         // Cannot be swapped by the player
-        this.haveBaseAction[CoreGame.ElementObject.Action.SWAP] = 0;
+        this.haveBaseAction[CoreGame.ElementObject.Action.SWAP] = 1;
 
         // Collected when it reaches the bottom of the map
         this.addAction(
