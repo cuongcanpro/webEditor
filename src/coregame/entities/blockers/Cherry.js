@@ -40,6 +40,6 @@ CoreGame.Cherry = CoreGame.Blocker.extend({
 });
 
 // Register
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.CHERRY) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.CHERRY) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.CHERRY, CoreGame.Cherry);
 }

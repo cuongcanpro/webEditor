@@ -53,53 +53,59 @@ CoreGame.ActiveSwap = CoreGame.LogicSwap.extend({
         element2.visualMoveTo(targetPos2, duration);
 
         // Schedule Activation
+        var isRainbow = powerUp instanceof CoreGame.RainbowPU;
+
         CoreGame.TimedActionMgr.addAction(duration, function () {
             // Reset state
             powerUp.setState(CoreGame.ElementState.IDLE);
             targetGem.setState(CoreGame.ElementState.IDLE);
 
-            // Check if the swapped gem forms a match at its new position
-            var gemRow = targetGem.position.x;
-            var gemCol = targetGem.position.y;
-            var matchGroup = CoreGame.PatternFinder.findMatchPattern(
-                self.boardMgr.mapGrid, gemRow, gemCol
-            );
-
             var newPowerUp = null;
 
-            if (matchGroup.length >= 4) {
-                // Match creates a new powerup
-                var puType = self.boardMgr.matchMgr.detectPowerUpType(matchGroup);
+            // Rainbow: skip gem match check — only activate rainbow effect,
+            // normal matching resumes after rainbow finishes clearing
+            if (!isRainbow) {
+                // Check if the swapped gem forms a match at its new position
+                var gemRow = targetGem.position.x;
+                var gemCol = targetGem.position.y;
+                var matchGroup = CoreGame.PatternFinder.findMatchPattern(
+                    self.boardMgr.mapGrid, gemRow, gemCol
+                );
 
-                // Match all gems in the group
-                var matchContext = { type: 'normal' };
-                for (var i = 0; i < matchGroup.length; i++) {
-                    var pos = matchGroup[i];
-                    var slot = self.boardMgr.getSlot(pos.row, pos.col);
-                    if (slot) {
-                        self.boardMgr.matchMgr.notifyNearbySlots(pos.row, pos.col, {
-                            matchColor: targetGem.type, group: matchGroup
-                        });
-                        slot.matchElement(matchContext);
+                if (matchGroup.length >= 4) {
+                    // Match creates a new powerup
+                    var puType = self.boardMgr.matchMgr.detectPowerUpType(matchGroup);
+
+                    // Match all gems in the group
+                    var matchContext = { type: 'normal' };
+                    for (var i = 0; i < matchGroup.length; i++) {
+                        var pos = matchGroup[i];
+                        var slot = self.boardMgr.getSlot(pos.row, pos.col);
+                        if (slot) {
+                            self.boardMgr.matchMgr.notifyNearbySlots(pos.row, pos.col, {
+                                matchColor: targetGem.type, group: matchGroup
+                            });
+                            slot.matchElement(matchContext);
+                        }
                     }
-                }
 
-                // Create the new powerup at the gem's position
-                newPowerUp = self.boardMgr.addNewElement(gemRow, gemCol, puType);
-                if (newPowerUp) {
-                    newPowerUp._immuneToActivation = true;
-                }
-            } else if (matchGroup.length >= CoreGame.Config.MIN_MATCH) {
-                // Regular match - just remove the matched gems
-                var matchContext = { type: 'normal' };
-                for (var i = 0; i < matchGroup.length; i++) {
-                    var pos = matchGroup[i];
-                    var slot = self.boardMgr.getSlot(pos.row, pos.col);
-                    if (slot) {
-                        self.boardMgr.matchMgr.notifyNearbySlots(pos.row, pos.col, {
-                            matchColor: targetGem.type, group: matchGroup
-                        });
-                        slot.matchElement(matchContext);
+                    // Create the new powerup at the gem's position
+                    newPowerUp = self.boardMgr.addNewElement(gemRow, gemCol, puType);
+                    if (newPowerUp) {
+                        newPowerUp._immuneToActivation = true;
+                    }
+                } else if (matchGroup.length >= CoreGame.Config.MIN_MATCH) {
+                    // Regular match - just remove the matched gems
+                    var matchContext = { type: 'normal' };
+                    for (var i = 0; i < matchGroup.length; i++) {
+                        var pos = matchGroup[i];
+                        var slot = self.boardMgr.getSlot(pos.row, pos.col);
+                        if (slot) {
+                            self.boardMgr.matchMgr.notifyNearbySlots(pos.row, pos.col, {
+                                matchColor: targetGem.type, group: matchGroup
+                            });
+                            slot.matchElement(matchContext);
+                        }
                     }
                 }
             }

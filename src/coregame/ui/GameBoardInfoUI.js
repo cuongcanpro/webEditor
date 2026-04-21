@@ -1,20 +1,29 @@
 ﻿var CoreGame = CoreGame || {};
 
-CoreGame.GameBoardInfoUI = BaseLayer.extend({
+GameBoardInfoUI = BaseLayer.extend({
     nodeInfo: null,
     alert_180min_18: null,
+    demo: null,
 
     pInfo: null,
     nodeMain: null,
     lbLevel: null,
     lbMove: null,
+    lbMoveTitle: null,
+    bg_move: null,
     pObjective: null,
+    bgObjective: null,
+    bgTop: null,
 
     nodeCat: null,
+    borderCat: null,
+    bgCat: null,
 
     iconCollect: null,
+    amountCollect: null,
     btnTest: null,
     btnTestSetMove: null,
+    tfTestSetMove: null,
     nodeTest: null,
 
     listNode: [],
@@ -23,23 +32,40 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     pFogIntroObjective: null,
     nodeObjectives: null,
     imgCatObj: null,
+    lbObjectives: null,
     bgObjIntro: null,
     pObjectiveIntro: null,
 
     nodeMonster: null,
     imgMonsterBg: null,
+    pBgMonster: null,
     nodeMonsterSprite: null,
     lbMonsterName: null,
 
     lbTextBubble: null,
     lbTextBubblePhantom: null,
+    imgBubble: null,
 
+    lbBlockName: null,
+    lbBlockNotice: null,
+    imgBlock: null,
+    nodeBlock: null,
+    lbIntroBlock: null,
+    bgIntroBlock: null,
+    nodeIntroBlock: null,
+    btnNextIntro: null,
+    imgGlow: null,
+    imgParticle: null,
+
+    pSkip: null,
+    btnSkip: null,
+    lbContinue: null,
 
     ctor: function (gameUI) {
         this._super();
         this.gameUI = gameUI;
 
-        this.initWithJsonFile(CoreGame.GameBoardInfoUI.JSON);
+        this.initWithJsonFile(GameBoardInfoUI.JSON);
     },
 
     initLayer: function () {
@@ -53,16 +79,23 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         }
         this.listNode = [];
 
+        this.lbIntroBlock = fr.replaceByRichText(this.lbIntroBlock);
+
         this._initTest();
 
         this.pIntro.setVisible(false);
 
         this.nodeMonster.setVisible(false);
+        this.nodeIntroBlock.setVisible(false);
 
         this.lbTextBubble.setVisible(false);
 
         this.lbTextBubble.ignoreContentAdaptWithSize(true);
         this.lbTextBubblePhantom.ignoreContentAdaptWithSize(true);
+
+        this.pSkip.setVisible(false);
+
+        this.demo.setVisible(false);
     },
 
     //region EFX
@@ -232,6 +265,8 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     initData: function (levelConfig) {
         this.setMove(levelConfig.mapConfig.numMove);
         this.setListTarget(levelConfig.mapConfig.targetElements);
+
+        this.pSkip.setVisible(false);
     },
 
     setItemCountLbl: function (lbl) {
@@ -254,7 +289,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
     },
 
     setListTarget: function (targetElements) {
-        this.pObjective.width = CoreGame.GameBoardInfoUI.TARGET_SIZE * targetElements.length;
+        this.pObjective.width = GameBoardInfoUI.TARGET_SIZE * targetElements.length;
         ccui.Helper.doLayout(this.pObjective);
 
         for (let i = 0; i < Math.max(this.listNode.length, targetElements.length); i++) {
@@ -267,12 +302,12 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             } else {
                 this.listNode[i].setVisible(true);
                 this.setInfoTarget(this.listNode[i], targetElements[i].id, targetElements[i].count);
-                this.listNode[i].x = i * CoreGame.GameBoardInfoUI.TARGET_SIZE;
-                this.listNode[i].y = - 0.5 * CoreGame.GameBoardInfoUI.TARGET_SIZE;
+                this.listNode[i].x = i * GameBoardInfoUI.TARGET_SIZE;
+                this.listNode[i].y = - 0.5 * GameBoardInfoUI.TARGET_SIZE;
             }
         }
 
-        let elementSizeIntro = CoreGame.GameBoardInfoUI.TARGET_SIZE * 1.2;
+        let elementSizeIntro = GameBoardInfoUI.TARGET_SIZE * 1.2;
         this.pObjectiveIntro.width = elementSizeIntro * targetElements.length;
         ccui.Helper.doLayout(this.pObjectiveIntro);
         let listNodeIntro = this.pObjectiveIntro.getChildren();
@@ -286,8 +321,8 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             } else {
                 listNodeIntro[i].setVisible(true);
                 this.setInfoTarget(listNodeIntro[i], targetElements[i].id, targetElements[i].count);
-                listNodeIntro[i].x = i * elementSizeIntro + (elementSizeIntro - CoreGame.GameBoardInfoUI.TARGET_SIZE) * 0.5;
-                listNodeIntro[i].y = - 0.5 * CoreGame.GameBoardInfoUI.TARGET_SIZE + 20;
+                listNodeIntro[i].x = i * elementSizeIntro + (elementSizeIntro - GameBoardInfoUI.TARGET_SIZE) * 0.5;
+                listNodeIntro[i].y = - 0.5 * GameBoardInfoUI.TARGET_SIZE + 20;
             }
         }
 
@@ -297,22 +332,29 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         for (let element of targetElements) {
             if (element.id >= baseMonster) {
                 //Set Info
+                let config = GameBoardInfoUI.animMonster[element.id];
+                if (!config) {
+                    config = {
+                        name: "Dangerous\nBeast",
+                        scale: 1,
+                        offset: cc.p(0, 0),
+                        anim: "idle"
+                    }
+                }
+
                 this.nodeMonster.setVisible(true);
-                this.lbMonsterName.setString(CoreGame.GameBoardInfoUI.animMonster[element.id].name);
+                this.lbMonsterName.setString(config.name);
                 this.lbMonsterName.setTextColor(cc.color("#db7000"));
                 this.lbMonsterName.enableOutline(cc.color("#301c02"), 7);
 
                 this.nodeMonsterSprite.removeAllChildren();
-                let spine = gv.createSpineAnimation(resAni["spine_" + element.id + "_main"]);
-                this.nodeMonsterSprite.addChild(spine);
-                spine.setAnimation(0, CoreGame.GameBoardInfoUI.animMonster[element.id].anim, true);
-                spine.setScale(CoreGame.GameBoardInfoUI.animMonster[element.id].scale);
-                spine.setPosition(CoreGame.GameBoardInfoUI.animMonster[element.id].offset);
-
-                let randRot = (0.5 - Math.random()) * 20;
-                this.nodeMonster.setRotation(randRot);
-                this.nodeMonsterSprite.setRotation(-randRot);
-                this.lbMonsterName.setRotation(-randRot);
+                if (resAni["spine_" + element.id + "_main"] && jsb.fileUtils.isFileExist(resAni["spine_" + element.id + "_main"])) {
+                    let spine = gv.createSpineAnimation(resAni["spine_" + element.id + "_main"]);
+                    this.nodeMonsterSprite.addChild(spine);
+                    spine.setAnimation(0, config.anim, true);
+                    spine.setScale(config.scale);
+                    spine.setPosition(config.offset);
+                }
 
                 //
                 this.nodeObjectives.setVisible(false);
@@ -322,12 +364,12 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
 
     createTarget: function (parent, list, isIntro = false) {
         let newTargetNode = ccs.load(
-            "zcsd/game/GameBoardInfoObjectiveSlot" + (isIntro? "Intro" : "") + ".json",
-            res.ZCSD_ROOT
+            "game/csd/GameBoardInfoObjectiveSlot" + (isIntro? "Intro" : "") + ".json",
+            ""
         ).node;
         newTargetNode.setContentSize(cc.size(
-            CoreGame.GameBoardInfoUI.TARGET_SIZE,
-            CoreGame.GameBoardInfoUI.TARGET_SIZE
+            GameBoardInfoUI.TARGET_SIZE,
+            GameBoardInfoUI.TARGET_SIZE
         ));
         ccui.Helper.doLayout(newTargetNode);
 
@@ -437,7 +479,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         element.stopAllActions();
         element.spr.stopAllActions();
         var zOrderInc = element.idxInPattern ? element.idxInPattern : 0;
-        element.setLocalZOrder(BoardConst.zOrder.OBJECTIVE + zOrderInc);
+        element.setLocalZOrder(CoreGame.Config.zOrder.OBJECTIVE + zOrderInc);
 
         var timeDelay = element.idxInPattern ? (element.idxInPattern * 0.1) : 0;
         var timeMove = 0.7;
@@ -449,12 +491,12 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
             cc.callFunc(function () {
                 element.setCurState(Element.State.NONE);
                 if(element.getType() >= CoreGame.Config.ElementType.GREEN && element.getType() <= CoreGame.Config.ElementType.CYAN){
-                    element.shadow = new CoreGame.GameBoardInfoUI.NodeShadow(element, timeMove, "icon_" + element.getType() + "_shadow.png");
+                    element.shadow = new GameBoardInfoUI.NodeShadow(element, timeMove, "icon_" + element.getType() + "_shadow.png");
                 }else
                 {
-                    element.shadow = new CoreGame.GameBoardInfoUI.NodeShadow(element, timeMove);
+                    element.shadow = new GameBoardInfoUI.NodeShadow(element, timeMove);
                 }
-                element.shadow.setShadowZOder(BoardConst.zOrder.OBJECTIVE + zOrderInc - 1);
+                element.shadow.setShadowZOder(CoreGame.Config.zOrder.OBJECTIVE + zOrderInc - 1);
                 element.runAction(cc.bezierTo(timeMove, bezier).easing(cc.easeSineInOut()));
             }),
             cc.delayTime(timeMove),
@@ -520,7 +562,7 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
                     cc.scaleTo(timeMove/2, 1.5),
                     cc.scaleTo(timeMove - timeMove/2, 1.0)
                 )
-                coin.shadow = new CoreGame.GameBoardInfoUI.NodeShadow(coin, timeMove, null, actionScaleShadow);
+                coin.shadow = new GameBoardInfoUI.NodeShadow(coin, timeMove, null, actionScaleShadow);
                 coin.runAction(cc.sequence(
                     cc.bezierTo(timeMove, [cc.p(coin.x / 2 + 100, coin.y / 2 + 100), cc.p(coin.x / 2 + 50, coin.y / 2 + 100), cc.p(0, 0), cc.p(0, -40)]).easing(cc.easeSineInOut()),
                     cc.spawn(
@@ -548,7 +590,6 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         for (let i in this.listNode) {
             this.listNode[i].setVisible(isShow);
         }
-        this.spine_cat.setVisible(isShow);
     },
 
     onShowSpineCatTalking: function (newParent, zOrder) {
@@ -598,10 +639,188 @@ CoreGame.GameBoardInfoUI = BaseLayer.extend({
         };
         this.btnTestSetMove.addClickEventListener(this.onTestSetMove.bind(this));
     },
+
+    showSkip: function () {
+        this.pSkip.setVisible(true);
+    },
+
+    setIntroNewBlock: function (config) {
+        this.lbIntroBlock.setString(config["description"]);
+        this.lbBlockName.setString(config["name"]);
+        this.imgBlock.loadTexture("res/modules/game/element/" + config["blockId"] + ".png");
+
+        let efxTime = 0.5;
+        let delta = 0.125;
+
+        //FOG
+        this.pFogIntroObjective.stopAllActions();
+        this.pFogIntroObjective.setOpacity(0);
+        this.pFogIntroObjective.runAction(cc.fadeIn(efxTime).easing(cc.easeOut(2.5)));
+        //end FOG
+
+        //PANEL INTRO
+        this.pIntro.stopAllActions();
+        this.pIntro.setVisible(true);
+
+        // nodeIntroBlock children entrance animation
+        this.nodeIntroBlock.setVisible(true);
+
+        // imgBlock — zoom bounce from center
+        this.nodeBlock.stopAllActions();
+        this.nodeBlock.setScale(0);
+        this.nodeBlock.runAction(cc.sequence(
+            cc.spawn(
+                cc.scaleTo(efxTime, 1).easing(cc.easeBackOut())
+            )
+        ));
+
+        // imgGlow — slow rotating pulse
+        this.imgGlow.stopAllActions();
+        this.imgGlow.setOpacity(180);
+        this.imgGlow.setRotation(0);
+        this.imgGlow.runAction(cc.repeatForever(
+            cc.spawn(
+                cc.rotateBy(3.0, 360),
+                cc.sequence(
+                    cc.scaleTo(1.2, 1.15, 1.15).easing(cc.easeSineInOut()),
+                    cc.scaleTo(1.2, 0.9, 0.9).easing(cc.easeSineInOut())
+                ),
+                cc.sequence(
+                    cc.fadeTo(1.2, 255).easing(cc.easeSineInOut()),
+                    cc.fadeTo(1.2, 140).easing(cc.easeSineInOut())
+                )
+            )
+        ));
+
+        // imgParticle — sparkling fade with random rotation and expanding scale
+        this.imgParticle.stopAllActions();
+        this.imgParticle.setOpacity(0);
+        this.imgParticle.setScale(0.85);
+        this.imgParticle.setRotation(Math.random() * 360);
+        this.imgParticle.runAction(cc.repeatForever(cc.sequence(
+            cc.spawn(
+                cc.sequence(
+                    cc.fadeTo(0.4, 255).easing(cc.easeSineOut()),
+                    cc.delayTime(0.3),
+                    cc.fadeTo(0.5, 0).easing(cc.easeSineIn())
+                ),
+                cc.scaleTo(1.2, 1.15).easing(cc.easeSineOut())
+            ),
+            cc.callFunc(function () {
+                this.imgParticle.setRotation(Math.random() * 360);
+                this.imgParticle.setScale(0.25);
+            }.bind(this)),
+            cc.delayTime(0.2)
+        )));
+
+        // lbBlockName — drop in from above
+        this.lbBlockName.stopAllActions();
+        this.lbBlockName.setOpacity(0);
+        this.lbBlockName.setPosition(this.lbBlockName.rawPos);
+        this.lbBlockName.y += 40;
+        this.lbBlockName.runAction(cc.sequence(
+            cc.delayTime(delta),
+            cc.spawn(
+                cc.fadeIn(efxTime).easing(cc.easeOut(2.5)),
+                cc.moveTo(efxTime, this.lbBlockName.rawPos).easing(cc.easeBackOut())
+            )
+        ));
+
+        // lbBlockNotice — drop in from above, more delay
+        this.lbBlockNotice.stopAllActions();
+        this.lbBlockNotice.setOpacity(0);
+        this.lbBlockNotice.setPosition(this.lbBlockNotice.rawPos);
+        this.lbBlockNotice.y += 30;
+        this.lbBlockNotice.runAction(cc.sequence(
+            cc.delayTime(delta * 2),
+            cc.spawn(
+                cc.fadeIn(efxTime).easing(cc.easeOut(2.5)),
+                cc.moveTo(efxTime, this.lbBlockNotice.rawPos).easing(cc.easeBackOut())
+            )
+        ));
+
+        // bgIntroBlock — slide up from below
+        this.bgIntroBlock.stopAllActions();
+        this.bgIntroBlock.setScale(0);
+        this.bgIntroBlock.runAction(cc.sequence(
+            cc.delayTime(delta * 3),
+            cc.scaleTo(efxTime, this.bgIntroBlock.rawScale).easing(cc.easeBackOut())
+        ));
+    },
+
+    hideIntroNewBlock: function () {
+        var self = this;
+        var efxTime = 0.3;
+        var delta = 0.08;
+
+        // bgIntroBlock — shrink down first
+        this.bgIntroBlock.stopAllActions();
+        this.bgIntroBlock.runAction(cc.sequence(
+            cc.scaleTo(efxTime, 0).easing(cc.easeBackIn())
+        ));
+
+        // lbBlockNotice — fade up and out
+        this.lbBlockNotice.stopAllActions();
+        this.lbBlockNotice.runAction(cc.sequence(
+            cc.delayTime(delta),
+            cc.spawn(
+                cc.fadeOut(efxTime).easing(cc.easeOut(2.5)),
+                cc.moveBy(efxTime, 0, 30).easing(cc.easeBackIn())
+            )
+        ));
+
+        // lbBlockName — fade up and out
+        this.lbBlockName.stopAllActions();
+        this.lbBlockName.runAction(cc.sequence(
+            cc.delayTime(delta * 2),
+            cc.spawn(
+                cc.fadeOut(efxTime).easing(cc.easeOut(2.5)),
+                cc.moveBy(efxTime, 0, 40).easing(cc.easeBackIn())
+            )
+        ));
+
+        // nodeBlock — shrink to zero last
+        this.nodeBlock.stopAllActions();
+        this.nodeBlock.runAction(cc.sequence(
+            cc.delayTime(delta * 3),
+            cc.scaleTo(efxTime, 0).easing(cc.easeBackIn()),
+            cc.callFunc(function () {
+                self.nodeIntroBlock.setVisible(false);
+            })
+        ));
+
+        // FOG — fade out
+        this.pFogIntroObjective.stopAllActions();
+        this.pFogIntroObjective.runAction(cc.sequence(
+            cc.delayTime(delta * 3 + efxTime),
+            cc.fadeOut(efxTime).easing(cc.easeOut(2.5)),
+            cc.callFunc(function () {
+                self.pIntro.setVisible(false);
+
+                // stop glow & particle loops
+                self.imgGlow.stopAllActions();
+                self.imgParticle.stopAllActions();
+            })
+        ));
+    },
+
+    onButtonRelease: function (btn, id) {
+        switch (btn) {
+            case this.btnSkip:
+                this.gameUI.boardUI.boardMgr.skipRemainingMovesBonus();
+                break;
+
+            case this.btnNextIntro:
+                narrativeMgr.nextStep();
+                this.hideIntroNewBlock();
+                break;
+        }
+    }
 });
-CoreGame.GameBoardInfoUI.JSON = "zcsd/game/GameBoardInfoUI.json";
-CoreGame.GameBoardInfoUI.TARGET_SIZE = 90;
-CoreGame.GameBoardInfoUI.animMonster = {
+GameBoardInfoUI.JSON = "game/csd/GameBoardInfoUI.json";
+// GameBoardInfoUI.JSON = "zcsd/game/GameBoardInfoUI.json";
+GameBoardInfoUI.TARGET_SIZE = 90;
+GameBoardInfoUI.animMonster = {
     15000: {
         name: "Mischievous\nMonkeys",
         scale: 0.25,
@@ -625,14 +844,14 @@ CoreGame.GameBoardInfoUI.animMonster = {
         scale: 1.5,
         offset: cc.p(0, -125),
         anim: "anim0_idle"
-    },
+    }
 };
 
 /**
  * Create shadowFake, add child to object Flying
  * Create shadow and move along to shadowFake position.
  */
-CoreGame.GameBoardInfoUI.NodeShadow = cc.Node.extend({
+GameBoardInfoUI.NodeShadow = cc.Node.extend({
     /**
      *
      * @param objectFly: object want to add shadow
@@ -730,14 +949,20 @@ CoreGame.GameBoardInfoUI.NodeShadow = cc.Node.extend({
     }
 });
 
-CoreGame.GameBoardBg = BaseLayer.extend({
+GameBoardBg = BaseLayer.extend({
     pBg: null,
+    bg: null,
 
     ctor: function (mainScene) {
         this._super();
         this.mainScene = mainScene;
 
-        this.initWithJsonFile(CoreGame.GameBoardBg.JSON);
-    }
+        this.initWithJsonFile(GameBoardBg.JSON);
+        this.setBackground();
+    },
+
+    setBackground: function (texture = "res/modules/game/board/3.jpg") {
+        this.bg.loadTexture(texture);
+    },
 });
-CoreGame.GameBoardBg.JSON = "zcsd/game/GameBoardBg.json";
+GameBoardBg.JSON = "game/csd/GameBoardBg.json";

@@ -1,0 +1,55 @@
+
+pus_bullet_1.png
+size: 1024,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bullet_sp
+  rotate: false
+  xy: 705, 85
+  size: 129, 128
+  orig: 129, 128
+  offset: 0, 0
+  index: -1
+cross
+  rotate: false
+  xy: 153, 76
+  size: 140, 137
+  orig: 140, 137
+  offset: 0, 0
+  index: -1
+cross2
+  rotate: false
+  xy: 295, 79
+  size: 134, 134
+  orig: 134, 134
+  offset: 0, 0
+  index: -1
+cross3
+  rotate: false
+  xy: 2, 67
+  size: 149, 146
+  orig: 149, 146
+  offset: 0, 0
+  index: -1
+cross_line
+  rotate: false
+  xy: 431, 83
+  size: 134, 130
+  orig: 134, 130
+  offset: 0, 0
+  index: -1
+slash_ray
+  rotate: false
+  xy: 567, 85
+  size: 136, 128
+  orig: 136, 128
+  offset: 0, 0
+  index: -1
+smoke_A_01
+  rotate: false
+  xy: 2, 2
+  size: 128, 63
+  orig: 128, 63
+  offset: 0, 0
+  index: -1

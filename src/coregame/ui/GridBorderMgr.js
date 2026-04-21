@@ -21,7 +21,7 @@ CoreGame.GridBorderMgr = cc.Class.extend({
      * Render border pieces for a specific element type
      * @param {number} type - CoreGame.Config.ElementType
      * @param {string} spritePrefix - e.g. "cloud_piece_"
-     * @param {object} infoConfig - BoardConst.CloudPieceInfo or similar
+     * @param {object} infoConfig - CoreGame.Config.CloudPieceInfo or similar
      */
     render: function (type, spritePrefix, infoConfig) {
         if (!this.boardMgr || !this.boardUI) return;
@@ -57,7 +57,7 @@ CoreGame.GridBorderMgr = cc.Class.extend({
                         // spr.setScale(0.5);
 
                         // Z-Order logic (keeping current convention)
-                        var zOrder = (info[i] == '1_2_3_4') ? (BoardConst.zOrder.CLOUD - 2) : (BoardConst.zOrder.CLOUD - 1);
+                        var zOrder = (info[i] == '1_2_3_4') ? (CoreGame.Config.zOrder.CLOUD - 2) : (CoreGame.Config.zOrder.CLOUD - 1);
                         if (type === CoreGame.Config.ElementType.GRASS)
                             zOrder = CoreGame.LayerBehavior.BACKGROUND - 1;
                         else

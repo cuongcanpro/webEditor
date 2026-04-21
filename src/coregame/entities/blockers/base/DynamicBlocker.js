@@ -23,20 +23,20 @@ CoreGame.DynamicBlocker = CoreGame.Blocker.extend({
         this._super(row, col, type, hitPoints);
         this.cells = cells || [{ r: row, c: col }];
         cc.log("List Cell " + JSON.stringify(this.cells));
-       //  for (let cell of this.cells) {
-       //      this.cells.push(cell);
-       //
-       //      // Add this element to the new grid slot logic
-       //      if (this.boardMgr) {
-       //          var slot = this.boardMgr.getSlot(cell.r, cell.c);
-       //          if (slot) {
-       //              // Ensure slot is cleared or handled as per game rules?
-       //              // User's SpreadAction cleared it before calling this.
-       //              // Just add self to slot.
-       //              slot.addElement(this);
-       //          }
-       //      }
-       //  }
+        //  for (let cell of this.cells) {
+        //      this.cells.push(cell);
+        //
+        //      // Add this element to the new grid slot logic
+        //      if (this.boardMgr) {
+        //          var slot = this.boardMgr.getSlot(cell.r, cell.c);
+        //          if (slot) {
+        //              // Ensure slot is cleared or handled as per game rules?
+        //              // User's SpreadAction cleared it before calling this.
+        //              // Just add self to slot.
+        //              slot.addElement(this);
+        //          }
+        //      }
+        //  }
 
         // Calculate bounding box size for visual centering logic (still useful for UI)
         // Find min/max row/col

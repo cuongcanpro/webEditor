@@ -114,8 +114,11 @@ CoreGame.RainbowTransformPU = CoreGame.CustomCreatorPU.extend({
                 }
             }
         }
+
         // Show the transformed power-up
-        this.listSubPU[index].ui.setVisible(true);
+        if (this.listSubPU && this.listSubPU[index] && this.listSubPU[index].ui) {
+            this.listSubPU[index].ui.setVisible(true);
+        }
     },
     /**
      * Override createUI to remove the target gems before creating bomb uis

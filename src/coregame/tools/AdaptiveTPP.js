@@ -120,10 +120,12 @@ CoreGame.AdaptiveTPP = {
         // Apply mercy factor: effective targets shrink on repeated losses
         this._initialTargets = this._sumTargets(levelConfig.targets) * this._retryFactor;
 
-        this._deviationLog  = [];
-        this._triggerCounts = { baseline: 0, yes_pu_l1: 0, yes_pu_l2: 0, no_pu_l1: 0, no_pu_l2: 0 };
-        this._puCount       = 0;
-        this._turnCount     = 0;
+        this._deviationLog    = [];
+        this._triggerCounts   = { baseline: 0, yes_pu_l1: 0, yes_pu_l2: 0, no_pu_l1: 0, no_pu_l2: 0 };
+        this._puCount         = 0;
+        this._turnCount       = 0;
+        this._levelCompleted  = false;
+        this._movesUsedFinal  = 0;
 
         // PU creation event listener
         if (this._puHandler && CoreGame.EventMgr) {
@@ -146,7 +148,12 @@ CoreGame.AdaptiveTPP = {
             no_pu_l2:   new CoreGame.DropStrategy.NoPUSpawnL2v2()
         };
 
-        this._applyStrategy("baseline");
+        // Apply baseline directly without going through _applyStrategy to avoid
+        // inflating the trigger count on init (baseline count should start at 0).
+        this._currentName = "baseline";
+        if (this._boardMgr && this._boardMgr.dropMgr) {
+            this._boardMgr.dropMgr.setSpawnStrategy(this._strategies["baseline"]);
+        }
     },
 
     /**
@@ -272,7 +279,9 @@ CoreGame.AdaptiveTPP = {
             retry_count:         this._retryCount,
             move_surplus:        this._totalMoves - (this._movesUsedFinal || 0),
             pu_count:            this._puCount || 0,
-            pu_rate:             this._turnCount > 0 ? this._puCount / this._turnCount : 0,
+            pu_rate:             (this._movesUsedFinal > 0) ? this._puCount / this._movesUsedFinal
+                                 : (this._turnCount   > 0) ? this._puCount / this._turnCount
+                                 : 0,
             retry_factor:        this._retryFactor
         };
     },

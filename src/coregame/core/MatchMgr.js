@@ -6,6 +6,7 @@ var CoreGame = CoreGame || {};
 
 CoreGame.MatchMgr = cc.Class.extend({
     boardMgr: null,
+    countedMatch: 0,
 
     ctor: function (boardMgr) {
         this.boardMgr = boardMgr;
@@ -14,6 +15,7 @@ CoreGame.MatchMgr = cc.Class.extend({
     /**
      * Perform matching on the board
      * @param {Array} matches - Optional pre-calculated matches array
+     * @return {Number} number of matches
      */
     doMatch: function (matches) {
         // Use provided matches or calculate new ones
@@ -28,17 +30,21 @@ CoreGame.MatchMgr = cc.Class.extend({
         if (this.boardMgr.state == CoreGame.BoardState.IDLE)
             this.boardMgr.state = CoreGame.BoardState.MATCHING;
 
-        var self = this;
         var maxDuration = 0;
 
         // Process each match group and track max animation time
         for (var i = 0; i < matches.length; i++) {
             var group = matches[i];
+
             // Find target position if this group contains one of the swap positions
             var targetPos = this.findSwapPositionInGroup(group);
             var duration = this.processMatchGroup(group, targetPos);
             maxDuration = Math.max(maxDuration, duration);
         }
+
+        fr.Sound.playGemMatchSound(this.countedMatch);
+
+        this.countedMatch++;
 
         // Reset swap positions AFTER processing all groups (to support dual PowerUp creation)
         this.boardMgr.lastSwapSource = null;

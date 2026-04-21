@@ -27,19 +27,18 @@ var resAni = {
 
     bomb_efk: "game/animation/effekseer/bomb_1.efk",
     bomb_spine: "game/animation/spine/fx_boom",
-    pu_bomb: "game/animation/spine/powerups/PU_gift_box",
-    pu_bomb_white: "game/animation/spine/powerups/PU_gift_box",
+    pu_bomb: "game/animation/spine/pu/boom",
 
     bombX2_efk: "game/animation/effekseer/bomb_x2_1.efk",
     bombX2_spine: "game/animation/spine/bomb_x2_1",
 
-    pu4: "game/animation/spine/pu_rocket",
+    pu4: "game/animation/spine/pu/phao",
     pu4_h: "game/animation/spine/powerups/PU_rocket_H",
     pu4_v: "game/animation/spine/powerups/PU_rocket_V",
     pu4_x: "game/animation/spine/powerups/PU_rocket_X",
     pu4_h_spine: "game/animation/spine/pu4_explosion",
     pu4_h_tail: "game/animation/spine/rocket_ tail",
-    pu4_h_bullet: "game/animation/spine/powerups/PU_rocket_fx",
+    pu4_h_bullet: "game/animation/spine/rocket_tail",
     pu4_h_efk: "game/animation/effekseer/pu4_explosion.efk",
     pu4_h_bullet_efk: "game/animation/effekseer/pu4_bullet_h.efk",
     pu4_v_bullet_efk: "game/animation/effekseer/pu4_bullet_v.efk",
@@ -50,7 +49,7 @@ var resAni = {
     pus_rainbow: "game/animation/spine/powerups/PU_pinwheel",
     pu_rainbow: "game/animation/spine/pu_disco",
 
-    pus_spine: "game/animation/spine/powerups/PU_balloon",
+    pus_spine: "game/animation/spine/pu/fx_rocket",
     pus_balloon_fx: "game/animation/spine/powerups/PU_balloon_fx",
     pusX2_bullet_1_spine: "game/animation/spine/pus_x2_bullet_1",
     pus_bullet_1_spine: "game/animation/spine/pus_bullet_1",
@@ -89,7 +88,7 @@ var resAni = {
     rainbowX2_spine: "game/animation/spine/rainbow_x2_1",
     rainbowX2_efk: "game/animation/effekseer/rainbow_x2_1.efk",
 
-    rainbowX2_merge_spine: "game/animation/spine/2x_disco_merge",
+    rainbowX2_merge_spine: "game/animation/spine/fx_disco",
     rainbowX2_explosion_efk: "game/animation/effekseer/2x_disco_explosion.efk",
 
     spine_500: "game/animation/spine/grass_blocker",
@@ -118,7 +117,6 @@ var resAni = {
 
     spine_10000_main:"res/newBlock/BlockUI/spine/gorilla_old/gorilla",
     spine_11000_main:"game/animation/spine/gorilla_ice",
-    spine_11001_main:"game/animation/spine/monkey_black/monkey_black",
     spine_12000_main:"game/animation/spine/gorilla_fire",
     spine_13000_main:"game/animation/spine/rat_one_eyed/mouse_purple",
     spine_14000_main:"game/animation/spine/rat_candy/mouse_yellow",
@@ -222,8 +220,16 @@ var resAni = {
     bossRun_win_boss: "game/animation/spine/modules/bossRun/WIN_BOSS",
 
     minisaga_build_up: "game/animation/spine/build_up",
-
 };
+var resAniConfig = {
+    GUILevelInfo: {
+        boss_10000: {
+            scale: 1,
+            offset: cc.p(0, -10),
+            idle: "anim0_idle"
+        }
+    }
+}
 
 
 //id

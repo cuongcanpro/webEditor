@@ -16,7 +16,7 @@ CoreGame.BoxUI = CoreGame.ElementUI.extend({
     updateVisual: function () {
         // Base type for Box is 700. Visual frames are 701, 702, ...
         var visualType = this.element.type + this.element.hitPoints;
-        var fileName = "res/high/game/element/" + visualType + ".png";
+        var fileName = "res/modules/game/element/" + visualType + ".png";
         if (this.sprite) {
             if (typeof fr !== 'undefined' && typeof fr.changeSprite === 'function') {
                 fr.changeSprite(this.sprite, visualType + ".png", fileName);
@@ -36,18 +36,25 @@ CoreGame.BoxUI = CoreGame.ElementUI.extend({
         cc.log("playTakeDamageEffect ");
         var num = this.element.hitPoints <= 0 ? 1 : this.element.hitPoints;
 
+        this.setVisible(this.element.hitPoints > 0);
+
         // Sound effect
         if (typeof resSound !== 'undefined' && resSound["box_0" + num]) {
             fr.Sound.playSoundEffect(resSound["box_0" + num], false);
         }
 
         // Visual effect (VFX)
-        if (cc.sys.platform == cc.sys.WIN32 && typeof gv !== 'undefined' && gv.isForGD) return;
+        // if (cc.sys.platform == cc.sys.WIN32 && typeof gv !== 'undefined' && gv.isForGD) return;
 
         if (this.getParent()) {
             let posEff = this.getParent().convertToWorldSpace(this.getPosition());
             if (typeof gv !== 'undefined' && typeof gv.createTLFX === 'function') {
-                gv.createTLFX("run" + num, posEff, this.getParent(), BoardConst.zOrder.MATCH_4_EXPLODE + 10);
+                gv.createTLFX(
+                    "run" + num,
+                    posEff,
+                    this.getParent(),
+                    CoreGame.Config.zOrder.MATCH_4_EXPLODE + 10
+                );
             }
         }
     },
@@ -55,5 +62,4 @@ CoreGame.BoxUI = CoreGame.ElementUI.extend({
     playAnimation: function (animationName) {
         this.playTakeDamageEffect();
     }
-
 });

@@ -358,6 +358,13 @@ CoreGame.ElementObject = cc.Class.extend({
     },
 
     /**
+     * Check if element is a Monster (type >= 10000)
+     */
+    isMonster: function () {
+        return this.type >= CoreGame.ElementObject.BASE_MONSTER_TYPE;
+    },
+
+    /**
      * Set remove action
      * @param {CoreGame.Strategies.NormalAction} action - The remove action
      */
@@ -404,6 +411,7 @@ CoreGame.ElementObject = cc.Class.extend({
         }
 
         //Update targetElements
+        CoreGame.EventMgr.emit(CoreGame.ElementObject.EVENT.REMOVED, this);
         this.boardMgr.removedElement(this);
 
         if (this.isConnectedUI && boardUI) {
@@ -510,8 +518,16 @@ CoreGame.ElementObject = cc.Class.extend({
         if (this.ui) {
             var hpBar = UIUtils.seekWidgetByName(this.ui, "hpBar");
             if (hpBar && hpBar instanceof ccui.LoadingBar) {
-                this.configData.maxHP = Math.max(this.configData.maxHP || 1, this.hitPoints);
-                var maxHP = this.configData.maxHP || 1;
+                // Prefer the per-instance maxHP snapshot set at init.
+                // Fall back to configData.maxHP, then to hitPoints, so a
+                // freshly spawned element always reads 100% at full HP.
+                var maxHP = this.maxHP
+                    || (this.configData && this.configData.maxHP)
+                    || this.hitPoints
+                    || 1;
+                if (this.hitPoints > maxHP) {
+                    maxHP = this.hitPoints;
+                }
                 var percent = (this.hitPoints / maxHP) * 100;
                 hpBar.setPercent(percent);
             }
@@ -587,7 +603,9 @@ CoreGame.ElementObject = cc.Class.extend({
             case CoreGame.ElementObject.Action.ACTIVE:
                 return this.haveBaseAction[type];
             case CoreGame.ElementObject.Action.DROP:
-                return this.haveBaseAction[type];
+                // Only IDLE elements can drop — prevent MATCHING/REMOVING gems
+                // from being picked up by DropMgr during intermediate refills
+                return this.state === CoreGame.ElementState.IDLE && this.haveBaseAction[type];
             default:
                 return false;
         }
@@ -719,7 +737,18 @@ CoreGame.ElementObject.ACTION_TYPE = {
     CUSTOM_ACTION_3: "action_3",
 }
 
+CoreGame.ElementObject.EVENT = {
+    REMOVED: "elementObjectRemoved",
+    MATCHED: "elementObjectMatched"
+}
+
+CoreGame.ElementObject.BASE_MONSTER_TYPE = 10000;
+
 CoreGame.ElementObject.map = {}
+
+CoreGame.ElementObject.isMonsterType = function (type) {
+    return type >= CoreGame.ElementObject.BASE_MONSTER_TYPE;
+}
 
 CoreGame.ElementObject.register = function (type, cls) {
     CoreGame.ElementObject.map[type] = cls;

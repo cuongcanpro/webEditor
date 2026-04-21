@@ -14,7 +14,6 @@ CoreGame.Box = CoreGame.Blocker.extend({
         this.addAction(CoreGame.ElementObject.ACTION_TYPE.SIDE_MATCH, new CoreGame.Strategies.TakeDamageAction());
         this.addAction(CoreGame.ElementObject.ACTION_TYPE.MATCH, new CoreGame.Strategies.TakeDamageAction());
         this.haveBaseAction[CoreGame.ElementObject.Action.MATCH] = 1;
-        cc.log("Action Enable ================ " + JSON.stringify(this.haveBaseAction));
     },
 
     /**
@@ -32,12 +31,11 @@ CoreGame.Box = CoreGame.Blocker.extend({
     },
 
     hasAction: function (action) {
-        cc.log("Action Enable " + JSON.stringify(this.haveBaseAction));
         return this._super(action);
     }
 });
 
 // Register Box
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.BOX) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.BOX) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.BOX, CoreGame.Box);
 }

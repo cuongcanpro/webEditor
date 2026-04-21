@@ -46,7 +46,7 @@ CoreGame.Cloud = CoreGame.DynamicBlocker.extend({
 });
 
 // Register Cloud
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.CLOUD) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.CLOUD) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.CLOUD, CoreGame.Cloud);
 }
 

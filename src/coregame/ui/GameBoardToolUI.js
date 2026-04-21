@@ -1,6 +1,6 @@
 ﻿var CoreGame = CoreGame || {};
 
-CoreGame.GameBoardToolUI = BaseLayer.extend({
+GameBoardToolUI = BaseLayer.extend({
     isHaveFreeBooster: null,
     myInterval: null,
 
@@ -16,6 +16,7 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
     btnQuit: null,
     btnSound: null,
     btnMusic: null,
+    btnClose: null,
 
     nodeToolInfo: null,
 
@@ -27,7 +28,7 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
         this.curTool = null;
         this.forceToolAction = null;
 
-        this.initWithJsonFile(CoreGame.GameBoardToolUI.JSON);
+        this.initWithJsonFile(GameBoardToolUI.JSON);
 
         this.pTools.setVisible(false);
 
@@ -37,8 +38,8 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
     initLayer: function () {
         this.pnlFog.setContentSize(cc.winSize);
         this.pnlFog.setPositionX(-cc.winSize.width/2);
-        this.pnlFog.setLocalZOrder(CoreGame.GameBoardToolUI.zOrder.FOG);
-        this.nodeToolInfo.setLocalZOrder(CoreGame.GameBoardToolUI.zOrder.INFO);
+        this.pnlFog.setLocalZOrder(GameBoardToolUI.zOrder.FOG);
+        this.nodeToolInfo.setLocalZOrder(GameBoardToolUI.zOrder.INFO);
         this.pnlFog.setVisible(false);
         this.nodeToolInfo.setVisible(false);
 
@@ -62,6 +63,9 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
         this.btnSound.addClickEventListener(this.onClickSound.bind(this));
         this.btnMusic.addClickEventListener(this.onClickMusic.bind(this));
 
+        this.btnClose.setSwallowTouches(false);
+        this.btnClose.addClickEventListener(this.onClickPause.bind(this));
+
         this.btnCheat.setVisible(!gv.isRelease);
 
         this.showGUIPause(false, false);
@@ -78,7 +82,12 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
     // click event registered in cocos studio
     onClickPause: function () {
         if (this.board && this.board.getGameResult() != BoardResult.NONE) return;
-        if (this.pausing) return;
+
+        if (this.pausing) {
+            this.showGUIPause(false);
+            this.pausing = false;
+            return;
+        }
         this.pausing = true;
 
         // const scene = cc.director.getRunningScene();
@@ -115,7 +124,7 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
     },
 
     showGUIPause: function (bool, isAnim = true) {
-        const listBtn = [this.btnQuit, this.btnSound, this.btnMusic];
+        const listBtn = [this.btnQuit, this.btnSound, this.btnMusic, this.btnClose];
         // for (let i = 0; i < listBtn.length; i++) {
             // UIUtils.changeParent(listBtn[i], this.btnPause.getParent(), 100000, false);
             // listBtn[i].setVisible(true);
@@ -135,6 +144,7 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
         for (let i = 0; i < listBtn.length; i++) {
             let action, btn = listBtn[i];
             btn.stopAllActions();
+            btn.setEnabled(bool);
             if (bool) {
                 btn.setVisible(true);
                 btn.setOpacity(0);
@@ -194,14 +204,14 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
 
     // click event registered in cocos studio
     onClickSound:function(){
-        fr.Sound.turnOnSound();
+        fr.Sound.switchSound();
         this.btnSound.getChildByName('icon_on').setVisible(fr.Sound.effectOn);
         this.btnSound.getChildByName('icon_off').setVisible(!fr.Sound.effectOn);
     },
 
     // click event registered in cocos studio
     onClickMusic:function(){
-        fr.Sound.turnOnMusic();
+        fr.Sound.switchMusic();
         this.btnMusic.getChildByName('icon_on').setVisible(fr.Sound.musicOn);
         this.btnMusic.getChildByName('icon_off').setVisible(!fr.Sound.musicOn);
     },
@@ -302,12 +312,13 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
 
     checkEnableTools: function(){
         win32.log("checkEnableTools");
-        var isEnabled = gv.tutMgr.getData().isFinishedFeatureTut(TUTORIAL_FEATURE.TOOL);
+        // var isEnabled = gv.tutMgr.getData().isFinishedFeatureTut(TUTORIAL_FEATURE.TOOL);
+        var isEnabled = true;
         this.enableTools(isEnabled);
-        if (gv.tutMgr.isNeedDoTutFeature(TUTORIAL_FEATURE.TOOL)){
-            this.showTools();
-            gv.tutMgr.getData().setTutFeatureState(userInfo.getUId(), TUTORIAL_FEATURE.TOOL, TUTORIAL_STATE.DONE);
-        }
+        // if (gv.tutMgr.isNeedDoTutFeature(TUTORIAL_FEATURE.TOOL)){
+        //     this.showTools();
+        //     gv.tutMgr.getData().setTutFeatureState(userInfo.getUId(), TUTORIAL_FEATURE.TOOL, TUTORIAL_STATE.DONE);
+        // }
     },
     enableTools: function (isEnabled) {
         for (let i in this.listTool){
@@ -404,8 +415,9 @@ CoreGame.GameBoardToolUI = BaseLayer.extend({
     }
     //endregion EFX
 });
-CoreGame.GameBoardToolUI.JSON = "zcsd/game/GameBoardToolUI.json";
-CoreGame.GameBoardToolUI.zOrder = {
+GameBoardToolUI.JSON = "game/csd/GameBoardToolUI.json";
+// GameBoardToolUI.JSON = "zcsd/game/GameBoardToolUI.json";
+GameBoardToolUI.zOrder = {
     TRAY: 0,
     TOOL_HIDE: 1,
     FOG: 5,

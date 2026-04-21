@@ -1,0 +1,167 @@
+
+fx_rocket_white.png
+size: 246,1031
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+10a
+  rotate: true
+  xy: 2, 2
+  size: 51, 79
+  orig: 51, 79
+  offset: 0, 0
+  index: -1
+Sp83_0
+  rotate: false
+  xy: 124, 144
+  size: 68, 31
+  orig: 68, 31
+  offset: 0, 0
+  index: -1
+Sp83_1
+  rotate: false
+  xy: 124, 77
+  size: 66, 31
+  orig: 66, 31
+  offset: 0, 0
+  index: -1
+Sp83_2
+  rotate: false
+  xy: 83, 11
+  size: 63, 31
+  orig: 63, 31
+  offset: 0, 0
+  index: -1
+Sp83_3
+  rotate: false
+  xy: 124, 44
+  size: 65, 31
+  orig: 65, 31
+  offset: 0, 0
+  index: -1
+Sp83_4
+  rotate: false
+  xy: 124, 110
+  size: 67, 32
+  orig: 67, 32
+  offset: 0, 0
+  index: -1
+Sp83_5
+  rotate: true
+  xy: 194, 113
+  size: 62, 32
+  orig: 62, 32
+  offset: 0, 0
+  index: -1
+Sp83_6
+  rotate: false
+  xy: 148, 13
+  size: 63, 29
+  orig: 63, 29
+  offset: 0, 0
+  index: -1
+rocket_active_00
+  rotate: false
+  xy: 2, 909
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_01
+  rotate: false
+  xy: 2, 787
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_02
+  rotate: false
+  xy: 124, 909
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_03
+  rotate: false
+  xy: 2, 665
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_04
+  rotate: false
+  xy: 124, 787
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_05
+  rotate: false
+  xy: 2, 543
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_06
+  rotate: false
+  xy: 124, 665
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_07
+  rotate: false
+  xy: 2, 421
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_08
+  rotate: false
+  xy: 124, 543
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_09
+  rotate: false
+  xy: 2, 299
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_10
+  rotate: false
+  xy: 124, 421
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_11
+  rotate: false
+  xy: 2, 177
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_12
+  rotate: false
+  xy: 124, 299
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_13
+  rotate: false
+  xy: 2, 55
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+rocket_active_14
+  rotate: false
+  xy: 124, 177
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1

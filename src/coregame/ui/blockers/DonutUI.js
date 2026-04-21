@@ -1,7 +1,7 @@
 /**
  * DonutUI - Visual representation of the Donut blocker.
  *
- * Sprite loaded from: res/high/game/element/1000.png  (via ElementUI default)
+ * Sprite loaded from: res/modules/game/element/1000.png  (via ElementUI default)
  * Collect animation: scale-down + fade-out when removed.
  *
  * Part of Match-3 Core Game

@@ -42,6 +42,7 @@ CoreGame.CustomCreatorPU = CoreGame.PowerUP.extend({
                 var subPU = CoreGame.ElementObject.create(data.posX, data.posY, data.type);
                 if (subPU) {
                     subPU.boardMgr = this.boardMgr;
+                    subPU.isSubPU = data.isSubPU;
                     subPU.createUI(parent);
                     subPU.ui.setLocalZOrder(CoreGame.ZORDER_BOARD_EFFECT);
                     this.listSubPU.push(subPU);
@@ -79,17 +80,22 @@ CoreGame.PlanePlusPU = CoreGame.CustomCreatorPU.extend({
     init: function (row, col, type) {
         this._super(row, col, type);
 
-        var data = [
-            { posX: row, posY: col, type: CoreGame.PowerUPType.MATCH_SQUARE, delay: 0.0 },
-            { posX: row, posY: col, type: CoreGame.PowerUPType.MATCH_SQUARE, delay: 0.3 },
-            { posX: row, posY: col, type: CoreGame.PowerUPType.MATCH_SQUARE, delay: 0.6 },
-            { posX: row, posY: col, type: CoreGame.PowerUPType.MATCH_SQUARE, delay: 0.9 }
-        ];
+        let data = [];
+        for (let i = 0; i < CoreGame.PlanePlusPU.NUM_GEN; i++) {
+            data.push({
+                posX: row, posY: col,
+                type: CoreGame.PowerUPType.MATCH_SQUARE,
+                delay: CoreGame.PlanePlusPU.DELAY_GEN * i,
+                isSubPU: i !== 0
+            });
+        }
 
         this.setCreateData(data);
         return this;
     }
 });
+CoreGame.PlanePlusPU.NUM_GEN = 4;
+CoreGame.PlanePlusPU.DELAY_GEN = 0.25;
 
 // Register Rocket + Bomb combinations
 CoreGame.PowerUP.registerCombined(CoreGame.PowerUPType.MATCH_4_H, CoreGame.PowerUPType.MATCH_T, CoreGame.RocketBombPU);
@@ -97,5 +103,5 @@ CoreGame.PowerUP.registerCombined(CoreGame.PowerUPType.MATCH_4_H, CoreGame.Power
 CoreGame.PowerUP.registerCombined(CoreGame.PowerUPType.MATCH_4_V, CoreGame.PowerUPType.MATCH_T, CoreGame.RocketBombPU);
 CoreGame.PowerUP.registerCombined(CoreGame.PowerUPType.MATCH_4_V, CoreGame.PowerUPType.MATCH_L, CoreGame.RocketBombPU);
 
-// Register Plane + Bomb combinations
+// Register Plane + Plane combinations
 CoreGame.PowerUP.registerCombined(CoreGame.PowerUPType.MATCH_SQUARE, CoreGame.PowerUPType.MATCH_SQUARE, CoreGame.PlanePlusPU);

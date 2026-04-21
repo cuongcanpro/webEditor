@@ -13,7 +13,7 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
 
     /**
      * @param {CoreGame.ElementObject} element - Reference to the logically represented element
-     * @param {string} jsonPath - Path to the Cocos Studio JSON file (e.g., "res/high/game/anim/special.json")
+     * @param {string} jsonPath - Path to the Cocos Studio JSON file (e.g., "res/modules/game/anim/special.json")
      */
     ctor: function (element, jsonPath) {
         this.jsonPath = jsonPath;

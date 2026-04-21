@@ -1,0 +1,48 @@
+
+rocket_tail.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01
+  rotate: false
+  xy: 864, 396
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+Ellipse_grow
+  rotate: false
+  xy: 2, 12
+  size: 156, 156
+  orig: 156, 156
+  offset: 0, 0
+  index: -1
+aura276
+  rotate: false
+  xy: 606, 214
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+grow1
+  rotate: false
+  xy: 606, 2
+  size: 226, 210
+  orig: 226, 210
+  offset: 0, 0
+  index: -1
+grow2
+  rotate: false
+  xy: 2, 170
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1
+grow3
+  rotate: false
+  xy: 304, 170
+  size: 300, 300
+  orig: 300, 300
+  offset: 0, 0
+  index: -1

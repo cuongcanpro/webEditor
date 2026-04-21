@@ -1,0 +1,443 @@
+{
+  "ID": "fa82545c-23ce-4acb-9325-a585bd023d1a",
+  "Version": "2.3.4",
+  "Name": "LayerMainBoard",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 439,
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/board/bg1.png",
+              "Plist": ""
+            },
+            "Scale9OriginX": 211,
+            "Scale9OriginY": 374,
+            "Scale9Width": 218,
+            "Scale9Height": 620,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 640.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PercentWidthEnable": true,
+            "PercentHeightEnable": true,
+            "PercentWidthEnabled": true,
+            "PercentHeightEnabled": true,
+            "PreSize": {
+              "X": 1.0,
+              "Y": 1.0
+            },
+            "Tag": 440,
+            "ActionTag": -422443330,
+            "Size": {
+              "X": 720.0,
+              "Y": 1280.0
+            },
+            "Name": "bg",
+            "ctype": "ImageViewObjectData"
+          },
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 229,
+            "ComboBoxIndex": 1,
+            "SingleColor": {
+              "R": 150,
+              "G": 200
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
+            "TouchEnable": true,
+            "AnchorPoint": {
+              "ScaleX": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.0
+            },
+            "PercentWidthEnable": true,
+            "PercentHeightEnable": true,
+            "PercentWidthEnabled": true,
+            "PercentHeightEnabled": true,
+            "PreSize": {
+              "X": 1.0,
+              "Y": 1.0
+            },
+            "Tag": 217,
+            "Children": [
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/board/bg_balloon_1.png",
+                  "Plist": ""
+                },
+                "Scale9Enable": true,
+                "Scale9OriginX": 237,
+                "Scale9OriginY": 280,
+                "Scale9Width": 246,
+                "Scale9Height": 290,
+                "AnchorPoint": {
+                  "ScaleX": 0.5
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 0.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.0
+                },
+                "PercentWidthEnable": true,
+                "PercentHeightEnable": true,
+                "PercentWidthEnabled": true,
+                "PercentHeightEnabled": true,
+                "PreSize": {
+                  "X": 1.0,
+                  "Y": 0.6641
+                },
+                "VerticalEdge": "BottomEdge",
+                "TopMargin": 429.952,
+                "Tag": 219,
+                "ActionTag": 1552419825,
+                "Size": {
+                  "X": 720.0,
+                  "Y": 850.048
+                },
+                "Name": "bot",
+                "ctype": "ImageViewObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/board/bg_balloon_0.png",
+                  "Plist": ""
+                },
+                "Scale9OriginX": 237,
+                "Scale9OriginY": 188,
+                "Scale9Width": 246,
+                "Scale9Height": 195,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 1.0
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 1280.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 1.0
+                },
+                "PercentWidthEnable": true,
+                "PercentWidthEnabled": true,
+                "PreSize": {
+                  "X": 1.0,
+                  "Y": 0.4461
+                },
+                "BottomMargin": 708.99,
+                "Tag": 218,
+                "Children": [
+                  {
+                    "AnchorPoint": {},
+                    "Position": {
+                      "X": 338.31,
+                      "Y": 303.06
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": true,
+                    "PrePosition": {
+                      "X": 0.4699,
+                      "Y": 0.5307
+                    },
+                    "PreSize": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "VerticalEdge": "TopEdge",
+                    "LeftMargin": 338.31,
+                    "RightMargin": 381.69,
+                    "TopMargin": 267.95,
+                    "BottomMargin": 303.06,
+                    "Tag": 220,
+                    "Children": [
+                      {
+                        "ClipAble": false,
+                        "ComboBoxIndex": 1,
+                        "SingleColor": {
+                          "G": 0,
+                          "B": 0
+                        },
+                        "FirstColor": {
+                          "R": 150,
+                          "G": 200
+                        },
+                        "EndColor": {},
+                        "ColorVector": {
+                          "ScaleY": 1.0
+                        },
+                        "Scale9Width": 1,
+                        "Scale9Height": 1,
+                        "TouchEnable": true,
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "PreSize": {
+                          "X": 0.0,
+                          "Y": 0.0
+                        },
+                        "LeftMargin": -25.0,
+                        "RightMargin": -25.0,
+                        "TopMargin": -25.0,
+                        "BottomMargin": -25.0,
+                        "Tag": 73,
+                        "ActionTag": -830897305,
+                        "Size": {
+                          "X": 50.0,
+                          "Y": 50.0
+                        },
+                        "Name": "Panel_1",
+                        "ctype": "PanelObjectData"
+                      }
+                    ],
+                    "ActionTag": -132578109,
+                    "Size": {
+                      "X": 0.0,
+                      "Y": 0.0
+                    },
+                    "Name": "nodeBalloon",
+                    "ctype": "SingleNodeObjectData"
+                  }
+                ],
+                "ActionTag": 519288869,
+                "Size": {
+                  "X": 720.0,
+                  "Y": 571.01
+                },
+                "Name": "top",
+                "ctype": "ImageViewObjectData"
+              }
+            ],
+            "ActionTag": -790498695,
+            "Size": {
+              "X": 720.0,
+              "Y": 1280.0
+            },
+            "VisibleForFrame": false,
+            "Name": "bgBalloon",
+            "ctype": "PanelObjectData"
+          },
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 102,
+            "SingleColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
+            "TouchEnable": true,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 628.48
+            },
+            "Scale": {
+              "ScaleX": 1.04,
+              "ScaleY": 1.04
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.491
+            },
+            "PreSize": {
+              "X": 0.9722,
+              "Y": 0.6641
+            },
+            "LeftMargin": 10.0,
+            "RightMargin": 10.0,
+            "TopMargin": 226.52,
+            "BottomMargin": 203.48,
+            "Tag": 441,
+            "ActionTag": -821269712,
+            "Size": {
+              "X": 700.0,
+              "Y": 850.0
+            },
+            "Name": "panelBoard",
+            "ctype": "PanelObjectData"
+          },
+          {
+            "IsCustomSize": true,
+            "FontSize": 22,
+            "LabelText": "note",
+            "FontResource": {
+              "Type": "Normal",
+              "Path": "font/BalooPaaji2-Bold.ttf",
+              "Plist": ""
+            },
+            "HorizontalAlignmentType": "HT_Center",
+            "VerticalAlignmentType": "VT_Center",
+            "OutlineColor": {
+              "G": 0,
+              "B": 0
+            },
+            "ShadowColor": {
+              "R": 110,
+              "G": 110,
+              "B": 110
+            },
+            "ShadowOffsetX": 2.0,
+            "ShadowOffsetY": -2.0,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 131.571
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {
+              "R": 0,
+              "G": 0,
+              "B": 0
+            },
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.1028
+            },
+            "PreSize": {
+              "X": 1.0028,
+              "Y": 0.0313
+            },
+            "LeftMargin": -1.0,
+            "RightMargin": -1.0,
+            "TopMargin": 1128.429,
+            "BottomMargin": 111.571,
+            "Tag": 58,
+            "ActionTag": 1604056306,
+            "Size": {
+              "X": 722.0,
+              "Y": 40.0
+            },
+            "Name": "lbNote",
+            "ctype": "TextObjectData"
+          }
+        ],
+        "Size": {
+          "X": 720.0,
+          "Y": 1280.0
+        },
+        "Name": "Layer",
+        "ctype": "LayerObjectData"
+      },
+      "UsedResources": [
+        "../../font/BalooPaaji2-Bold.ttf",
+        "../board/bg_balloon_0.png",
+        "../board/bg_balloon_1.png",
+        "../board/bg1.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

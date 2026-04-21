@@ -15,7 +15,6 @@ CoreGame.PowerUPType = {
 };
 
 CoreGame.PowerUP = CoreGame.ElementObject.extend({
-
     ctor: function () {
         this._super();
         this.layerBehavior = CoreGame.LayerBehavior.CONTENT;
@@ -73,7 +72,10 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
     removeAfterActivate: function () {
         CoreGame.TimedActionMgr.addAction(0.2, function () {
             this.remove();
-            CoreGame.BoardUI.getInstance().boardMgr.state = CoreGame.BoardState.MATCHING;
+            var mgr = CoreGame.BoardUI.getInstance().boardMgr;
+            if (!mgr.gameEnded) {
+                mgr.state = CoreGame.BoardState.MATCHING;
+            }
         }.bind(this));
     },
 
@@ -118,9 +120,6 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
         return this._super(type);
     },
 });
-
-
-
 
 CoreGame.PowerUP.mapCombined = {}
 CoreGame.PowerUP.registerCombined = function (type1, type2, cls) {

@@ -42,6 +42,6 @@ CoreGame.Egg = CoreGame.Blocker.extend({
 });
 
 // Register Egg
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.FABERGE_EGG) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.FABERGE_EGG) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.FABERGE_EGG, CoreGame.Egg);
 }

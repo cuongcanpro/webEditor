@@ -1,0 +1,721 @@
+{
+  "ID": "8d6fb561-1d2e-49db-8e4a-a24386c8a07c",
+  "Version": "2.3.4",
+  "Name": "GUILoadingBoard",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 53,
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "common/bg.png",
+              "Plist": ""
+            },
+            "Scale9OriginX": 237,
+            "Scale9OriginY": 169,
+            "Scale9Width": 246,
+            "Scale9Height": 942,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 640.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PercentWidthEnable": true,
+            "PercentHeightEnable": true,
+            "PercentWidthEnabled": true,
+            "PercentHeightEnabled": true,
+            "PreSize": {
+              "X": 1.0,
+              "Y": 1.0
+            },
+            "Tag": 62,
+            "ActionTag": -88308441,
+            "Size": {
+              "X": 720.0,
+              "Y": 1280.0
+            },
+            "Name": "backgroundStreet",
+            "ctype": "ImageViewObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/loading/bg.png",
+              "Plist": ""
+            },
+            "Scale9OriginX": 475,
+            "Scale9OriginY": 844,
+            "Scale9Width": 490,
+            "Scale9Height": 872,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 640.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PercentWidthEnable": true,
+            "PercentHeightEnable": true,
+            "PercentWidthEnabled": true,
+            "PercentHeightEnabled": true,
+            "PreSize": {
+              "X": 1.0,
+              "Y": 1.0
+            },
+            "Tag": 57,
+            "Children": [
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/gui/loading/balloon.png",
+                  "Plist": ""
+                },
+                "Scale9OriginX": 249,
+                "Scale9OriginY": 182,
+                "Scale9Width": 257,
+                "Scale9Height": 188,
+                "AnchorPoint": {
+                  "ScaleX": 0.6553,
+                  "ScaleY": 0.4856
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 917.632
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.7169
+                },
+                "PreSize": {
+                  "X": 0.5243,
+                  "Y": 0.2156
+                },
+                "LeftMargin": 112.6242,
+                "RightMargin": 229.8758,
+                "TopMargin": 220.3937,
+                "BottomMargin": 783.6063,
+                "Tag": 58,
+                "ActionTag": -1808405180,
+                "Size": {
+                  "X": 377.5,
+                  "Y": 276.0
+                },
+                "Name": "balloon",
+                "ctype": "ImageViewObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/gui/loading/env.png",
+                  "Plist": ""
+                },
+                "Scale9OriginX": 249,
+                "Scale9OriginY": 182,
+                "Scale9Width": 942,
+                "Scale9Height": 383,
+                "AnchorPoint": {
+                  "ScaleX": 0.5
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 0.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.0
+                },
+                "PercentWidthEnable": true,
+                "PercentHeightEnable": true,
+                "PercentWidthEnabled": true,
+                "PercentHeightEnabled": true,
+                "PreSize": {
+                  "X": 1.0,
+                  "Y": 0.2918
+                },
+                "TopMargin": 906.496,
+                "Tag": 59,
+                "ActionTag": -386080450,
+                "Size": {
+                  "X": 720.0,
+                  "Y": 373.504
+                },
+                "Name": "env",
+                "ctype": "ImageViewObjectData"
+              },
+              {
+                "ProgressInfo": 100,
+                "ImageFileData": {
+                  "Type": "Normal",
+                  "Path": "game/gui/loading/bar_loading.png",
+                  "Plist": ""
+                },
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 362.448,
+                  "Y": 132.8239
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5034,
+                  "Y": 0.1038
+                },
+                "PreSize": {
+                  "X": 0.1889,
+                  "Y": 0.0117
+                },
+                "LeftMargin": 294.448,
+                "RightMargin": 289.552,
+                "TopMargin": 1139.6761,
+                "BottomMargin": 125.3239,
+                "Tag": 60,
+                "ActionTag": 27721427,
+                "Size": {
+                  "X": 136.0,
+                  "Y": 15.0
+                },
+                "Name": "pbLoading",
+                "ctype": "LoadingBarObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/gui/loading/text_loading.png",
+                  "Plist": ""
+                },
+                "Scale9OriginX": 103,
+                "Scale9OriginY": 26,
+                "Scale9Width": 109,
+                "Scale9Height": 27,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 363.672,
+                  "Y": 163.328
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5051,
+                  "Y": 0.1276
+                },
+                "PreSize": {
+                  "X": 0.2181,
+                  "Y": 0.0313
+                },
+                "LeftMargin": 285.172,
+                "RightMargin": 277.828,
+                "TopMargin": 1096.672,
+                "BottomMargin": 143.328,
+                "Tag": 61,
+                "ActionTag": 477079882,
+                "Size": {
+                  "X": 157.0,
+                  "Y": 40.0
+                },
+                "Name": "imgLoading",
+                "ctype": "ImageViewObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "common/alert_180min.png",
+                  "Plist": ""
+                },
+                "BlendFunc": {
+                  "Src": 1,
+                  "Dst": 771
+                },
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 55.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.043
+                },
+                "PreSize": {
+                  "X": 0.4306,
+                  "Y": 0.0766
+                },
+                "LeftMargin": 205.0,
+                "RightMargin": 205.0,
+                "TopMargin": 1176.0,
+                "BottomMargin": 6.0,
+                "Tag": 54,
+                "ActionTag": -819091267,
+                "Size": {
+                  "X": 310.0,
+                  "Y": 98.0
+                },
+                "Name": "alert_180min_1",
+                "ctype": "SpriteObjectData"
+              }
+            ],
+            "ActionTag": 127258690,
+            "Size": {
+              "X": 720.0,
+              "Y": 1280.0
+            },
+            "Name": "bg",
+            "ctype": "ImageViewObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/cutScenes/0.jpg",
+              "Plist": ""
+            },
+            "Scale9OriginX": 178,
+            "Scale9OriginY": 317,
+            "Scale9Width": 724,
+            "Scale9Height": 1286,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 640.0
+            },
+            "Scale": {
+              "ScaleX": 0.67,
+              "ScaleY": 0.67
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PreSize": {
+              "X": 1.5,
+              "Y": 1.5
+            },
+            "LeftMargin": -180.0,
+            "RightMargin": -180.0,
+            "TopMargin": -320.0,
+            "BottomMargin": -320.0,
+            "Tag": 211,
+            "ActionTag": 826767442,
+            "Size": {
+              "X": 1080.0,
+              "Y": 1920.0
+            },
+            "Name": "demo",
+            "ctype": "ImageViewObjectData"
+          },
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 102,
+            "SingleColor": {
+              "R": 150,
+              "G": 200
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 640.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PercentWidthEnable": true,
+            "PercentHeightEnable": true,
+            "PercentWidthEnabled": true,
+            "PercentHeightEnabled": true,
+            "PreSize": {
+              "X": 1.0,
+              "Y": 1.0
+            },
+            "Tag": 56,
+            "Children": [
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/cutScenes/0_0.png",
+                  "Plist": ""
+                },
+                "Scale9OriginX": 237,
+                "Scale9OriginY": 422,
+                "Scale9Width": 68,
+                "Scale9Height": 117,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 640.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PercentWidthEnable": true,
+                "PercentHeightEnable": true,
+                "PercentWidthEnabled": true,
+                "PercentHeightEnabled": true,
+                "PreSize": {
+                  "X": 1.0,
+                  "Y": 1.0
+                },
+                "Tag": 63,
+                "ActionTag": 311775737,
+                "Size": {
+                  "X": 720.0,
+                  "Y": 1280.0
+                },
+                "VisibleForFrame": false,
+                "Name": "0",
+                "ctype": "ImageViewObjectData"
+              },
+              {
+                "ClipAble": false,
+                "BackColorAlpha": 102,
+                "SingleColor": {
+                  "R": 150,
+                  "G": 200
+                },
+                "FirstColor": {
+                  "R": 150,
+                  "G": 200
+                },
+                "EndColor": {},
+                "ColorVector": {
+                  "ScaleY": 1.0
+                },
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 640.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PreSize": {
+                  "X": 1.0,
+                  "Y": 1.0
+                },
+                "Tag": 234,
+                "Children": [
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "game/cutScenes/0_1.png",
+                      "Plist": ""
+                    },
+                    "Scale9OriginX": 237,
+                    "Scale9OriginY": 118,
+                    "Scale9Width": 50,
+                    "Scale9Height": 304,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 96.5076,
+                      "Y": 549.631
+                    },
+                    "Scale": {
+                      "ScaleX": 3.75,
+                      "ScaleY": 3.75
+                    },
+                    "RotationSkewX": 3.5581,
+                    "RotationSkewY": 3.5525,
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.134,
+                      "Y": 0.4294
+                    },
+                    "PreSize": {
+                      "X": 0.7278,
+                      "Y": 0.4219
+                    },
+                    "HorizontalEdge": "BothEdge",
+                    "VerticalEdge": "BothEdge",
+                    "LeftMargin": -165.4924,
+                    "RightMargin": 361.4924,
+                    "TopMargin": 460.369,
+                    "BottomMargin": 279.631,
+                    "Tag": 64,
+                    "ActionTag": -712839986,
+                    "Size": {
+                      "X": 524.0,
+                      "Y": 540.0
+                    },
+                    "Name": "crate",
+                    "ctype": "ImageViewObjectData"
+                  }
+                ],
+                "ActionTag": -813921633,
+                "Size": {
+                  "X": 720.0,
+                  "Y": 1280.0
+                },
+                "Name": "1",
+                "ctype": "PanelObjectData"
+              }
+            ],
+            "ActionTag": -205474546,
+            "Size": {
+              "X": 720.0,
+              "Y": 1280.0
+            },
+            "Name": "p0",
+            "ctype": "PanelObjectData"
+          },
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 102,
+            "SingleColor": {
+              "R": 150,
+              "G": 200
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 640.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PercentWidthEnable": true,
+            "PercentHeightEnable": true,
+            "PercentWidthEnabled": true,
+            "PercentHeightEnabled": true,
+            "PreSize": {
+              "X": 1.0,
+              "Y": 1.0
+            },
+            "Tag": 212,
+            "Children": [
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/cutScenes/5_0.png",
+                  "Plist": ""
+                },
+                "Scale9OriginX": 175,
+                "Scale9OriginY": 317,
+                "Scale9Width": 182,
+                "Scale9Height": 327,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 360.0,
+                  "Y": 640.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PercentWidthEnable": true,
+                "PercentHeightEnable": true,
+                "PercentWidthEnabled": true,
+                "PercentHeightEnabled": true,
+                "PreSize": {
+                  "X": 1.0,
+                  "Y": 1.0
+                },
+                "Tag": 233,
+                "ActionTag": 1302582783,
+                "Size": {
+                  "X": 720.0,
+                  "Y": 1280.0
+                },
+                "Name": "p5_bg",
+                "ctype": "ImageViewObjectData"
+              }
+            ],
+            "ActionTag": 1511978104,
+            "Size": {
+              "X": 720.0,
+              "Y": 1280.0
+            },
+            "Name": "p5",
+            "ctype": "PanelObjectData"
+          }
+        ],
+        "Size": {
+          "X": 720.0,
+          "Y": 1280.0
+        },
+        "Name": "Layer",
+        "ctype": "LayerObjectData"
+      },
+      "UsedResources": [
+        "../../common/alert_180min.png",
+        "../../common/bg.png",
+        "../cutScenes/0.jpg",
+        "../cutScenes/0_0.png",
+        "../cutScenes/0_1.png",
+        "../cutScenes/5_0.png",
+        "../gui/loading/balloon.png",
+        "../gui/loading/bar_loading.png",
+        "../gui/loading/bg.png",
+        "../gui/loading/env.png",
+        "../gui/loading/text_loading.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

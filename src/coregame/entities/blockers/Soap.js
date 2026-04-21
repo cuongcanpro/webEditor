@@ -45,6 +45,6 @@ CoreGame.Soap = CoreGame.Blocker.extend({
 });
 
 // Register
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.SOAP) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.SOAP) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.SOAP, CoreGame.Soap);
 }

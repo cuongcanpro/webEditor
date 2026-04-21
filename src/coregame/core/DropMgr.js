@@ -77,10 +77,13 @@ CoreGame.DropMgr = cc.Class.extend({
         var splitCol = this.boardMgr.splitDropConfig.splitCol;
 
         // 1. Build snapshot grid
-        //    grid[r][c]      = movable element or null
-        //    isBlocked[r][c] = true if slot is disabled OR has immovable content
+        //    grid[r][c]          = movable element or null
+        //    isBlocked[r][c]     = true if slot is disabled OR has immovable content
+        //    isTempBlocked[r][c] = true if blocked by a MATCHING/REMOVING element
+        //                          (will disappear soon — should NOT trigger diagonal drops)
         var grid = [];
         var isBlocked = [];
+        var isTempBlocked = [];
 
         // 1a. Collect unique multi-cell elements (size > 1x1)
         var multiCellElems = [];
@@ -88,11 +91,13 @@ CoreGame.DropMgr = cc.Class.extend({
         for (var r = 0; r < rows; r++) {
             grid[r] = [];
             isBlocked[r] = [];
+            isTempBlocked[r] = [];
             for (var c = 0; c < cols; c++) {
                 var slot = this.boardMgr.mapGrid[r][c];
                 if (!slot.enable) {
                     grid[r][c] = null;
                     isBlocked[r][c] = true;
+                    isTempBlocked[r][c] = false;
                     continue;
                 }
                 var elem = slot.getFirstInteractable(CoreGame.ElementObject.Action.DROP);
@@ -102,10 +107,35 @@ CoreGame.DropMgr = cc.Class.extend({
                 if (elemNotIdle) {
                     grid[r][c] = null;
                     isBlocked[r][c] = true;
+                    // MATCHING/REMOVING elements will disappear — mark as temporary blockers
+                    // so they don't trigger diagonal drops (the gap will fill vertically
+                    // in a future refill cycle once the element is fully removed)
+                    isTempBlocked[r][c] = (elem.state === CoreGame.ElementState.MATCHING
+                        || elem.state === CoreGame.ElementState.REMOVING);
                     continue;
                 }
                 grid[r][c] = elem;
                 isBlocked[r][c] = (elem == null && !slot.isEmptyToDrop());
+
+                // When elem is null but slot isn't empty, the block may be caused by
+                // MATCHING/REMOVING elements (hasAction(DROP) returns false for non-IDLE
+                // gems, so getFirstInteractable skips them). Scan listElement directly
+                // to detect if ALL non-background elements are temporary (will disappear).
+                if (isBlocked[r][c] && elem == null) {
+                    var allTemp = true;
+                    for (var ei = 0; ei < slot.listElement.length; ei++) {
+                        var slotElem = slot.listElement[ei];
+                        if (slotElem.isBackground()) continue;
+                        if (slotElem.state !== CoreGame.ElementState.MATCHING
+                            && slotElem.state !== CoreGame.ElementState.REMOVING) {
+                            allTemp = false;
+                            break;
+                        }
+                    }
+                    isTempBlocked[r][c] = allTemp;
+                } else {
+                    isTempBlocked[r][c] = false;
+                }
 
                 // Track multi-cell elements (deduplicated)
                 if (elem && elem.size && (elem.size.width > 1 || elem.size.height > 1)) {
@@ -133,9 +163,12 @@ CoreGame.DropMgr = cc.Class.extend({
             return null;
         };
 
-        // 2. Simulation loop: repeat until no more moves
+        // 2. Two-phase simulation:
+        //    Phase 1 — Vertical-only drops until stable (fill everything possible vertically)
+        //    Phase 2 — Diagonal drops for remaining gaps (only where vertical truly can't reach)
         var changed = true;
-        var maxIterations = rows * cols;
+        var allowDiagonal = false;
+        var maxIterations = rows * cols * 2;
         var iteration = 0;
 
         while (changed && iteration < maxIterations) {
@@ -178,11 +211,9 @@ CoreGame.DropMgr = cc.Class.extend({
                         grid[baseR - 1][baseC + cOff] = mElem;
                     }
                     changed = true;
-                    cc.log("DropMgr: change drop multi-cell element");
                 }
             }
 
-            cc.log("DropMgr: dropElements: changed = " + changed);
             // 2b. Per-column sweep for 1x1 elements
             for (var c = 0; c < cols; c++) {
                 if (this.isReverseCol(c)) {
@@ -195,7 +226,12 @@ CoreGame.DropMgr = cc.Class.extend({
                         var verticalBlocked = false;
                         for (var rr = r - 1; rr >= 0; rr--) {
                             if (isBlocked[rr][c]) {
-                                verticalBlocked = true;
+                                // Only permanent blockers trigger diagonal fallback.
+                                // Temp blockers (MATCHING/REMOVING) will disappear —
+                                // vertical will work in a future refill cycle.
+                                if (!isTempBlocked[rr][c]) {
+                                    verticalBlocked = true;
+                                }
                                 break;
                             }
                             if (grid[rr][c] != null) {
@@ -217,8 +253,8 @@ CoreGame.DropMgr = cc.Class.extend({
                             }
                         }
 
-                        // Diagonal: only pull 1x1 elements that are blocked in their own column
-                        if (!foundVertical && verticalBlocked && r - 1 >= 0) {
+                        // Diagonal: only after all vertical drops are exhausted
+                        if (allowDiagonal && !foundVertical && verticalBlocked && r - 1 >= 0) {
                             if (c - 1 >= 0 && grid[r - 1][c - 1] != null && !_isMultiCell(grid[r - 1][c - 1])
                                 && (isBlocked[r][c - 1] || grid[r][c - 1] != null)) {
                                 grid[r][c] = grid[r - 1][c - 1];
@@ -240,38 +276,37 @@ CoreGame.DropMgr = cc.Class.extend({
 
                         var foundVertical = false;
                         var verticalBlocked = false;
-                        cc.log("Check vertical " + r + " " + c);
                         for (var rr = r + 1; rr < rows; rr++) {
                             if (isBlocked[rr][c]) {
-                                verticalBlocked = true;
-                                cc.log("Vertical blocked " + rr + " " + c);
+                                // Only permanent blockers trigger diagonal fallback.
+                                // Temp blockers (MATCHING/REMOVING) will disappear —
+                                // vertical will work in a future refill cycle.
+                                if (!isTempBlocked[rr][c]) {
+                                    verticalBlocked = true;
+                                }
                                 break;
                             }
                             if (grid[rr][c] != null) {
                                 // Skip multi-cell elements — they handle themselves
                                 if (_isMultiCell(grid[rr][c])) {
                                     verticalBlocked = true;
-                                    cc.log("Vertical blocked (multi-cell) " + rr + " " + c);
                                     break;
                                 }
                                 grid[r][c] = grid[rr][c];
                                 grid[rr][c] = null;
                                 changed = true;
                                 foundVertical = true;
-                                cc.log("Vertical found " + rr + " " + c);
                                 break;
                             }
                             var scanSlot = this.boardMgr.mapGrid[rr][c];
                             if (scanSlot.canSpawn) {
                                 foundVertical = true;
-                                cc.log("Vertical found spawn " + rr + " " + c);
                                 break;
                             }
                         }
 
-                        // Diagonal: only pull 1x1 elements that are blocked in their own column
-                        if (!foundVertical && verticalBlocked && r + 1 < rows) {
-                            cc.log("Check diagonal " + r + " " + c);
+                        // Diagonal: only after all vertical drops are exhausted
+                        if (allowDiagonal && !foundVertical && verticalBlocked && r + 1 < rows) {
                             if (c - 1 >= 0 && grid[r + 1][c - 1] != null && !_isMultiCell(grid[r + 1][c - 1])
                                 && (isBlocked[r][c - 1] || grid[r][c - 1] != null)) {
                                 grid[r][c] = grid[r + 1][c - 1];
@@ -286,6 +321,12 @@ CoreGame.DropMgr = cc.Class.extend({
                         }
                     }
                 }
+            }
+
+            // Phase transition: when vertical is fully stable, enable diagonal
+            if (!changed && !allowDiagonal) {
+                allowDiagonal = true;
+                changed = true; // re-enter loop with diagonal enabled
             }
         }
 
@@ -382,6 +423,8 @@ CoreGame.DropMgr = cc.Class.extend({
         gem.dropTo(targetSlot.row, targetSlot.col, duration, delayTime);
 
         CoreGame.TimedActionMgr.addAction(duration, function () {
+            fr.Sound.playSoundEffect(resSound.seed_drop);
+
             gem.setState(CoreGame.ElementState.IDLE);
             // if (gem.ui) {
             //     gem.ui.playBounceAnim();

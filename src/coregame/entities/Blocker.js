@@ -22,7 +22,19 @@ CoreGame.Blocker = CoreGame.ElementObject.extend({
      */
     init: function (row, col, type, hitPoints) {
         this._super(row, col, type);
-        this.hitPoints = hitPoints ? hitPoints : 1;
+        if (hitPoints) {
+            this.hitPoints = hitPoints;
+        } else if (this.configData && this.configData.maxHP) {
+            // Map did not specify hp — spawn at full HP from config.
+            this.hitPoints = 1;
+        } else {
+            this.hitPoints = 1;
+        }
+        // Snapshot the spawn HP as the bar's "full" value.
+        // Whatever HP the element spawns with IS its max — so the HP bar
+        // reads 100% at spawn regardless of whether the map overrode hp
+        // (e.g. Kong boss with map hp=20 against a config-declared maxHP=30).
+        this.maxHP = this.hitPoints;
         return this;
     },
 
@@ -59,6 +71,9 @@ CoreGame.Blocker = CoreGame.ElementObject.extend({
 
         // this.avatar.playExplodeEffect(this.hitPoints);
         this.updateHPBar();
+        if (this.isMonster()) {
+            dispatcherMgr.dispatchEvent('updateHpMonster', { element: this, hp: this.hitPoints, maxHp: this.maxHP || this.configData.maxHP });
+        }
         if (this.hitPoints <= 0) {
             this.doExplode(row, col);
         } else {

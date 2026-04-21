@@ -1,0 +1,208 @@
+{
+  "ID": "1ce57a89-d858-4920-ae88-c9c332077bdb",
+  "Version": "2.3.4",
+  "Name": "PU",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 4,
+        "Children": [
+          {
+            "ClipAble": false,
+            "BackColorAlpha": 102,
+            "ComboBoxIndex": 1,
+            "SingleColor": {
+              "R": 150,
+              "G": 200
+            },
+            "FirstColor": {
+              "R": 150,
+              "G": 200
+            },
+            "EndColor": {},
+            "ColorVector": {
+              "ScaleY": 1.0
+            },
+            "TouchEnable": true,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -36.5,
+            "RightMargin": -36.5,
+            "TopMargin": -36.5,
+            "BottomMargin": -36.5,
+            "Tag": 5,
+            "ActionTag": -889836477,
+            "Size": {
+              "X": 73.0,
+              "Y": 73.0
+            },
+            "Name": "Panel_1",
+            "ctype": "PanelObjectData"
+          },
+          {
+            "AnchorPoint": {},
+            "Position": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": true,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Tag": 6,
+            "Children": [
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/element/demo_rocket_down.png",
+                  "Plist": ""
+                },
+                "Scale9OriginX": 58,
+                "Scale9OriginY": 63,
+                "Scale9Width": 61,
+                "Scale9Height": 65,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 15.0,
+                  "Y": -5.0
+                },
+                "Scale": {
+                  "ScaleX": 0.6,
+                  "ScaleY": 0.6
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "PreSize": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "LeftMargin": -73.5,
+                "RightMargin": -103.5,
+                "TopMargin": -90.5,
+                "BottomMargin": -100.5,
+                "Tag": 8,
+                "ActionTag": 107032987,
+                "Size": {
+                  "X": 177.0,
+                  "Y": 191.0
+                },
+                "Name": "rocket_1",
+                "ctype": "ImageViewObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/element/demo_rocket_up.png",
+                  "Plist": ""
+                },
+                "Scale9OriginX": 56,
+                "Scale9OriginY": 62,
+                "Scale9Width": 60,
+                "Scale9Height": 66,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": -15.0,
+                  "Y": 5.0
+                },
+                "Scale": {
+                  "ScaleX": 0.6,
+                  "ScaleY": 0.6
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "PreSize": {
+                  "X": 0.0,
+                  "Y": 0.0
+                },
+                "LeftMargin": -101.0,
+                "RightMargin": -71.0,
+                "TopMargin": -100.0,
+                "BottomMargin": -90.0,
+                "Tag": 7,
+                "ActionTag": 1530723339,
+                "Size": {
+                  "X": 172.0,
+                  "Y": 190.0
+                },
+                "Name": "rocket_0",
+                "ctype": "ImageViewObjectData"
+              }
+            ],
+            "ActionTag": 1715001814,
+            "Size": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Name": "Node_1",
+            "ctype": "SingleNodeObjectData"
+          }
+        ],
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "../element/demo_rocket_down.png",
+        "../element/demo_rocket_up.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Node"
+}

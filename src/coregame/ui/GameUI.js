@@ -14,6 +14,11 @@ CoreGame.GameUI = cc.Layer.extend({
     isBossRun: false,
     levelId: 0,
 
+    // ── Agent relay ──────────────────────────────────────────────────────────
+    RELAY_URL:        "http://127.0.0.1:3001",
+    _relaySessionId:  null,
+    _relayPollCb:     null,   // stored so we can unschedule it
+
     /**
      * Constructor
      * @param {Object} levelConfig - Level configuration
@@ -49,7 +54,7 @@ CoreGame.GameUI = cc.Layer.extend({
         // The back button is at z-order 999 in BoardUI
 
         // Create BoardBg
-        this.gameBoardBg = new CoreGame.GameBoardBg();
+        this.gameBoardBg = new GameBoardBg();
         this.addChild(this.gameBoardBg);
 
         // Create BoardUI instance
@@ -72,14 +77,14 @@ CoreGame.GameUI = cc.Layer.extend({
 
         // Create BoardTool UI
         if (cc.sys.isNative) {
-            this.gameBoardToolUI = new CoreGame.GameBoardToolUI(this);
+            this.gameBoardToolUI = new GameBoardToolUI(this);
             this.addChild(this.gameBoardToolUI);
         }
 
 
         // Create BoardInfo UI
-        this.gameBoardInfoUI = new CoreGame.GameBoardInfoUI(this);
-        this.addChild(this.gameBoardInfoUI);
+        this.gameBoardInfoUI = new GameBoardInfoUI(this);
+        this.addChild(this.gameBoardInfoUI, CoreGame.Config.zOrder.EFF_MATCHING + 1);
         this.gameBoardInfoUI.initData(levelConfig);
 
         // Create EffectLayer
@@ -88,6 +93,13 @@ CoreGame.GameUI = cc.Layer.extend({
 
         this.boardUI.boardMgr.gameUI = this;
         this.levelId = this.boardUI.boardMgr.getLevelId();
+
+        // AI agent
+        this._aiAgent = null;
+        CoreGame.EventMgr.on("turnFinished", function () {
+            if (self._aiAgent) self._aiAgent.onTurnReady();
+        }, this);
+        this._createAIButton();
 
         this.boardUI.setVisible(false);
         this.gameBoardInfoUI.setVisible(false);
@@ -131,6 +143,8 @@ CoreGame.GameUI = cc.Layer.extend({
                 levelId:     mapCfg.levelId || null
             });
         }
+
+        // this._relayInit();
     },
 
     /**
@@ -174,6 +188,322 @@ CoreGame.GameUI = cc.Layer.extend({
             }
         }, this);
         this.addChild(difficultyBtn, 999);
+    },
+
+    _createAIButton: function () {
+        var self = this;
+        var winW = cc.winSize.width;
+        var winH = cc.winSize.height;
+
+        // ── Main "AI" button — bottom-right corner ───────────────────────────
+        var btn = new ccui.Button(
+            "res/modules/items/star.png",
+            "res/modules/items/star.png"
+        );
+        btn.setTitleText("AI");
+        btn.setTitleFontSize(24);
+        btn.setTitleColor(cc.color(180, 50, 220));
+        btn.setScale9Enabled(false);
+        btn.setContentSize(60, 60);
+        btn.setPosition(winW - 40, 45);
+        btn.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) {
+                self._toggleAIMenu();
+            }
+        });
+        this.addChild(btn, 1000);
+        this._aiButton = btn;
+
+        // ── Mini popup menu (appears above the AI button) ────────────────────
+        var menuW = 130, menuH = 96;
+        var menuX = winW - menuW - 5;
+        var menuY = 95;
+
+        var menuBg = new cc.LayerColor(cc.color(20, 20, 20, 220), menuW, menuH);
+        menuBg.setPosition(menuX, menuY);
+        menuBg.setVisible(false);
+        this.addChild(menuBg, 1001);
+        this._aiMenuBg = menuBg;
+
+        // Sub-button: AI ON/OFF
+        var aiToggleBtn = new ccui.Button(
+            "res/tool/res/btn_green_2.png",
+            "res/tool/res/btn_green_2.png"
+        );
+        aiToggleBtn.setTitleText("AI: OFF");
+        aiToggleBtn.setTitleFontSize(18);
+        aiToggleBtn.setTitleColor(cc.color(255, 80, 80));
+        aiToggleBtn.setScale9Enabled(true);
+        aiToggleBtn.setContentSize(menuW - 10, 36);
+        aiToggleBtn.setPosition(menuX + menuW / 2, menuY + menuH - 26);
+        aiToggleBtn.setVisible(false);
+        aiToggleBtn.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) {
+                self._toggleAI();
+                self._closeAIMenu();
+            }
+        });
+        this.addChild(aiToggleBtn, 1002);
+        this._aiToggleBtn = aiToggleBtn;
+
+        // Sub-button: DBG
+        var dbgBtn = new ccui.Button(
+            "res/tool/res/btn_green_2.png",
+            "res/tool/res/btn_green_2.png"
+        );
+        dbgBtn.setTitleText("DBG");
+        dbgBtn.setTitleFontSize(18);
+        dbgBtn.setTitleColor(cc.color(180, 180, 180));
+        dbgBtn.setScale9Enabled(true);
+        dbgBtn.setContentSize(menuW - 10, 36);
+        dbgBtn.setPosition(menuX + menuW / 2, menuY + 22);
+        dbgBtn.setVisible(false);
+        dbgBtn.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) {
+                self._toggleDebugOverlay();
+                self._closeAIMenu();
+            }
+        });
+        this.addChild(dbgBtn, 1002);
+        this._dbgToggleBtn = dbgBtn;
+
+        this._aiMenuVisible = false;
+
+        // ── Reasoning panel (bottom strip, scrollable, shown while AI thinks) ─
+        var panelH = 190;
+        var panelY = 80;
+
+        var reasonBg = new cc.LayerColor(cc.color(10, 10, 30, 220), winW, panelH);
+        reasonBg.setPosition(0, panelY);
+        reasonBg.setVisible(false);
+        this.addChild(reasonBg, 999);
+        this._aiReasoningBg = reasonBg;
+
+        var scrollW = winW - 12;
+        var scrollH = panelH - 8;
+        var reasonScroll = new ccui.ScrollView();
+        reasonScroll.setDirection(ccui.ScrollView.DIR_VERTICAL);
+        reasonScroll.setContentSize(cc.size(scrollW, scrollH));
+        reasonScroll.setPosition(6, panelY + 4);
+        reasonScroll.setBounceEnabled(false);
+        reasonScroll.setScrollBarEnabled(true);
+        reasonScroll.setScrollBarOpacity(140);
+        reasonScroll.setInnerContainerSize(cc.size(scrollW, scrollH));
+        reasonScroll.setVisible(false);
+        this.addChild(reasonScroll, 1000);
+        this._aiReasoningScroll = reasonScroll;
+
+        // RichText — multi-color, supports "\n" line-break elements
+        var richW = scrollW - 16;
+        var richH = 600;  // fixed tall inner canvas; scroll shows top portion
+        var richText = new ccui.RichText();
+        richText.setContentSize(cc.size(richW, richH));
+        richText.ignoreContentAdaptWithSize(false);
+        richText.setAnchorPoint(cc.p(0, 1));
+        richText.setPosition(8, richH);
+        reasonScroll.setInnerContainerSize(cc.size(scrollW, richH));
+        reasonScroll.getInnerContainer().addChild(richText, 1);
+        this._aiRichText = richText;
+
+        this._createDebugOverlay();
+    },
+
+    _toggleAIMenu: function () {
+        this._aiMenuVisible = !this._aiMenuVisible;
+        if (this._aiMenuBg)     this._aiMenuBg.setVisible(this._aiMenuVisible);
+        if (this._aiToggleBtn)  this._aiToggleBtn.setVisible(this._aiMenuVisible);
+        if (this._dbgToggleBtn) this._dbgToggleBtn.setVisible(this._aiMenuVisible);
+    },
+
+    _closeAIMenu: function () {
+        this._aiMenuVisible = false;
+        if (this._aiMenuBg)     this._aiMenuBg.setVisible(false);
+        if (this._aiToggleBtn)  this._aiToggleBtn.setVisible(false);
+        if (this._dbgToggleBtn) this._dbgToggleBtn.setVisible(false);
+    },
+
+    _createDebugOverlay: function () {
+        var self = this;
+
+        // Panel: right side, below difficulty button area
+        var panelW = 260;
+        var panelH = 260;
+        var panelX = cc.winSize.width - panelW - 5;
+        var panelY = cc.winSize.height - 270 - panelH;
+
+        var bg = new cc.LayerColor(cc.color(0, 0, 0, 185), panelW, panelH);
+        bg.setPosition(panelX, panelY);
+        bg.setVisible(false);
+        this.addChild(bg, 998);
+        this._debugBg = bg;
+
+        var lbl = new cc.LabelTTF(
+            "", "Arial", 14,
+            cc.size(panelW - 12, panelH - 8),
+            cc.TEXT_ALIGNMENT_LEFT
+        );
+        lbl.setPosition(panelX + panelW / 2, panelY + panelH / 2);
+        lbl.setFontFillColor(cc.color(200, 255, 200));
+        lbl.enableStroke(cc.color(0, 0, 0), 1);
+        lbl.setVisible(false);
+        this.addChild(lbl, 999);
+        this._debugLabel = lbl;
+
+        this._debugVisible = false;
+        this._debugUpdateCb = function () { self._updateDebugOverlay(); };
+    },
+
+    _toggleDebugOverlay: function () {
+        this._debugVisible = !this._debugVisible;
+        if (this._debugBg)    this._debugBg.setVisible(this._debugVisible);
+        if (this._debugLabel) this._debugLabel.setVisible(this._debugVisible);
+
+        if (this._debugVisible) {
+            this._updateDebugOverlay();
+            this.schedule(this._debugUpdateCb, 0.3);
+        } else {
+            this.unschedule(this._debugUpdateCb);
+        }
+    },
+
+    _updateDebugOverlay: function () {
+        if (!this._debugLabel || !this._debugVisible) return;
+
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        if (!bm) return;
+
+        var lines = [];
+        var movesUsed = (bm.totalMove || 0) - (bm.numMove || 0);
+
+        // ── AdaptiveTPP ──────────────────────────────────────────────────────
+        if (CoreGame.AdaptiveTPP) {
+            var tpp = CoreGame.AdaptiveTPP;
+            var totalCleared = 0;
+            var tes = bm.targetElements || [];
+            for (var ti = 0; ti < tes.length; ti++) {
+                totalCleared += (tes[ti].count - tes[ti].current);
+            }
+            var dev    = tpp.getDeviation(movesUsed, totalCleared);
+            var devStr = (dev >= 0 ? "+" : "") + dev.toFixed(3);
+            var streak = tpp._assistStreak || 0;
+            lines.push("=== AdaptiveTPP ===");
+            lines.push("Strategy : " + tpp.getCurrentStrategyName());
+            lines.push("Deviation: " + devStr);
+            lines.push("Thresholds: " + tpp.TPP_THRESHOLD.toFixed(2)
+                + " / " + tpp.HARD_THRESHOLD.toFixed(2)
+                + " / " + tpp.EXTREME_THRESHOLD.toFixed(2));
+            lines.push("Streak   : " + streak + " / " + tpp.MAX_ASSIST_STREAK);
+            lines.push("Retry    : x" + tpp.getRetryFactor().toFixed(2));
+        }
+
+        // ── Targets ──────────────────────────────────────────────────────────
+        var _GEM = {1:"G",2:"B",3:"R",4:"Y",5:"P",6:"C"};
+        var _PU  = {101:"h",102:"n",103:"*",104:"+",105:"L",106:"v"};
+        lines.push("=== Targets ===");
+        var tes2 = bm.targetElements || [];
+        if (tes2.length === 0) {
+            lines.push("  (none)");
+        } else {
+            for (var i = 0; i < tes2.length; i++) {
+                var te   = tes2[i];
+                var lbl  = _GEM[te.id] || _PU[te.id] || ("T" + te.id);
+                var done = te.count - te.current;
+                var bar  = "";
+                for (var b = 0; b < te.count && b < 10; b++) bar += (b < done ? "#" : ".");
+                lines.push(lbl + ": " + done + "/" + te.count
+                    + " [" + bar + "] " + te.current + " rem");
+            }
+        }
+
+        // ── Moves ────────────────────────────────────────────────────────────
+        lines.push("=== Moves ===");
+        lines.push(bm.numMove + " left / " + bm.totalMove
+            + " total  (used " + movesUsed + ")");
+
+        // ── Token stats ──────────────────────────────────────────────────────
+        var agent = this._aiAgent;
+        if (agent && agent._tokenStats && agent._tokenStats.calls > 0) {
+            var ts     = agent._tokenStats;
+            var avgIn  = Math.round(ts.in  / ts.calls);
+            var avgOut = Math.round(ts.out / ts.calls);
+            lines.push("=== Tokens ===");
+            lines.push("Calls: " + ts.calls);
+            lines.push("In:  " + ts.in  + "  (~" + avgIn  + "/call)");
+            lines.push("Out: " + ts.out + "  (~" + avgOut + "/call)");
+        }
+
+        this._debugLabel.setString(lines.join("\n"));
+    },
+
+    _toggleAI: function () {
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        if (!bm) return;
+        var mainBtn = this._aiButton;
+        var subBtn  = this._aiToggleBtn;
+        if (!this._aiAgent) {
+            this._aiAgent = new CoreGame.LLMAgent();
+            var richText        = this._aiRichText;
+            var reasoningBg     = this._aiReasoningBg;
+            var reasoningScroll = this._aiReasoningScroll;
+
+            var richElemCount = 0;  // track added elements for clearing (native has no _richElements)
+            this._aiAgent.onReasoning = function (planText, reasonText) {
+                if (!reasoningScroll || !richText) return;
+                // Clear via index loop (same as CustomLabel.clearText)
+                for (var c = 0; c < richElemCount; c++) richText.removeElement(0);
+                richElemCount = 0;
+
+                function push(text, color, size) {
+                    richText.pushBackElement(new ccui.RichElementText(++richElemCount, color, 255, text, "Arial", size));
+                }
+                if (planText) {
+                    push("\u25c6 Plan:  " + planText, cc.color(160, 230, 255), 19);
+                }
+                if (planText && reasonText) {
+                    push("\n \n", cc.color(0, 0, 0), 8);
+                }
+                if (reasonText) {
+                    push("\u25b6 AI:  " + reasonText, cc.color(255, 240, 160), 19);
+                }
+
+                richText.formatText();
+                reasoningScroll.scrollToTop(0, false);
+                reasoningScroll.setVisible(true);
+                if (reasoningBg) reasoningBg.setVisible(true);
+            };
+            this._aiAgent.onStatus = function (status) {
+                if (status === "thinking") {
+                    mainBtn.setTitleColor(cc.color(255, 220, 50));
+                    mainBtn.stopAllActions();
+                    mainBtn.setScale(1.0);
+                    mainBtn.runAction(cc.repeatForever(cc.sequence(
+                        cc.scaleTo(0.35, 1.18),
+                        cc.scaleTo(0.25, 1.0)
+                    )));
+                } else if (status === "moving") {
+                    mainBtn.stopAllActions();
+                    mainBtn.setScale(1.0);
+                    mainBtn.setTitleColor(cc.color(50, 200, 255));
+                } else {
+                    mainBtn.stopAllActions();
+                    mainBtn.setScale(1.0);
+                    mainBtn.setTitleColor(cc.color(80, 255, 80));
+                }
+            };
+            this._aiAgent.start(bm);
+            mainBtn.setTitleColor(cc.color(80, 255, 80));
+            if (subBtn) { subBtn.setTitleText("AI: ON");  subBtn.setTitleColor(cc.color(80, 255, 80)); }
+            this._aiAgent.onTurnReady();
+        } else {
+            this._aiAgent.stop();
+            this._aiAgent = null;
+            mainBtn.stopAllActions();
+            mainBtn.setScale(1.0);
+            mainBtn.setTitleColor(cc.color(255, 80, 80));
+            if (subBtn) { subBtn.setTitleText("AI: OFF"); subBtn.setTitleColor(cc.color(255, 80, 80)); }
+            if (this._aiReasoningScroll) this._aiReasoningScroll.setVisible(false);
+            if (this._aiReasoningBg)     this._aiReasoningBg.setVisible(false);
+        }
     },
 
     /**
@@ -305,6 +635,7 @@ CoreGame.GameUI = cc.Layer.extend({
      * Clean up
      */
     onExit: function () {
+        this._relayStopPoll();
         this._super();
     },
 
@@ -348,6 +679,32 @@ CoreGame.GameUI = cc.Layer.extend({
      * Check the type and decrease
      */
     onEndGame: function (isWin = true, targets) {
+        // Stop debug overlay if running
+        if (this._debugUpdateCb) this.unschedule(this._debugUpdateCb);
+        if (this._debugBg)       this._debugBg.setVisible(false);
+        if (this._debugLabel)    this._debugLabel.setVisible(false);
+        this._debugVisible = false;
+
+        // Stop AI agent if running
+        this._closeAIMenu();
+        if (this._aiReasoningScroll) this._aiReasoningScroll.setVisible(false);
+        if (this._aiReasoningBg)     this._aiReasoningBg.setVisible(false);
+        if (this._aiAgent) {
+            this._aiAgent.stop();
+            this._aiAgent = null;
+            if (this._aiButton) {
+                this._aiButton.stopAllActions();
+                this._aiButton.setScale(1.0);
+                this._aiButton.setTitleColor(cc.color(255, 80, 80));
+            }
+            if (this._aiToggleBtn) {
+                this._aiToggleBtn.setTitleText("AI: OFF");
+                this._aiToggleBtn.setTitleColor(cc.color(255, 80, 80));
+            }
+        }
+        this._relayPushState(isWin ? "win" : "lose");
+        this._relayStopPoll();
+
         let guiEndGame = sceneMgr.openGUI(GameBoardEndGame.className);
         guiEndGame.gameUI = this;
 
@@ -359,8 +716,12 @@ CoreGame.GameUI = cc.Layer.extend({
         this.sendMetrics(this._buildMetrics(isWin));
 
         if (isWin) {
-            this.gameBoardEffectLayer.showLevelCompleteLabel();
-            guiEndGame.showResult(BoardResult.WIN, this.levelConfig, 1.5);
+            let isShowed = this.gameBoardEffectLayer.char;
+            if (isShowed) {
+                this.gameBoardEffectLayer.showLevelCompleteLabel();
+            }
+
+            guiEndGame.showResult(BoardResult.WIN, this.levelConfig, isShowed? 1.5 : 0);
         } else {
             guiEndGame.showResult(BoardResult.LOSE, targets);
         }
@@ -374,6 +735,9 @@ CoreGame.GameUI = cc.Layer.extend({
     playBonusTrailEffect: function (targets, boardMgr) {
         var boardUI = CoreGame.BoardUI.getInstance();
         var parent = boardUI;
+
+        // Show skip button
+        this.gameBoardInfoUI.showSkip();
 
         // Source position: lbMove label position converted to boardUI space
         var lbMove = this.gameBoardInfoUI.lbMove;
@@ -535,6 +899,152 @@ CoreGame.GameUI = cc.Layer.extend({
         }
     },
 
+    // ── Agent relay methods ──────────────────────────────────────────────────
+
+    _relayInit: function () {
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        var levelId = bm ? bm.getLevelId() : "unknown";
+        this._relaySessionId = "lvl" + levelId + "_" + Date.now();
+
+        // Push initial board state
+        this._relayPushState("playing");
+
+        // Listen for turn end to push updated state
+        var self = this;
+        CoreGame.EventMgr.on("turnFinished", function () {
+            self._relayPushState("playing");
+        }, this);
+
+        // Start polling for agent moves every 500 ms
+        this._relayStartPoll();
+        cc.log("[AgentRelay] init  session=" + this._relaySessionId);
+    },
+
+    _relayPushState: function (status) {
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        if (!bm) return;
+
+        var board = [];
+        for (var r = 0; r < bm.rows; r++) {
+            board[r] = [];
+            for (var c = 0; c < bm.cols; c++) {
+                var slot = bm.mapGrid[r][c];
+                board[r][c] = (slot && slot.enable) ? slot.getType() : -1;
+            }
+        }
+
+        var targets = {}, targetsCleared = {};
+        for (var i = 0; i < bm.targetElements.length; i++) {
+            var te = bm.targetElements[i];
+            targets[te.id]        = te.count;
+            targetsCleared[te.id] = te.count - te.current;
+        }
+
+        // Convert getAllSwappableMoves() to [[r1,c1,r2,c2], ...] for agent
+        var _dirDelta = {};
+        _dirDelta[CoreGame.Direction.UP]    = { dr:  1, dc:  0 };
+        _dirDelta[CoreGame.Direction.DOWN]  = { dr: -1, dc:  0 };
+        _dirDelta[CoreGame.Direction.LEFT]  = { dr:  0, dc: -1 };
+        _dirDelta[CoreGame.Direction.RIGHT] = { dr:  0, dc:  1 };
+        var validMoves = [];
+        var swappable = bm.getAllSwappableMoves();
+        for (var mi = 0; mi < swappable.length; mi++) {
+            var m = swappable[mi];
+            var d = _dirDelta[m.moveDirect];
+            if (d) {
+                validMoves.push([m.position.x, m.position.y,
+                                 m.position.x + d.dr, m.position.y + d.dc]);
+            }
+        }
+
+        var body = JSON.stringify({
+            session_id:      this._relaySessionId,
+            level_id:        bm.getLevelId(),
+            board:           board,
+            rows:            bm.rows,
+            cols:            bm.cols,
+            targets:         targets,
+            targets_cleared: targetsCleared,
+            moves_remaining: bm.numMove,
+            total_moves:     bm.totalMove,
+            valid_moves:     validMoves,
+            status:          status || "playing"
+        });
+
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", this.RELAY_URL + "/state", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(body);
+        } catch (e) {
+            cc.log("[AgentRelay] pushState error:", e);
+        }
+    },
+
+    _relayStartPoll: function () {
+        var self = this;
+        var cb = function () { self._relayPollMove(); };
+        this._relayPollCb = cb;
+        this.schedule(cb, 0.5);
+    },
+
+    _relayStopPoll: function () {
+        if (this._relayPollCb) {
+            this.unschedule(this._relayPollCb);
+            this._relayPollCb = null;
+        }
+        CoreGame.EventMgr.off("turnFinished", this);
+    },
+
+    _relayPollMove: function () {
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        if (!bm || !bm.canInteract()) return;
+
+        var self = this;
+        try {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", this.RELAY_URL + "/move/pending", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState !== 4 || xhr.status !== 200) return;
+                var data;
+                try { data = JSON.parse(xhr.responseText); } catch (e) { return; }
+                if (!data || !data.move || data.move.row1 == null) return;
+
+                var move = data.move;
+
+                // Validate move is for current session
+                if (move.session_id && move.session_id !== self._relaySessionId) return;
+
+                // Re-check before executing (state may have changed during XHR round-trip)
+                if (!bm.canInteract()) return;
+
+                var slot1 = bm.getSlot(move.row1, move.col1);
+                var slot2 = bm.getSlot(move.row2, move.col2);
+                if (!slot1 || !slot2) {
+                    cc.log("[AgentRelay] invalid slot (" + move.row1 + "," + move.col1
+                        + ")→(" + move.row2 + "," + move.col2 + ")");
+                } else {
+                    cc.log("[AgentRelay] exec (" + move.row1 + "," + move.col1
+                        + ")→(" + move.row2 + "," + move.col2 + ")");
+                    bm.trySwapSlots(slot1, slot2);
+                }
+
+                // Ack regardless (don't retry a bad move)
+                try {
+                    var ack = new XMLHttpRequest();
+                    ack.open("POST", self.RELAY_URL + "/move/ack", true);
+                    ack.setRequestHeader("Content-Type", "application/json");
+                    ack.send(JSON.stringify({ session_id: self._relaySessionId }));
+                } catch (e) {}
+            };
+            xhr.send();
+        } catch (e) {
+            cc.log("[AgentRelay] pollMove error:", e);
+        }
+    },
+
+    // ── End agent relay ──────────────────────────────────────────────────────
+
     onDifficultySelected: function (diffName) {
         cc.log("GameUI: Applying strategy: " + diffName);
         if (CoreGame.DropStrategy[diffName]) {
@@ -694,11 +1204,11 @@ CoreGame.GameUI = cc.Layer.extend({
             for (var fi = 0; fi < elCells.length; fi++) {
                 var cell = elCells[fi];
                 var gemType = Math.floor(Math.random() * CoreGame.Config.NUM_GEN) + 1;
-                var gemPath = "res/high/game/element/" + gemType + ".png";
+                var gemPath = "res/modules/game/element/" + gemType + ".png";
                 var fakeGem = fr.createSprite(gemType + ".png", gemPath);
                 var cellPos = boardMgr.gridToPixel(cell.r, cell.c);
                 fakeGem.setPosition(cellPos);
-                fakeGem.setLocalZOrder(BoardConst.zOrder.GEM);
+                fakeGem.setLocalZOrder(CoreGame.Config.zOrder.GEM);
                 fakeGem._fakeGemType = gemType;
                 boardParent.addChild(fakeGem);
                 fakeGems.push(fakeGem);
@@ -747,7 +1257,7 @@ CoreGame.GameUI = cc.Layer.extend({
                                     debris_type_name[fgType],
                                     wPos,
                                     parent,
-                                    BoardConst.zOrder.EFF_EXPLODE
+                                    CoreGame.Config.zOrder.EFF_EXPLODE
                                 );
                                 if (nodeTLFX) nodeTLFX.setScale(2 + Math.random() * 0.5);
                             }
@@ -770,7 +1280,7 @@ CoreGame.GameUI = cc.Layer.extend({
                 cc.scaleTo(bounceTime, originalScale).easing(cc.easeElasticOut(0.5)),
                 cc.callFunc(function (ui, zOrder) {
                     ui.setLocalZOrder(zOrder);
-                }.bind(null, elUI, BoardConst.zOrder.GEM))
+                }.bind(null, elUI, CoreGame.Config.zOrder.GEM))
             ));
         }
 
@@ -784,9 +1294,12 @@ CoreGame.GameUI = cc.Layer.extend({
      * @returns {number} Total duration of the effect
      */
     efxBossShowUp: function (config) {
-        //Dolly Zoom
         let delayTime = config["delayTime"];
         let efxTime = 0.75;
+
+        //Leaves animation
+        // let leaves = gv.createSpineAnimation(resAni['spine_' + this.type]);
+
         //Moving bg
         this.gameBoardBg.stopAllActions();
         this.gameBoardBg.setVisible(true);
@@ -856,13 +1369,14 @@ CoreGame.GameUI = cc.Layer.extend({
         for (var fi = 0; fi < bossCells.length; fi++) {
             var cell = bossCells[fi];
             var gemType = Math.floor(Math.random() * CoreGame.Config.NUM_GEN * 0.5) + 1;
-            var gemPath = "res/high/game/element/" + gemType + ".png";
+            var gemPath = "res/modules/game/element/" + gemType + ".png";
             var fakeGem = fr.createSprite(gemType + ".png", gemPath);
 
             var cellPos = boardMgr.gridToPixel(cell.r, cell.c);
             fakeGem.setPosition(cellPos);
-            fakeGem.setLocalZOrder(BoardConst.zOrder.GEM);
+            fakeGem.setLocalZOrder(CoreGame.Config.zOrder.GEM);
             fakeGem._fakeGemType = gemType;
+            fakeGem.setScale(CoreGame.ElementUI.GEM_SCALE);
             boardParent.addChild(fakeGem);
             fakeGems.push(fakeGem);
         }
@@ -871,7 +1385,7 @@ CoreGame.GameUI = cc.Layer.extend({
         // Top of boardUI + offset above the board
         var boardTop = boardMgr.rows * CoreGame.Config.CELL_SIZE + boardMgr.boardOffsetY;
         var showUpPos = cc.p(originalPos.x - CoreGame.Config.CELL_SIZE, boardTop);
-        // let animConfig =  CoreGame.GameBoardInfoUI.animMonster[bossElement.type];
+        // let animConfig =  GameBoardInfoUI.animMonster[bossElement.type];
         // showUpPos.x += animConfig.offset.x / animConfig.scale;
         // showUpPos.y += animConfig.offset.y / animConfig.scale;
 
@@ -886,6 +1400,9 @@ CoreGame.GameUI = cc.Layer.extend({
         bossUI.setPosition(offScreenPos);
         bossUI.setVisible(false);
         bossUI["Sprite2D"].setVisible(false);
+        if (bossUI.sprBg) {
+            bossUI.sprBg.setVisible(false);
+        }
 
         bossUI.runAction(cc.sequence(
             cc.delayTime(delayTime),
@@ -929,8 +1446,13 @@ CoreGame.GameUI = cc.Layer.extend({
                 cc.scaleTo(returnDuration, 1.0, 1.0)
             ),
             cc.callFunc(function () {
-                bossUI.setLocalZOrder(BoardConst.zOrder.BOSS);
+                bossUI.setLocalZOrder(CoreGame.Config.zOrder.BOSS);
                 bossUI["Sprite2D"].setVisible(true);
+
+                if (bossUI.sprBg) {
+                    bossUI.sprBg.setVisible(true);
+                }
+
                 bossUI.setHijacked(false);
                 bossUI._onAnimationFinish();
 
@@ -951,7 +1473,7 @@ CoreGame.GameUI = cc.Layer.extend({
                                 debris_type_name[fgType],
                                 wPos,
                                 boardParent,
-                                BoardConst.zOrder.EFF_EXPLODE
+                                CoreGame.Config.zOrder.EFF_EXPLODE
                             );
                             nodeTLFX.setScale(2 + Math.random() * 0.5);
                         }
@@ -1064,9 +1586,9 @@ CoreGame.GameUI = cc.Layer.extend({
         //Tool and info layer
         this.gameBoardToolUI.setVisible(true);
         this.gameBoardToolUI.efxIn(delayTime + efxTime + 0.5, efxTime);
-        
+
         this.gameBoardInfoUI.setVisible(true);
-        this.gameBoardInfoUI.efxIn(delayTime + efxTime + 1, monsterBanner);
+        this.gameBoardInfoUI.efxIn(delayTime, monsterBanner);
     },
 
     startNow: function () {

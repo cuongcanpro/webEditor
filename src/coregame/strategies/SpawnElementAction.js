@@ -277,13 +277,28 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
                             if (flyUI) {
                                 boardUI.root.addChild(flyUI, 100);
                                 flyUI.setPosition(startPos);
+                                flyUI.rawScale = flyUI.getScale();
 
-                                var flyTime = 0.6 + index * 0.1;
+                                var flyTimeOrg = 0.6;
+                                var flyTime = flyTimeOrg + index * 0.1;
                                 var cp1 = cc.p(startPos.x + (targetPixelPos.x - startPos.x) * 0.25, startPos.y + 150);
                                 var cp2 = cc.p(startPos.x + (targetPixelPos.x - startPos.x) * 0.5, startPos.y + 150);
-                                var bezier = cc.bezierTo(flyTime, [cp1, cp2, targetPixelPos]);
+                                var bezier = cc.bezierTo(flyTime, [cp1, cp2, targetPixelPos]).easing(
+                                    cc.easeBezierAction(0, 0.1, 0.9, 1.0)
+                                );
                                 flyUI.runAction(cc.sequence(
-                                    bezier,
+                                    cc.spawn(
+                                        bezier,
+                                        cc.sequence(
+                                            cc.scaleTo(
+                                                flyTime * 0.5, flyUI.rawScale * 1.5 * (flyTime / flyTimeOrg)
+                                            ).easing(cc.easeOut(2.5)),
+                                            cc.scaleTo(flyTime * 0.5, flyUI.rawScale).easing(cc.easeIn(2.5))
+                                        ),
+                                        cc.rotateBy(flyTime, 360 * 3).easing(cc.easeIn(2.5))
+                                    ),
+                                    cc.scaleTo(0.1, 1.1 * flyUI.rawScale).easing(cc.easeOut(2.5)),
+                                    cc.scaleTo(0.1, flyUI.rawScale).easing(cc.easeIn(2.5)),
                                     cc.callFunc(function () {
                                         this.removeFromParent(true);
                                     }.bind(flyUI))

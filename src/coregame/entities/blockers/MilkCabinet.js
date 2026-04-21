@@ -37,6 +37,6 @@ CoreGame.MilkCabinet = CoreGame.Blocker.extend({
 });
 
 // Register
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.MILK_CABINET) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.MILK_CABINET) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.MILK_CABINET, CoreGame.MilkCabinet);
 }

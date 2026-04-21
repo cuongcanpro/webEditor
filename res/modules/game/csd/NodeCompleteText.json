@@ -1,0 +1,412 @@
+{
+  "ID": "359221de-857d-40f6-a85c-b7fe286321f0",
+  "Version": "2.3.4",
+  "Name": "NodeCompleteText",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 25,
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/end_game/complete_text/hoanthanh.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -444.0,
+            "RightMargin": -444.0,
+            "TopMargin": -67.5,
+            "BottomMargin": -67.5,
+            "Tag": 26,
+            "ActionTag": -289968198,
+            "Size": {
+              "X": 888.0,
+              "Y": 135.0
+            },
+            "VisibleForFrame": false,
+            "Name": "hoanthanh_1",
+            "ctype": "SpriteObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/end_game/complete_text/E.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": -236.8945,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "RotationSkewX": -20.0004,
+            "RotationSkewY": -19.9996,
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -269.8945,
+            "RightMargin": 203.8945,
+            "TopMargin": -41.5,
+            "BottomMargin": -41.5,
+            "Tag": 27,
+            "ActionTag": 741654071,
+            "Size": {
+              "X": 66.0,
+              "Y": 83.0
+            },
+            "Name": "01",
+            "ctype": "SpriteObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/end_game/complete_text/U.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": -150.0,
+              "Y": 30.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "RotationSkewX": -20.0004,
+            "RotationSkewY": -19.9996,
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -184.0,
+            "RightMargin": 116.0,
+            "TopMargin": -70.5,
+            "BottomMargin": -10.5,
+            "Tag": 28,
+            "ActionTag": -1871480190,
+            "Size": {
+              "X": 68.0,
+              "Y": 81.0
+            },
+            "Name": "02",
+            "ctype": "SpriteObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/end_game/complete_text/R.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": -68.8993,
+              "Y": 50.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -104.8993,
+            "RightMargin": 32.8993,
+            "TopMargin": -90.0,
+            "BottomMargin": 10.0,
+            "Tag": 29,
+            "ActionTag": 1196182140,
+            "Size": {
+              "X": 72.0,
+              "Y": 80.0
+            },
+            "Name": "03",
+            "ctype": "SpriteObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/end_game/complete_text/E2.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 9.9302,
+              "Y": 50.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -22.0698,
+            "RightMargin": -41.9302,
+            "TopMargin": -91.5,
+            "BottomMargin": 8.5,
+            "Tag": 30,
+            "ActionTag": -1394586915,
+            "Size": {
+              "X": 64.0,
+              "Y": 83.0
+            },
+            "Name": "04",
+            "ctype": "SpriteObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/end_game/complete_text/K.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 90.0,
+              "Y": 35.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "RotationSkewX": 19.9998,
+            "RotationSkewY": 20.0004,
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": 53.0,
+            "RightMargin": -127.0,
+            "TopMargin": -75.0,
+            "BottomMargin": -5.0,
+            "Tag": 31,
+            "ActionTag": 1426030450,
+            "Size": {
+              "X": 74.0,
+              "Y": 80.0
+            },
+            "Name": "05",
+            "ctype": "SpriteObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/end_game/complete_text/A.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 160.0,
+              "Y": 5.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "RotationSkewX": 20.0004,
+            "RotationSkewY": 19.9996,
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": 127.0,
+            "RightMargin": -193.0,
+            "TopMargin": -46.0,
+            "BottomMargin": -36.0,
+            "Tag": 32,
+            "ActionTag": 800839255,
+            "Size": {
+              "X": 66.0,
+              "Y": 82.0
+            },
+            "Name": "06",
+            "ctype": "SpriteObjectData"
+          },
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "game/gui/end_game/complete_text/cham.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 225.0,
+              "Y": -30.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "RotationSkewX": 20.0004,
+            "RotationSkewY": 19.9996,
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": 203.0,
+            "RightMargin": -247.0,
+            "TopMargin": -10.5,
+            "BottomMargin": -70.5,
+            "Tag": 33,
+            "ActionTag": 1680117938,
+            "Size": {
+              "X": 44.0,
+              "Y": 81.0
+            },
+            "Name": "07",
+            "ctype": "SpriteObjectData"
+          }
+        ],
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "../gui/end_game/complete_text/A.png",
+        "../gui/end_game/complete_text/cham.png",
+        "../gui/end_game/complete_text/E.png",
+        "../gui/end_game/complete_text/E2.png",
+        "../gui/end_game/complete_text/hoanthanh.png",
+        "../gui/end_game/complete_text/K.png",
+        "../gui/end_game/complete_text/R.png",
+        "../gui/end_game/complete_text/U.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Node"
+}

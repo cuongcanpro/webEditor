@@ -5,9 +5,9 @@
 var CoreGame = CoreGame || {};
 
 CoreGame.PlaneUP = CoreGame.PowerUP.extend({
-
     ctor: function () {
         this._super();
+        this.preserveUI = null;
     },
 
     /**
@@ -31,9 +31,13 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
             );
             if (slot) {
                 explodedByLaunch.push(slot);
-                slot.matchElement(context);
             }
         }
+
+        CoreGame.TimedActionMgr.addAction(0.2, function (explodedByLaunch) {
+            for (var i = 0; i < explodedByLaunch.length; i++)
+                explodedByLaunch[i].matchElement({ type: "normal" });
+        }.bind(null, explodedByLaunch));
 
         // ── Step 2: Get priority targets (excludes launch-exploded slots) ──
         var listTarget = this.boardMgr.findListPriorityTarget(explodedByLaunch);
@@ -103,10 +107,13 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
         }
 
         this.ui.startActive(this.targetSlot);
-        this.ui = undefined;
+        this.preserveUI = this.ui;
+        this.ui = null;
+
+        CoreGame.TimedActionMgr.addAction(CoreGame.PlaneUI.DELAY, this.onMatch, this);
+
         // WARNING: should activate slot at least once (original comment preserved)
         this.boardMgr.getSlot(this.position.x, this.position.y).matchElement(context);
-        this.onMatch();
     },
 
     /**
@@ -117,9 +124,15 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
     },
 
     onMatch: function () {
-        CoreGame.TimedActionMgr.addAction(0.2, this._super, this);
+        this._super();
+
         if (this.targetSlot) {
-            CoreGame.TimedActionMgr.addAction(1.4, function () {
+            let timeFly = 0;
+            if (this.preserveUI) {
+                timeFly = this.preserveUI.startFlyTo(this.targetSlot);
+            }
+
+            CoreGame.TimedActionMgr.addAction(timeFly, function () {
                 // this = targetSlot (GridSlot), bound by 3rd arg of addAction
                 // [IMPROVEMENT] Validate target is still alive before matching.
                 // Handles two cases:
@@ -152,7 +165,7 @@ CoreGame.PlaneUP = CoreGame.PowerUP.extend({
 
                 // // Match if: still has live objective, OR at minimum a matchable gem
                 // if (hasLiveTarget || this.getMatchableElement()) {
-                    this.matchElement();
+                this.matchElement();
                 // }
                 // If neither, plane lands silently — VFX still plays in PlaneUI.onArrive
             }, this.targetSlot);
@@ -165,7 +178,7 @@ CoreGame.ElementObject.register(CoreGame.PowerUPType.MATCH_SQUARE, CoreGame.Plan
 
 /**
  * PlaneBoomPU - Combination of Plane + Bomb
- * Flies to target and explodes in a 3x3 area.
+ * Flies to target and explodes in a area x area.
  */
 CoreGame.PlaneBombPU = CoreGame.PlaneUP.extend({
     onMatch: function () {
@@ -188,7 +201,7 @@ CoreGame.PlaneBombPU = CoreGame.PlaneUP.extend({
 
 /**
  * PlaneRocketPU - Combination of Plane + Rocket
- * Flies to target and triggers both horizontal and vertical rocket effects.
+ * Flies to target and triggers horizontal rocket effects.
  */
 CoreGame.PlaneRocketHPU = CoreGame.PlaneUP.extend({
     onMatch: function () {
@@ -209,6 +222,10 @@ CoreGame.PlaneRocketHPU = CoreGame.PlaneUP.extend({
     }
 });
 
+/**
+ * PlaneRocketPU - Combination of Plane + Rocket
+ * Flies to target and triggers vertical rocket effects.
+ */
 CoreGame.PlaneRocketVPU = CoreGame.PlaneUP.extend({
     onMatch: function () {
         CoreGame.TimedActionMgr.addAction(0.2, this._super, this);

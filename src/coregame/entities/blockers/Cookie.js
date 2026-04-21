@@ -42,7 +42,7 @@ CoreGame.Cookie = CoreGame.Blocker.extend({
 });
 
 // Register Cookie
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.COOKIE) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.COOKIE) {
     // CoreGame.ElementObject.register(CoreGame.Config.ElementType.COOKIE, CoreGame.Cookie);
     // CoreGame.ElementObject.register(5000, CoreGame.Cookie);
 }

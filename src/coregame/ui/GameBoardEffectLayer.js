@@ -30,8 +30,8 @@ CoreGame.GameBoardEffectLayer = cc.Layer.extend({
         this.board.boardMgr.gemCombo = 0;
         this.board.boardMgr.matchSequence = 0;
         var comboLevel = -1;
-        for (var i = 0; i < BoardConst.COMBO_LEVEL; i++) {
-            if (gemCombo >= BoardConst.GEM_COMBO_ENCOURAGE[i] || matchSeq >= BoardConst.MATCH_SEQUENCE_ENCOURAGE[i]) {
+        for (var i = 0; i < CoreGame.Config.COMBO_LEVEL; i++) {
+            if (gemCombo >= CoreGame.Config.GEM_COMBO_ENCOURAGE[i] || matchSeq >= CoreGame.Config.MATCH_SEQUENCE_ENCOURAGE[i]) {
                 comboLevel = i;
             }
         }
@@ -71,22 +71,22 @@ CoreGame.GameBoardEffectLayer = cc.Layer.extend({
                     cc.callFunc(function () {
                         image.setTexture(path);
                     }),
-                    cc.delayTime(BoardConst.ENCOURAGE_SHOWING_DURATION),
+                    cc.delayTime(CoreGame.Config.ENCOURAGE_SHOWING_DURATION),
                     cc.fadeOut(0)
                 ));
                 this.encourageBG[this.showingEncourageLabel].runAction(cc.sequence(
                     cc.scaleTo(0, 0, 0),
                     cc.fadeIn(0),
-                    cc.scaleTo(BoardConst.ENCOURAGE_SHOWING_DURATION / 4, 1.0, 1.0),
-                    cc.fadeOut(BoardConst.ENCOURAGE_SHOWING_DURATION / 4 * 3)
+                    cc.scaleTo(CoreGame.Config.ENCOURAGE_SHOWING_DURATION / 4, 1.0, 1.0),
+                    cc.fadeOut(CoreGame.Config.ENCOURAGE_SHOWING_DURATION / 4 * 3)
                 ));
                 this.encourageBG[this.showingEncourageLabel].runAction(cc.sequence(
-                    cc.delayTime(BoardConst.ENCOURAGE_SHOWING_DURATION / 4),
-                    cc.moveBy(BoardConst.ENCOURAGE_SHOWING_DURATION / 4 * 3, 0, 10)
+                    cc.delayTime(CoreGame.Config.ENCOURAGE_SHOWING_DURATION / 4),
+                    cc.moveBy(CoreGame.Config.ENCOURAGE_SHOWING_DURATION / 4 * 3, 0, 10)
                 ));
             }.bind(this))
         ));
-        this.encourageEndingTime += BoardConst.ENCOURAGE_SHOWING_DURATION * 1000;
+        this.encourageEndingTime += CoreGame.Config.ENCOURAGE_SHOWING_DURATION * 1000;
     },
 
     resetEncourage: function () {
@@ -108,7 +108,6 @@ CoreGame.GameBoardEffectLayer = cc.Layer.extend({
         }
 
         fr.showTopPanel(this.board);
-        fr.Sound.playSoundEffect(resSound.game_success, false);
 
         let guiBoardInfo = this.gameUI.gameBoardInfoUI;
         guiBoardInfo.gameEnded = true;
@@ -121,16 +120,18 @@ CoreGame.GameBoardEffectLayer = cc.Layer.extend({
             this.cloud2 = new cc.Sprite(right_cloud);
             this.cloud1.setPosition(cc.winSize.width / 2 + 200, -450);
             this.cloud2.setPosition(cc.winSize.width / 2 - 200, -450);
-            this.gameUI.addChild(this.cloud1, BoardConst.zOrder.EFF_MATCHING);
-            this.gameUI.addChild(this.cloud2, BoardConst.zOrder.EFF_MATCHING);
+            this.gameUI.addChild(this.cloud1, CoreGame.Config.zOrder.EFF_MATCHING);
+            this.gameUI.addChild(this.cloud2, CoreGame.Config.zOrder.EFF_MATCHING);
 
             this.char = gv.createSpineAnimation(resAni.char_win);
             this.char.setPosition(cc.winSize.width / 2, -100);
-            this.gameUI.addChild(this.char, BoardConst.zOrder.EFF_MATCHING);
+            this.gameUI.addChild(this.char, CoreGame.Config.zOrder.EFF_MATCHING);
 
             this.completeLabel = gv.createSpineAnimation(resAni.eureka);
             this.completeLabel.setPosition(cc.winSize.width / 2, 400);
             this.gameUI.addChild(this.completeLabel);
+
+            fr.Sound.playSoundEffect(resSound.game_success, false);
         }
 
         this.char.setPosition(cc.winSize.width / 2, -600);
@@ -148,7 +149,7 @@ CoreGame.GameBoardEffectLayer = cc.Layer.extend({
                     "fire_work",
                     cc.p(cc.winSize.width / 2, 700),
                     this.gameUI,
-                    BoardConst.zOrder.EFF_MATCHING - 1
+                    CoreGame.Config.zOrder.EFF_MATCHING - 1
                 );
             }.bind(this))
         ));

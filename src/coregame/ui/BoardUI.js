@@ -23,7 +23,7 @@ CoreGame.BoardUI = cc.Layer.extend({
 
         this.root = new cc.Node();
         this.addChild(this.root, 2);
-        // let json = ccs.load(res.ZCSD_LAYER_MAIN_BOARD, res.ZCSD_ROOT);
+        // let json = ccs.load(res.ZCSD_LAYER_MAIN_BOARD, "");
         // this = json.node;
         // this.addChild(this);
         // this.width = this.width;
@@ -37,7 +37,8 @@ CoreGame.BoardUI = cc.Layer.extend({
         this.boardMgr.init(this, mapConfig, testBoxes);
 
         this.rawScale = Math.min(1.5, (9 / this.boardMgr.activeCols));
-        if (this.boardMgr.activeCols === 9) {
+        this.rawScale = Math.min(this.rawScale, Math.min(1.5, (9 / this.boardMgr.activeRows)));
+        if (this.boardMgr.activeCols === 9 || this.boardMgr.activeRows === 9) {
             this.rawScale = 1.05;
         }
         cc.log("BOARD UI RAW SCALE", this.rawScale, this.boardMgr.activeCols);
@@ -115,10 +116,18 @@ CoreGame.BoardUI = cc.Layer.extend({
     },
 
     shakeScreen: function (delta) {
+        // Store the true rest position only once (before any shake offset).
+        // Subsequent calls reuse it so overlapping shakes don't accumulate drift.
+        if (!this._shakeOrigin) {
+            this._shakeOrigin = this.getPosition();
+        }
         this.stopAllActions();
-        var originalPos = this.getPosition();
+        this.setPosition(this._shakeOrigin);
+
+        var origin = this._shakeOrigin;
         var timeMove = 0.03;
         var times = 2;
+        var self = this;
         var action = cc.sequence(
             cc.moveBy(timeMove, cc.p(delta, delta)),
             cc.moveBy(timeMove, cc.p(-delta * 2, -delta * 2)),
@@ -126,7 +135,10 @@ CoreGame.BoardUI = cc.Layer.extend({
             cc.moveBy(timeMove, cc.p(-delta, delta)),
             cc.moveBy(timeMove, cc.p(delta * 2, -delta * 2)),
             cc.moveBy(timeMove, cc.p(-delta, delta)),
-            cc.moveTo(timeMove, originalPos)
+            cc.moveTo(timeMove, origin),
+            cc.callFunc(function () {
+                self._shakeOrigin = null;
+            })
         ).repeat(times);
         this.runAction(action);
     },
@@ -161,11 +173,11 @@ CoreGame.BoardUI = cc.Layer.extend({
         if (!this.gridBorderMgr) return;
 
         // Cloud
-        this.gridBorderMgr.render(CoreGame.Config.ElementType.CLOUD, "cloud_piece_", BoardConst.CloudPieceInfo);
+        this.gridBorderMgr.render(CoreGame.Config.ElementType.CLOUD, "cloud_piece_", CoreGame.Config.CloudPieceInfo);
 
         // Grass (example of how easy it is to add now)
-        if (BoardConst.GrassPieceInfo) {
-            this.gridBorderMgr.render(CoreGame.Config.ElementType.GRASS, "grass_piece_", BoardConst.GrassPieceInfo);
+        if (CoreGame.Config.GrassPieceInfo) {
+            this.gridBorderMgr.render(CoreGame.Config.ElementType.GRASS, "grass_piece_", CoreGame.Config.GrassPieceInfo);
         }
     },
 
@@ -183,7 +195,7 @@ CoreGame.BoardUI = cc.Layer.extend({
      */
     renderBoardBorder: function () {
         //Render mapBorder
-        let resPath = "game/board/nen/" + (BoardConst.BG_COLOR === 'light' ? 'light_' : 'dark_');
+        let resPath = "game/board/nen/" + (CoreGame.Config.BG_COLOR === 'light' ? 'light_' : 'dark_');
         this.listBorder = [];
         cc.log("Render mapBorder Start");
         for (let row = 0; row <= this.boardMgr.rows; row++) {
@@ -194,7 +206,7 @@ CoreGame.BoardUI = cc.Layer.extend({
                 tmp += !this.boardMgr.getSlot(row, col - 1) ? "0" : "1";
                 tmp += !this.boardMgr.getSlot(row, col) ? "0" : "1";
 
-                let info = BoardConst.BorderInfoUI[tmp];
+                let info = CoreGame.Config.BorderInfoUI[tmp];
                 if (info) {
                     // cc.log("Render mapBorder", row, col, tmp, this.boardMgr.getSlot(row, col), JSON.stringify(info));
                     tmp = this.boardMgr.gridToPixel(row, col);
@@ -203,7 +215,7 @@ CoreGame.BoardUI = cc.Layer.extend({
                         spr.info = info[0];
                         spr.setRotation(info[i]);
                         spr.setPosition(tmp.x - CoreGame.Config.CELL_SIZE / 2, tmp.y - CoreGame.Config.CELL_SIZE / 2);
-                        this.addChild(spr, BoardConst.zOrder.SHAPE);
+                        this.addChild(spr, CoreGame.Config.zOrder.SHAPE);
                         this.listBorder.push(spr);
                     }
                 }

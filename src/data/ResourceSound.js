@@ -5,6 +5,15 @@
 //sound
 var resSound = {
 	// basic sound
+	match_3_0: [
+		"sound_music/basic/seed_3_normal_01.mp3",
+		"sound_music/basic/seed_3_normal_02.mp3",
+		"sound_music/basic/seed_3_normal_03.mp3",
+		"sound_music/basic/seed_3_normal_04.mp3",
+		"sound_music/basic/seed_3_normal_05.mp3",
+		"sound_music/basic/seed_3_normal_06.mp3",
+		"sound_music/basic/seed_3_normal_07.mp3"
+	],
 	match_3_1: "sound_music/basic/seed_3_01.mp3",
 	match_3_2: "sound_music/basic/seed_3_02.mp3",
 	match_3_3: "sound_music/basic/seed_3_03.mp3",

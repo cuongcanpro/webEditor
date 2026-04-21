@@ -1,0 +1,483 @@
+{
+  "ID": "c83cf6a9-a490-496f-98c6-e17c5adcd8e2",
+  "Version": "2.3.4",
+  "Name": "ItemBooster",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 492,
+        "Children": [
+          {
+            "FontSize": 14,
+            "ButtonText": "",
+            "TextColor": {
+              "R": 65,
+              "G": 65,
+              "B": 70
+            },
+            "DisabledFileData": {
+              "Type": "Normal",
+              "Path": "lobby/bg_booster.png",
+              "Plist": ""
+            },
+            "PressedFileData": {
+              "Type": "Normal",
+              "Path": "lobby/bg_booster.png",
+              "Plist": ""
+            },
+            "NormalFileData": {
+              "Type": "Normal",
+              "Path": "lobby/bg_booster.png",
+              "Plist": ""
+            },
+            "Scale9Enable": true,
+            "Scale9OriginX": 15,
+            "Scale9OriginY": 11,
+            "Scale9Width": 94,
+            "Scale9Height": 103,
+            "OutlineColor": {
+              "G": 0,
+              "B": 0
+            },
+            "ShadowColor": {
+              "R": 110,
+              "G": 110,
+              "B": 110
+            },
+            "ShadowOffsetX": 2.0,
+            "ShadowOffsetY": -2.0,
+            "TouchEnable": true,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -62.0,
+            "RightMargin": -62.0,
+            "TopMargin": -62.5,
+            "BottomMargin": -62.5,
+            "UserData": "-press_action",
+            "Tag": 140,
+            "Children": [
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "game/gui/tool/tool_0.png",
+                  "Plist": ""
+                },
+                "BlendFunc": {
+                  "Src": 1,
+                  "Dst": 771
+                },
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 62.0,
+                  "Y": 62.5
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5
+                },
+                "PreSize": {
+                  "X": 0.8871,
+                  "Y": 0.88
+                },
+                "LeftMargin": 7.0,
+                "RightMargin": 7.0,
+                "TopMargin": 7.5,
+                "BottomMargin": 7.5,
+                "Tag": 142,
+                "ActionTag": 1462246105,
+                "Size": {
+                  "X": 110.0,
+                  "Y": 110.0
+                },
+                "Name": "icon",
+                "ctype": "SpriteObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "lobby/slot_time.png",
+                  "Plist": ""
+                },
+                "BlendFunc": {
+                  "Src": 1,
+                  "Dst": 771
+                },
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 58.28,
+                  "Y": 13.0
+                },
+                "Scale": {
+                  "ScaleX": 0.9,
+                  "ScaleY": 0.9
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.47,
+                  "Y": 0.104
+                },
+                "PreSize": {
+                  "X": 1.1613,
+                  "Y": 0.32
+                },
+                "LeftMargin": -13.72,
+                "RightMargin": -6.28,
+                "TopMargin": 92.0,
+                "BottomMargin": -7.0,
+                "Tag": 29,
+                "Children": [
+                  {
+                    "IsCustomSize": true,
+                    "FontSize": 20,
+                    "LabelText": "58ph 47s",
+                    "FontResource": {
+                      "Type": "Normal",
+                      "Path": "font/BalooPaaji2-Bold.ttf",
+                      "Plist": ""
+                    },
+                    "HorizontalAlignmentType": "HT_Center",
+                    "VerticalAlignmentType": "VT_Center",
+                    "OutlineColor": {
+                      "G": 0,
+                      "B": 0
+                    },
+                    "ShadowColor": {
+                      "R": 110,
+                      "G": 110,
+                      "B": 110
+                    },
+                    "ShadowOffsetX": 2.0,
+                    "ShadowOffsetY": -2.0,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 57.6,
+                      "Y": 20.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {
+                      "R": 163,
+                      "G": 92,
+                      "B": 52
+                    },
+                    "IconVisible": false,
+                    "PositionPercentXEnabled": true,
+                    "PositionPercentYEnabled": true,
+                    "PrePosition": {
+                      "X": 0.4,
+                      "Y": 0.5
+                    },
+                    "PreSize": {
+                      "X": 0.8333,
+                      "Y": 0.625
+                    },
+                    "LeftMargin": -2.4,
+                    "RightMargin": 26.4,
+                    "TopMargin": 7.5,
+                    "BottomMargin": 7.5,
+                    "Tag": 30,
+                    "ActionTag": 814200128,
+                    "Size": {
+                      "X": 120.0,
+                      "Y": 25.0
+                    },
+                    "Name": "time",
+                    "ctype": "TextObjectData"
+                  }
+                ],
+                "ActionTag": 35299868,
+                "Size": {
+                  "X": 144.0,
+                  "Y": 40.0
+                },
+                "VisibleForFrame": false,
+                "Name": "slotTime",
+                "ctype": "SpriteObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "lobby/noti.png",
+                  "Plist": ""
+                },
+                "BlendFunc": {
+                  "Src": 1,
+                  "Dst": 771
+                },
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 111.6,
+                  "Y": 12.5
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.9,
+                  "Y": 0.1
+                },
+                "PreSize": {
+                  "X": 0.379,
+                  "Y": 0.376
+                },
+                "LeftMargin": 88.1,
+                "RightMargin": -11.1,
+                "TopMargin": 89.0,
+                "BottomMargin": -11.0,
+                "Tag": 144,
+                "Children": [
+                  {
+                    "IsCustomSize": true,
+                    "FontSize": 28,
+                    "LabelText": "99",
+                    "FontResource": {
+                      "Type": "Normal",
+                      "Path": "font/BalooPaaji2-Bold.ttf",
+                      "Plist": ""
+                    },
+                    "HorizontalAlignmentType": "HT_Center",
+                    "VerticalAlignmentType": "VT_Center",
+                    "OutlineColor": {
+                      "R": 162,
+                      "G": 66,
+                      "B": 100
+                    },
+                    "OutlineEnabled": true,
+                    "ShadowColor": {
+                      "R": 110,
+                      "G": 110,
+                      "B": 110
+                    },
+                    "ShadowOffsetX": 2.0,
+                    "ShadowOffsetY": -2.0,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 23.5,
+                      "Y": 23.5
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PositionPercentXEnabled": true,
+                    "PositionPercentYEnabled": true,
+                    "PrePosition": {
+                      "X": 0.5,
+                      "Y": 0.5
+                    },
+                    "PreSize": {
+                      "X": 0.7021,
+                      "Y": 0.7447
+                    },
+                    "LeftMargin": 7.0,
+                    "RightMargin": 7.0,
+                    "TopMargin": 6.0,
+                    "BottomMargin": 6.0,
+                    "Tag": 145,
+                    "ActionTag": 1925948128,
+                    "Size": {
+                      "X": 33.0,
+                      "Y": 35.0
+                    },
+                    "Name": "lbl",
+                    "ctype": "TextObjectData"
+                  },
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "lobby/infinity.png",
+                      "Plist": ""
+                    },
+                    "BlendFunc": {
+                      "Src": 770,
+                      "Dst": 771
+                    },
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 23.5,
+                      "Y": 24.44
+                    },
+                    "Scale": {
+                      "ScaleX": 0.8,
+                      "ScaleY": 0.8
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PositionPercentXEnabled": true,
+                    "PositionPercentYEnabled": true,
+                    "PrePosition": {
+                      "X": 0.5,
+                      "Y": 0.52
+                    },
+                    "PreSize": {
+                      "X": 0.8298,
+                      "Y": 0.4255
+                    },
+                    "LeftMargin": 4.0,
+                    "RightMargin": 4.0,
+                    "TopMargin": 12.56,
+                    "BottomMargin": 14.44,
+                    "Tag": 28,
+                    "ActionTag": 539195445,
+                    "Size": {
+                      "X": 39.0,
+                      "Y": 20.0
+                    },
+                    "VisibleForFrame": false,
+                    "Name": "infinity",
+                    "ctype": "SpriteObjectData"
+                  }
+                ],
+                "ActionTag": -458104742,
+                "Size": {
+                  "X": 47.0,
+                  "Y": 47.0
+                },
+                "Name": "amount",
+                "ctype": "SpriteObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "lobby/icon_check.png",
+                  "Plist": ""
+                },
+                "BlendFunc": {
+                  "Src": 1,
+                  "Dst": 771
+                },
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 111.6,
+                  "Y": 12.5
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PositionPercentYEnabled": true,
+                "PrePosition": {
+                  "X": 0.9,
+                  "Y": 0.1
+                },
+                "PreSize": {
+                  "X": 0.379,
+                  "Y": 0.376
+                },
+                "LeftMargin": 88.1,
+                "RightMargin": -11.1,
+                "TopMargin": 89.0,
+                "BottomMargin": -11.0,
+                "Tag": 143,
+                "ActionTag": -36444055,
+                "Size": {
+                  "X": 47.0,
+                  "Y": 47.0
+                },
+                "VisibleForFrame": false,
+                "Name": "check",
+                "ctype": "SpriteObjectData"
+              }
+            ],
+            "ActionTag": 403902132,
+            "Size": {
+              "X": 124.0,
+              "Y": 125.0
+            },
+            "Name": "booster",
+            "ctype": "ButtonObjectData"
+          }
+        ],
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "../../font/BalooPaaji2-Bold.ttf",
+        "../../lobby/bg_booster.png",
+        "../../lobby/icon_check.png",
+        "../../lobby/infinity.png",
+        "../../lobby/noti.png",
+        "../../lobby/slot_time.png",
+        "../gui/tool/tool_0.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Node"
+}

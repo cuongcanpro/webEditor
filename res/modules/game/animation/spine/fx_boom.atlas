@@ -1,0 +1,62 @@
+
+fx_boom.png
+size: 2048,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+aura (306)3
+  rotate: false
+  xy: 814, 74
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+flare101
+  rotate: false
+  xy: 1174, 116
+  size: 86, 86
+  orig: 86, 86
+  offset: 0, 0
+  index: -1
+flare102
+  rotate: false
+  xy: 1074, 104
+  size: 98, 98
+  orig: 98, 98
+  offset: 0, 0
+  index: -1
+glow136
+  rotate: false
+  xy: 944, 74
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+line1
+  rotate: true
+  xy: 610, 25
+  size: 177, 202
+  orig: 177, 202
+  offset: 0, 0
+  index: -1
+partical1_2
+  rotate: false
+  xy: 206, 2
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+partical2_2
+  rotate: false
+  xy: 408, 2
+  size: 200, 200
+  orig: 200, 200
+  offset: 0, 0
+  index: -1
+smoke1
+  rotate: false
+  xy: 2, 2
+  size: 202, 200
+  orig: 202, 200
+  offset: 0, 0
+  index: -1

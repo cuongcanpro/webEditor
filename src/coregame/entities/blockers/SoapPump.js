@@ -123,6 +123,6 @@ CoreGame.SoapPump.onTurnEnd = function (pumps, context) {
 };
 
 // Register
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.SOAP_PUMP) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.SOAP_PUMP) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.SOAP_PUMP, CoreGame.SoapPump);
 }

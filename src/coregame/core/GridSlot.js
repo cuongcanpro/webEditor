@@ -1,4 +1,4 @@
-﻿/**
+/**
  * GridSlot - Single cell on the game board
  * Part of Match-3 Core Game
  */
@@ -57,7 +57,7 @@ CoreGame.GridSlot = cc.Class.extend({
         var pixelPos = this.boardMgr.gridToPixel(this.row, this.col);
 
         // light_1.png background
-        this.bg = fr.createSprite(BoardConst.BG_COLOR === 'light' ? "light_1.png" : "dark_1.png");
+        this.bg = fr.createSprite(CoreGame.Config.BG_COLOR === 'light' ? "light_1.png" : "dark_1.png");
         // this.bg.setScale(1.2);
         this.bg.setPosition(pixelPos);
         root.addChild(this.bg, 0);
@@ -333,6 +333,15 @@ CoreGame.GridSlot = cc.Class.extend({
     hasBlocker: function () {
         for (var i = 0; i < this.listElement.length; i++) {
             if (this.listElement[i] instanceof CoreGame.Blocker) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    hasPowerUp: function () {
+        for (var i = 0; i < this.listElement.length; i++) {
+            if (this.listElement[i] instanceof CoreGame.PowerUP) {
                 return true;
             }
         }

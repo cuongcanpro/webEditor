@@ -4,7 +4,6 @@ let SceneBoard = BaseLayer.extend({
     },
 
     onEnterFinish: function () {
-        this.playMusic();
     },
 
     playMusic: function () {
@@ -12,21 +11,25 @@ let SceneBoard = BaseLayer.extend({
     },
 
     setLevel: function (level) {
-        if (userInfo.getLevel() === level) {
-            narrativeMgr.checkNarrative(SceneBoard.className, this);
-        }
-
-        let mapData = {};
-        let levelPath = "res/maps/level_" + (level) + ".json";
-        mapData = JSON.parse(jsb.fileUtils.getStringFromFile(levelPath));
-        mapData["levelId"] = mapData["levelId"] || level;
-
+        let mapData = levelMgr.getMapDataConfig(level);
         JSON.stringify("startPlayNewCore", JSON.stringify(mapData));
 
         CoreGame.BoardUI.instance = null;
         this.gameUI = new CoreGame.GameUI({ mapConfig: mapData}, false);
 
         this.addChild(this.gameUI);
+
+        if (userMgr.getData().getLevel() === level) {
+            if (!narrativeMgr.checkNarrative(SceneBoard.className, this)){
+                this.gameUI.efxStart();
+            }
+        } else {
+            this.gameUI.efxStart();
+        }
+
+        if (narrativeMgr.getCurrentAction() !== NarrativeManager.ACTIONS.SHOW_OFFLINE_VIDEO) {
+            this.playMusic();
+        }
     },
 
     specialStartEfx: function () {

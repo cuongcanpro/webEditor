@@ -11,8 +11,9 @@
 
     initSprite: function () {
         this._super();
-        this.mainSpr.setScale(CoreGame.RainbowUI.DEFAULT_SCALE);
-        this.whiteSpr.setScale(CoreGame.RainbowUI.DEFAULT_SCALE);
+        for (let anim of this.anims) {
+            anim.setScale(CoreGame.RainbowUI.DEFAULT_SCALE);
+        }
     },
 
     setMixAnim: function () {
@@ -44,7 +45,7 @@
         ));
 
         // Estimate total animation time: 0.3 (start) + (N * 0.1) (rays) + 0.5 (buffer)
-        return 0.8 + this.listTargetPos.length * 0.1;
+        return 0.8 + this.listTargetPos.length * CoreGame.RainbowUI.RAY_DELAY_TIME;
     },
 
     showEffectExplode: function () {
@@ -54,7 +55,7 @@
         // Self explosion visuals
         var spineExplode = gv.createSpineAnimation(resAni.rainbow_spine);
         spineExplode.setPosition(selfPos);
-        parent.addChild(spineExplode, BoardConst.zOrder.MATCH_4_EXPLODE);
+        parent.addChild(spineExplode, CoreGame.Config.zOrder.MATCH_4_EXPLODE);
         spineExplode.setAnimation(0, "run", false);
         gv.removeSpineAfterRun(spineExplode);
 
@@ -64,7 +65,7 @@
             if (efkManager) {
                 var emitter = gv.createEfk(efkManager, resAni.rainbow_efk);
                 emitter.setPosition3D(cc.math.vec3(selfPos.x, selfPos.y, 0));
-                parent.addChild(emitter, BoardConst.zOrder.MATCH_4_EXPLODE);
+                parent.addChild(emitter, CoreGame.Config.zOrder.MATCH_4_EXPLODE);
             }
         }
 
@@ -77,7 +78,7 @@
                 this.createRay(pos, index);
             }.bind(this, targetPos, i)));
 
-            listAction.push(cc.delayTime(0.1));
+            listAction.push(cc.delayTime(CoreGame.RainbowUI.RAY_DELAY_TIME));
         }
 
         // Final cleanup after shooting all rays + some buffer
@@ -98,7 +99,7 @@
         // Ray Spine
         var ray = gv.createSpineAnimation(resAni.rainbow_ray_spine);
         ray.setPosition(selfPos);
-        parent.addChild(ray, BoardConst.zOrder.MATCH_4_EXPLODE);
+        parent.addChild(ray, CoreGame.Config.zOrder.MATCH_4_EXPLODE);
 
         var dir = cc.p(selfPos.x - toPos.x, selfPos.y - toPos.y);
         var angle = Math.atan2(dir.x, dir.y) * (180 / Math.PI) - 180;
@@ -112,7 +113,7 @@
         ray.runAction(cc.sequence(
             cc.delayTime(0.1),
             cc.callFunc(function () {
-                fr.platformWrapper.hapticTouch(HAPTIC_TOUCH_TYPE.SOFT);
+                fr.Sound.playHaptic(HAPTIC_TOUCH_TYPE.SOFT);
                 this.showHitEffect(toPos, index);
             }.bind(this)),
             cc.delayTime(0.2),
@@ -122,21 +123,23 @@
 
     showHitEffect: function (pos, index) {
         var parent = this.getParent();
-        var boardUI = CoreGame.BoardUI.getInstance();
-        var efkManager = (boardUI && boardUI.efkManager) ? boardUI.efkManager : null;
+        // var boardUI = CoreGame.BoardUI.getInstance();
+        // var efkManager = (boardUI && boardUI.efkManager) ? boardUI.efkManager : null;
 
         // Hit Spine
         var hit = gv.createSpineAnimation(resAni.rainbow_hit_spine);
         hit.setPosition(pos);
-        parent.addChild(hit, BoardConst.zOrder.MATCH_4_EXPLODE);
+        hit.setScale(0.75);
+        parent.addChild(hit, CoreGame.Config.zOrder.MATCH_4_EXPLODE);
         hit.setAnimation(0, "run", true);
 
         // Hit Particle
-        if (efkManager) {
-            var emitterHit = gv.createEfk(efkManager, resAni.rainbow_hit_efk);
-            emitterHit.setPosition3D(cc.math.vec3(pos.x, pos.y, 0));
-            parent.addChild(emitterHit, BoardConst.zOrder.MATCH_4_EXPLODE);
-        }
+        // if (efkManager) {
+        //     var emitterHit = gv.createEfk(efkManager, resAni.rainbow_hit_efk);
+        //     emitterHit.setPosition3D(cc.math.vec3(pos.x, pos.y, 0));
+        //     parent.addChild(emitterHit, CoreGame.Config.zOrder.MATCH_4_EXPLODE);
+        // }
+
         if (this.onTargetHit) {
             this.onTargetHit(index);
         }
@@ -153,14 +156,14 @@
                 cc.callFunc(function () {
                     var endFx = gv.createSpineAnimation(resAni.rainbow_end_spine);
                     endFx.setPosition(this.getPosition());
-                    this.getParent().addChild(endFx, BoardConst.zOrder.MATCH_4_EXPLODE);
+                    this.getParent().addChild(endFx, CoreGame.Config.zOrder.MATCH_4_EXPLODE);
                     endFx.setAnimation(0, "run", false);
                     gv.removeSpineAfterRun(endFx);
 
                     if (efkManager) {
                         var emitterEnd = gv.createEfk(efkManager, resAni.rainbow_end_efk);
                         emitterEnd.setPosition3D(cc.math.vec3(this.x, this.y, 0));
-                        this.getParent().addChild(emitterEnd, BoardConst.zOrder.MATCH_4_EXPLODE);
+                        this.getParent().addChild(emitterEnd, CoreGame.Config.zOrder.MATCH_4_EXPLODE);
                     }
 
                     this.removeFromParent();
@@ -173,6 +176,7 @@
     }
 });
 CoreGame.RainbowUI.DEFAULT_SCALE = 0.5;
+CoreGame.RainbowUI.RAY_DELAY_TIME = 0.2;
 
 /**
  * RainbowPlusUI - UI for Rainbow+Rainbow combo.
@@ -185,13 +189,12 @@ CoreGame.RainbowPlusUI = CoreGame.RainbowUI.extend({
 
         this.mainSpr.setVisible(false);
 
-
         var boardUI = CoreGame.BoardUI.getInstance();
         var efkManager = (boardUI && boardUI.efkManager) ? boardUI.efkManager : null;
         if (efkManager && typeof gv.createEfk === "function") {
             var effParticle = gv.createEfk(efkManager, resAni.rainbowX2_explosion_efk);
             effParticle.setPosition3D(cc.math.vec3(this.x, this.y, 0));
-            this.getParent().addChild(effParticle, BoardConst.zOrder.EFF_MATCHING);
+            this.getParent().addChild(effParticle, CoreGame.Config.zOrder.EFF_MATCHING);
         }
 
         //Disco combine
@@ -203,12 +206,13 @@ CoreGame.RainbowPlusUI = CoreGame.RainbowUI.extend({
             cc.fadeTo(0.2, 200), cc.delayTime(1.8), cc.fadeOut(0.2), cc.removeSelf()
         ));
         this.getParent().addChild(this.rainbowX2MergeSpine, zOrder + 1);
-        this.rainbowX2MergeSpine.setAnimation(0, "active", false);
+        this.rainbowX2MergeSpine.setAnimation(0, "animation", false);
+        this.rainbowX2MergeSpine.setScale(0.55);
         gv.removeSpineAfterRun(this.rainbowX2MergeSpine);
 
-        this.rainbowX2MergeSpine.runAction(cc.rotateBy(
-            CoreGame.RainbowPlusUI.EXPLODE_TIME, 360 * 5
-        ).easing(cc.easeIn(5)));
+        // this.rainbowX2MergeSpine.runAction(cc.rotateBy(
+        //     CoreGame.RainbowPlusUI.EXPLODE_TIME, 360 * 5
+        // ).easing(cc.easeIn(5)));
 
         this.runAction(cc.sequence(
             cc.delayTime(CoreGame.RainbowPlusUI.EXPLODE_TIME),
@@ -221,7 +225,7 @@ CoreGame.RainbowPlusUI = CoreGame.RainbowUI.extend({
     },
 
     showEffectExplode: function () {
-        fr.platformWrapper.hapticTouch(HAPTIC_TOUCH_TYPE.HEAVY);
+        fr.Sound.playHaptic(HAPTIC_TOUCH_TYPE.HEAVY);
 
         var selfPos = this.getPosition();
         var parent = this.getParent();
@@ -229,7 +233,7 @@ CoreGame.RainbowPlusUI = CoreGame.RainbowUI.extend({
         // Center explosion visuals only — no rays or hit effects
         var spineExplode = gv.createSpineAnimation(resAni.rainbow_spine);
         spineExplode.setPosition(selfPos);
-        parent.addChild(spineExplode, BoardConst.zOrder.MATCH_4_EXPLODE);
+        parent.addChild(spineExplode, CoreGame.Config.zOrder.MATCH_4_EXPLODE);
         spineExplode.setAnimation(0, "run", false);
         gv.removeSpineAfterRun(spineExplode);
 
@@ -239,7 +243,7 @@ CoreGame.RainbowPlusUI = CoreGame.RainbowUI.extend({
             if (efkManager) {
                 var emitter = gv.createEfk(efkManager, resAni.rainbow_efk);
                 emitter.setPosition3D(cc.math.vec3(selfPos.x, selfPos.y, 0));
-                parent.addChild(emitter, BoardConst.zOrder.MATCH_4_EXPLODE);
+                parent.addChild(emitter, CoreGame.Config.zOrder.MATCH_4_EXPLODE);
             }
         }
 
@@ -253,4 +257,4 @@ CoreGame.RainbowPlusUI = CoreGame.RainbowUI.extend({
         ));
     }
 });
-CoreGame.RainbowPlusUI.EXPLODE_TIME = 2.3;
+CoreGame.RainbowPlusUI.EXPLODE_TIME = 2.0;

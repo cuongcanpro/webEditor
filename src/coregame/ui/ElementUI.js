@@ -53,7 +53,7 @@ CoreGame.ElementUI = cc.Node.extend({
      * Overwrite in subclasses to provide custom visuals.
      */
     initSprite: function () {
-        let path = "res/high/game/element/";
+        let path = "res/modules/game/element/";
         var fileName;
         if (CoreGame.ElementObject.map[this.type]) {
             fileName = this.type + ".png";
@@ -74,6 +74,7 @@ CoreGame.ElementUI = cc.Node.extend({
             this.shawdow = fr.createSprite(this.type + "_shadow.png");
             this.sprite.addChild(this.shawdow, -1);
             UIUtils.posToCenter(this.shawdow);
+            this.shawdow.y -= 5;
 
             //Glow
             this.glow = fr.createSprite(this.type + "_glow.png");
@@ -81,6 +82,8 @@ CoreGame.ElementUI = cc.Node.extend({
             this.glow.setVisible(false);
             this.sprite.addChild(this.glow);
             UIUtils.posToCenter(this.glow);
+
+            this.sprite.setScale(CoreGame.ElementUI.GEM_SCALE);
         }
     },
 
@@ -139,7 +142,7 @@ CoreGame.ElementUI = cc.Node.extend({
      */
     playExplodeEffect: function (hitpoints, row, col) {
         //Debris
-        fr.platformWrapper.hapticTouch(HAPTIC_TOUCH_TYPE.LIGHT);
+        fr.Sound.playHaptic(HAPTIC_TOUCH_TYPE.LIGHT);
 
         let efxTime = 0.2;
 
@@ -200,7 +203,7 @@ CoreGame.ElementUI = cc.Node.extend({
      */
     efxDebris: function () {
         if (this.type < debris_type_name.length) {
-            fr.platformWrapper.hapticTouch(HAPTIC_TOUCH_TYPE.LIGHT);
+            fr.Sound.playHaptic(HAPTIC_TOUCH_TYPE.LIGHT);
 
             //More debris?
             let numDebris = 2;
@@ -212,7 +215,7 @@ CoreGame.ElementUI = cc.Node.extend({
                     debris_type_name[this.type],
                     pos,
                     this.getParent(),
-                    BoardConst.zOrder.EFF_EXPLODE
+                    CoreGame.Config.zOrder.EFF_EXPLODE
                 );
                 nodeTLFX.setScale(1.5 + Math.random() * 0.5);
             }
@@ -474,4 +477,5 @@ CoreGame.ElementUI = cc.Node.extend({
     }
 });
 
+CoreGame.ElementUI.GEM_SCALE = 0.5;
 CoreGame.ElementUI.extendDefault = CoreGame.ElementUI.extend;

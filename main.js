@@ -104,11 +104,10 @@ cc.game.onStart = function () {
                 jsb.fileUtils.analysticFrom(Game_resource);
                 jsb.fileUtils.addSearchPath("/");
                 jsb.fileUtils.addSearchPath("res/");
-                jsb.fileUtils.addSearchPath("res/high/");
+                jsb.fileUtils.addSearchPath("res/modules/");
                 CoreGame.BlockerFactory.preloadAllConfigs();
-                cc.spriteFrameCache.addSpriteFrames("res/high/game/board/art.plist", "res/high/game/board/art.png");
+                cc.spriteFrameCache.addSpriteFrames("res/modules/game/board/art.plist", "res/modules/game/board/art.png");
                 cc.spriteFrameCache.addSpriteFrames("res/Particles/Coin/coin.plist");
-                cc.spriteFrameCache.addSpriteFrames("res/Image/game.plist");
                 //LocalizedString.preload(function (result) {
                 // Load content plist
                 // cc.director.runScene(makeScene(new LoginSceneWeb()));

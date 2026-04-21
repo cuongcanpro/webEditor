@@ -1,0 +1,648 @@
+{
+  "ID": "3366c06c-9189-4aae-a33d-9fc3c12a5196",
+  "Version": "2.3.4",
+  "Name": "GUIQuitGame",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 170,
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Normal",
+              "Path": "lobby/bg_level_info_normal.png",
+              "Plist": ""
+            },
+            "BlendFunc": {
+              "Src": 1,
+              "Dst": 771
+            },
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 360.0,
+              "Y": 640.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PositionPercentYEnabled": true,
+            "PrePosition": {
+              "X": 0.5,
+              "Y": 0.5
+            },
+            "PreSize": {
+              "X": 1.0417,
+              "Y": 0.6797
+            },
+            "LeftMargin": -15.0,
+            "RightMargin": -15.0,
+            "TopMargin": 205.0,
+            "BottomMargin": 205.0,
+            "Tag": 171,
+            "Children": [
+              {
+                "IsCustomSize": true,
+                "FontSize": 50,
+                "LabelText": "lang_gui_quitgame_title",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "HorizontalAlignmentType": "HT_Center",
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineSize": 3,
+                "OutlineColor": {
+                  "R": 46,
+                  "G": 40,
+                  "B": 147
+                },
+                "OutlineEnabled": true,
+                "ShadowColor": {
+                  "R": 173,
+                  "G": 78,
+                  "B": 49
+                },
+                "ShadowOffsetX": 1.0,
+                "ShadowOffsetY": -1.0,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 375.0,
+                  "Y": 806.5
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.927
+                },
+                "PreSize": {
+                  "X": 0.7467,
+                  "Y": 0.0793
+                },
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": 95.0,
+                "RightMargin": 95.0,
+                "TopMargin": 29.0,
+                "BottomMargin": 772.0,
+                "Tag": 173,
+                "ActionTag": 1918671642,
+                "Size": {
+                  "X": 560.0,
+                  "Y": 69.0
+                },
+                "Name": "title",
+                "ctype": "TextObjectData"
+              },
+              {
+                "FileData": {
+                  "Type": "Normal",
+                  "Path": "lobby/bg_target_normal.png",
+                  "Plist": ""
+                },
+                "BlendFunc": {
+                  "Src": 1,
+                  "Dst": 771
+                },
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 375.0,
+                  "Y": 597.5
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.6868
+                },
+                "PreSize": {
+                  "X": 0.7387,
+                  "Y": 0.1989
+                },
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": 98.0,
+                "RightMargin": 98.0,
+                "TopMargin": 186.0,
+                "BottomMargin": 511.0,
+                "Tag": 174,
+                "ActionTag": -485161811,
+                "Size": {
+                  "X": 554.0,
+                  "Y": 173.0
+                },
+                "Name": "target",
+                "ctype": "SpriteObjectData"
+              },
+              {
+                "IsCustomSize": true,
+                "FontSize": 34,
+                "LabelText": "lang_target",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-SemiBold.ttf",
+                  "Plist": ""
+                },
+                "HorizontalAlignmentType": "HT_Center",
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 375.0,
+                  "Y": 705.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {
+                  "R": 125,
+                  "G": 130,
+                  "B": 245
+                },
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.8103
+                },
+                "PreSize": {
+                  "X": 0.7333,
+                  "Y": 0.0494
+                },
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": 100.0,
+                "RightMargin": 100.0,
+                "TopMargin": 143.5,
+                "BottomMargin": 683.5,
+                "Tag": 175,
+                "ActionTag": -1206968710,
+                "Size": {
+                  "X": 550.0,
+                  "Y": 43.0
+                },
+                "Name": "lblTarget",
+                "ctype": "TextObjectData"
+              },
+              {
+                "IsCustomSize": true,
+                "FontSize": 35,
+                "LabelText": "lang_gui_quitgame_des",
+                "FontResource": {
+                  "Type": "Normal",
+                  "Path": "font/BalooPaaji2-Bold.ttf",
+                  "Plist": ""
+                },
+                "HorizontalAlignmentType": "HT_Center",
+                "VerticalAlignmentType": "VT_Center",
+                "OutlineColor": {
+                  "R": 158,
+                  "G": 82,
+                  "B": 51
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 375.0,
+                  "Y": 451.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {
+                  "R": 66,
+                  "G": 89,
+                  "B": 177
+                },
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.5184
+                },
+                "PreSize": {
+                  "X": 0.8,
+                  "Y": 0.177
+                },
+                "LeftMargin": 75.0,
+                "RightMargin": 75.0,
+                "TopMargin": 342.0,
+                "BottomMargin": 374.0,
+                "Tag": 176,
+                "ActionTag": -2046062353,
+                "Size": {
+                  "X": 600.0,
+                  "Y": 154.0
+                },
+                "Name": "info",
+                "ctype": "TextObjectData"
+              },
+              {
+                "FontSize": 14,
+                "ButtonText": "",
+                "TextColor": {
+                  "R": 65,
+                  "G": 65,
+                  "B": 70
+                },
+                "DisabledFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_green_short.png",
+                  "Plist": ""
+                },
+                "PressedFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_green_short.png",
+                  "Plist": ""
+                },
+                "NormalFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_green_short.png",
+                  "Plist": ""
+                },
+                "Scale9Enable": true,
+                "Scale9OriginX": 15,
+                "Scale9OriginY": 11,
+                "Scale9Width": 311,
+                "Scale9Height": 121,
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "TouchEnable": true,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 375.0,
+                  "Y": 302.8299
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.3481
+                },
+                "PreSize": {
+                  "X": 0.4547,
+                  "Y": 0.1644
+                },
+                "VerticalEdge": "BottomEdge",
+                "LeftMargin": 204.5,
+                "RightMargin": 204.5,
+                "TopMargin": 495.6701,
+                "BottomMargin": 231.3299,
+                "UserData": "-press_action",
+                "Tag": 177,
+                "Children": [
+                  {
+                    "FontSize": 47,
+                    "LabelText": "lang_btn_continue_play",
+                    "FontResource": {
+                      "Type": "Normal",
+                      "Path": "font/BalooPaaji2-Bold.ttf",
+                      "Plist": ""
+                    },
+                    "OutlineSize": 2,
+                    "OutlineColor": {
+                      "R": 28,
+                      "G": 121,
+                      "B": 103
+                    },
+                    "OutlineEnabled": true,
+                    "ShadowColor": {
+                      "R": 28,
+                      "G": 121,
+                      "B": 103
+                    },
+                    "ShadowOffsetX": 1.0,
+                    "ShadowOffsetY": -1.0,
+                    "ShadowEnabled": true,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 170.5,
+                      "Y": 77.22
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PositionPercentXEnabled": true,
+                    "PositionPercentYEnabled": true,
+                    "PrePosition": {
+                      "X": 0.5,
+                      "Y": 0.54
+                    },
+                    "PreSize": {
+                      "X": 1.5191,
+                      "Y": 0.4406
+                    },
+                    "LeftMargin": -88.5,
+                    "RightMargin": -88.5,
+                    "TopMargin": 34.28,
+                    "BottomMargin": 45.72,
+                    "Tag": 178,
+                    "ActionTag": 1865599961,
+                    "Size": {
+                      "X": 518.0,
+                      "Y": 63.0
+                    },
+                    "Name": "Text_22",
+                    "ctype": "TextObjectData"
+                  }
+                ],
+                "ActionTag": 1969626203,
+                "Size": {
+                  "X": 341.0,
+                  "Y": 143.0
+                },
+                "Name": "btnContinue",
+                "ctype": "ButtonObjectData"
+              },
+              {
+                "FontSize": 14,
+                "ButtonText": "",
+                "TextColor": {
+                  "R": 65,
+                  "G": 65,
+                  "B": 70
+                },
+                "DisabledFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_orange.png",
+                  "Plist": ""
+                },
+                "PressedFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_orange.png",
+                  "Plist": ""
+                },
+                "NormalFileData": {
+                  "Type": "Normal",
+                  "Path": "button/btn_orange.png",
+                  "Plist": ""
+                },
+                "Scale9Enable": true,
+                "Scale9OriginX": 15,
+                "Scale9OriginY": 11,
+                "Scale9Width": 297,
+                "Scale9Height": 122,
+                "OutlineColor": {
+                  "G": 0,
+                  "B": 0
+                },
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
+                "TouchEnable": true,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 375.0,
+                  "Y": 155.8301
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PositionPercentXEnabled": true,
+                "PrePosition": {
+                  "X": 0.5,
+                  "Y": 0.1791
+                },
+                "PreSize": {
+                  "X": 0.436,
+                  "Y": 0.1655
+                },
+                "VerticalEdge": "BottomEdge",
+                "LeftMargin": 211.5,
+                "RightMargin": 211.5,
+                "TopMargin": 642.1699,
+                "BottomMargin": 83.8301,
+                "UserData": "-press_action",
+                "Tag": 179,
+                "Children": [
+                  {
+                    "FontSize": 47,
+                    "LabelText": "lang_btn_quit_game",
+                    "FontResource": {
+                      "Type": "Normal",
+                      "Path": "font/BalooPaaji2-Bold.ttf",
+                      "Plist": ""
+                    },
+                    "OutlineSize": 2,
+                    "OutlineColor": {
+                      "R": 205,
+                      "G": 68,
+                      "B": 35
+                    },
+                    "OutlineEnabled": true,
+                    "ShadowColor": {
+                      "R": 205,
+                      "G": 68,
+                      "B": 35
+                    },
+                    "ShadowOffsetX": 1.0,
+                    "ShadowOffsetY": -1.0,
+                    "ShadowEnabled": true,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 163.5,
+                      "Y": 76.32
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PositionPercentXEnabled": true,
+                    "PositionPercentYEnabled": true,
+                    "PrePosition": {
+                      "X": 0.5,
+                      "Y": 0.53
+                    },
+                    "PreSize": {
+                      "X": 1.3486,
+                      "Y": 0.4375
+                    },
+                    "LeftMargin": -57.0,
+                    "RightMargin": -57.0,
+                    "TopMargin": 36.18,
+                    "BottomMargin": 44.82,
+                    "Tag": 180,
+                    "ActionTag": 1322393526,
+                    "Size": {
+                      "X": 441.0,
+                      "Y": 63.0
+                    },
+                    "Name": "Text_23",
+                    "ctype": "TextObjectData"
+                  },
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "common/lose_life.png",
+                      "Plist": ""
+                    },
+                    "BlendFunc": {
+                      "Src": 1,
+                      "Dst": 771
+                    },
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 20.0,
+                      "Y": 115.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "RotationSkewX": -15.6596,
+                    "RotationSkewY": -15.66,
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PrePosition": {
+                      "X": 0.0612,
+                      "Y": 0.7986
+                    },
+                    "PreSize": {
+                      "X": 0.1713,
+                      "Y": 0.3681
+                    },
+                    "LeftMargin": -8.0,
+                    "RightMargin": 279.0,
+                    "TopMargin": 2.5,
+                    "BottomMargin": 88.5,
+                    "Tag": 181,
+                    "ActionTag": -537239745,
+                    "Size": {
+                      "X": 56.0,
+                      "Y": 53.0
+                    },
+                    "Name": "Sprite_12",
+                    "ctype": "SpriteObjectData"
+                  }
+                ],
+                "ActionTag": 639360059,
+                "Size": {
+                  "X": 327.0,
+                  "Y": 144.0
+                },
+                "Name": "btnQuitGame",
+                "ctype": "ButtonObjectData"
+              }
+            ],
+            "ActionTag": 1485092126,
+            "Size": {
+              "X": 750.0,
+              "Y": 870.0
+            },
+            "Name": "bg",
+            "ctype": "SpriteObjectData"
+          }
+        ],
+        "Size": {
+          "X": 720.0,
+          "Y": 1280.0
+        },
+        "Name": "Layer",
+        "ctype": "LayerObjectData"
+      },
+      "UsedResources": [
+        "../../button/btn_green_short.png",
+        "../../button/btn_orange.png",
+        "../../common/lose_life.png",
+        "../../font/BalooPaaji2-Bold.ttf",
+        "../../font/BalooPaaji2-SemiBold.ttf",
+        "../../lobby/bg_level_info_normal.png",
+        "../../lobby/bg_target_normal.png"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Layer"
+}

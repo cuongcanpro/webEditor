@@ -27,7 +27,7 @@ let GameBoardEndGame = BaseLayer.extend({
         this._super();
         this.targetNode = [];
 
-        this.initWithJsonFile(res.ZCSD_GUI_END_GAME);
+        this.initWithJsonFile(GameBoardEndGame.json);
 
         this.winStreakLevelBeforeLose = 0;
         this.blockButton = false;
@@ -110,20 +110,20 @@ let GameBoardEndGame = BaseLayer.extend({
     },
 
     addListenerUpdateResource: function () {
-        var listenerUpdateResource = cc.EventListenerCustom.create(
-            GameEvent.UPDATE_RESOURCE,
-            function (event) {
-                var resourceId = event.getUserData().resourceId;
-                var oldVal = event.getUserData().oldVal;
-                var newVal = event.getUserData().newVal;
-                if (resourceId == ResourceType.GOLD) {
-                    this.gold.getChildByName('label').setString(newVal.formatAsMoney());
-                } else if (resourceId == ResourceType.G) {
-                    this.g.getChildByName('label').setString(newVal.formatAsMoney());
-                }
-            }.bind(this)
-        );
-        cc.eventManager.addEventListenerWithSceneGraphPriority(listenerUpdateResource, this);
+        // var listenerUpdateResource = cc.EventListenerCustom.create(
+        //     GameEvent.UPDATE_RESOURCE,
+        //     function (event) {
+        //         var resourceId = event.getUserData().resourceId;
+        //         var oldVal = event.getUserData().oldVal;
+        //         var newVal = event.getUserData().newVal;
+        //         if (resourceId == ResourceType.GOLD) {
+        //             this.gold.getChildByName('label').setString(newVal.formatAsMoney());
+        //         } else if (resourceId == ResourceType.G) {
+        //             this.g.getChildByName('label').setString(newVal.formatAsMoney());
+        //         }
+        //     }.bind(this)
+        // );
+        // cc.eventManager.addEventListenerWithSceneGraphPriority(listenerUpdateResource, this);
     },
 
     onClickClose: function () {
@@ -147,7 +147,7 @@ let GameBoardEndGame = BaseLayer.extend({
         this.runAction(cc.sequence(
             cc.delayTime(0.3),
             cc.callFunc(function () {
-                userInfo.isJustWin = true;
+                lobbyMgr.setWin(this.gameUI.boardUI.boardMgr.isReplayWin);
                 sceneMgr.openScene(SceneLobby.className);
 
                 // let mapReward = {
@@ -167,7 +167,7 @@ let GameBoardEndGame = BaseLayer.extend({
         // check last heart realtime when user click close
         if (this.popupList.length == 0 && !this.isCheckedLastHeart) {
             this.isCheckedLastHeart = true;
-            if (userInfo.getHeartWithUpdate() == 1 && !FreeFunction.getInstance().isInFreeResourceDuration(ResourceType.HEART)) {
+            if (userMgr.getHeartWithUpdate() == 1 && !FreeFunction.getInstance().isInFreeResourceDuration(ResourceType.HEART)) {
                 this.popupList.push(NodePopupGUIEndGame.POPUP_TYPE.OUT_OF_HEART);
             }
         }
@@ -175,7 +175,7 @@ let GameBoardEndGame = BaseLayer.extend({
         if (this.popupList.length == 0) {
             this.bg.getChildByName('lblLose').setVisible(true);
             this.hide();
-            let loseStreak = userInfo.getNumLose(this.gameUI.mapPlay);
+            let loseStreak = userMgr.getData().getNumLose(this.gameUI.mapPlay);
             let guiSuggest = this.gameUI.getGUI(gv.GUI_ID.SUGGEST);
             let usingBooster = Utility.deepCopyObject(this.gameUI.boosters);
             for (let i in usingBooster)
@@ -187,7 +187,7 @@ let GameBoardEndGame = BaseLayer.extend({
                         this.processLoseGame();
                     }.bind(this);
                     guiSuggest.confirmCallback = function () {
-                        boosterType = ResourcesUtils.convertResTypeToBoosterType(this.suggestedBoosterType);
+                        boosterType = UIUtils.convertResTypeToBoosterType(this.suggestedBoosterType);
                         if (this.gameUI.boosters.indexOf(boosterType) == -1) {
                             this.gameUI.boosters.push(boosterType);
                         }
@@ -335,15 +335,15 @@ let GameBoardEndGame = BaseLayer.extend({
         // this.show(delayTime);
 
         // mark as win
-        if (this.isWin) {
-            var listPass = JSON.parse(fr.UserData.getStringFromKey(KeyStorage.KEY_LIST_MAP_PASS, "{}"));
-            cc.log("listPass " + JSON.stringify(listPass));
-            if (JSON.stringify(listPass).length == 0) this.btnBack.setTitleText("get fail");
-
-            listPass[this.gameUI.levelId] = true;
-            cc.log("listPass " + JSON.stringify(listPass));
-            fr.UserData.setStringFromKey(KeyStorage.KEY_LIST_MAP_PASS, JSON.stringify(listPass));
-        }
+        // if (this.isWin) {
+        //     var listPass = JSON.parse(fr.UserData.getStringFromKey(KeyStorage.KEY_LIST_MAP_PASS, "{}"));
+        //     cc.log("listPass " + JSON.stringify(listPass));
+        //     if (JSON.stringify(listPass).length == 0) this.btnBack.setTitleText("get fail");
+        //
+        //     listPass[this.gameUI.levelId] = true;
+        //     cc.log("listPass " + JSON.stringify(listPass));
+        //     fr.UserData.setStringFromKey(KeyStorage.KEY_LIST_MAP_PASS, JSON.stringify(listPass));
+        // }
         m3.trackEndGame(this.gameUI.levelId, result);
     },
 
@@ -368,7 +368,7 @@ let GameBoardEndGame = BaseLayer.extend({
 
         var reward = this.gameUI.levelConfig.mapConfig.reward;
         reward = 10;
-        var rootPos = {x: this.bg_target.width / 2, y: this.bg_target.height / 2 - 5}, padding = 120;
+        var rootPos = { x: this.bg_target.width / 2, y: this.bg_target.height / 2 - 5 }, padding = 120;
         var listNode = [];
         var coin = this.createTarget("coin", reward);
         this.bg_target.addChild(coin);
@@ -406,58 +406,11 @@ let GameBoardEndGame = BaseLayer.extend({
     },
 
     onEarnCoin: function (goldReward) {
-        let actionType;
-        if (this.gameUI.isBossRun) {
-            actionType = ActionType.BOSS_RUN_END_GAME_REWARD;
-        } else {
-            actionType = ActionType.END_GAME_REWARD;
-        }
-
-        let dataArr = [
-            this.gameUI.levelConfig.mapConfig.levelId,
-            ResourceType.GOLD,
-            userInfo.gold,
-            Number(userInfo.gold) + goldReward,
-            goldReward
-        ];
-        cc.log("END GAME ACTION", JSON.stringify(dataArr));
-        eventProcessor.addNewAction(actionType, dataArr);
+        userMgr.updateGold(goldReward);
     },
 
     showWinStreak: function () {
-        this.bg.getChildByName("btnPlay").setVisible(false);
-        if (userInfo.isNeedShowIncreaseWinStreak()) {
-            this.gameUI.guiCurrentStreak.performIncrease = true;
-            userInfo.setIsNeedShowIncreaseWinStreak(false);
-        }
-        this.gameUI.getGUI(gv.GUI_ID.MAC_FACTORY_INFO).closeCallback = function () {
-            this.gameUI.guiCurrentStreak.show();
-            this.show();
-        }.bind(this);
-        this.gameUI.guiCurrentStreak.introduceMacFactoryCallback = function () {
-            this.gameUI.introduceWinStreak();
-            this.hide();
-        }.bind(this);
-        this.guiCurrentStreakShowed = true;
-        this.runAction(cc.sequence(
-            cc.delayTime(0.5),
-            cc.callFunc(function () {
-                this.gameUI.guiCurrentStreak.show();
-            }.bind(this)),
-            cc.delayTime(1.0),
-            cc.callFunc(function () {
-                var btnPlay = this.bg.getChildByName("btnPlay");
-                btnPlay.setVisible(true);
-                btnPlay.setOpacity(0);
-                btnPlay.runAction(cc.fadeIn(0.2));
-                btnPlay.runAction(cc.sequence(
-                    cc.scaleTo(0.2, 1.1, 1.1),
-                    cc.scaleTo(0.1, 0.9, 0.9),
-                    cc.scaleTo(0.1, 1.0, 1.0),
-                    cc.delayTime(2.0)
-                ).repeatForever())
-            }.bind(this))
-        ))
+
     },
 
     showTarget: function (targets) {
@@ -496,7 +449,7 @@ let GameBoardEndGame = BaseLayer.extend({
 
         this.lblTargetLose.setString(fr.Localization.text('lang_target'));
         let nodeBgTarget = this.bg_target_lose;
-        var rootPos = {x: nodeBgTarget.width / 2, y: nodeBgTarget.height / 2 - 5}, padding = 100;
+        var rootPos = { x: nodeBgTarget.width / 2, y: nodeBgTarget.height / 2 - 5 }, padding = 100;
         var listNode = [];
         for (var target of targets) {
             let type = target["id"];
@@ -517,9 +470,9 @@ let GameBoardEndGame = BaseLayer.extend({
             //         listNode.push(node);
             //     }
             // } else {
-                node = this.createTarget(type, nodeInfo);
-                nodeBgTarget.addChild(node, GameBoardEndGame.ELEMENT_ZORDER.TARGET);
-                listNode.push(node);
+            node = this.createTarget(type, nodeInfo);
+            nodeBgTarget.addChild(node, GameBoardEndGame.ELEMENT_ZORDER.TARGET);
+            listNode.push(node);
             // }
         }
         padding += (4 - listNode.length) * 10;
@@ -539,8 +492,8 @@ let GameBoardEndGame = BaseLayer.extend({
     },
 
     getMovePrice: function () {
-        var price = gv.itemPriceCfg.getMovePrice(Math.min(this.gameUI.boughtMoveTurn, 4));
-        price = {
+        // var price = gv.itemPriceCfg.getMovePrice(Math.min(this.gameUI.boughtMoveTurn, 4));
+        let price = {
             gold: 10
         }
         return price;
@@ -549,9 +502,9 @@ let GameBoardEndGame = BaseLayer.extend({
     showBuyMove: function () {
         this.onBuyingMove = false;
         // User Gold
-        let userGold = userInfo.gold;
+        let userGold = userMgr.getData().gold;
         this.gold.getChildByName('label').setString(userGold.formatAsMoney());
-        this.g.getChildByName('label').setString(userInfo.G.formatAsMoney());
+        this.g.getChildByName('label').setString(userMgr.getData().G.formatAsMoney());
 
         // Price
         var price = this.getMovePrice();
@@ -613,7 +566,7 @@ let GameBoardEndGame = BaseLayer.extend({
 
         var node = new cc.Node();
 
-        var spr = new ccui.ImageView("res/high/game/element/icon/" + type + ".png");
+        var spr = new ccui.ImageView("res/modules/game/element/icon/" + type + ".png");
         spr.setPosition(0, 20);
         node.addChild(spr);
         node.spr = spr;
@@ -625,16 +578,16 @@ let GameBoardEndGame = BaseLayer.extend({
             node.lbl.setPosition(0, -33);
             node.addChild(node.lbl);
 
-            if (ElementUtils.isBossElement(type) && lbl.length > 0) {
-                // add heart icon
-                var heart = new ccui.ImageView("res/high/game/gui/end_game/heart.png");
-                let lastLetter = node.lbl.label.getVirtualRenderer().getLetter(lbl.length - 1);
-                heart.setPosition(node.lbl.getPositionX() + lastLetter.getPositionX() / 2 + 10, node.lbl.getPositionY());
-                heart.setScale(0.7);
-                node.heart = heart;
-                node.addChild(heart);
-                node.lbl.setPositionX(-12);
-            }
+            // if (ElementUtils.isBossElement(type) && lbl.length > 0) {
+            //     // add heart icon
+            //     var heart = new ccui.ImageView("res/modules/game/gui/end_game/heart.png");
+            //     let lastLetter = node.lbl.label.getVirtualRenderer().getLetter(lbl.length - 1);
+            //     heart.setPosition(node.lbl.getPositionX() + lastLetter.getPositionX() / 2 + 10, node.lbl.getPositionY());
+            //     heart.setScale(0.7);
+            //     node.heart = heart;
+            //     node.addChild(heart);
+            //     node.lbl.setPositionX(-12);
+            // }
         } else {
             node.lbl = new ccui.ImageView(check_icon);
             node.lbl.setScale(0.6);
@@ -655,26 +608,26 @@ let GameBoardEndGame = BaseLayer.extend({
         if (this.checkPriceBuyMove(this.gameUI.boughtMoveTurn)) {
             this.onBuyingMove = true;
             let data = [this.gameUI.boughtMoveTurn, costType, config['gold'] || config['g'], this.gameUI.getLevel(), this.gameUI.isBossRun];
-            eventProcessor.addNewAction(ActionType.BUY_MOVE, data);
+            userMgr.processBuyMove(data);
         } else {
             // if (gv.alert && gv.alert.showNotEnoughGoldG) {
             //     gv.alert.showNotEnoughGoldG(ResourceType.GOLD, null);
             // } else {
-                LogLayer.show("Not enough gold!");
+            LogLayer.show("Not enough gold!");
             // }
         }
     },
 
     checkPriceBuyMove: function (turn) {
         var price = this.getMovePrice()['gold'];
-        cc.log("checkPriceBuyMove", ResourceType.GOLD, price, userInfo.getResByType(ResourceType.GOLD));
-        return price <= userInfo.getResByType(ResourceType.GOLD);
+        cc.log("checkPriceBuyMove", ResourceType.GOLD, price, userMgr.getResByType(ResourceType.GOLD));
+        return price <= userMgr.getResByType(ResourceType.GOLD);
     },
 
     onEventLose: function () {
         cc.log("onEventLose");
 
-        this.gameUI.addActionEndGameLose(ActionType.LOG_LOSE_SUBTRACT_HEART);
+        // this.gameUI.addActionEndGameLose(ActionType.LOG_LOSE_SUBTRACT_HEART);
     },
 
     clearTarget: function () {
@@ -686,53 +639,13 @@ let GameBoardEndGame = BaseLayer.extend({
     },
 
     addMetricLoseTarget: function () {
-        let target = this.gameUI.levelCfg["listTarget"];
-        // basic info
-        let dataArr = [
-            ActionType.LOG_LOSE_TARGET,
-            this.gameUI.getLevel(),
-            this.gameUI.levelCfg.version,
-            this.gameUI.getLevelWithVer(),
-            userInfo.getNumPlay(this.gameUI.mapPlay),
-            fr.platformWrapper.getVersionCode(),
-            userInfo.getWinStreakLevel(),
-            FreeFunction.getInstance().getResourceFreeTimeRemainInSec(ResourceType.HEART)
-        ];
 
-        // collect target data
-        let numTarget = 0;
-        let listRequire = [];
-        let listNotEnough = [];
-        for (let type in target) {
-            if (ElementUtils.isProgressTypeElement(type)) {
-                let listElement = this.gameUI.mainBoard.elementFactory.elementByType[type];
-                for (let i = 0; i < listElement.length; i++) {
-                    let progress = this.gameUI.mainBoard.elementFactory.elementByType[type][i].getProgress();
-                    let cur = progress.split("/")[0], need = progress.split("/")[1];
-                    listRequire.push(need);
-                    listNotEnough.push((Number(need) - Number(cur)).toString());
-                    numTarget++;
-                }
-            } else {
-                let cur = this.gameUI.mainBoard.listCurTarget[type], need = target[type];
-                listRequire.push(need);
-                listNotEnough.push((Number(need) - Number(cur)).toString());
-                numTarget++;
-            }
-        }
-        // form data, send to sv
-        dataArr.push(numTarget);
-        for (let i = 0; i < listRequire.length; i++) {
-            dataArr.push(listRequire[i]);
-            dataArr.push(listNotEnough[i]);
-        }
-        gv.clientNetwork.connector.sendMetricLevel(dataArr);
     },
 
     isEnableWinStreak: function () {
         return false;
         if (this.gameUI.isBossRun) return false;
-        return Cheat.getInstance().enableWinStreak && userInfo.getLevel() >= Cheat.getInstance().levelWinStreak;
+        return Cheat.getInstance().enableWinStreak && userMgr.getData().getLevel() >= Cheat.getInstance().levelWinStreak;
     },
 
     showReaction: function (isShow) {
@@ -748,8 +661,15 @@ let GameBoardEndGame = BaseLayer.extend({
     }
 });
 GameBoardEndGame.className = "GameBoardEndGame";
-GameBoardEndGame.ELEMENT_ZORDER = {
-    TARGET: 9,
-    POPUP: 10,
-    CLOSE_BUTTON: 11
-};
+GameBoardEndGame.json = "game/csd/GUIEndGame.json",
+    GameBoardEndGame.ELEMENT_ZORDER = {
+        TARGET: 9,
+        POPUP: 10,
+        CLOSE_BUTTON: 11
+    };
+
+const BoardResult = {
+    NONE: 0,
+    WIN: 1,
+    LOSE: 2
+}

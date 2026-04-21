@@ -39,6 +39,6 @@ CoreGame.Chain = CoreGame.Blocker.extend({
 });
 
 // Register Chain
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.CHAIN) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.CHAIN) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.CHAIN, CoreGame.Chain);
 }

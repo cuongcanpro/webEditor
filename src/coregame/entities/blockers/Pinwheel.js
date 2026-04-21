@@ -41,6 +41,6 @@ CoreGame.Pinwheel = CoreGame.Blocker.extend({
 });
 
 // Register
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.PINWHEEL) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.PINWHEEL) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.PINWHEEL, CoreGame.Pinwheel);
 }

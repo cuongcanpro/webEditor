@@ -25,10 +25,11 @@ CoreGame.Config = {
     CONVERGE_DURATION: 0.2,
     DROP_DELTA_DELAY: 0,
     DROP_DELTA_DELAY_COL: 0,
-    DROP_DELAY_POWER_UP: 0.25,
+    DROP_DELAY_POWER_UP: 0.1,
 
     // Match requirements
-    MIN_MATCH: 3
+    MIN_MATCH: 3,
+    BG_COLOR: "light"
 };
 
 /**
@@ -147,4 +148,156 @@ CoreGame.Config.ElementType = {
     BOSS_BUNNY: 15000,
     BOSS_BUNNY_ELITE: 16000,
     BOSS_ELITE: 17000
+};
+
+CoreGame.Config.BOSS_LIST = [
+    CoreGame.Config.ElementType.BOSS,
+    CoreGame.Config.ElementType.BOSS_ELITE
+];
+
+CoreGame.Config.DIFFICULTY = {
+    'easy': 0,
+    'medium': 1,
+    'hard': 2
+};
+
+CoreGame.Config.GrassPieceInfo = {
+    "0001": [3],
+    "0010": [2],
+    "0100": [4],
+    "1000": [1],
+    "0110": ['1_3', '3_1'],
+    "1001": ['2_4', '4_2'],
+    "0111": ['3_1'],
+    "1011": ['2_4'],
+    "1110": ['1_3'],
+    "1101": ['4_2'],
+    "1010": ['1_2'],
+    "1100": ['4_1'],
+    "0101": ['3_4'],
+    "0011": ['2_3']
+};
+CoreGame.Config.CloudPieceInfo = {
+    "0001": [3],
+    "0010": [2],
+    "0100": [4],
+    "1000": [1],
+    "0110": ['1_3', '3_1'],
+    "1001": ['2_4', '4_2'],
+    "0111": ['3_1', '1_2_3_4'],
+    "1011": ['2_4', '1_2_3_4'],
+    "1110": ['1_3', '1_2_3_4'],
+    "1101": ['4_2', '1_2_3_4'],
+    "1010": ['1_2'],
+    "1100": ['4_1'],
+    "0101": ['3_4'],
+    "0011": ['2_3'],
+    "1111": ['1_2_3_4']
+};
+
+CoreGame.Config.BorderInfoUI = {
+    "0001": [2, 270],// img, rotation
+    "0010": [2, 180],
+    "0100": [2, 0],
+    "1000": [2, 90],
+    "0110": [3, 0, 180],
+    "1001": [3, 90, 270],
+    "0111": [3, 270],
+    "1011": [3, 180],
+    "1110": [3, 90],
+    "1101": [3, 0],
+    "1010": [4, 0],
+    "1100": [4, 270],
+    "0101": [4, 180],
+    "0011": [4, 90]
+};
+
+CoreGame.Config.zOrder = {
+    SHAPE: 0,
+    SLOT: 2,
+    SOURCE: 4,
+    DONUT_PORT: 6,
+    GRASS: 5,
+    SELECT_BOX: 6,
+    GEM: 7,
+    GEM_SWAP: 9,
+    GEM_SHUFFLE: 100,
+
+    GREEN: 7,
+    BLUE: 7,
+    RED: 7,
+    YELLOW: 7,
+    PINK: 7,
+    CYAN: 7,
+    GEM_RANDOM: 7,
+
+    MATCH_3: 17,
+    MATCH_4_H: 17,
+    MATCH_4_V: 7,
+    MATCH_4_EXPLODE: 1100,
+    MATCH_SQUARE: 17,
+    PUS_FLY: 1100,
+    MATCH_5: 17,
+    MATCH_T: 17,
+    MATCH_L: 17,
+    PU4_PU4: 17,
+    PU4_PU5TL: 17,
+    PU5TL_PU5TL: 17,
+    PUS_PU: 17,
+    PUS_PUS: 17,
+    PU5_PU: 17,
+    PU5_PU5: 17,
+    POWER_UP: 17,
+
+    BOX: 9,
+    COOKIE: 9,
+    CLOUD: 8,
+    CHAIN: 11,
+    DONUT: 7,
+    FABERGE_EGG: 7,
+    CHERRY: 7,
+    BOSS: 40,
+    BOSS_ELITE: 40,
+    YETI: 40,
+    BOSS_FIRE: 40,
+    BOSS_RAT_ONE_EYED: 40,
+    BOSS_RAT_CANDY: 40,
+    BOSS_BUNNY: 40,
+    BOSS_BUNNY_ELITE: 40,
+    PUMP: 11,
+    BALLOON: 3,
+    BOUNTY: 10,
+    WINDUP_CAR: 13,
+    CHEST: 9,
+    CHEST_KEY: 7,
+    TRAFFIC_LIGHT: 9,
+    PINWHEEL: 9,
+    CLOUD_BOMB: 7,
+    HOOK: 31,
+    RAT: 32,
+    PROTECT_BALLOON: 11,
+    MILK_CABINET: 11,
+    BANANA_BUNCH: 11,
+    VALI: 9,
+    SCALLOP: 9,
+    SAFE: 30,
+    SOAP_PUMP: 9,
+    GOLD_BONUS:7,
+    GOLDEN_PIG: 9,
+    COLLECT_BALLOON: 12,
+    BALLOON_ROPE: 11,
+    BUSH: 9,
+    SWITCH: 5,
+    SWITCH_FOG: 11,
+    SWITCH_FOG_MGR: 11,
+    SECRET_PEARL: 11,
+    KING_RAT: 12,
+
+    EFF_MATCHING: 50,
+    EFF_EXPLORE: 50,
+    EFF_EXPLODE: 50,
+    COLLAPSE: 49,
+    OBJECTIVE: 30,
+
+    FOG_HIGHLIGHT: 99,
 };

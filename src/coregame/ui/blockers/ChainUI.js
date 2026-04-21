@@ -76,7 +76,7 @@ CoreGame.ChainUI = CoreGame.ElementUI.extend({
                 "vines",
                 this.getParent().convertToWorldSpace(this.getPosition()),
                 this.getParent(),
-                BoardConst.zOrder.EFF_MATCHING
+                CoreGame.Config.zOrder.EFF_MATCHING
             );
         }
 

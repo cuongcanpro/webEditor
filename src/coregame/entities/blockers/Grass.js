@@ -40,6 +40,6 @@ CoreGame.Grass = CoreGame.Blocker.extend({
 });
 
 // Register Grass
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.GRASS) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.GRASS) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.GRASS, CoreGame.Grass);
 }

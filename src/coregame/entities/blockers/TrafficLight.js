@@ -31,6 +31,6 @@ CoreGame.TrafficLight = CoreGame.QueueBlocker.extend({
 });
 
 // Register
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.TRAFFIC_LIGHT) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.TRAFFIC_LIGHT) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.TRAFFIC_LIGHT, CoreGame.TrafficLight);
 }

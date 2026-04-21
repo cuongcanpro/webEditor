@@ -545,8 +545,22 @@ CoreGame.BoardMgr = cc.Class.extend({
             // Handle element match
         }, this);
 
-        CoreGame.EventMgr.on('blockerDestroyed', function (blocker) {
+        CoreGame.EventMgr.on(CoreGame.ElementObject.EVENT.REMOVED, function (elementObject) {
             // Handle blocker destruction
+
+            //Also check for end game to stop interaction
+            let isWin = this.targetElements.length > 0;
+            for (let element of this.targetElements) {
+                cc.log("CHECK ENDGAME:", element.current, element.type);
+                if (element.current > 0) {
+                    isWin = false;
+                    break;
+                }
+            }
+
+            if (isWin || this.numMove <= 0) {
+                this.gameEnded = true;
+            }
         }, this);
     },
 
@@ -734,7 +748,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         return groups;
     },
 
-    
+
     /**
      * Find priority target slots for PlaneUP.
      *
@@ -937,7 +951,6 @@ CoreGame.BoardMgr = cc.Class.extend({
         var targetSlot = this.getSlot(targetRow, targetCol);
         if (targetSlot) {
             this.trySwapSlots(this.selectedSlot, targetSlot);
-            
         }
         this.lastSwapSource = { row: this.selectedSlot.row, col: this.selectedSlot.col };
         this.lastSwapDest = { row: targetRow, col: targetCol };
@@ -997,17 +1010,33 @@ CoreGame.BoardMgr = cc.Class.extend({
                     break;
                 }
             }
+
             if (hasBlocker) {
                 // Slot has a non-swappable element (blocker) — indicate invalid swap
                 cc.log("Slot has a non-swappable element (blocker) — indicate invalid swap");
                 if (element1.ui) element1.ui.playInvalidSwapAnim();
+                fr.Sound.playSoundEffect(resSound.seed_swap);
                 return;
             }
-            // Slot is truly empty — try move-to-empty
-            cc.log("Slot is truly empty — try move-to-empty");
-            var emptySwap = new CoreGame.MoveToEmptySwap(this);
-            this.playerMoved = emptySwap.swap(element1, slot2);
-            if (this.playerMoved) this.didPlayerSwap = true;
+
+            // Slot is truly empty
+            if (element1 instanceof CoreGame.PowerUP) {
+                // PowerUp swap to empty slot — move and activate
+                cc.log("PowerUp swap to empty — move and activate");
+                this.state = CoreGame.BoardState.SWAPPING;
+                this.swapPowerUpToEmpty(element1, slot2);
+                this.playerMoved = true;
+                this.didPlayerSwap = true;
+                this.useMove();
+                fr.Sound.playSoundEffect(resSound.seed_swap);
+            } else {
+                // Regular gem — try move-to-empty (match check)
+                cc.log("Slot is truly empty — try move-to-empty");
+                var emptySwap = new CoreGame.MoveToEmptySwap(this);
+                this.playerMoved = emptySwap.swap(element1, slot2);
+                if (this.playerMoved) this.didPlayerSwap = true;
+                fr.Sound.playSoundEffect(resSound.seed_swap);
+            }
             return;
         }
         this.state = CoreGame.BoardState.SWAPPING;
@@ -1022,6 +1051,35 @@ CoreGame.BoardMgr = cc.Class.extend({
             this.useMove();
         }
         // State update handled by swapLogic timers
+    },
+
+    /**
+     * Swap a PowerUp into an empty adjacent slot, then activate it.
+     * @param {CoreGame.PowerUP} powerUp - The power-up element
+     * @param {CoreGame.GridSlot} targetSlot - The empty destination slot
+     */
+    swapPowerUpToEmpty: function (powerUp, targetSlot) {
+        var self = this;
+        var origRow = powerUp.position.x;
+        var origCol = powerUp.position.y;
+        var targetRow = targetSlot.row;
+        var targetCol = targetSlot.col;
+        var duration = CoreGame.Config.SWAP_DURATION;
+
+        // Move data to target slot
+        powerUp.position.x = targetRow;
+        powerUp.position.y = targetCol;
+        this.updateGridForElement(powerUp, origRow, origCol, true);
+
+        // Animate visual to new position
+        var targetPixelPos = this.gridToPixel(targetRow, targetCol);
+        powerUp.visualMoveTo(targetPixelPos, duration);
+
+        // After move completes, activate the PowerUp
+        CoreGame.TimedActionMgr.addAction(duration, function () {
+            powerUp.setState(CoreGame.ElementState.IDLE);
+            powerUp.active();
+        });
     },
 
     /**
@@ -1132,10 +1190,10 @@ CoreGame.BoardMgr = cc.Class.extend({
             for (var c = 0; c < this.cols; c++) {
                 var slot = this.getSlot(r, c);
                 if (slot) {
-                    var gem = slot.getMatchableElement();
-                    // Only shuffle standard gems (1..NUM_GEN)
-                    if (gem && gem.type <= CoreGame.Config.NUM_GEN) {
-                        gems.push(gem);
+                    // Only shuffle gems that are swappable (not blocked by overlays like Chain)
+                    var swappable = slot.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
+                    if (swappable && swappable instanceof CoreGame.GemObject && swappable.type <= CoreGame.Config.NUM_GEN) {
+                        gems.push(swappable);
                         slots.push({ r: r, c: c });
                     }
                 }
@@ -1330,7 +1388,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         if (CoreGame.AdaptiveTPP) {
             var tppCleared = 0;
             for (var ti = 0; ti < this.targetElements.length; ti++) {
-                var el     = this.targetElements[ti];
+                var el = this.targetElements[ti];
                 var initHp = (this._tppTargetInitHp && this._tppTargetInitHp[el.id]) || 1;
                 if (initHp > 1) {
                     // HP-weighted: fully dead instances + damage dealt to alive ones
@@ -1346,6 +1404,9 @@ CoreGame.BoardMgr = cc.Class.extend({
             CoreGame.AdaptiveTPP.onTurnEnd(this._tppMovesUsed, tppCleared);
         }
 
+        //resetMatch count
+        this.matchMgr.countedMatch = 0;
+
         //Check EndGame
         let isWin = this.targetElements.length > 0;
         for (let element of this.targetElements) {
@@ -1357,7 +1418,6 @@ CoreGame.BoardMgr = cc.Class.extend({
         }
 
         if (cc.sys.isNative) {
-
             if (isWin) {
                 this.gameEnded = true;
                 this.setEndStar();
@@ -1391,10 +1451,12 @@ CoreGame.BoardMgr = cc.Class.extend({
                 }
             }
         } else {
-             if (isWin) {
+            if (isWin) {
+                this.gameEnded = true;
                 alert("Level Complete!");
             } else {
                 if (this.numMove <= 0) {
+                    this.gameEnded = true;
                     alert("Game Over!");
                 }
             }
@@ -1422,20 +1484,20 @@ CoreGame.BoardMgr = cc.Class.extend({
             if (usedMove < 20) this.endStar = 3;
         }
 
-        userInfo.setStarByLevel(this.getLevelId(), this.endStar);
+        userMgr.getData().setStarByLevel(this.getLevelId(), this.endStar);
     },
 
     setLevel: function () {
         let playedLevel = parseInt(this.getLevelId());
-        let currentLevel = userInfo.getLevel();
+        let currentLevel = userMgr.getData().getLevel();
 
         // Only advance level if playing the frontier (current) level
         if (playedLevel >= currentLevel) {
-            userInfo.setLevel(currentLevel + 1);
-            userInfo.isReplayWin = false;
+            userMgr.getData().setLevel(currentLevel + 1);
+            this.isReplayWin = false;
         } else {
             // Replay: don't advance level
-            userInfo.isReplayWin = true;
+            this.isReplayWin = true;
         }
     },
 
@@ -1569,8 +1631,34 @@ CoreGame.BoardMgr = cc.Class.extend({
         this._bonusPowerUps = null;
         this.state = CoreGame.BoardState.END_GAME;
         if (this.gameUI) {
+            this.gameUI.gameBoardInfoUI.pSkip.setVisible(false);
             this.gameUI.onEndGame(true);
         }
+    },
+
+    /**
+     * Skip the remaining moves bonus sequence.
+     * Cancels all pending timed actions and goes straight to end game.
+     */
+    skipRemainingMovesBonus: function () {
+        if (!this.gameEnded) {
+            cc.log("SKIP REMAINING MOVES BONUS CANT", this.state);
+            return;
+        }
+        cc.log("SKIP REMAINING MOVES BONUS");
+
+        CoreGame.TimedActionMgr.clear();
+
+        if (this._bonusPowerUps) {
+            for (var i = 0; i < this._bonusPowerUps.length; i++) {
+                var pu = this._bonusPowerUps[i];
+                if (pu && pu.state === CoreGame.ElementState.IDLE) {
+                    pu.remove();
+                }
+            }
+        }
+
+        this.finishRemainingMovesBonus();
     },
 
     isStateDropAble: function () {
@@ -1594,15 +1682,15 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         let allIdle = true;
         // if (this.isStateDropAble()) {
-            if (this.requiredRefill) {
-                if (this.delayRefill <= 0) {
-                    cc.log("CALL REFILL MAP - From Update");
-                    this.refillMap();
-                }
-            } else if (this.requiredMatching) {
-                this.requiredMatching = false;
-                this.doMatch();
+        if (this.requiredRefill) {
+            if (this.delayRefill <= 0) {
+                cc.log("CALL REFILL MAP - From Update");
+                this.refillMap();
             }
+        } else if (this.requiredMatching) {
+            this.requiredMatching = false;
+            this.doMatch();
+        }
         // }
 
         if (this.delayRefill > 0) {

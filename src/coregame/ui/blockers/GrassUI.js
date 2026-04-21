@@ -38,7 +38,7 @@ CoreGame.GrassUI = CoreGame.ElementUI.extend({
 
         // Update main sprite
         if (this.sprite) {
-            fr.changeSprite(this.sprite, layerName, "res/high/game/element/" + (500 + this.element.hitPoints));
+            fr.changeSprite(this.sprite, layerName, "res/modules/game/element/" + (500 + this.element.hitPoints));
         }
 
         if (this.getParent()) {
@@ -76,7 +76,7 @@ CoreGame.GrassUI = CoreGame.ElementUI.extend({
                 "grass_block",
                 posEff,
                 this.getParent(),
-                BoardConst.zOrder.EFF_MATCHING
+                CoreGame.Config.zOrder.EFF_MATCHING
             );
         }
     },

@@ -1,0 +1,118 @@
+
+phao_white.png
+size: 1908,124
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+01
+  rotate: false
+  xy: 1832, 48
+  size: 74, 74
+  orig: 74, 74
+  offset: 0, 0
+  index: -1
+phao_up_00
+  rotate: false
+  xy: 2, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_01
+  rotate: false
+  xy: 124, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_02
+  rotate: false
+  xy: 246, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_03
+  rotate: false
+  xy: 368, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_04
+  rotate: false
+  xy: 490, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_05
+  rotate: false
+  xy: 612, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_06
+  rotate: false
+  xy: 734, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_07
+  rotate: false
+  xy: 856, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_08
+  rotate: false
+  xy: 978, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_09
+  rotate: false
+  xy: 1100, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_10
+  rotate: false
+  xy: 1222, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_11
+  rotate: false
+  xy: 1344, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_12
+  rotate: false
+  xy: 1466, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_13
+  rotate: false
+  xy: 1588, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1
+phao_up_14
+  rotate: false
+  xy: 1710, 2
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1

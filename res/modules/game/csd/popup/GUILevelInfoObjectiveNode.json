@@ -1,0 +1,137 @@
+{
+  "ID": "55fed774-2e87-47b8-ba7d-1e87ccea132b",
+  "Version": "2.3.4",
+  "Name": "GUILevelInfoObjectiveNode",
+  "Content": {
+    "Content": {
+      "Animation": {
+        "Duration": 0,
+        "Speed": 1.0,
+        "Timelines": [],
+        "ctype": "TimelineActionData"
+      },
+      "AnimationList": [],
+      "ObjectData": {
+        "Tag": 22,
+        "Children": [
+          {
+            "FileData": {
+              "Type": "Default",
+              "Path": "Default/ImageFile.png",
+              "Plist": ""
+            },
+            "Scale9Width": 46,
+            "Scale9Height": 46,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -23.0,
+            "RightMargin": -23.0,
+            "TopMargin": -23.0,
+            "BottomMargin": -23.0,
+            "Tag": 23,
+            "ActionTag": -1929654069,
+            "Size": {
+              "X": 46.0,
+              "Y": 46.0
+            },
+            "Name": "spr",
+            "ctype": "ImageViewObjectData"
+          },
+          {
+            "IsCustomSize": true,
+            "FontSize": 37,
+            "LabelText": "Text Label",
+            "FontResource": {
+              "Type": "Normal",
+              "Path": "font/BalooPaaji2-Bold.ttf",
+              "Plist": ""
+            },
+            "HorizontalAlignmentType": "HT_Center",
+            "VerticalAlignmentType": "VT_Center",
+            "OutlineSize": 2,
+            "OutlineColor": {
+              "R": 59,
+              "G": 56,
+              "B": 149
+            },
+            "OutlineEnabled": true,
+            "ShadowColor": {
+              "R": 110,
+              "G": 110,
+              "B": 110
+            },
+            "ShadowOffsetX": 2.0,
+            "ShadowOffsetY": -2.0,
+            "AnchorPoint": {
+              "ScaleX": 0.5,
+              "ScaleY": 0.5
+            },
+            "Position": {
+              "X": 0.0,
+              "Y": -36.0
+            },
+            "Scale": {
+              "ScaleX": 1.0,
+              "ScaleY": 1.0
+            },
+            "CColor": {},
+            "IconVisible": false,
+            "PositionPercentXEnabled": true,
+            "PrePosition": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "PreSize": {
+              "X": 0.0,
+              "Y": 0.0
+            },
+            "LeftMargin": -187.5,
+            "RightMargin": -187.5,
+            "TopMargin": 11.0,
+            "BottomMargin": -61.0,
+            "Tag": 24,
+            "ActionTag": 843329895,
+            "Size": {
+              "X": 375.0,
+              "Y": 50.0
+            },
+            "Name": "lbl",
+            "ctype": "TextObjectData"
+          }
+        ],
+        "Size": {
+          "X": 0.0,
+          "Y": 0.0
+        },
+        "Name": "Node",
+        "ctype": "SingleNodeObjectData"
+      },
+      "UsedResources": [
+        "../../../Default/ImageFile.png",
+        "../../../font/BalooPaaji2-Bold.ttf"
+      ],
+      "ctype": "GameFileData"
+    }
+  },
+  "Type": "Node"
+}

@@ -33,7 +33,7 @@ CoreGame.EggUI = CoreGame.ElementUI.extend({
         fileName = type + this.element.hitPoints + ".png";
         cc.log("File Name " + fileName);
         if (this.sprite) {
-            fr.changeSprite(this.sprite, fileName, "res/high/game/element/" + fileName);
+            fr.changeSprite(this.sprite, fileName, "res/modules/game/element/" + fileName);
         }
     },
 
@@ -53,9 +53,9 @@ CoreGame.EggUI = CoreGame.ElementUI.extend({
         if (typeof gv !== 'undefined' && typeof gv.createTLFX === 'function') {
             let eggSpine = gv.createSpineAnimation(resAni.egg_spine);
             this.getParent().addChild(eggSpine);
-            eggSpine.setPosition(this.getParent().convertToWorldSpace(this.getPosition()));
+            eggSpine.setPosition(this.element.boardMgr.gridToPixel(this.element.position.x, this.element.position.y));
             eggSpine.setAnimation(0, "animation", false);
-            eggSpine.setLocalZOrder(BoardConst.zOrder.EFF_MATCHING);
+            eggSpine.setLocalZOrder(CoreGame.Config.zOrder.EFF_MATCHING);
             gv.removeSpineAfterRun(eggSpine);
 
             this.setVisible(false);
@@ -64,7 +64,7 @@ CoreGame.EggUI = CoreGame.ElementUI.extend({
             //     "runEgg1",
             //     this.getParent().convertToWorldSpace(this.getPosition()),
             //     this.getParent(),
-            //     BoardConst.zOrder.EFF_MATCHING
+            //     CoreGame.Config.zOrder.EFF_MATCHING
             // );
         }
     },

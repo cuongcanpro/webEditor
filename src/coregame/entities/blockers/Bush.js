@@ -41,6 +41,6 @@ CoreGame.Bush = CoreGame.Blocker.extend({
 });
 
 // Register
-if (typeof BoardConst !== 'undefined' && CoreGame.Config.ElementType && CoreGame.Config.ElementType.BUSH) {
+if (CoreGame.Config.ElementType && CoreGame.Config.ElementType.BUSH) {
     CoreGame.ElementObject.register(CoreGame.Config.ElementType.BUSH, CoreGame.Bush);
 }

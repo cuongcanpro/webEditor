@@ -164,7 +164,7 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp) {
             for (var key in mapData) {
                 if (mapData[key] == typeId) {
                     blocker.configData = blocker.configData || {};
-                    blocker.configData.grid_path = "res/high/game/board/nen/tile_BG.png";
+                    blocker.configData.grid_path = "res/modules/game/board/nen/tile_BG.png";
                     cc.log("BlockerFactory: Injected tile_BG for", typeId);
                     break;
                 }
@@ -226,7 +226,7 @@ CoreGame.BlockerFactory.preloadConfig = function (typeId, callback) {
             for (var key in mapData) {
                 if (mapData[key] == typeId) {
                     config.configData = config.configData || {};
-                    config.configData.grid_path = "res/high/game/board/nen/tile_BG.png";
+                    config.configData.grid_path = "res/modules/game/board/nen/tile_BG.png";
                     cc.log("BlockerFactory: Applied tile_BG to", typeId);
                     break;
                 }
