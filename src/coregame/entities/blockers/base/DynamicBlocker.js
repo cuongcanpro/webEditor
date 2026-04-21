@@ -141,6 +141,7 @@ CoreGame.DynamicBlocker = CoreGame.Blocker.extend({
             } else {
                 this.updateVisual();
             }
+            this.boardMgr.setRefillRequired(true);
         }
         var boardUI = this.boardMgr ? this.boardMgr.boardUI : null;
         if (boardUI)

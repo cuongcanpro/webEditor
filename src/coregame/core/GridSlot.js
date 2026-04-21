@@ -1,4 +1,4 @@
-/**
+﻿/**
  * GridSlot - Single cell on the game board
  * Part of Match-3 Core Game
  */
@@ -391,7 +391,7 @@ CoreGame.GridSlot = cc.Class.extend({
         for (var i = this.listElement.length - 1; i >= 0; i--) {
             var behavior = (typeof this.listElement[i].layerBehavior !== 'undefined') ?
                 this.listElement[i].layerBehavior : CoreGame.LayerBehavior.CONTENT;
-            if (behavior < CoreGame.LayerBehavior.EXCLUSIVE) {
+            if (behavior <= CoreGame.LayerBehavior.EXCLUSIVE) {
                 this.listElement[i].remove();
             }
         }
