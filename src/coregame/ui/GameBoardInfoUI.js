@@ -1,13 +1,11 @@
 ﻿var CoreGame = CoreGame || {};
 
 GameBoardInfoUI = BaseLayer.extend({
-    nodeInfo: null,
     alert_180min_18: null,
     demo: null,
 
+    // Top bar / info
     pInfo: null,
-    nodeMain: null,
-    lbLevel: null,
     lbMove: null,
     lbMoveTitle: null,
     bg_move: null,
@@ -28,6 +26,7 @@ GameBoardInfoUI = BaseLayer.extend({
 
     listNode: [],
 
+    // Objective intro panel
     pIntro: null,
     pFogIntroObjective: null,
     nodeObjectives: null,
@@ -36,16 +35,28 @@ GameBoardInfoUI = BaseLayer.extend({
     bgObjIntro: null,
     pObjectiveIntro: null,
 
+    // Monster banner block
     nodeMonster: null,
-    imgMonsterBg: null,
     pBgMonster: null,
+    imgDecorMonster: null,
+    imgMonsterBg: null,
+    imgMonsterBg_left: null,
+    imgMonsterBg_right: null,
+    imgMonsterName: null,
+    lbMeetUpMonster: null,
     nodeMonsterSprite: null,
-    lbMonsterName: null,
+    // Extra monster info strip (small avatar + icon + description)
+    bgExtraMonsterInfo: null,
+    imgSmallAvatar: null,
+    imgIconExtraInfo: null,
+    lbExtraInfo: null,
 
+    // Speech bubble
     lbTextBubble: null,
     lbTextBubblePhantom: null,
     imgBubble: null,
 
+    // Intro block (new-blocker tutorial)
     lbBlockName: null,
     lbBlockNotice: null,
     imgBlock: null,
@@ -57,6 +68,7 @@ GameBoardInfoUI = BaseLayer.extend({
     imgGlow: null,
     imgParticle: null,
 
+    // Skip panel
     pSkip: null,
     btnSkip: null,
     lbContinue: null,
@@ -92,6 +104,8 @@ GameBoardInfoUI = BaseLayer.extend({
 
         this.lbTextBubble.ignoreContentAdaptWithSize(true);
         this.lbTextBubblePhantom.ignoreContentAdaptWithSize(true);
+        this.imgMonsterName.ignoreContentAdaptWithSize(true);
+        this.imgSmallAvatar.ignoreContentAdaptWithSize(true);
 
         this.pSkip.setVisible(false);
 
@@ -120,10 +134,43 @@ GameBoardInfoUI = BaseLayer.extend({
                 )
             ));
 
-            this.lbMonsterName.stopAllActions();
-            this.lbMonsterName.setOpacity(0);
-            this.lbMonsterName.setScale(2.5);
-            this.lbMonsterName.runAction(cc.sequence(
+            // imgDecorMonster: pops in alongside the bg
+            if (this.imgDecorMonster) {
+                this.imgDecorMonster.stopAllActions();
+                this.imgDecorMonster.setOpacity(0);
+                this.imgDecorMonster.setScale(0);
+                this.imgDecorMonster.runAction(cc.sequence(
+                    cc.delayTime(delayTime),
+                    cc.spawn(
+                        cc.fadeIn(efxTimeMonster),
+                        cc.scaleTo(efxTimeMonster, 1).easing(cc.easeBackOut())
+                    )
+                ));
+            }
+
+            // lbMeetUpMonster: drops in from above with a fade, prefacing the name
+            if (this.lbMeetUpMonster) {
+                if (this.lbMeetUpMonster.rawPos == null) {
+                    this.lbMeetUpMonster.rawPos = cc.p(this.lbMeetUpMonster.getPosition());
+                }
+                this.lbMeetUpMonster.stopAllActions();
+                this.lbMeetUpMonster.setOpacity(0);
+                this.lbMeetUpMonster.setPosition(this.lbMeetUpMonster.rawPos.x, this.lbMeetUpMonster.rawPos.y + 80);
+                this.lbMeetUpMonster.runAction(cc.sequence(
+                    cc.delayTime(delayTime + 0.5 * deltaTimeMonster),
+                    cc.spawn(
+                        cc.fadeIn(efxTimeMonster),
+                        cc.moveTo(efxTimeMonster, this.lbMeetUpMonster.rawPos).easing(cc.easeBackOut())
+                    )
+                ));
+            }
+
+            // imgMonsterName replaced the label version — it's a sprite now,
+            // so animate it the same way (fade in + scale down from 2.5).
+            this.imgMonsterName.stopAllActions();
+            this.imgMonsterName.setOpacity(0);
+            this.imgMonsterName.setScale(2.5);
+            this.imgMonsterName.runAction(cc.sequence(
                 cc.delayTime(delayTime + deltaTimeMonster),
                 cc.spawn(
                     cc.fadeIn(efxTimeMonster),
@@ -141,6 +188,23 @@ GameBoardInfoUI = BaseLayer.extend({
                     cc.scaleTo(efxTimeMonster, 1).easing(cc.easeIn(5))
                 )
             ));
+
+            // bgExtraMonsterInfo: slides in from the right after the monster sprite
+            if (this.bgExtraMonsterInfo) {
+                if (this.bgExtraMonsterInfo.rawPos == null) {
+                    this.bgExtraMonsterInfo.rawPos = cc.p(this.bgExtraMonsterInfo.getPosition());
+                }
+                this.bgExtraMonsterInfo.stopAllActions();
+                this.bgExtraMonsterInfo.setOpacity(0);
+                this.bgExtraMonsterInfo.setPosition(this.bgExtraMonsterInfo.rawPos.x + cc.winSize.width, this.bgExtraMonsterInfo.rawPos.y);
+                this.bgExtraMonsterInfo.runAction(cc.sequence(
+                    cc.delayTime(delayTime + 2.5 * deltaTimeMonster),
+                    cc.spawn(
+                        cc.fadeIn(efxTimeMonster),
+                        cc.moveTo(efxTimeMonster, this.bgExtraMonsterInfo.rawPos).easing(cc.easeBackOut())
+                    )
+                ));
+            }
 
             lifeTime = efxTimeMonster + 2 * deltaTimeMonster + waitShowTime;
             this.nodeMonster.stopAllActions();
@@ -255,26 +319,11 @@ GameBoardInfoUI = BaseLayer.extend({
     },
     //endregion EFX
 
-    initItemCount: function(type, lbl) {
-        this.nodeMain.getChildByName('itemCount').setVisible(true);
-        this.nodeMain.getChildByName('itemCount').getChildByName('icon')
-            .loadTexture('game/element/icon/' + type + '.png', ccui.Widget.LOCAL_TEXTURE);
-        this.nodeMain.getChildByName('itemCount').getChildByName('lbl').setString(lbl);
-    },
-
     initData: function (levelConfig) {
         this.setMove(levelConfig.mapConfig.numMove);
         this.setListTarget(levelConfig.mapConfig.targetElements);
 
         this.pSkip.setVisible(false);
-    },
-
-    setItemCountLbl: function (lbl) {
-        this.nodeMain.getChildByName('itemCount').getChildByName('lbl').setString(lbl);
-    },
-
-    hideItemCount: function () {
-        this.nodeMain.getChildByName('itemCount').setVisible(false);
     },
 
     setMove: function (move) {
@@ -343,12 +392,24 @@ GameBoardInfoUI = BaseLayer.extend({
                 }
 
                 this.nodeMonster.setVisible(true);
-                this.lbMonsterName.setString(config.name);
-                this.lbMonsterName.setTextColor(cc.color("#db7000"));
-                this.lbMonsterName.enableOutline(cc.color("#301c02"), 7);
+                // imgMonsterName is an image per monster instead of a label.
+                // TODO: finalize the art path convention; current placeholder
+                // loads a texture keyed by element.id from the monster art folder.
+                this.imgMonsterName.loadTexture(
+                    "res/modules/game/monster/name_" + element.id + ".png"
+                );
+                this.imgSmallAvatar.loadTexture(
+                    "res/modules/game/element/icon/" + element.id + ".png"
+                );
+                this.imgIconExtraInfo.loadTexture(
+                    "res/modules/game/gui/start_game/imgIcon_" + element.id + ".png"
+                );
+                this.lbExtraInfo.setString(fr.Localization.text(
+                    "lang_boss_intro_" + element.id + "_des"
+                ));
 
                 this.nodeMonsterSprite.removeAllChildren();
-                if (resAni["spine_" + element.id + "_main"] && jsb.fileUtils.isFileExist(resAni["spine_" + element.id + "_main"])) {
+                if (resAni["spine_" + element.id + "_main"]) {
                     let spine = gv.createSpineAnimation(resAni["spine_" + element.id + "_main"]);
                     this.nodeMonsterSprite.addChild(spine);
                     spine.setAnimation(0, config.anim, true);
@@ -592,31 +653,6 @@ GameBoardInfoUI = BaseLayer.extend({
         }
     },
 
-    onShowSpineCatTalking: function (newParent, zOrder) {
-        this.spineCatData = {
-            parent: this.nodeMain,
-            zOrder: 1,
-            visible: this.spine_cat.isVisible()
-        }
-        UIUtils.changeParent(this.spine_cat, newParent, zOrder);
-        this.spine_cat.setVisible(true);
-        this.spine_cat.setAnimation(0, 'happy', false);
-        this.spine_cat.addAnimation(0, 'idle', true);
-    },
-
-    stopSpineCatTalking: function () {
-        if (this.spineCatData != null){
-            UIUtils.changeParent(this.spine_cat, this.spineCatData.parent, 1);
-            this.spine_cat.setAnimation(0, 'idle', true);
-            this.spine_cat.setVisible(this.spineCatData.visible);
-            this.spineCatData = null;
-        }
-    },
-
-    getBgObjective: function () {
-        return this.nodeMain.getChildByName('bgObjective');
-    },
-
     getDialogWorldPosAlignToSpineCat: function () {
         var catWPos = this.spine_cat.getParent().convertToWorldSpace(this.spine_cat.getPosition());
         return cc.p(catWPos.x, catWPos.y);
@@ -824,23 +860,11 @@ GameBoardInfoUI.animMonster = {
     15000: {
         name: "Mischievous\nMonkeys",
         scale: 0.25,
-        offset: cc.p(0, -125),
+        offset: cc.p(0, 0),
         anim: "idle"
     },
     10000: {
         name: "Giant\nKong",
-        scale: 1.5,
-        offset: cc.p(0, -125),
-        anim: "anim0_idle"
-    },
-    11001: {
-        name: "Black\nMonkey",
-        scale: 0.25,
-        offset: cc.p(0, -125),
-        anim: "idle"
-    },
-    17000: {
-        name: "Red\nKong",
         scale: 1.5,
         offset: cc.p(0, -125),
         anim: "anim0_idle"
@@ -963,6 +987,14 @@ GameBoardBg = BaseLayer.extend({
 
     setBackground: function (texture = "res/modules/game/board/3.jpg") {
         this.bg.loadTexture(texture);
+
+        this.bg.setScale(1);
+        if (this.bg.width < cc.winSize.width) {
+            this.bg.setScale(cc.winSize.width / this.bg.width);
+        }
+        if (this.bg.height * this.getScale() < cc.winSize.height) {
+            this.bg.setScale(cc.winSize.height / this.bg.height);
+        }
     },
 });
 GameBoardBg.JSON = "game/csd/GameBoardBg.json";

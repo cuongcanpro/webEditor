@@ -62,7 +62,13 @@ fr.Localization = cc.Class.extend(
             this._localizedStrings = {};
             var contents = cc.loader.getRes(this.getPathFileLang(this._currentLang.folder));
 
-            var lines = contents.split('\n');
+            try {
+                var lines = contents.split('\n');
+            }
+            catch (err) {
+                cc.log("ERROR: Localization::loadTextForCurrentLanguage: %s", err);
+                return;
+            }
             for (var i in lines) {
                 var line = lines[i];
                 if (line.indexOf("/*", 0) == -1 &&
