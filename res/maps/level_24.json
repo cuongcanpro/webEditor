@@ -1,1 +1,487 @@
-{"slotMap": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 1, 1, 1, 1, 1, 1, 1, 1], [0, 1, 1, 1, 1, 1, 1, 1, 1], [0, 1, 1, 1, 1, 1, 1, 1, 1], [0, 1, 1, 1, 1, 1, 1, 1, 1], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 0, 2, 2, 2, 2, 2, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]], "elements": [{"row": 8, "col": 2, "type": 5, "hp": 1}, {"row": 8, "col": 3, "type": 5, "hp": 1}, {"row": 8, "col": 4, "type": 3, "hp": 1}, {"row": 8, "col": 5, "type": 5, "hp": 1}, {"row": 8, "col": 6, "type": 1, "hp": 1}, {"row": 7, "col": 2, "type": 5, "hp": 1}, {"row": 7, "col": 3, "type": 3, "hp": 1}, {"row": 7, "col": 6, "type": 5, "hp": 1}, {"row": 6, "col": 1, "type": 5, "hp": 1}, {"row": 6, "col": 2, "type": 2, "hp": 1}, {"row": 6, "col": 3, "type": 3, "hp": 1}, {"row": 6, "col": 4, "type": 15000, "hp": 10}, {"row": 6, "col": 8, "type": 2, "hp": 1}, {"row": 5, "col": 1, "type": 1, "hp": 1}, {"row": 5, "col": 2, "type": 5, "hp": 1}, {"row": 5, "col": 3, "type": 700, "hp": 1}, {"row": 5, "col": 6, "type": 15000, "hp": 10}, {"row": 5, "col": 8, "type": 1, "hp": 1}, {"row": 4, "col": 1, "type": 1, "hp": 1}, {"row": 4, "col": 2, "type": 2, "hp": 1}, {"row": 4, "col": 3, "type": 5000, "hp": 1}, {"row": 4, "col": 4, "type": 15000, "hp": 10}, {"row": 4, "col": 8, "type": 5, "hp": 1}, {"row": 3, "col": 1, "type": 2, "hp": 1}, {"row": 3, "col": 4, "type": 3, "hp": 1}, {"row": 3, "col": 5, "type": 3, "hp": 1}, {"row": 3, "col": 6, "type": 15000, "hp": 10}, {"row": 3, "col": 8, "type": 1, "hp": 1}, {"row": 3, "col": 8, "type": 600, "hp": 2}, {"row": 2, "col": 2, "type": 15000, "hp": 10}, {"row": 2, "col": 4, "type": 5000, "hp": 1}, {"row": 2, "col": 5, "type": 5000, "hp": 1}, {"row": 2, "col": 6, "type": 3, "hp": 1}, {"row": 1, "col": 2, "type": 700, "hp": 4}, {"row": 1, "col": 3, "type": 700, "hp": 4}, {"row": 1, "col": 4, "type": 700, "hp": 4}, {"row": 1, "col": 5, "type": 700, "hp": 4}, {"row": 1, "col": 6, "type": 700, "hp": 4}], "numMove": 34, "targetElements": [{"id": 600, "count": 1}, {"id": 700, "count": 6}, {"id": 5000, "count": 3}, {"id": 15000, "count": 5}], "gemTypes": [1, 2, 3, 5], "placementMode": "symmetric", "visualQuality": 0.97, "presetPU": [{"type": "bomb", "count": 1}], "levelId": 24, "mapName": "Progressive Level 24", "genDescription": {"archetype": "boss_collect", "difficulty": "hard", "difficultyDetail": "Mật độ blocker 60%-80% cells, 28-35 moves, HP trung bình 2.5", "maskShape": "plus", "maskDetail": "Hình dấu cộng lớn → tay dày hơn cross, nhiều không gian hơn", "heatmapPattern": "belt", "heatmapDetail": "Dải blocker ngang giữa board → chia đôi board, tạo khoảnh khắc dramatic khi phá xong", "puBias": "rainbow", "puBiasDetail": "Map thiên rainbow — blocker rải đều, rainbow swap phá nhanh theo màu", "curriculumPhase": "master", "curriculumPhaseDetail": "Thuần thục — tất cả blocker đã mở, mật độ cao hơn", "currentBlocker": "Chain", "currentBlockerTeach": "Dây leo — gem bị wrap, match-through phá chain. Dạy priority.", "unlockedBlockers": ["Box", "BossBunny", "Grass", "BossKong", "FabergeEgg", "Chain"], "blockerTypes": ["BossBunny", "Box", "FabergeEgg", "Chain"], "blockerCount": 15, "hpMax": 10, "hpAvg": 5.1, "hpDetail": "HP range 1-10, trung bình 5.1", "cellWeightMax": 10, "cellWeightAvg": 5.1, "stackedCells": 0, "weightMap": null, "activeCells": 52, "numMoves": 35, "gemColors": [1, 2, 3, 4], "numGemColors": 4, "symmetryChance": "89%", "clusteringWeight": "67%", "presetPU": [{"type": "bomb", "count": 1}], "playerStage": "learning", "hintSeeds": 3, "placementMode": "symmetric"}, "targetMove": 34, "spawnStrategy": "RandomSpawnStrategy", "agentType": "GreedyBot", "move": 34}
+{
+  "slotMap": [
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0
+    ],
+    [
+      0,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "elements": [
+    {
+      "row": 8,
+      "col": 1,
+      "type": 4,
+      "hp": 1
+    },
+    {
+      "row": 8,
+      "col": 2,
+      "type": 3,
+      "hp": 1
+    },
+    {
+      "row": 8,
+      "col": 3,
+      "type": 2,
+      "hp": 1
+    },
+    {
+      "row": 8,
+      "col": 4,
+      "type": 1,
+      "hp": 1
+    },
+    {
+      "row": 8,
+      "col": 5,
+      "type": 3,
+      "hp": 1
+    },
+    {
+      "row": 8,
+      "col": 6,
+      "type": 3,
+      "hp": 1
+    },
+    {
+      "row": 8,
+      "col": 7,
+      "type": 4,
+      "hp": 1
+    },
+    {
+      "row": 7,
+      "col": 1,
+      "type": 5000,
+      "hp": 1
+    },
+    {
+      "row": 7,
+      "col": 2,
+      "type": 700,
+      "hp": 1
+    },
+    {
+      "row": 7,
+      "col": 3,
+      "type": 5000,
+      "hp": 1
+    },
+    {
+      "row": 7,
+      "col": 4,
+      "type": 1000,
+      "hp": 1
+    },
+    {
+      "row": 7,
+      "col": 5,
+      "type": 5000,
+      "hp": 1
+    },
+    {
+      "row": 7,
+      "col": 6,
+      "type": 5000,
+      "hp": 1
+    },
+    {
+      "row": 7,
+      "col": 7,
+      "type": 700,
+      "hp": 1
+    },
+    {
+      "row": 6,
+      "col": 1,
+      "type": 1000,
+      "hp": 1
+    },
+    {
+      "row": 6,
+      "col": 2,
+      "type": 2,
+      "hp": 1
+    },
+    {
+      "row": 6,
+      "col": 3,
+      "type": 700,
+      "hp": 1
+    },
+    {
+      "row": 6,
+      "col": 4,
+      "type": 700,
+      "hp": 1
+    },
+    {
+      "row": 6,
+      "col": 5,
+      "type": 700,
+      "hp": 1
+    },
+    {
+      "row": 6,
+      "col": 6,
+      "type": 700,
+      "hp": 1
+    },
+    {
+      "row": 6,
+      "col": 7,
+      "type": 4,
+      "hp": 1
+    },
+    {
+      "row": 6,
+      "col": 8,
+      "type": 2,
+      "hp": 1
+    },
+    {
+      "row": 5,
+      "col": 3,
+      "type": 1000,
+      "hp": 1
+    },
+    {
+      "row": 5,
+      "col": 4,
+      "type": 3,
+      "hp": 1
+    },
+    {
+      "row": 5,
+      "col": 5,
+      "type": 4,
+      "hp": 1
+    },
+    {
+      "row": 5,
+      "col": 6,
+      "type": 4,
+      "hp": 1
+    },
+    {
+      "row": 4,
+      "col": 1,
+      "type": 15000,
+      "hp": 10
+    },
+    {
+      "row": 4,
+      "col": 7,
+      "type": 15000,
+      "hp": 10
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "type": 2,
+      "hp": 1
+    },
+    {
+      "row": 3,
+      "col": 2,
+      "type": 3,
+      "hp": 1
+    },
+    {
+      "row": 3,
+      "col": 3,
+      "type": 15000,
+      "hp": 10
+    },
+    {
+      "row": 3,
+      "col": 5,
+      "type": 15000,
+      "hp": 10
+    },
+    {
+      "row": 3,
+      "col": 7,
+      "type": 2,
+      "hp": 1
+    },
+    {
+      "row": 3,
+      "col": 8,
+      "type": 4,
+      "hp": 1
+    },
+    {
+      "row": 2,
+      "col": 1,
+      "type": 2,
+      "hp": 1
+    },
+    {
+      "row": 2,
+      "col": 2,
+      "type": 1000,
+      "hp": 1
+    },
+    {
+      "row": 2,
+      "col": 3,
+      "type": 3,
+      "hp": 1
+    },
+    {
+      "row": 2,
+      "col": 4,
+      "type": 3,
+      "hp": 1
+    },
+    {
+      "row": 2,
+      "col": 5,
+      "type": 2,
+      "hp": 1
+    },
+    {
+      "row": 2,
+      "col": 6,
+      "type": 2,
+      "hp": 1
+    },
+    {
+      "row": 2,
+      "col": 7,
+      "type": 1,
+      "hp": 1
+    },
+    {
+      "row": 1,
+      "col": 1,
+      "type": 5000,
+      "hp": 1
+    },
+    {
+      "row": 1,
+      "col": 2,
+      "type": 5000,
+      "hp": 1
+    },
+    {
+      "row": 1,
+      "col": 3,
+      "type": 5000,
+      "hp": 1
+    },
+    {
+      "row": 1,
+      "col": 4,
+      "type": 5000,
+      "hp": 1
+    },
+    {
+      "row": 1,
+      "col": 5,
+      "type": 2,
+      "hp": 1
+    },
+    {
+      "row": 1,
+      "col": 6,
+      "type": 5000,
+      "hp": 1
+    },
+    {
+      "row": 1,
+      "col": 7,
+      "type": 5000,
+      "hp": 1
+    }
+  ],
+  "numMove": 25,
+  "targetElements": [
+    {
+      "id": 15000,
+      "count": 4
+    }
+  ],
+  "gemTypes": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "placementMode": "symmetric",
+  "visualQuality": 0.95,
+  "presetPU": [
+    {
+      "type": "bomb",
+      "count": 1
+    }
+  ],
+  "levelId": 24,
+  "mapName": "Progressive Level 24",
+  "genDescription": {
+    "archetype": "boss_collect",
+    "difficulty": "medium",
+    "difficultyDetail": "Mật độ blocker 55%-75% cells, 22-28 moves, HP trung bình 2.0",
+    "maskShape": "plus_tall_v",
+    "maskDetail": "",
+    "heatmapPattern": "pillars",
+    "heatmapDetail": "Cột blocker dọc → tạo bottleneck, buộc player chơi theo lane",
+    "puBias": null,
+    "puBiasDetail": null,
+    "curriculumPhase": "freeplay",
+    "curriculumPhaseDetail": "Tự do — tất cả blocker đã mở, độ khó theo curve",
+    "currentBlocker": "Donut",
+    "currentBlockerTeach": "Donut — rơi xuống đáy để collect. Dạy gravity planning.",
+    "unlockedBlockers": [
+      "Box",
+      "BossBunny",
+      "Grass",
+      "BossKong",
+      "FabergeEgg",
+      "Chain",
+      "Donut"
+    ],
+    "blockerTypes": [
+      "BossBunny",
+      "Box",
+      "FabergeEgg",
+      "Donut"
+    ],
+    "blockerCount": 24,
+    "hpMax": 10,
+    "hpAvg": 2.5,
+    "hpDetail": "HP range 1-10, trung bình 2.5",
+    "cellWeightMax": 10,
+    "cellWeightAvg": 2.5,
+    "stackedCells": 0,
+    "weightMap": null,
+    "activeCells": 60,
+    "numMoves": 25,
+    "gemColors": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "numGemColors": 4,
+    "symmetryChance": "89%",
+    "clusteringWeight": "67%",
+    "presetPU": [
+      {
+        "type": "bomb",
+        "count": 1
+      }
+    ],
+    "playerStage": "learning",
+    "hintSeeds": 3,
+    "placementMode": "symmetric"
+  },
+  "targetMove": 19
+}

@@ -1260,12 +1260,12 @@
                       "X": 0.5,
                       "Y": 0.5
                     },
+                    "PercentWidthEnable": true,
+                    "PercentWidthEnabled": true,
                     "PreSize": {
-                      "X": 4.0,
+                      "X": 1.0,
                       "Y": 0.1562
                     },
-                    "LeftMargin": -1080.0,
-                    "RightMargin": -1080.0,
                     "TopMargin": 540.0,
                     "BottomMargin": 540.0,
                     "Tag": 60,
@@ -1281,12 +1281,11 @@
                         "Scale9Width": 516,
                         "Scale9Height": 100,
                         "AnchorPoint": {
-                          "ScaleX": 0.5,
-                          "ScaleY": 0.5
+                          "ScaleX": 0.5
                         },
                         "Position": {
-                          "X": 1439.373,
-                          "Y": 421.1803
+                          "X": 360.0,
+                          "Y": 240.0
                         },
                         "Scale": {
                           "ScaleX": 1.0,
@@ -1294,18 +1293,19 @@
                         },
                         "CColor": {},
                         "IconVisible": false,
+                        "PositionPercentXEnabled": true,
                         "PrePosition": {
-                          "X": 0.4998,
-                          "Y": 2.1059
+                          "X": 0.5,
+                          "Y": 1.2
                         },
+                        "PercentWidthEnable": true,
+                        "PercentWidthEnabled": true,
                         "PreSize": {
-                          "X": 0.25,
+                          "X": 1.0,
                           "Y": 1.79
                         },
-                        "LeftMargin": 1079.373,
-                        "RightMargin": 1080.627,
-                        "TopMargin": -400.1803,
-                        "BottomMargin": 242.1803,
+                        "TopMargin": -398.0,
+                        "BottomMargin": 240.0,
                         "Tag": 120,
                         "ActionTag": -1828800325,
                         "Size": {
@@ -1330,7 +1330,7 @@
                           "ScaleY": 0.5
                         },
                         "Position": {
-                          "X": 1440.0,
+                          "X": 360.0,
                           "Y": 100.0
                         },
                         "Scale": {
@@ -1346,11 +1346,9 @@
                           "Y": 0.5
                         },
                         "PreSize": {
-                          "X": 0.25,
+                          "X": 1.0,
                           "Y": 1.745
                         },
-                        "LeftMargin": 1080.0,
-                        "RightMargin": 1080.0,
                         "TopMargin": -74.5,
                         "BottomMargin": -74.5,
                         "Tag": 291,
@@ -1452,6 +1450,67 @@
                         "ctype": "ImageViewObjectData"
                       },
                       {
+                        "IsCustomSize": true,
+                        "FontSize": 35,
+                        "LabelText": "lang_boss_intro_0",
+                        "FontResource": {
+                          "Type": "Normal",
+                          "Path": "font/BalooPaaji2-Bold.ttf",
+                          "Plist": ""
+                        },
+                        "HorizontalAlignmentType": "HT_Center",
+                        "VerticalAlignmentType": "VT_Center",
+                        "OutlineSize": 3,
+                        "OutlineColor": {
+                          "R": 170,
+                          "G": 56,
+                          "B": 46
+                        },
+                        "OutlineEnabled": true,
+                        "ShadowColor": {
+                          "R": 110,
+                          "G": 110,
+                          "B": 110
+                        },
+                        "ShadowOffsetX": 2.0,
+                        "ShadowOffsetY": -2.0,
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 120.024,
+                          "Y": 165.0
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PrePosition": {
+                          "X": 0.1667,
+                          "Y": 0.825
+                        },
+                        "PreSize": {
+                          "X": 0.5417,
+                          "Y": 0.25
+                        },
+                        "HorizontalEdge": "BothEdge",
+                        "LeftMargin": -74.976,
+                        "RightMargin": 404.976,
+                        "TopMargin": 10.0,
+                        "BottomMargin": 140.0,
+                        "Tag": 93,
+                        "ActionTag": -208920545,
+                        "Size": {
+                          "X": 390.0,
+                          "Y": 50.0
+                        },
+                        "Name": "lbMeetUpMonster",
+                        "ctype": "TextObjectData"
+                      },
+                      {
                         "FileData": {
                           "Type": "Normal",
                           "Path": "game/gui/start_game/imgMonsterName_10000_vi.png",
@@ -1466,7 +1525,7 @@
                           "ScaleY": 0.5
                         },
                         "Position": {
-                          "X": 1560.0961,
+                          "X": 480.024,
                           "Y": 165.0
                         },
                         "Scale": {
@@ -1476,16 +1535,16 @@
                         "CColor": {},
                         "IconVisible": false,
                         "PrePosition": {
-                          "X": 0.5417,
+                          "X": 0.6667,
                           "Y": 0.825
                         },
                         "PreSize": {
-                          "X": 0.134,
+                          "X": 0.5361,
                           "Y": 0.335
                         },
                         "HorizontalEdge": "BothEdge",
-                        "LeftMargin": 1367.0961,
-                        "RightMargin": 1126.9039,
+                        "LeftMargin": 287.024,
+                        "RightMargin": 46.976,
                         "TopMargin": 1.5,
                         "BottomMargin": 131.5,
                         "Tag": 121,
@@ -1512,7 +1571,7 @@
                           "ScaleY": 0.5
                         },
                         "Position": {
-                          "X": 1440.0,
+                          "X": 360.0,
                           "Y": 50.0
                         },
                         "Scale": {
@@ -1527,54 +1586,56 @@
                           "Y": 0.25
                         },
                         "PreSize": {
-                          "X": 0.2344,
+                          "X": 0.9375,
                           "Y": 0.63
                         },
-                        "LeftMargin": 1102.5,
-                        "RightMargin": 1102.5,
+                        "LeftMargin": 22.5,
+                        "RightMargin": 22.5,
                         "TopMargin": 87.0,
                         "BottomMargin": -13.0,
                         "Tag": 122,
                         "Children": [
                           {
                             "FileData": {
-                              "Type": "Default",
-                              "Path": "Default/ImageFile.png",
+                              "Type": "Normal",
+                              "Path": "game/element/icon/10000.png",
                               "Plist": ""
                             },
-                            "Scale9Width": 46,
-                            "Scale9Height": 46,
+                            "Scale9OriginX": 29,
+                            "Scale9OriginY": 29,
+                            "Scale9Width": 31,
+                            "Scale9Height": 31,
                             "AnchorPoint": {
                               "ScaleX": 0.5,
                               "ScaleY": 0.5
                             },
                             "Position": {
-                              "X": 62.5,
+                              "X": 65.0,
                               "Y": 63.0
                             },
                             "Scale": {
-                              "ScaleX": 1.0,
-                              "ScaleY": 1.0
+                              "ScaleX": 1.7,
+                              "ScaleY": 1.7
                             },
                             "CColor": {},
                             "IconVisible": false,
                             "PrePosition": {
-                              "X": 0.0926,
+                              "X": 0.0963,
                               "Y": 0.5
                             },
                             "PreSize": {
-                              "X": 0.0681,
-                              "Y": 0.3651
+                              "X": 0.1319,
+                              "Y": 0.7063
                             },
-                            "LeftMargin": 39.5,
-                            "RightMargin": 589.5,
-                            "TopMargin": 40.0,
-                            "BottomMargin": 40.0,
+                            "LeftMargin": 20.5,
+                            "RightMargin": 565.5,
+                            "TopMargin": 18.5,
+                            "BottomMargin": 18.5,
                             "Tag": 123,
                             "ActionTag": 2135632127,
                             "Size": {
-                              "X": 46.0,
-                              "Y": 46.0
+                              "X": 89.0,
+                              "Y": 89.0
                             },
                             "Name": "imgSmallAvatar",
                             "ctype": "ImageViewObjectData"
@@ -1694,7 +1755,7 @@
                       {
                         "AnchorPoint": {},
                         "Position": {
-                          "X": 1440.0,
+                          "X": 360.0,
                           "Y": 235.0
                         },
                         "Scale": {
@@ -1712,8 +1773,8 @@
                           "X": 0.0,
                           "Y": 0.0
                         },
-                        "LeftMargin": 1440.0,
-                        "RightMargin": 1440.0,
+                        "LeftMargin": 360.0,
+                        "RightMargin": 360.0,
                         "TopMargin": -35.0,
                         "BottomMargin": 235.0,
                         "Tag": 293,
@@ -1728,7 +1789,7 @@
                     ],
                     "ActionTag": 32991113,
                     "Size": {
-                      "X": 2880.0,
+                      "X": 720.0,
                       "Y": 200.0
                     },
                     "Name": "pBgMonster",
@@ -2764,13 +2825,13 @@
         "../../Default/Button_Disable.png",
         "../../Default/Button_Normal.png",
         "../../Default/Button_Press.png",
-        "../../Default/ImageFile.png",
         "../../font/BalooPaaji2-Bold.ttf",
         "../../font/BalooPaaji2-ExtraBold.ttf",
         "../../font/BalooPaaji2-Medium.ttf",
         "../demo/Layer 13.png",
         "../element/1000.png",
         "../element/3.png",
+        "../element/icon/10000.png",
         "../gui/board_info/bg_cat.png",
         "../gui/board_info/bg_cat_border.png",
         "../gui/board_info/bg_move.png",

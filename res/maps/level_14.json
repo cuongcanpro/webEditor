@@ -1,1 +1,412 @@
-{"slotMap": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 1, 0], [0, 0, 1, 1, 1, 1, 1, 1, 0], [0, 0, 1, 1, 1, 1, 1, 1, 0], [0, 0, 1, 1, 1, 1, 1, 1, 0], [0, 0, 1, 1, 1, 1, 1, 1, 0], [0, 0, 1, 1, 1, 1, 1, 1, 0], [0, 0, 1, 1, 1, 1, 1, 1, 0], [0, 0, 2, 2, 2, 2, 2, 2, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0]], "elements": [{"row": 8, "col": 2, "type": 5, "hp": 1}, {"row": 8, "col": 3, "type": 3, "hp": 1}, {"row": 8, "col": 4, "type": 5, "hp": 1}, {"row": 8, "col": 5, "type": 1, "hp": 1}, {"row": 8, "col": 6, "type": 5, "hp": 1}, {"row": 8, "col": 7, "type": 1, "hp": 1}, {"row": 7, "col": 2, "type": 5000, "hp": 1}, {"row": 7, "col": 3, "type": 5, "hp": 1}, {"row": 7, "col": 6, "type": 1, "hp": 1}, {"row": 7, "col": 7, "type": 5000, "hp": 1}, {"row": 6, "col": 2, "type": 5000, "hp": 1}, {"row": 6, "col": 3, "type": 1, "hp": 1}, {"row": 6, "col": 4, "type": 15000, "hp": 10}, {"row": 6, "col": 6, "type": 3, "hp": 1}, {"row": 6, "col": 7, "type": 5000, "hp": 1}, {"row": 5, "col": 2, "type": 5000, "hp": 1}, {"row": 5, "col": 3, "type": 700, "hp": 3}, {"row": 5, "col": 6, "type": 700, "hp": 3}, {"row": 5, "col": 7, "type": 700, "hp": 3}, {"row": 4, "col": 2, "type": 700, "hp": 3}, {"row": 4, "col": 3, "type": 5000, "hp": 1}, {"row": 4, "col": 4, "type": 15000, "hp": 10}, {"row": 4, "col": 6, "type": 2, "hp": 1}, {"row": 4, "col": 7, "type": 3, "hp": 1}, {"row": 3, "col": 2, "type": 2, "hp": 1}, {"row": 3, "col": 3, "type": 2, "hp": 1}, {"row": 3, "col": 7, "type": 1, "hp": 1}, {"row": 2, "col": 2, "type": 3, "hp": 1}, {"row": 2, "col": 3, "type": 2, "hp": 1}, {"row": 2, "col": 7, "type": 2, "hp": 1}, {"row": 1, "col": 2, "type": 2, "hp": 1}, {"row": 1, "col": 3, "type": 5, "hp": 1}, {"row": 1, "col": 4, "type": 10000, "hp": 20}, {"row": 1, "col": 7, "type": 3, "hp": 1}], "numMove": 20, "targetElements": [{"id": 700, "count": 4}, {"id": 5000, "count": 6}, {"id": 10000, "count": 1}, {"id": 15000, "count": 2}], "gemTypes": [1, 2, 3, 5], "placementMode": "symmetric", "visualQuality": 0.97, "presetPU": [{"type": "bomb", "count": 1}], "levelId": 14, "mapName": "Progressive Level 14", "genDescription": {"archetype": "boss_collect", "difficulty": "medium", "difficultyDetail": "Mật độ blocker 55%-75% cells, 22-28 moves, HP trung bình 2.0", "maskShape": "rectangle", "maskDetail": "Hình chữ nhật nhỏ → không gian giới hạn", "heatmapPattern": "fortress", "heatmapDetail": "Blocker dày phía dưới → dễ bắt đầu nhưng khó ở cuối game", "puBias": null, "puBiasDetail": null, "curriculumPhase": "practice", "curriculumPhaseDetail": "Luyện tập — blocker mới + cũ, mật độ trung bình", "currentBlocker": "FabergeEgg", "currentBlockerTeach": "Trứng — collectible swap được. Dạy move planning.", "unlockedBlockers": ["Box", "BossBunny", "Grass", "BossKong", "FabergeEgg"], "blockerTypes": ["BossBunny", "BossKong", "Box", "FabergeEgg"], "blockerCount": 13, "hpMax": 20, "hpAvg": 4.5, "hpDetail": "HP range 1-20, trung bình 4.5", "cellWeightMax": 20, "cellWeightAvg": 4.5, "stackedCells": 0, "weightMap": null, "activeCells": 48, "numMoves": 22, "gemColors": [1, 2, 3, 4], "numGemColors": 4, "symmetryChance": "89%", "clusteringWeight": "67%", "presetPU": [{"type": "bomb", "count": 1}], "playerStage": "learning", "hintSeeds": 3, "placementMode": "symmetric"}, "targetMove": 20, "spawnStrategy": "RandomSpawnStrategy", "agentType": "GreedyBot", "move": 20}
+{
+    "slotMap": [
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            2,
+            2,
+            2,
+            2,
+            2,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    ],
+    "elements": [
+        {
+            "row": 1,
+            "col": 2,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 4,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 5,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 6,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 7,
+            "type": 15000,
+            "hp": 10
+        },
+        {
+            "row": 2,
+            "col": 2,
+            "type": 5,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 3,
+            "type": 5,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 4,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 5,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 6,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 1,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 2,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 3,
+            "type": 5,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 4,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 5,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 6,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 7,
+            "type": 15000,
+            "hp": 10
+        },
+        {
+            "row": 4,
+            "col": 1,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 2,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 4,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 5,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 6,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 1,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 2,
+            "type": 5,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 4,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 5,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 6,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 1,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 2,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 3,
+            "type": 5,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 4,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 5,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 6,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 2,
+            "type": 5,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 4,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 5,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 6,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 2,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 4,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 5,
+            "type": 5000,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 6,
+            "type": 5000,
+            "hp": 1
+        }
+    ],
+    "numMove": 25,
+    "targetElements": [
+        {
+            "id": 15000,
+            "count": 2
+        }
+    ],
+    "notes": "",
+    "numTest": 50,
+    "tpp": 1,
+    "targetMove": 17,
+    "spawnStrategy": "RandomSpawnStrategy",
+    "agentType": "GreedyBot",
+    "gemTypes": [
+        1,
+        2,
+        3,
+        4,
+        5
+    ]
+}
