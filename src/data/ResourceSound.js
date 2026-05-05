@@ -88,6 +88,41 @@ var resSound = {
 	item_suitcase_impact: "sound_music/items/item_suitcase_impact.mp3",
 	item_suitecase_collect: "sound_music/items/item_suitecase_collect.mp3",
 
+	monster: {
+		"10000": {
+			hurt: [
+				"sound_music/items/kong_hurt_01.mp3",
+				"sound_music/items/kong_hurt_02.mp3"
+			],
+			roar: "sound_music/items/kong_roar.mp3",
+			defeated: "sound_music/items/kong_defeated.mp3",
+			action_throw: "sound_music/items/kong_throw_wood_box.mp3"
+		},
+		"17000": {
+			hurt: [
+				"sound_music/items/kong_hurt_01.mp3",
+				"sound_music/items/kong_hurt_02.mp3"
+			],
+			roar: "sound_music/items/kong_hurt_roar.mp3",
+			defeated: "sound_music/items/kong_defeated.mp3",
+			action_throw: "sound_music/items/kong_throw_wood_box.mp3"
+		},
+		"15000": {
+			hurt: [
+				"sound_music/items/monkey_hurt_01.mp3",
+				"sound_music/items/monkey_hurt_02.mp3"
+			],
+			defeated: "sound_music/items/monkey_dead.mp3"
+		},
+		"11001": {
+			hurt: [
+				"sound_music/items/monkey_hurt_01.mp3",
+				"sound_music/items/monkey_hurt_02.mp3"
+			],
+			defeated: "sound_music/items/monkey_dead.mp3"
+		}
+	},
+
 	collect_donut: "sound_music/items/block_donut.mp3",
 	block_milk_pantry_1: "sound_music/items/block_milk_pantry_1.mp3",
 	block_milk_pantry_2: "sound_music/items/block_milk_pantry_2.mp3",
@@ -121,7 +156,11 @@ var resMusic = {
 	ingame: "sound_music/game_flow/background_music_ingame.mp3",
 	lobby: "sound_music/lobby/background_music.mp3",
 	end_level_theme: "sound_music/game_flow/end_level_theme.mp3",
-	ingame_bossRun: "sound_music/bossRun/background_music_ingame_boss.mp3"
+	ingame_bossRun: "sound_music/bossRun/background_music_ingame_boss.mp3",
+	kong_theme: [
+		"sound_music/game_flow/kong_theme_1.mp3",
+		"sound_music/game_flow/kong_theme_2.mp3"
+	]
 };
 
 var soundConf = {

@@ -42,6 +42,15 @@ fr.Sound.playGemMatchSound = function (counted = 0) {
     }
 };
 
+fr.Sound.playMonsterSound = function (monsterId, soundId) {
+    let soundPath = resSound.monster[monsterId.toString()][soundId];
+    if (Array.isArray(soundPath)) {
+        soundPath = soundPath[Math.floor(Math.random() * soundPath.length)];
+    }
+
+    fr.Sound.playSoundEffect(soundPath);
+};
+
 fr.Sound.playSoundEffect = function (soundPath, isLoop = false) {
     if (fr.Sound.effectOn == false || !soundPath) {
         return -1;
@@ -125,16 +134,25 @@ fr.Sound.saveSetting = function () {
 };
 
 fr.Sound.preloadAll = function () {
-    for (var effectKey in resSound) {
-        if (resSound[effectKey].length) {
-            for (let sound of resSound[effectKey]) {
-                jsb.AudioEngine.preload(sound);
-            }
-        } else {
-            jsb.AudioEngine.preload(resSound[effectKey]);
+    fr.Sound.preloadSoundFile(resSound);
+    cc.audioEngine.preloadEffect(resSound.seed_drop);
+};
+
+fr.Sound.preloadSoundFile = function (path) {
+    if (typeof path === "string") {
+        jsb.AudioEngine.preload(path);
+        return;
+    }
+
+    if (Array.isArray(path)) {
+        for (let sound of path) {
+            fr.Sound.preloadSoundFile(sound);
+        }
+    } else {
+        for (let key in path) {
+            fr.Sound.preloadSoundFile(path[key]);
         }
     }
-    cc.audioEngine.preloadEffect(resSound.seed_drop);
 };
 
 fr.Sound.preloadEffect = function (soundPath) {
@@ -166,8 +184,10 @@ fr.Sound.switchMusic = function () {
 
 fr.Sound.playMusicByScene = function () {
     if (fr.Sound.musicOn) {
-        if (sceneMgr.getMainLayer() instanceof SceneBoard) {
-            fr.Sound.playMusic(resMusic.ingame, true);
+        let scene = sceneMgr.getMainLayer();
+
+        if (scene.getSceneMusic) {
+            fr.Sound.playMusic(scene.getSceneMusic(), true);
         } else {
             fr.Sound.playMusic(resMusic.lobby, true);
         }
