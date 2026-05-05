@@ -6,7 +6,9 @@ var CoreGame = CoreGame || {};
 
 CoreGame.Blocker = CoreGame.ElementObject.extend({
     cooldownSpawn: 0,
-
+    configData: {
+        maxHP: 1
+    },
     ctor: function () {
         this._super();
         this.haveBaseAction = [0, 0, 0, 0];

@@ -5,7 +5,9 @@
 var CoreGame = CoreGame || {};
 
 CoreGame.GemObject = CoreGame.ElementObject.extend({
-
+    configData: {
+        maxHP: 1
+    },
     ctor: function () {
         this._super();
         this.addAction(CoreGame.ElementObject.ACTION_TYPE.MATCH, new CoreGame.Strategies.MatchAction());

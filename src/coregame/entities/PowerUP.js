@@ -15,6 +15,9 @@ CoreGame.PowerUPType = {
 };
 
 CoreGame.PowerUP = CoreGame.ElementObject.extend({
+    configData: {
+        maxHP: 1
+    },
     ctor: function () {
         this._super();
         this.layerBehavior = CoreGame.LayerBehavior.CONTENT;
