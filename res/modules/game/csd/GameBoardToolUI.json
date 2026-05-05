@@ -86,6 +86,8 @@
             "ColorVector": {
               "ScaleY": 1.0
             },
+            "Scale9Width": 1,
+            "Scale9Height": 1,
             "AnchorPoint": {
               "ScaleX": 0.5,
               "ScaleY": 0.5
@@ -837,6 +839,180 @@
                       "Y": 92.0
                     },
                     "Name": "btnMusic",
+                    "ctype": "ButtonObjectData"
+                  },
+                  {
+                    "FontSize": 14,
+                    "ButtonText": "",
+                    "TextColor": {
+                      "R": 65,
+                      "G": 65,
+                      "B": 70
+                    },
+                    "DisabledFileData": {
+                      "Type": "Normal",
+                      "Path": "game/board/btn_blue.png",
+                      "Plist": ""
+                    },
+                    "PressedFileData": {
+                      "Type": "Normal",
+                      "Path": "game/board/btn_blue.png",
+                      "Plist": ""
+                    },
+                    "NormalFileData": {
+                      "Type": "Normal",
+                      "Path": "game/board/btn_blue.png",
+                      "Plist": ""
+                    },
+                    "Scale9Enable": true,
+                    "Scale9OriginX": 15,
+                    "Scale9OriginY": 11,
+                    "Scale9Width": 60,
+                    "Scale9Height": 70,
+                    "OutlineColor": {
+                      "G": 0,
+                      "B": 0
+                    },
+                    "ShadowColor": {
+                      "R": 110,
+                      "G": 110,
+                      "B": 110
+                    },
+                    "ShadowOffsetX": 2.0,
+                    "ShadowOffsetY": -2.0,
+                    "TouchEnable": true,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5031,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 47.0,
+                      "Y": 450.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PositionPercentXEnabled": true,
+                    "PrePosition": {
+                      "X": 0.5,
+                      "Y": 4.7368
+                    },
+                    "PreSize": {
+                      "X": 0.9574,
+                      "Y": 0.9684
+                    },
+                    "LeftMargin": 1.721,
+                    "RightMargin": 2.279,
+                    "TopMargin": -401.0,
+                    "BottomMargin": 404.0,
+                    "UserData": "-press_action-c-onClickMusic-c-",
+                    "Tag": 144,
+                    "Children": [
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/board/icon_vibrate.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 45.0,
+                          "Y": 49.68
+                        },
+                        "Scale": {
+                          "ScaleX": 1.45,
+                          "ScaleY": 1.45
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PositionPercentXEnabled": true,
+                        "PositionPercentYEnabled": true,
+                        "PrePosition": {
+                          "X": 0.5,
+                          "Y": 0.54
+                        },
+                        "PreSize": {
+                          "X": 0.5556,
+                          "Y": 0.5435
+                        },
+                        "LeftMargin": 20.0,
+                        "RightMargin": 20.0,
+                        "TopMargin": 17.32,
+                        "BottomMargin": 24.68,
+                        "Tag": 145,
+                        "ActionTag": -465146413,
+                        "Size": {
+                          "X": 50.0,
+                          "Y": 50.0
+                        },
+                        "Name": "icon_on",
+                        "ctype": "SpriteObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/board/icon_no_vibrate.png",
+                          "Plist": ""
+                        },
+                        "BlendFunc": {
+                          "Src": 1,
+                          "Dst": 771
+                        },
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 45.0,
+                          "Y": 48.76
+                        },
+                        "Scale": {
+                          "ScaleX": 1.45,
+                          "ScaleY": 1.45
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PositionPercentXEnabled": true,
+                        "PositionPercentYEnabled": true,
+                        "PrePosition": {
+                          "X": 0.5,
+                          "Y": 0.53
+                        },
+                        "PreSize": {
+                          "X": 0.5556,
+                          "Y": 0.5435
+                        },
+                        "LeftMargin": 20.0,
+                        "RightMargin": 20.0,
+                        "TopMargin": 18.24,
+                        "BottomMargin": 23.76,
+                        "Tag": 146,
+                        "ActionTag": 1591905688,
+                        "Size": {
+                          "X": 50.0,
+                          "Y": 50.0
+                        },
+                        "VisibleForFrame": false,
+                        "Name": "icon_off",
+                        "ctype": "SpriteObjectData"
+                      }
+                    ],
+                    "ActionTag": -525735207,
+                    "Size": {
+                      "X": 90.0,
+                      "Y": 92.0
+                    },
+                    "Name": "btnVibrate",
                     "ctype": "ButtonObjectData"
                   }
                 ],
@@ -2089,8 +2265,10 @@
         "../board/icon_music.png",
         "../board/icon_no_music.png",
         "../board/icon_no_sound.png",
+        "../board/icon_no_vibrate.png",
         "../board/icon_quit.png",
         "../board/icon_sound.png",
+        "../board/icon_vibrate.png",
         "../gui/board_info/btn_pause.png",
         "../gui/tool/bg_tool.png",
         "../gui/tool/tool_0.png",

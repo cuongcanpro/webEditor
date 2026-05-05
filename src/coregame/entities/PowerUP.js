@@ -57,7 +57,7 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
         CoreGame.BoardUI.getInstance().boardMgr.setDelayRefill(CoreGame.Config.DROP_DELAY_POWER_UP);
 
         cc.log("Active Size attachments " + this.attachments.length);
-        if(this.state == CoreGame.ElementState.REMOVING)
+        if (this.state == CoreGame.ElementState.REMOVING)
             return;
         if (this.attachments.length > 0) {
             cc.log("State === " + JSON.stringify(this.attachments[0].blockBaseAction));
@@ -65,6 +65,21 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
         if (this.isStopActionByAttachment(CoreGame.ElementObject.Action.ACTIVE)) {
             cc.log("Stop ====================== ");
             return;
+        }
+
+        // ── 3-Star scoring: track active-PU lifecycle ───────────────────────
+        // Increment the live-PU counter so:
+        //   1) elements destroyed while a PU is alive get tagged as 'pu' clears
+        //      (read by BoardMgr.getCurrentClearMethod())
+        //   2) starting a 2nd-or-later PU mid-chain awards a chain bonus
+        // The matching decrement runs in BoardMgr.removedElement when this
+        // PowerUp itself is removed, closing the lifecycle.
+        var bm = this.boardMgr || (CoreGame.BoardUI.getInstance() && CoreGame.BoardUI.getInstance().boardMgr);
+        if (bm) {
+            bm._activePUCount = (bm._activePUCount || 0) + 1;
+            if (bm.scoreMgr && bm._activePUCount >= 2) {
+                bm.scoreMgr.addPUChainEvent(bm._activePUCount);
+            }
         }
 
         this.setState(CoreGame.ElementState.REMOVING);
@@ -76,9 +91,7 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
         CoreGame.TimedActionMgr.addAction(0.2, function () {
             this.remove();
             var mgr = CoreGame.BoardUI.getInstance().boardMgr;
-            if (!mgr.gameEnded) {
-                mgr.state = CoreGame.BoardState.MATCHING;
-            }
+            mgr.state = CoreGame.BoardState.MATCHING;
         }.bind(this));
     },
 

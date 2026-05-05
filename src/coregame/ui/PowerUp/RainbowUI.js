@@ -31,6 +31,12 @@
         this.onTargetHit = callback;
     },
 
+    startPending: function () {
+        this.setLocalZOrder(CoreGame.ZORDER_BOARD_EFFECT);
+        fr.Sound.playSoundEffect(resSound.active_disco, false);
+        this.mainSpr.setAnimation(0, "active", true);
+    },
+
     startActive: function () {
         this.setLocalZOrder(CoreGame.ZORDER_BOARD_EFFECT);
         fr.Sound.playSoundEffect(resSound.active_disco, false);
@@ -176,7 +182,7 @@
     }
 });
 CoreGame.RainbowUI.DEFAULT_SCALE = 0.5;
-CoreGame.RainbowUI.RAY_DELAY_TIME = 0.2;
+CoreGame.RainbowUI.RAY_DELAY_TIME = 0.075;
 
 /**
  * RainbowPlusUI - UI for Rainbow+Rainbow combo.

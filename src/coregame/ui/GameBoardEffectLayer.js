@@ -132,6 +132,7 @@ CoreGame.GameBoardEffectLayer = cc.Layer.extend({
             this.gameUI.addChild(this.completeLabel);
 
             fr.Sound.playSoundEffect(resSound.game_success, false);
+            fr.Sound.playMusic(resMusic.end_level_theme, true);
         }
 
         this.char.setPosition(cc.winSize.width / 2, -600);

@@ -443,5 +443,137 @@ CoreGame.PatternFinder = {
         if (vCount >= CoreGame.Config.MIN_MATCH) return true;
 
         return false;
+    },
+
+    /**
+     * Would the swap at (r1,c1) <-> (r2,c2) result in a PowerUp-creating match?
+     * Returns true when the resulting pattern at either endpoint is:
+     *   - a line of 4 or more (Rocket / Rainbow),
+     *   - an L/T shape (3+ horizontal AND 3+ vertical through the endpoint), or
+     *   - a 2x2 same-type square (Bomb-style).
+     */
+    _wouldCreatePU: function (mapGrid, r1, c1, r2, c2) {
+        var type1 = mapGrid[r1][c1].getType();
+        var type2 = mapGrid[r2][c2].getType();
+        if (type1 < 0 || type2 < 0 || type1 === type2) return false;
+
+        var tempGetType = function (r, c) {
+            if (r === r1 && c === c1) return type2;
+            if (r === r2 && c === c2) return type1;
+            return mapGrid[r][c].getType();
+        };
+
+        return this._checkPUAt(mapGrid, r1, c1, tempGetType) ||
+               this._checkPUAt(mapGrid, r2, c2, tempGetType);
+    },
+
+    /**
+     * Return all positions that would form a match pattern around (focusR,focusC)
+     * if (r1,c1) and (r2,c2) were swapped. Only patterns passing THROUGH the focus
+     * cell are returned, so callers can highlight just the gems that match with a
+     * specific moved gem (e.g. the hinted gem in its destination slot).
+     * Returns deduped array of {row, col} (may be empty).
+     */
+    getPatternPositionsAfterSwapAt: function (mapGrid, r1, c1, r2, c2, focusR, focusC) {
+        var type1 = mapGrid[r1][c1].getType();
+        var type2 = mapGrid[r2][c2].getType();
+        if (type1 < 0 || type2 < 0) return [];
+
+        var rows = mapGrid.length;
+        var cols = mapGrid[0].length;
+        var getType = function (r, c) {
+            if (r === r1 && c === c1) return type2;
+            if (r === r2 && c === c2) return type1;
+            return mapGrid[r][c].getType();
+        };
+
+        var positions = [];
+        var MIN = CoreGame.Config.MIN_MATCH;
+
+        var collectAt = function (row, col) {
+            var type = getType(row, col);
+            if (type < 0) return;
+
+            // Horizontal run through (row, col)
+            var hLeft = col;
+            while (hLeft - 1 >= 0 && getType(row, hLeft - 1) === type) hLeft--;
+            var hRight = col;
+            while (hRight + 1 < cols && getType(row, hRight + 1) === type) hRight++;
+            if (hRight - hLeft + 1 >= MIN) {
+                for (var c = hLeft; c <= hRight; c++) positions.push({ row: row, col: c });
+            }
+
+            // Vertical run through (row, col)
+            var vTop = row;
+            while (vTop - 1 >= 0 && getType(vTop - 1, col) === type) vTop--;
+            var vBot = row;
+            while (vBot + 1 < rows && getType(vBot + 1, col) === type) vBot++;
+            if (vBot - vTop + 1 >= MIN) {
+                for (var r = vTop; r <= vBot; r++) positions.push({ row: r, col: col });
+            }
+
+            // 2x2 squares containing (row, col)
+            var tryAddSquare = function (r0, c0) {
+                if (r0 < 0 || c0 < 0 || r0 + 1 >= rows || c0 + 1 >= cols) return;
+                var t = getType(r0, c0);
+                if (t < 0) return;
+                if (t === getType(r0, c0 + 1) &&
+                    t === getType(r0 + 1, c0) &&
+                    t === getType(r0 + 1, c0 + 1)) {
+                    positions.push({ row: r0,     col: c0 });
+                    positions.push({ row: r0,     col: c0 + 1 });
+                    positions.push({ row: r0 + 1, col: c0 });
+                    positions.push({ row: r0 + 1, col: c0 + 1 });
+                }
+            };
+            tryAddSquare(row - 1, col - 1);
+            tryAddSquare(row - 1, col);
+            tryAddSquare(row,     col - 1);
+            tryAddSquare(row,     col);
+        };
+
+        collectAt(focusR, focusC);
+
+        return this._removeDuplicatePositions(positions);
+    },
+
+    _checkPUAt: function (mapGrid, row, col, getType) {
+        var type = getType(row, col);
+        if (type < 0) return false;
+
+        var rows = mapGrid.length;
+        var cols = mapGrid[0].length;
+
+        // Horizontal run through (row,col)
+        var hCount = 1;
+        for (var c = col - 1; c >= 0 && getType(row, c) === type; c--) hCount++;
+        for (c = col + 1; c < cols && getType(row, c) === type; c++) hCount++;
+
+        // Vertical run through (row,col)
+        var vCount = 1;
+        for (var r = row - 1; r >= 0 && getType(r, col) === type; r--) vCount++;
+        for (r = row + 1; r < rows && getType(r, col) === type; r++) vCount++;
+
+        // Line of 4+ -> Rocket/Rainbow
+        if (hCount >= 4 || vCount >= 4) return true;
+
+        // L / T -> Bomb
+        if (hCount >= 3 && vCount >= 3) return true;
+
+        // 2x2 square through (row,col)
+        var checkSquare = function (r0, c0) {
+            if (r0 < 0 || c0 < 0 || r0 + 1 >= rows || c0 + 1 >= cols) return false;
+            var t = getType(r0, c0);
+            return t >= 0 &&
+                   t === getType(r0, c0 + 1) &&
+                   t === getType(r0 + 1, c0) &&
+                   t === getType(r0 + 1, c0 + 1);
+        };
+        if (checkSquare(row - 1, col - 1)) return true;
+        if (checkSquare(row - 1, col))     return true;
+        if (checkSquare(row,     col - 1)) return true;
+        if (checkSquare(row,     col))     return true;
+
+        return false;
     }
 };

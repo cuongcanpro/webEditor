@@ -19,7 +19,7 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
         this.jsonPath = jsonPath;
         this._super(element);
     },
-    setVisualState: function (state){
+    setVisualState: function (state) {
         this.visualState = state;
     },
     /**
@@ -109,7 +109,7 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
 
                     if (this.animations[this.lastActionName])
                         this.animations[this.lastActionName].pause();
-                    cc.log("CustomElementUI playAnimation: " + targetAnimKey);
+                    // cc.log("CustomElementUI playAnimation: " + targetAnimKey);
                     this.lastActionName = targetAnimKey;
                     action.gotoFrameAndPlay(1, action.getDuration(), 0, false);
 
@@ -128,7 +128,7 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
             catch (e) {
                 cc.log("Error playing animation " + targetAnimKey + ": " + e);
             }
-            
+
         }
 
         // Fallback to main action if it has timelines

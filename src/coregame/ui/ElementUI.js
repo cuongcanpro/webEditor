@@ -12,7 +12,7 @@ CoreGame.ElementUI = cc.Node.extend({
     isElementUI: true,
 
     ctor: function (element) {
-        cc.log("type nay === " + element.type);
+        // cc.log("type nay === " + element.type);
         this._super();
         this.element = element;
         this.type = element.type;
@@ -32,10 +32,10 @@ CoreGame.ElementUI = cc.Node.extend({
                     var elemSize = this.element.size || cc.size(1, 1);
                     this.sprBg.setContentSize(cellSize * elemSize.width, cellSize * elemSize.height);
                     this.addChild(this.sprBg, -1);
-                    cc.log("ElementUI: Added grid background:", bgPath);
+                    // cc.log("ElementUI: Added grid background:", bgPath);
                 }
             } catch (e) {
-                cc.log("ElementUI: Failed to add grid background:", e);
+                // cc.log("ElementUI: Failed to add grid background:", e);
             }
         }
 
@@ -64,20 +64,20 @@ CoreGame.ElementUI = cc.Node.extend({
             fileName = "7.png";
         }
 
-        this.sprite = fr.createSprite(fileName, path + fileName);
+        this.sprite = gv.getSprite(fileName, path + fileName);
         this.sprite.setCascadeOpacityEnabled(true);
         this.addChild(this.sprite);
 
         //isGem
         if (this.type < 10 && this.type != 7) {
             //Add Shadow
-            this.shawdow = fr.createSprite(this.type + "_shadow.png");
-            this.sprite.addChild(this.shawdow, -1);
-            UIUtils.posToCenter(this.shawdow);
-            this.shawdow.y -= 5;
+            // this.shawdow = gv.getSprite(this.type + "_shadow.png");
+            // this.sprite.addChild(this.shawdow, -1);
+            // UIUtils.posToCenter(this.shawdow);
+            // this.shawdow.y -= 5;
 
             //Glow
-            this.glow = fr.createSprite(this.type + "_glow.png");
+            this.glow = gv.getSprite(this.type + "_glow.png");
             this.glow.setBlendFunc(new cc.BlendFunc(cc.ONE, cc.ONE));
             this.glow.setVisible(false);
             this.sprite.addChild(this.glow);
@@ -99,18 +99,31 @@ CoreGame.ElementUI = cc.Node.extend({
     updateType: function (newType) {
         this.type = newType;
 
-        // Remove old visuals
-        if (this.sprite) this.sprite.removeFromParent(true);
-        if (this.shawdow) this.shawdow = null;
-        if (this.glow) this.glow = null;
+        // Recycle old visuals to sprite pool
+        if (this.shawdow) {
+            gv.pushSprite(this.shawdow);
+            this.shawdow = null;
+        }
+        if (this.glow) {
+            gv.pushSprite(this.glow);
+            this.glow = null;
+        }
+        if (this.sprite) {
+            gv.pushSprite(this.sprite);
+            this.sprite = null;
+        }
 
-        // Rebuild sprite
+        // Rebuild sprite from pool
         this.initSprite();
     },
 
     updateVisual: function () {
         // cc.log("Type " + this.element.type);
         // this.lbState.setString(this.element.hitPoints);
+    },
+
+    getElementPosition: function () {
+        return this.element.boardMgr.gridToPixel(this.element.position.x, this.element.position.y);
     },
 
     /**
@@ -173,6 +186,119 @@ CoreGame.ElementUI = cc.Node.extend({
         var scaleDown = cc.scaleTo(0.1, 1.0);
         this.runAction(cc.sequence(scaleUp, scaleDown));
         return 0.2;
+    },
+
+    /**
+     * Spawn a floating damage number that drifts up and fades out.
+     * Used for monster/boss hits to give clear feedback on lost HP.
+     *
+     * Damage aggregation: because the core damage model calls takeDamage(1)
+     * one-per-hit, a burst (e.g. RainbowBomb clearing a boss) would spawn
+     * many overlapping "1" labels. Instead we keep a single "active" label
+     * per ElementUI; follow-up hits arriving inside the aggregation window
+     * bump the existing label's number and give it a small pop so the
+     * accumulation reads as one growing number.
+     *
+     * @param {number} amount - damage dealt (positive integer)
+     */
+    playLoseLifeEffect: function (amount) {
+        var parent = this.getParent();
+        if (!parent) return;
+
+        var self = this;
+
+        // Builds the "hold → rise → fade → cleanup" tail. Called on both
+        // the initial spawn (after the pop-in) and on every increment so
+        // the hold window is always reset — the player never misses the
+        // final aggregated value because the label just got another bump.
+        var scheduleHoldAndRise = function (lbl) {
+            lbl.stopActionByTag(CoreGame.ElementUI.LOSE_LIFE_TAIL_TAG);
+
+            var riseDist = 40 + Math.random() * 20;
+            var riseTime = 0.7;
+
+            var tail = cc.sequence(
+                // Hold so bursts can accumulate; reset on each bump.
+                cc.delayTime(CoreGame.ElementUI.LOSE_LIFE_AGGREGATE_TIME),
+                // Drift up while fading.
+                cc.spawn(
+                    cc.moveBy(riseTime, cc.p(0, riseDist)).easing(cc.easeOut(2.0)),
+                    cc.sequence(
+                        cc.delayTime(riseTime * 0.4),
+                        cc.fadeOut(riseTime * 0.6).easing(cc.easeIn(2.5))
+                    )
+                ),
+                cc.callFunc(function () {
+                    if (self._loseLifeLbl === lbl) {
+                        self._loseLifeLbl = null;
+                        self._loseLifeAccum = 0;
+                    }
+                }),
+                cc.removeSelf()
+            );
+            tail.setTag(CoreGame.ElementUI.LOSE_LIFE_TAIL_TAG);
+            lbl.runAction(tail);
+        };
+
+        // Zoom + slight tilt emphasis, used on both first spawn and on
+        // every increment to pull the eye back to the changing number.
+        // Tilt direction alternates each bump for a punchy shake feel.
+        var playBumpEmphasis = function (lbl) {
+            lbl.stopActionByTag(CoreGame.ElementUI.LOSE_LIFE_BUMP_TAG);
+            self._loseLifeTiltSign = -(self._loseLifeTiltSign || 1);
+            var tiltAngle = (15 + (Math.random() - 0.5) * 5) * self._loseLifeTiltSign;
+            var bump = cc.sequence(
+                cc.spawn(
+                    cc.scaleTo(0.08, Math.max(lbl.getScale(), 1) * 1.1).easing(cc.easeOut(2.5)),
+                    cc.rotateTo(0.08, tiltAngle).easing(cc.easeOut(2.5)),
+                    cc.moveTo(0.08, lbl.rawPos).easing(cc.easeOut(2.5))
+                )
+            );
+            bump.setTag(CoreGame.ElementUI.LOSE_LIFE_BUMP_TAG);
+            lbl.runAction(bump);
+        };
+
+        // If a label is still accumulating, bump & reset its lifetime.
+        if (this._loseLifeLbl && cc.sys.isObjectValid(this._loseLifeLbl)) {
+            this._loseLifeAccum += amount;
+            var lblExisting = this._loseLifeLbl;
+            lblExisting.setString(String(this._loseLifeAccum));
+            // Reset opacity in case the rise/fade had already begun.
+            lblExisting.setOpacity(255);
+            playBumpEmphasis(lblExisting);
+            scheduleHoldAndRise(lblExisting);
+            return;
+        }
+
+        var lbl = new cc.LabelBMFont(String(amount), "res/modules/font/gotHit.fnt");
+
+        // Spawn slightly above element center, in parent space, with a tiny
+        // random horizontal jitter so stacked labels across elements don't
+        // fully overlap each other.
+        var startPos = cc.p(
+            this.getPositionX() + (Math.random() - 0.5) * 150,
+            this.getPositionY() + (Math.random() - 0.5) * 50
+        );
+        lbl.setPosition(startPos);
+        lbl.rawPos = lbl.getPosition();
+        lbl.setScale(0);
+        lbl.setOpacity(255);
+        parent.addChild(lbl, CoreGame.Config.zOrder.MATCH_4_EXPLODE + 200);
+
+        this._loseLifeLbl = lbl;
+        this._loseLifeAccum = amount;
+        this._loseLifeTiltSign = 1;
+
+        // Pop-in, then the resettable tail. Pop-in runs untagged so the
+        // bump-on-increment logic doesn't cancel it mid-entry.
+        var popInTime = 0.15;
+        lbl.runAction(cc.sequence(
+            cc.scaleTo(popInTime, 1).easing(cc.easeBackOut()),
+            cc.callFunc(function () {
+                if (!cc.sys.isObjectValid(lbl)) return;
+                scheduleHoldAndRise(lbl);
+            })
+        ));
     },
 
     /**
@@ -273,10 +399,37 @@ CoreGame.ElementUI = cc.Node.extend({
         var bounceUpTime = 0.08;
         var bounceDownTime = 0.06;
 
+        // Diagonal drop: split into a vertical drop followed by an exact
+        // 45° diagonal so the sideways motion is clearly visible and the
+        // path geometry is predictable. Total duration is preserved.
+        var absDx = Math.abs(targetPos.x - this.x);
+        var absDy = Math.abs(this.y - targetPos.y);
+
+        var dropAction;
+        if (absDx > 0 && absDy > absDx) {
+            // Intermediate point: directly above target by absDx pixels,
+            // so leg 2 moves (absDx, -absDx) → exact 45° diagonal.
+            var midPos = cc.p(this.x, targetPos.y + absDx);
+
+            // Split duration proportional to vertical distance covered by each leg.
+            var t1 = duration * (absDy - absDx) / absDy;
+            var t2 = duration - t1;
+
+            dropAction = cc.sequence(
+                // Leg 1 — pure vertical drop, easeIn mimics gravity acceleration from rest.
+                cc.moveTo(t1, midPos).easing(cc.easeIn(2.0)),
+                // Leg 2 — exact 45° diagonal, linear keeps dx == dy throughout the leg.
+                cc.moveTo(t2, targetPos)
+            );
+        } else {
+            // Pure vertical drop (or degenerate dx >= dy case — fall back to single moveTo).
+            // Quadratic easeIn mimics real gravity: position ∝ t²
+            dropAction = cc.moveTo(duration, targetPos).easing(cc.easeIn(2.0));
+        }
+
         var move = cc.sequence(
             cc.delayTime(delayTime),
-            // Quadratic easeIn mimics real gravity: position ∝ t²
-            cc.moveTo(duration, targetPos).easing(cc.easeIn(2.0)),
+            dropAction,
             // Impact bounce
             cc.moveTo(bounceUpTime, bouncePos).easing(cc.easeOut(2.0)),
             cc.moveTo(bounceDownTime, targetPos).easing(cc.easeIn(1.5)),
@@ -420,17 +573,43 @@ CoreGame.ElementUI = cc.Node.extend({
     },
 
     /**
-     * Play hint animation
+     * Play hint animation — nudge this element toward `targetPos` and back,
+     * repeating, to show the player which direction to swap.
+     * If targetPos is omitted, falls back to the old pulse-scale behaviour.
+     *
+     * @param {cc.Point} [targetPos] pixel position of the partner slot.
      */
-    playHintAnim: function () {
+    playHintAnim: function (targetPos) {
         if (this.isHinting) return;
         this.isHinting = true;
         this.stopActionByTag(999);
 
-        var scaleUp = cc.scaleTo(0.4, 1.15).easing(cc.easeSineOut());
-        var scaleDown = cc.scaleTo(0.4, 1.0).easing(cc.easeSineIn());
-        var seq = cc.sequence(scaleUp, scaleDown);
-        var repeat = cc.repeatForever(seq);
+        // Remember original position so stopHintAnim can snap back cleanly
+        // even if the repeat is cut mid-motion.
+        this._hintOriginalPos = cc.p(this.x, this.y);
+
+        var repeatTimes = 3;
+        var repeat;
+        if (targetPos) {
+            // Move ~nudgeFactor% of the way toward the partner, then back. This reads
+            // as a clear directional nudge without the gem leaving its slot.
+            var nudgeFactor = 0.15;
+            var nudgeX = this._hintOriginalPos.x + (targetPos.x - this._hintOriginalPos.x) * nudgeFactor;
+            var nudgeY = this._hintOriginalPos.y + (targetPos.y - this._hintOriginalPos.y) * nudgeFactor;
+
+            var moveForward = cc.moveTo(CoreGame.ElementUI.HINT_TIME_EFX, cc.p(nudgeX, nudgeY)).easing(cc.easeSineIn());
+            var moveBack = cc.moveTo(CoreGame.ElementUI.HINT_TIME_EFX, this._hintOriginalPos).easing(cc.easeSineOut());
+            var hold = cc.delayTime(CoreGame.ElementUI.HINT_TIME_HOLD);
+            var seq = cc.sequence(moveForward, moveBack, hold);
+            repeat = seq.repeat(repeatTimes);
+        } else {
+            // Fallback pulse (no direction info available).
+            var scaleUp = cc.scaleTo(CoreGame.ElementUI.HINT_TIME_EFX, 1.15).easing(cc.easeSineIn());
+            var scaleDown = cc.scaleTo(CoreGame.ElementUI.HINT_TIME_EFX, 1.0).easing(cc.easeSineOut());
+            var hold = cc.delayTime(CoreGame.ElementUI.HINT_TIME_HOLD);
+            var pulseSeq = cc.sequence(scaleUp, scaleDown, hold);
+            repeat = pulseSeq.repeat(repeatTimes);
+        }
         repeat.setTag(999);
         this.runAction(repeat);
     },
@@ -443,6 +622,45 @@ CoreGame.ElementUI = cc.Node.extend({
         this.isHinting = false;
         this.stopActionByTag(999);
         this.setScale(1.0);
+        if (this._hintOriginalPos) {
+            this.setPosition(this._hintOriginalPos);
+            this._hintOriginalPos = null;
+        }
+    },
+
+    /**
+     * Pulse the glow sprite to highlight this gem as part of the hinted match
+     * pattern. Loops indefinitely until stopHintGlowAnim is called.
+     */
+    playHintGlowAnim: function () {
+        if (!this.glow) return;
+        if (this.isHintGlowing) return;
+        this.isHintGlowing = true;
+
+        this.glow.stopActionByTag(998);
+        this.glow.setOpacity(0);
+        this.glow.setVisible(true);
+
+        var repeatTimes = 3;
+        var fadeIn = cc.fadeTo(CoreGame.ElementUI.HINT_TIME_EFX, 25).easing(cc.easeSineOut());
+        var fadeOut = cc.fadeTo(CoreGame.ElementUI.HINT_TIME_EFX, 0).easing(cc.easeSineIn());
+        var hold = cc.delayTime(CoreGame.ElementUI.HINT_TIME_HOLD);
+        var pulse = cc.sequence(fadeIn, fadeOut, hold).repeat(repeatTimes);
+        pulse.setTag(998);
+        this.glow.runAction(pulse);
+    },
+
+    /**
+     * Stop glow pulse started by playHintGlowAnim.
+     */
+    stopHintGlowAnim: function () {
+        if (!this.isHintGlowing) return;
+        this.isHintGlowing = false;
+        if (this.glow) {
+            this.glow.stopActionByTag(998);
+            this.glow.setOpacity(0);
+            this.glow.setVisible(false);
+        }
     },
 
     /**
@@ -478,4 +696,16 @@ CoreGame.ElementUI = cc.Node.extend({
 });
 
 CoreGame.ElementUI.GEM_SCALE = 0.5;
+
+CoreGame.ElementUI.HINT_TIME_EFX = 0.333;
+CoreGame.ElementUI.HINT_TIME_HOLD = 0.15;
+
+// How long the floating damage label stays in place before drifting up.
+// During this window, subsequent takeDamage(1) calls aggregate into the
+// same label instead of spawning duplicates. Long enough to catch a burst
+// from a merge-PU cascade, short enough that distinct player actions feel
+// like separate hits.
+CoreGame.ElementUI.LOSE_LIFE_AGGREGATE_TIME = 0.35;
+CoreGame.ElementUI.LOSE_LIFE_BUMP_TAG = 9921;
+CoreGame.ElementUI.LOSE_LIFE_TAIL_TAG = 9922;
 CoreGame.ElementUI.extendDefault = CoreGame.ElementUI.extend;

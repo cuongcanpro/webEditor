@@ -8,11 +8,14 @@
  *   "anthropic" — Claude (api.anthropic.com)
  *   "openai"    — GPT-4o etc. (api.openai.com)
  *   "deepseek"  — DeepSeek (api.deepseek.com)
+ *   "local"     — Python service (llm_service/service.py) — recommended for mobile
+ *                 Start with: python service.py --api-key <key>
  */
 var LLMConfig = {
-    provider:    "deepseek",          // "anthropic" | "openai" | "deepseek"
-    apiKey:      "sk-1a2d64f765034171a426da2c0fb1f88f", // ← fill in your API key
-    model:       "deepseek-chat",     // "claude-haiku-4-5-20251001" | "gpt-4o" | "deepseek-chat"
+    provider:    "local",             // "anthropic" | "openai" | "deepseek" | "local"
+    apiKey:      "",                  // ← only used for non-local providers
+    model:       "deepseek-reasoner",     // "claude-haiku-4-5-20251001" | "gpt-4o" | "deepseek-chat"
+    serviceUrl:  "http://120.138.72.4:8081", // ← local Python service URL
     topK:        20,                  // max candidates sent to LLM (0 = unlimited)
     moveDelayMs: 500,                 // ms pause before executing move (visual feedback)
 };

@@ -30,7 +30,12 @@ CoreGame.Strategies.TakeDamageAction = CoreGame.Strategies.NormalAction.extend({
      */
     execute: function (element, context) {
         cc.log("Execute TakeDamageAction === " + context.matchColor);
-        element.takeDamage(1, context.matchColor, context.row, context.col);
+        var dmg = 1;
+        if (context.puType !== undefined && CoreGame.ElementObject.isMonsterType(element.type)) {
+            var configured = CoreGame.Config.PU_DAMAGE[context.puType];
+            if (configured) dmg = configured;
+        }
+        element.takeDamage(dmg, context.matchColor, context.row, context.col);
     }
 });
 

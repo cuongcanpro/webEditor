@@ -25,10 +25,11 @@ CoreGame.MatchMgr = cc.Class.extend({
 
         if (matches.length === 0) {
             // this.boardMgr.state = CoreGame.BoardState.IDLE;
-            return;
+            return false;
         }
-        if (this.boardMgr.state == CoreGame.BoardState.IDLE)
+        if (this.boardMgr.state == CoreGame.BoardState.IDLE) {
             this.boardMgr.state = CoreGame.BoardState.MATCHING;
+        }
 
         var maxDuration = 0;
 
@@ -49,6 +50,8 @@ CoreGame.MatchMgr = cc.Class.extend({
         // Reset swap positions AFTER processing all groups (to support dual PowerUp creation)
         this.boardMgr.lastSwapSource = null;
         this.boardMgr.lastSwapDest = null;
+
+        return true;
     },
 
     /**
@@ -158,6 +161,14 @@ CoreGame.MatchMgr = cc.Class.extend({
                     element.setRemoveAction(new CoreGame.Strategies.SpawnElementAction(
                         type, pos.row, pos.col
                     ));
+                    CoreGame.EventMgr.emit('powerUpCreated', {
+                        row: pos.row, col: pos.col,
+                        type: type, matchGroup: group
+                    });
+                    // §3.3 PU creation bonus.
+                    if (this.boardMgr && this.boardMgr.scoreMgr) {
+                        this.boardMgr.scoreMgr.addPUCreatedEvent(type);
+                    }
                 } else if (element && element.setRemoveAction) {
                     element.setRemoveAction(null);
                 }
@@ -231,11 +242,10 @@ CoreGame.MatchMgr = cc.Class.extend({
 
             // Emit event for other systems
             CoreGame.EventMgr.emit('powerUpCreated', {
-                row: spawnRow,
-                col: spawnCol,
+                row: targetPos ? targetPos.row : -1,
+                col: targetPos ? targetPos.col : -1,
                 type: type,
-                matchGroup: group,
-                powerUp: powerUp
+                matchGroup: group
             });
 
             return type;

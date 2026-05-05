@@ -119,8 +119,9 @@ var GUIQuitGame = BaseLayer.extend({
     },
 
     onQuitGame: function () {
-        // userMgr.updateHeart(-1);
+        userMgr.updateHeart(-1);
         lobbyMgr.openScroll();
+        challengeRoomMgr.exitGauntlet();
         sceneMgr.openScene(SceneLobby.className);
 
         // if (this.gameQuited) return;

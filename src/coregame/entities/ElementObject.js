@@ -1,4 +1,4 @@
-﻿/**
+/**
  * ElementObject - Base class for all game elements
  * Part of Match-3 Core Game
  */
@@ -10,7 +10,8 @@ CoreGame.ElementState = {
     SWAPPING: 2,
     MATCHING: 3,
     DROPPING: 4,
-    REMOVING: 5
+    REMOVING: 5,
+    PENDING: 6
 };
 
 CoreGame.LayerBehavior = {
@@ -120,7 +121,7 @@ CoreGame.ElementObject = cc.Class.extend({
 
         if (this.boardMgr) {
             // Tell board manager to update grid slots based on new position/size
-            this.boardMgr.updateGridForElement(this, oldRow, oldCol);
+            this.boardMgr.updateGridForElement(this, oldRow, oldCol, true);
 
             var targetPixelPos = this.boardMgr.gridToPixel(row, col);
             this.visualMoveTo(targetPixelPos, duration, delayTime);
@@ -156,11 +157,9 @@ CoreGame.ElementObject = cc.Class.extend({
             if (this.ui) {
                 time = this.ui.playDropToAnim(targetPixelPos, duration, delayTime);
             }
-            cc.log("Time dropTo: " + time + " xy: " + row + "," + col);
-            time = duration;
+            time = time * 0.7;
             CoreGame.TimedActionMgr.addAction(time, function () {
                 fr.Sound.playSoundEffect(resSound.seed_drop);
-                cc.log("Finish dropTo: " + time + " xy: " + this.position.x + "," + this.position.y);
                 this.setState(CoreGame.ElementState.IDLE);
                 // if (gem.ui) {
                 //     gem.ui.playBounceAnim();
@@ -168,7 +167,7 @@ CoreGame.ElementObject = cc.Class.extend({
                 this.boardMgr.setMatchingRequired(true);
                 this.boardMgr.setRefillRequired(true);
             }.bind(this));
-            
+
         }
     },
 
@@ -250,7 +249,7 @@ CoreGame.ElementObject = cc.Class.extend({
             for (var i = 0; i < dumpAttachments.length; i++) {
                 dumpAttachments[i].onMatch(matchContext);
                 if (dumpAttachments[i].isStopAction(CoreGame.ElementObject.Action.MATCH)) {
-                    return;
+                    return; // Attachment absorbed the match
                 }
             }
         }
@@ -285,6 +284,7 @@ CoreGame.ElementObject = cc.Class.extend({
             this.remove();
             return;
         }
+        this.setState(CoreGame.ElementState.REMOVING);
         var timeRemove = this.ui.playAnimation(CoreGame.ElementObject.ACTION_TYPE.REMOVE);
         if (timeRemove == undefined)
             timeRemove = 0.2;
@@ -392,7 +392,7 @@ CoreGame.ElementObject = cc.Class.extend({
      * Remove element from game
      */
     remove: function () {
-        cc.log("Remove Element === " + JSON.stringify(this.position) + " Name " + this.getTypeName());
+        // cc.log("Remove Element === " + JSON.stringify(this.position) + " Name " + this.getTypeName());
         this.setState(CoreGame.ElementState.REMOVING);
         var boardUI = this.boardMgr ? this.boardMgr.boardUI : null;
 

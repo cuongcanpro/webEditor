@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Config - Game configuration constants
  * Part of Match-3 Core Game
  */
@@ -155,6 +155,25 @@ CoreGame.Config.BOSS_LIST = [
     CoreGame.Config.ElementType.BOSS_ELITE
 ];
 
+// PowerUp damage to monsters/bosses, keyed by PU ElementType.
+// Missing entries fall back to 1. Non-monster blockers ignore this table
+// and always take 1 per hit (see TakeDamageAction.execute).
+CoreGame.Config.PU_DAMAGE = {};
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_H] = 3;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_V] = 3;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_T]   = 5;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_L]   = 5;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_5]   = 1;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_SQUARE]   = 2;
+
+// Whitelist of blocker typeIds that count as monster/boss for variable PU
+// damage. Designer-populated. Empty = feature dormant (everything takes 1).
+CoreGame.Config.MONSTER_BLOCKER_TYPES = [];
+
+CoreGame.Config.isMonsterType = function (typeId) {
+    return CoreGame.Config.MONSTER_BLOCKER_TYPES.indexOf(typeId) !== -1;
+};
+
 CoreGame.Config.DIFFICULTY = {
     'easy': 0,
     'medium': 1,
@@ -177,6 +196,24 @@ CoreGame.Config.GrassPieceInfo = {
     "0101": ['3_4'],
     "0011": ['2_3']
 };
+
+CoreGame.Config.Grass2PieceInfo = {
+    "0001": [3],
+    "0010": [2],
+    "0100": [4],
+    "1000": [1],
+    "0110": ['1_3', '3_1'],
+    "1001": ['2_4', '4_2'],
+    "0111": ['3_1'],
+    "1011": ['2_4'],
+    "1110": ['1_3'],
+    "1101": ['4_2'],
+    "1010": ['1_2'],
+    "1100": ['4_1'],
+    "0101": ['3_4'],
+    "0011": ['2_3']
+};
+
 CoreGame.Config.CloudPieceInfo = {
     "0001": [3],
     "0010": [2],
@@ -282,7 +319,7 @@ CoreGame.Config.zOrder = {
     SCALLOP: 9,
     SAFE: 30,
     SOAP_PUMP: 9,
-    GOLD_BONUS: 7,
+    GOLD_BONUS:7,
     GOLDEN_PIG: 9,
     COLLECT_BALLOON: 12,
     BALLOON_ROPE: 11,

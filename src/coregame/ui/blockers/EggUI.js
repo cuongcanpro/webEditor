@@ -34,6 +34,7 @@ CoreGame.EggUI = CoreGame.ElementUI.extend({
         cc.log("File Name " + fileName);
         if (this.sprite) {
             fr.changeSprite(this.sprite, fileName, "res/modules/game/element/" + fileName);
+            this.sprite.setScale(CoreGame.EggUI.BASE_SCALE);
         }
     },
 
@@ -73,3 +74,4 @@ CoreGame.EggUI = CoreGame.ElementUI.extend({
         this.playTakeDamageEffect();
     }
 });
+CoreGame.EggUI.BASE_SCALE = 0.5;

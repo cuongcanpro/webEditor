@@ -93,17 +93,70 @@ CoreGame.RainbowTransformPU = CoreGame.CustomCreatorPU.extend({
         this.ui = undefined;
         this.transformDuration = duration;
 
-        CoreGame.TimedActionMgr.addAction(duration, this._super.bind(this, typeToClear));
+        // Don't call _super (CustomCreatorPU.activeLogic) — we replace it
+        // with a version that, alongside firing each sub-PU, also force-
+        // removes the gem we hid earlier in onTargetHit. This guarantees
+        // every hidden gem is cleaned up regardless of whether the
+        // sub-rocket's row/column clear happens to include its current
+        // slot (drops during the staggered burst can move it off the line).
+        var self = this;
+        CoreGame.TimedActionMgr.addAction(duration, function () {
+            self._activateSubPUsWithCleanup();
+        });
+    },
+
+    /**
+     * Variant of CustomCreatorPU.activeLogic that, before each sub-PU's
+     * active(), removes the originally-hidden gem saved on the sub-PU.
+     * This avoids the race where a hidden gem ends up off the rocket's
+     * clear line and is left invisibly orphaned at end of cascade.
+     */
+    _activateSubPUsWithCleanup: function () {
+        if (!this.listSubPU) return;
+        for (var i = 0; i < this.listSubPU.length; i++) {
+            var subPU = this.listSubPU[i];
+            var delay = (this.subPUData[i].delay || 0);
+            CoreGame.TimedActionMgr.addAction(delay, function (targetPU) {
+                // Remove the gem hidden by onTargetHit, if it's still alive
+                // and not already being matched/removed by a concurrent
+                // path. Use doExplode so the cleanup goes through the
+                // normal removal pipeline (slot cleanup + UI teardown +
+                // refill trigger).
+                var hidden = targetPU.hiddenGem;
+                if (hidden && hidden.boardMgr
+                    && hidden.state !== CoreGame.ElementState.REMOVING
+                    && hidden.state !== CoreGame.ElementState.MATCHING) {
+                    if (typeof hidden.doExplode === 'function') {
+                        hidden.doExplode();
+                    } else if (typeof hidden.remove === 'function') {
+                        hidden.remove();
+                    }
+                }
+                targetPU.hiddenGem = null;
+
+                targetPU.active();
+            }.bind(null, subPU));
+        }
     },
 
     removeAfterActivate: function () {
         CoreGame.TimedActionMgr.addAction(this.transformDuration, function () {
             this.remove();
+            // Kick board state back to MATCHING so checkFinishTurn's
+            // `state !== IDLE` gate can pass after the last sub-PU settles,
+            // otherwise the board can finish with every target cleared but
+            // onFinishTurn never fires => no victory GUI.
+            var mgr = CoreGame.BoardUI.getInstance().boardMgr;
+            mgr.state = CoreGame.BoardState.MATCHING;
         }.bind(this));
     },
 
     onTargetHit: function (index) {
-        // Hide the original gem visual at this position
+        // Hide the original gem visual at this position AND save the gem
+        // reference on the matching sub-PU. The sub-PU's activation later
+        // explicitly removes this gem (see _activateSubPUsWithCleanup),
+        // which guarantees the hidden gem can't be orphaned even if the
+        // rocket's row/column clear doesn't reach its current slot.
         var data = this.subPUData[index];
         if (data) {
             var slot = this.boardMgr.getSlot(data.posX, data.posY);
@@ -111,6 +164,9 @@ CoreGame.RainbowTransformPU = CoreGame.CustomCreatorPU.extend({
                 var gem = slot.getMatchableElement();
                 if (gem && gem.ui) {
                     gem.ui.setVisible(false);
+                    if (this.listSubPU && this.listSubPU[index]) {
+                        this.listSubPU[index].hiddenGem = gem;
+                    }
                 }
             }
         }

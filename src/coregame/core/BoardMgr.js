@@ -1,4 +1,4 @@
-﻿/**
+/**
  * BoardMgr - Main game controller for Match-3
  * Part of Match-3 Core Game
  */
@@ -29,7 +29,6 @@ CoreGame.BoardMgr = cc.Class.extend({
     requiredMatching: false,
     requiredRefill: false,
     playerMoved: false,
-    didPlayerSwap: false,   // true only on real player swaps (not shuffle)
 
     // Additional properties
     rows: 0,
@@ -55,14 +54,26 @@ CoreGame.BoardMgr = cc.Class.extend({
         this.matchMgr = new CoreGame.MatchMgr(this);
         this.dropMgr = new CoreGame.DropMgr(this);
         this.blockerMgr = new CoreGame.BlockerMgr(this);
+        this.scoreMgr = new CoreGame.ScoreMgr(this);
+        // Number of PowerUps currently in their active() lifecycle (incremented
+        // on PowerUP.active(), decremented in removedElement when a PowerUp
+        // is removed). Used to:
+        //   1) tag concurrent element clears with clearMethod = 'pu'
+        //   2) award PU chain bonuses when a PU starts while another is alive
+        this._activePUCount = 0;
         this.splitDropConfig = {
             enabled: false,
             splitCol: 4   // col 0-3: roi xu?ng | col 4-7: n?i l�n
         };
+        this.pendingRainbowPUs = [];
+        this.isAutoMatchBlocked = false;
         this.idleTime = 0;
         this.isHinting = false;
-        this.hintThreshold = 5.0; // Show hint after 5 seconds of idle
+        this.hintThreshold = 4.0; // Show (and re-cycle) hint every 3 seconds of idle
+        this._lastHintKey = null; // Last hint move key — used to avoid immediate repeats
         this.hintElements = []; // Store elements currently showing hint
+        this.idleCheckEndGameTime = 0;
+        this.doEndGame = false;
     },
 
     /**
@@ -77,7 +88,43 @@ CoreGame.BoardMgr = cc.Class.extend({
         this.initGrid(mapConfig, testBoxes);
         this.initEventListeners();
         this.gameEnded = false;
+        this.idleCheckEndGameTime = 0;
+        this.doEndGame = false;
+        this._activePUCount = 0;
+        if (this.scoreMgr) this.scoreMgr.reset(mapConfig);
         return this;
+    },
+
+    // ── 3-Star scoring helpers (read by ScoreMgr) ────────────────────────────
+
+    /**
+     * Whether `type` appears in this level's targetElements list (i.e. is an
+     * Objective blocker for §3.1 scoring). Picks between the [A] Objective
+     * and [B] Secondary score tables.
+     */
+    isObjectiveType: function (type) {
+        if (!this.targetElements) return false;
+        for (var i = 0; i < this.targetElements.length; i++) {
+            if (this.targetElements[i].id === type) return true;
+        }
+        return false;
+    },
+
+    /**
+     * Returns 'pu' if any PowerUp is currently in its active() lifecycle,
+     * else 'match'. Used to tag clear events for §3.1/§3.2 column lookup.
+     */
+    getCurrentClearMethod: function () {
+        return (this._activePUCount > 0) ? 'pu' : 'match';
+    },
+
+    /**
+     * Cascade depth as defined in §3.4 — 0 for the player's direct match,
+     * +1 for each cascade wave. cascadeCount internally starts at 1 on the
+     * first match wave; subtract 1 to map onto the design's depth values.
+     */
+    getCurrentCascadeDepth: function () {
+        return Math.max(0, (this.cascadeCount || 0) - 1);
     },
 
     /**
@@ -380,6 +427,7 @@ CoreGame.BoardMgr = cc.Class.extend({
     },
 
     removedElement: function (element) {
+        this.idleCheckEndGameTime = 0;
         for (let targetElement of this.targetElements) {
             if (targetElement.id === element.type) {
                 targetElement.current--;
@@ -388,6 +436,31 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         if (this.gameUI) {
             this.gameUI.onUpdateTargetElement(element);
+        }
+
+        // ── 3-Star scoring (see ScoreMgr.js) ────────────────────────────────
+        // Close out a PU's activation lifecycle by decrementing the live-PU
+        // counter; this stops further clears from being tagged as 'pu'.
+        if (element instanceof CoreGame.PowerUP) {
+            if (this._activePUCount > 0) this._activePUCount--;
+        }
+
+        // Per §3.1, score every damage event — not just kills. Multi-HP
+        // blockers (Box, Chain, bosses) and tile-based blockers (Cloud) are
+        // scored inside their own takeDamage() paths where the per-event
+        // amount is known. Here we only score instant-removal entities
+        // (regular gems via match) so blocker kills aren't double-counted.
+        if (this.scoreMgr
+            && element
+            && !(element instanceof CoreGame.Blocker)
+            && !(element instanceof CoreGame.PowerUP)) {
+            this.scoreMgr.addClearEvent({
+                elementType: element.type,
+                hp: 1,
+                isObjective: this.isObjectiveType(element.type),
+                clearMethod: this.getCurrentClearMethod(),
+                cascadeDepth: this.getCurrentCascadeDepth()
+            });
         }
     },
 
@@ -545,13 +618,22 @@ CoreGame.BoardMgr = cc.Class.extend({
             // Handle element match
         }, this);
 
+        CoreGame.EventMgr.on('scoreChanged', function (package) {
+            // cc.log("********* SCORING: ", package.score.total);
+            // Handle scoreChanged
+
+            if (this.gameUI) {
+                this.gameUI.onScoreChanged(package.score.total, this.mapConfig.scoreConfig);
+            }
+        }, this);
+
         CoreGame.EventMgr.on(CoreGame.ElementObject.EVENT.REMOVED, function (elementObject) {
             // Handle blocker destruction
 
             //Also check for end game to stop interaction
             let isWin = this.targetElements.length > 0;
             for (let element of this.targetElements) {
-                cc.log("CHECK ENDGAME:", element.current, element.type);
+                //cc.log("CHECK ENDGAME:", element.current, element.type);
                 if (element.current > 0) {
                     isWin = false;
                     break;
@@ -750,7 +832,7 @@ CoreGame.BoardMgr = cc.Class.extend({
 
 
     /**
-     * Find priority target slots for PlaneUP.
+     * Find priority target slots for PlanePU.
      *
      * [IMPROVEMENT v2] Two additions vs original:
      *   1. excludeSlots param — slots just hit by launch explosion are excluded.
@@ -821,13 +903,37 @@ CoreGame.BoardMgr = cc.Class.extend({
                 if (isTarget) {
                     var targetSlot = slot;
                     if (isDonutTarget) {
-                        var slotBelow = this.getSlot(r - 1, c);
-                        if (slotBelow && !slotBelow.isEmpty()) {
-                            targetSlot = slotBelow;
+                        // Donut is immune to explosions — we only help by
+                        // clearing what's under it so gravity can carry it
+                        // toward its port. Walk down to the first slot that
+                        // actually has something matchable (and isn't another
+                        // donut). If nothing qualifies, don't add this donut
+                        // as a priority target — otherwise the plane wastes
+                        // its flight landing on the donut cell itself, which
+                        // is a no-op.
+                        targetSlot = null;
+                        var DONUT_TYPE = CoreGame.Config.ElementType.DONUT;
+                        for (var rr = r - 1; rr >= 0; rr--) {
+                            var s = this.getSlot(rr, c);
+                            if (!s) break;
+                            if (s.isEmpty()) continue;
+                            // Skip stacked donuts — hitting them is also a no-op.
+                            var isAnotherDonut = false;
+                            for (var e2 = 0; e2 < s.listElement.length; e2++) {
+                                if (s.listElement[e2].type === DONUT_TYPE) {
+                                    isAnotherDonut = true;
+                                    break;
+                                }
+                            }
+                            if (isAnotherDonut) continue;
+                            targetSlot = s;
+                            break;
                         }
                     }
-                    var score = this._calcPlaneTargetScore(targetSlot.row, targetSlot.col, lowestHP);
-                    priorityTargets.push({ slot: targetSlot, score: score });
+                    if (targetSlot) {
+                        var score = this._calcPlaneTargetScore(targetSlot.row, targetSlot.col, lowestHP);
+                        priorityTargets.push({ slot: targetSlot, score: score });
+                    }
                 }
 
                 var matchable = slot.getMatchableElement();
@@ -892,7 +998,11 @@ CoreGame.BoardMgr = cc.Class.extend({
      * Decrease remaining moves by 1 and update the UI move counter.
      */
     useMove: function () {
+        this.playerMoved = true;
         this.numMove--;
+
+        this.idleCheckEndGameTime = 0;
+
         if (this.gameUI) {
             this.gameUI.onUpdateMove(this.numMove);
         }
@@ -905,6 +1015,12 @@ CoreGame.BoardMgr = cc.Class.extend({
     addMoves: function (count = 0) {
         this.numMove += count;
         this.gameEnded = false;
+        // Also clear the sticky end-game guard. checkEndGame() short-circuits
+        // when doEndGame is true, so leaving it set after a buy-move purchase
+        // would silently skip the win evaluation if the player clears all
+        // targets afterwards — the board would just sit idle with no
+        // congrats / end-game UI.
+        this.doEndGame = false;
         if (this.gameUI) {
             this.gameUI.onUpdateMove(this.numMove);
         }
@@ -966,14 +1082,10 @@ CoreGame.BoardMgr = cc.Class.extend({
         if (!this.canInteract()) return;
 
         if (this.selectedSlot) {
-            this.playerMoved = this.selectedSlot.onActive();
-            if (this.playerMoved) this.didPlayerSwap = true;
-            if (this.playerMoved && this.playerMoved instanceof CoreGame.PowerUP) {
+            var elementMove = this.selectedSlot.onActive();
+            if (elementMove) this.didPlayerSwap = true;
+            if (elementMove && elementMove instanceof CoreGame.PowerUP) {
                 this.useMove();
-            }
-            else {
-                this.playerMoved = false;
-                this.didPlayerSwap = false;
             }
         }
     },
@@ -1025,17 +1137,15 @@ CoreGame.BoardMgr = cc.Class.extend({
                 cc.log("PowerUp swap to empty — move and activate");
                 this.state = CoreGame.BoardState.SWAPPING;
                 this.swapPowerUpToEmpty(element1, slot2);
-                this.playerMoved = true;
-                this.didPlayerSwap = true;
                 this.useMove();
                 fr.Sound.playSoundEffect(resSound.seed_swap);
             } else {
                 // Regular gem — try move-to-empty (match check)
                 cc.log("Slot is truly empty — try move-to-empty");
                 var emptySwap = new CoreGame.MoveToEmptySwap(this);
-                this.playerMoved = emptySwap.swap(element1, slot2);
-                if (this.playerMoved) this.didPlayerSwap = true;
+                emptySwap.swap(element1, slot2);
                 fr.Sound.playSoundEffect(resSound.seed_swap);
+                this.useMove();
             }
             return;
         }
@@ -1045,9 +1155,8 @@ CoreGame.BoardMgr = cc.Class.extend({
         cc.log("Determine swap type");
         var swapLogic = this.getSwapLogic(element1, element2);
         //
-        this.playerMoved = swapLogic.swap(element1, element2);
-        if (this.playerMoved) {
-            this.didPlayerSwap = true;
+        var elementMove = swapLogic.swap(element1, element2);
+        if (elementMove) {
             this.useMove();
         }
         // State update handled by swapLogic timers
@@ -1133,8 +1242,9 @@ CoreGame.BoardMgr = cc.Class.extend({
      * Perform matching on the board (delegated to MatchMgr)
      */
     doMatch: function () {
-        this.cascadeCount++; // Each doMatch call = one match round
-        this.matchMgr.doMatch();
+        this.idleCheckEndGameTime = 0;
+        var hadMatches = this.matchMgr.doMatch();
+        if (hadMatches) this.cascadeCount++;
     },
 
     // ========= Refill Methods =========
@@ -1166,7 +1276,13 @@ CoreGame.BoardMgr = cc.Class.extend({
      * Refill the board (drop and spawn new gems)
      */
     refillMap: function () {
-        this.dropMgr.refillMap();
+        this.idleCheckEndGameTime = 0;
+        let hasAction = this.dropMgr.refillMap();
+        if (!hasAction && !this.playerMoved) {
+            if (!this.gameEnded && this.hasPossibleMoves && !this.hasPossibleMoves()) {
+                this.shuffleBoard();
+            }
+        }
     },
 
 
@@ -1174,14 +1290,98 @@ CoreGame.BoardMgr = cc.Class.extend({
      * Shuffle the board when no moves available
      */
     /**
+     * Check if currently has enough swappable gems to perform shuffle.
+     */
+    canShuffleBoard: function () {
+        var gems = [];
+        var slots = [];
+        var typeCounts = {};
+
+        for (var r = 0; r < this.rows; r++) {
+            for (var c = 0; c < this.cols; c++) {
+                var slot = this.getSlot(r, c);
+                if (slot) {
+                    var matchable = slot.getMatchableElement();
+                    if (matchable && matchable instanceof CoreGame.GemObject && matchable.type <= CoreGame.Config.NUM_GEN) {
+                        typeCounts[matchable.type] = (typeCounts[matchable.type] || 0) + 1;
+                    }
+
+                    var swappable = slot.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
+                    if (swappable && swappable instanceof CoreGame.GemObject && swappable.type <= CoreGame.Config.NUM_GEN) {
+                        gems.push(swappable);
+                        slots.push({ r: r, c: c });
+                    }
+                }
+            }
+        }
+
+        // Condition to have a Match requires having at least one Gem color with quantity >= 3
+        var hasSufficientGems = false;
+        var minMatch = CoreGame.Config.MIN_MATCH || 3;
+        for (var t in typeCounts) {
+            if (typeCounts[t] >= minMatch) {
+                hasSufficientGems = true;
+                break;
+            }
+        }
+        if (!hasSufficientGems) {
+            return false;
+        }
+
+        if (gems.length < 2) {
+            return false;
+        }
+
+        var slotIndex = {};
+        for (var i = 0; i < slots.length; i++) {
+            slotIndex[slots[i].r + "," + slots[i].c] = true;
+        }
+
+        // Try horizontal contiguous 3 slots (guarantees _forceValidMove will succeed)
+        for (var r = 0; r < this.rows; r++) {
+            for (var c = 0; c < this.cols - 2; c++) {
+                if (slotIndex[r + "," + c] && slotIndex[r + "," + (c + 1)] && slotIndex[r + "," + (c + 2)]) {
+                    return true;
+                }
+            }
+        }
+
+        // Try vertical contiguous 3 slots (guarantees _forceValidMove will succeed)
+        for (var c = 0; c < this.cols; c++) {
+            for (var r = 0; r < this.rows - 2; r++) {
+                if (slotIndex[r + "," + c] && slotIndex[(r + 1) + "," + c] && slotIndex[(r + 2) + "," + c]) {
+                    return true;
+                }
+            }
+        }
+
+        // If we can't force a move, simulate shuffles to see if ANY valid configuration exists
+        var maxAttempts = 150;
+        var tempGems = gems.slice();
+        for (var attempt = 0; attempt < maxAttempts; attempt++) {
+            for (var i = tempGems.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = tempGems[i];
+                tempGems[i] = tempGems[j];
+                tempGems[j] = temp;
+            }
+            if (this._shuffleHasPossibleMoves(slots, tempGems)) {
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    /**
      * Shuffle elements on the board when no moves are possible.
      */
     shuffleBoard: function (callback) {
         cc.log("Shuffling board - no possible moves");
+        CoreGame.EventMgr.emit('boardShuffled');
 
         // Block interaction during shuffle
         this.state = CoreGame.BoardState.DROPPING;
-        this.playerMoved = true;
 
         var gems = [];
         var slots = [];
@@ -1203,7 +1403,6 @@ CoreGame.BoardMgr = cc.Class.extend({
         if (gems.length < 2) {
             cc.log("Shuffle: Not enough gems to shuffle");
             this.state = CoreGame.BoardState.IDLE;
-            this.playerMoved = false;
             if (callback) callback();
             return;
         }
@@ -1235,13 +1434,9 @@ CoreGame.BoardMgr = cc.Class.extend({
         }
 
         // Last resort: force a guaranteed match-3
-        let types = [];
-        for (let gem of gems) {
-            types.push(gem.type);
-        }
         if (!shuffleSuccess) {
             cc.log("Shuffle: forcing guaranteed move");
-            this._forceValidMove(slots, types);
+            shuffleSuccess = this._forceValidMove(slots, gems);
         }
 
         // 3. Assign shuffled types to gems, re-add to grid, animate
@@ -1264,15 +1459,18 @@ CoreGame.BoardMgr = cc.Class.extend({
                 gem.visualMoveTo(pixelPos, duration);
             }
         } else {
+            cc.log("CRITICAL ERROR: Failed to force a valid move. Restoring gems to avoid broken state.");
+            duration = 0;
+            // Restore to slots to prevent empty board
             for (var i = 0; i < gems.length; i++) {
                 var gem = gems[i];
-                // var target = slots[i];
-                // gem.position.x = target.r;
-                // gem.position.y = target.c;
-                // var targetSlot = this.getSlot(target.r, target.c);
-                // if (targetSlot) targetSlot.addElement(gem);
-                // gem.type = types[i];
-                if (gem.ui) gem.ui.updateType(types[i]);
+                var target = slots[i];
+                gem.position.x = target.r;
+                gem.position.y = target.c;
+                var targetSlot = this.getSlot(target.r, target.c);
+                if (targetSlot) {
+                    targetSlot.addElement(gem);
+                }
             }
         }
 
@@ -1283,7 +1481,7 @@ CoreGame.BoardMgr = cc.Class.extend({
             for (var i = 0; i < shuffledGems.length; i++) {
                 shuffledGems[i].setState(CoreGame.ElementState.IDLE);
             }
-            self.playerMoved = true;
+            self.state = CoreGame.BoardState.IDLE;
             self.setMatchingRequired(true);
             if (callback) callback();
         }, this);
@@ -1310,6 +1508,32 @@ CoreGame.BoardMgr = cc.Class.extend({
         return true;
     },
 
+    checkPendingRainbowPUs: function () {
+        if (this.pendingRainbowPUs.length > 0) {
+            var hasPendingActions = CoreGame.TimedActionMgr.hasPendingActions();
+            var isIdle = this.areAllElementsIdle();
+            cc.log("checkPendingRainbowPUs " + isIdle + " " + hasPendingActions + " " + this.requiredRefill);
+            if (isIdle && !hasPendingActions && !this.requiredRefill) {
+                cc.log("Board settled. Firing pending RainbowPUs.");
+
+                var pus = this.pendingRainbowPUs;
+                this.pendingRainbowPUs = [];
+                var maxDuration = 0;
+                for (var i = 0; i < pus.length; i++) {
+                    pus[i].firePending();
+                    if (pus[i].activeDuration > maxDuration) {
+                        maxDuration = pus[i].activeDuration;
+                    }
+                }
+
+                CoreGame.TimedActionMgr.addAction(maxDuration, function () {
+                    this.isAutoMatchBlocked = false; // unblock so matchElement can work
+                    this.setMatchingRequired(true);
+                }.bind(this));
+            }
+        }
+    },
+
     /**
      * Check if turn is finished
      * Turn finishes when board is in active state (MATCHING/DROPPING/etc)
@@ -1321,12 +1545,17 @@ CoreGame.BoardMgr = cc.Class.extend({
             // Check if all elements are idle AND no pending timed actions
             var hasPendingActions = CoreGame.TimedActionMgr.hasPendingActions();
             var isIdle = this.areAllElementsIdle();
+            // cc.log("isIdle === ", isIdle);
+            // cc.log("hasPendingActions === ", hasPendingActions);
+            // cc.log("requiredMatching === ", this.requiredMatching);
+            // cc.log("requiredRefill === ", this.requiredRefill);
 
             if (isIdle && !hasPendingActions && !this.requiredMatching && !this.requiredRefill) {
                 // All animations complete, no more cascaded matches or refills pending
                 this.state = CoreGame.BoardState.IDLE;
-                this.playerMoved = false;
+                cc.log("Run here checkFinishTurn");
                 this.onFinishTurn();
+                this.playerMoved = false;
             }
         }
     },
@@ -1339,11 +1568,21 @@ CoreGame.BoardMgr = cc.Class.extend({
         // Clear plane claimed targets for next turn
         this._planeClaimCounts = [];
 
-        // Only fire element END_TURN actions on real player swaps, not shuffle
-        var wasPlayerSwap = this.didPlayerSwap;
-        this.didPlayerSwap = false;
+        // Release activation immunity on any PowerUps that were spawned
+        // during an ActiveSwap this turn. Holding the flag until here
+        // guarantees the swapped PU's full (async) activation chain can no
+        // longer consume the freshly-spawned PU — but from the next turn
+        // onward it behaves like any other PU.
+        if (this.immuneActivationElements && this.immuneActivationElements.length > 0) {
+            for (var k = 0; k < this.immuneActivationElements.length; k++) {
+                var imm = this.immuneActivationElements[k];
+                if (imm) imm._immuneToActivation = false;
+            }
+            this.immuneActivationElements = [];
+        }
 
-        if (wasPlayerSwap) {
+
+        if (this.playerMoved) {
             // Trigger END_TURN actions on all elements via global event
             CoreGame.EventMgr.emit("custom" + CoreGame.ElementObject.ACTION_TYPE.END_TURN, {
                 boardMgr: this
@@ -1376,12 +1615,13 @@ CoreGame.BoardMgr = cc.Class.extend({
             }
 
             cc.log("Turn finished - triggered END_TURN actions on", processedElements.length, "elements");
+
+            // Emit global event for other systems that need it
+            CoreGame.EventMgr.emit('turnFinished', {
+                boardMgr: this
+            });
         }
 
-        // Emit global event for other systems that need it
-        CoreGame.EventMgr.emit('turnFinished', {
-            boardMgr: this
-        });
 
         // AdaptiveTPP: track moves and update strategy
         this._tppMovesUsed = (this._tppMovesUsed || 0) + 1;
@@ -1401,16 +1641,33 @@ CoreGame.BoardMgr = cc.Class.extend({
                     tppCleared += Math.max(0, el.count - el.current);
                 }
             }
-            CoreGame.AdaptiveTPP.onTurnEnd(this._tppMovesUsed, tppCleared);
+            var turnInfo = {
+                cascadeCount: this.cascadeCount,
+                tilesRemoved: this.removedElementTypes.length,
+                validMoves: this.getAllSwappableMoves().length
+            };
+            CoreGame.AdaptiveTPP.onTurnEnd(this._tppMovesUsed, tppCleared, turnInfo);
         }
 
         //resetMatch count
         this.matchMgr.countedMatch = 0;
 
         //Check EndGame
+        var isEnd = this.checkEndGame();
+        cc.log("Turn finished - checkEndGame", isEnd);
+
+        // Check for available moves — if no possible moves, shuffle the board
+        if (!isEnd && !this.hasPossibleMoves()) {
+            cc.log("No possible moves found! Shuffling board...");
+            this.shuffleBoard();
+        }
+    },
+
+    checkEndGame: function () {
+        if (this.doEndGame) return true;
         let isWin = this.targetElements.length > 0;
         for (let element of this.targetElements) {
-            cc.log("CHECK ENDGAME:", element.current, element.type);
+            //cc.log("CHECK ENDGAME:", element.current, element.type);
             if (element.current > 0) {
                 isWin = false;
                 break;
@@ -1419,6 +1676,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         if (cc.sys.isNative) {
             if (isWin) {
+                cc.log("checkEndGame GAME WIN");
+                this.doEndGame = true;
                 this.gameEnded = true;
                 this.setEndStar();
                 this.setLevel();
@@ -1441,32 +1700,48 @@ CoreGame.BoardMgr = cc.Class.extend({
                         }
                     }.bind(this), endGameEfxTime * 1000);
                 }
+                return true;
             } else {
-                if (this.numMove <= 0) {
+                let checkNoMoreMoveAndCantShuffle = !this.hasPossibleMoves() && !this.canShuffleBoard() &&
+                    this.areAllElementsIdle() && !CoreGame.TimedActionMgr.hasPendingActions() &&
+                    !this.requiredMatching && !this.requiredRefill;
+
+                cc.log("CHECK NO MORE MOVE AND CANT SHUFFLE", checkNoMoreMoveAndCantShuffle);
+
+                if (this.numMove <= 0 || checkNoMoreMoveAndCantShuffle) {
                     this.gameEnded = true;
                     this.state = CoreGame.BoardState.END_GAME;
-                    if (this.gameUI) {
-                        this.gameUI.onEndGame(false, this.targetElements);
+                    this.doEndGame = true;
+                    try {
+                        if (this.gameUI) {
+                            this.gameUI.onEndGame(false, this.targetElements, checkNoMoreMoveAndCantShuffle);
+                        }
+                    } catch (e) {
+                        cc.log("Error in onEndGame:", e);
                     }
+                    return true;
                 }
             }
         } else {
             if (isWin) {
+                this.doEndGame = true;
                 this.gameEnded = true;
                 alert("Level Complete!");
+                return true;
             } else {
-                if (this.numMove <= 0) {
+                let checkNoMoreMoveAndCantShuffle = !this.hasPossibleMoves() && !this.canShuffleBoard() &&
+                    this.areAllElementsIdle() && !CoreGame.TimedActionMgr.hasPendingActions() &&
+                    !this.requiredMatching && !this.requiredRefill;
+
+                if (this.numMove <= 0 || checkNoMoreMoveAndCantShuffle) {
+                    this.doEndGame = true;
                     this.gameEnded = true;
                     alert("Game Over!");
+                    return true;
                 }
             }
         }
-
-        // Check for available moves — if no possible moves, shuffle the board
-        if (!this.hasPossibleMoves()) {
-            cc.log("No possible moves found! Shuffling board...");
-            this.shuffleBoard();
-        }
+        return false;
     },
 
     setEndStar: function () {
@@ -1475,13 +1750,10 @@ CoreGame.BoardMgr = cc.Class.extend({
         let usedMove = totalMove - remainMove;
         cc.log("MAIN BOARD set END STAR", totalMove, remainMove, usedMove);
 
-        this.endStar = 1;
+        this.endStar = this.scoreMgr.getStar(this.mapConfig.scoreConfig);
 
         if (this.mapConfig["endStarConfig"]) {
 
-        } else {
-            if (usedMove < 25) this.endStar = 2;
-            if (usedMove < 20) this.endStar = 3;
         }
 
         userMgr.getData().setStarByLevel(this.getLevelId(), this.endStar);
@@ -1534,6 +1806,16 @@ CoreGame.BoardMgr = cc.Class.extend({
         }
 
         var count = Math.min(this.numMove, candidates.length);
+
+        // §3.5 — flat +500 per leftover move regardless of whether the spawned
+        // PU finds anything to clear. "Lucky Shot!" bonus per the design's
+        // edge-case row.
+        if (this.scoreMgr) {
+            for (var lb = 0; lb < this.numMove; lb++) {
+                this.scoreMgr.addLeftoverMoveBonus();
+            }
+        }
+
         if (count === 0) {
             this.finishRemainingMovesBonus();
             return;
@@ -1548,7 +1830,7 @@ CoreGame.BoardMgr = cc.Class.extend({
 
     /**
      * Transform a gem at (row, col) into a random PowerUp.
-     * Directly instantiates BombPU, PlaneUP, or RocketPU.
+     * Directly instantiates BombPU, PlanePU, or RocketPU.
      */
     transformGemToPowerUp: function (row, col) {
         var slot = this.getSlot(row, col);
@@ -1684,10 +1966,10 @@ CoreGame.BoardMgr = cc.Class.extend({
         // if (this.isStateDropAble()) {
         if (this.requiredRefill) {
             if (this.delayRefill <= 0) {
-                cc.log("CALL REFILL MAP - From Update");
+                //cc.log("CALL REFILL MAP - From Update");
                 this.refillMap();
             }
-        } else if (this.requiredMatching) {
+        } else if (this.requiredMatching && !this.isAutoMatchBlocked) {
             this.requiredMatching = false;
             this.doMatch();
         }
@@ -1697,19 +1979,64 @@ CoreGame.BoardMgr = cc.Class.extend({
             this.delayRefill -= dt;
         }
 
+        // cc.log("Board state ==============" + this.state);
+
+        this.checkPendingRainbowPUs();
+
         // Check if turn is finished (all element animations complete)
         if (this.playerMoved)
             this.checkFinishTurn();
 
-        // Handle Idle Hint logic
+        // Handle Idle Hint logic — re-cycles a fresh hint every `hintThreshold` seconds while idle.
         if (this.canInteract() && allIdle && !this.requiredRefill && !this.requiredMatching && !hasPendingActions) {
             this.idleTime += dt;
-            if (this.idleTime >= this.hintThreshold && !this.isHinting) {
-                this.showHintTarget();
+            if (this.idleTime >= this.hintThreshold) {
+                this.idleTime = 0;            // Reset so next window triggers again
+                this.showHintTarget();        // Internally stops the prior hint before picking a new one
             }
         } else {
             this.idleTime = 0;
+            this._lastHintKey = null;         // Player interacted — clear repeat-avoidance memory
             this.stopHintTarget();
+        }
+
+        // check EndGame khi khong co su kien remove element qua lau
+        this.idleCheckEndGameTime += dt;
+        // cc.log("Idle Check End Game Time: " + this.idleCheckEndGameTime);
+        if (this.idleCheckEndGameTime >= 3) {
+            this.idleCheckEndGameTime = 0;
+            if (this.doEndGame == false) {
+                var saveState = this.state;
+                var isEnd = this.checkEndGame();
+                if (isEnd) {
+                    var hasPendingActions = CoreGame.TimedActionMgr.hasPendingActions();
+                    var isIdle = this.areAllElementsIdle();
+                    var dt = CoreGame.TimedActionMgr.getMinTime();
+                    var elementState = "";
+                    if (!isIdle) {
+                        for (var r = 0; r < this.rows; r++) {
+                            for (var c = 0; c < this.cols; c++) {
+                                var slot = this.mapGrid[r][c];
+                                if (!slot.isIdle()) {
+                                    elementState = slot.getSlotState();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    logMgr.sendToTelegram({
+                        boardState: saveState,
+                        isIdle: isIdle,
+                        hasPendingActions: hasPendingActions,
+                        requiredMatching: this.requiredMatching,
+                        requiredRefill: this.requiredRefill,
+                        minTime: dt,
+                        length: CoreGame.TimedActionMgr._actions.length,
+                        elementState: elementState
+                    });
+                }
+            }
         }
     },
 
@@ -1902,35 +2229,117 @@ CoreGame.BoardMgr = cc.Class.extend({
     },
 
     showHintTarget: function () {
-        if (this.isHinting) return;
+        // Always stop the previous hint first so each cycle picks a fresh move.
+        this.stopHintTarget();
 
         var moves = this.getAllSwappableMoves();
-        if (moves.length > 0) {
-            this.isHinting = true;
-            // Just hint the first available move
-            var move = moves[0];
-            var slot1 = this.getSlot(move.position.x, move.position.y);
-            var d = { dr: 0, dc: 0 };
-            switch (move.moveDirect) {
-                case CoreGame.Direction.UP: d.dr = 1; break;
-                case CoreGame.Direction.DOWN: d.dr = -1; break;
-                case CoreGame.Direction.LEFT: d.dc = -1; break;
-                case CoreGame.Direction.RIGHT: d.dc = 1; break;
+        if (moves.length === 0) return;
+
+        // Direction delta helper
+        var dirDelta = function (direct) {
+            switch (direct) {
+                case CoreGame.Direction.UP: return { dr: 1, dc: 0 };
+                case CoreGame.Direction.DOWN: return { dr: -1, dc: 0 };
+                case CoreGame.Direction.LEFT: return { dr: 0, dc: -1 };
+                case CoreGame.Direction.RIGHT: return { dr: 0, dc: 1 };
             }
-            var slot2 = this.getSlot(move.position.x + d.dr, move.position.y + d.dc);
+            return { dr: 0, dc: 0 };
+        };
 
-            if (slot1 && slot2) {
-                var el1 = slot1.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
-                var el2 = slot2.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
+        // Classify moves: prefer those that create a PowerUp (line-4+/L/T/square).
+        var puMoves = [];
+        for (var i = 0; i < moves.length; i++) {
+            var m = moves[i];
+            var d = dirDelta(m.moveDirect);
+            if (CoreGame.PatternFinder._wouldCreatePU &&
+                CoreGame.PatternFinder._wouldCreatePU(
+                    this.mapGrid,
+                    m.position.x, m.position.y,
+                    m.position.x + d.dr, m.position.y + d.dc)) {
+                puMoves.push(m);
+            }
+        }
+        var candidates = puMoves.length > 0 ? puMoves : moves;
 
-                if (el1 && el1.ui) {
-                    el1.ui.playHintAnim();
-                    this.hintElements.push(el1);
-                }
-                if (el2 && el2.ui) {
-                    el2.ui.playHintAnim();
-                    this.hintElements.push(el2);
-                }
+        // Avoid immediately repeating the previous hint when another option exists.
+        var self = this;
+        if (candidates.length > 1 && this._lastHintKey) {
+            var filtered = candidates.filter(function (m) {
+                return (m.position.x + ',' + m.position.y + ',' + m.moveDirect) !== self._lastHintKey;
+            });
+            if (filtered.length > 0) candidates = filtered;
+        }
+
+        // Random pick within the chosen bucket.
+        var pick = candidates[Math.floor(Math.random() * candidates.length)];
+        this._lastHintKey = pick.position.x + ',' + pick.position.y + ',' + pick.moveDirect;
+
+        var dd = dirDelta(pick.moveDirect);
+        var slot1 = this.getSlot(pick.position.x, pick.position.y);
+        var slot2 = this.getSlot(pick.position.x + dd.dr, pick.position.y + dd.dc);
+        if (!slot1 || !slot2) return;
+
+        var elA = slot1.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
+        var elB = slot2.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
+        if (!elA || !elA.ui || !elB || !elB.ui) return;
+
+        // Decide which gem actually joins the match after the swap. The
+        // hinted gem must be the one that lands where the pattern forms,
+        // otherwise the nudge would point at a gem that does not match.
+        //
+        // After swap: elA lands at (slot2), elB lands at (slot1).
+        //   - Pattern at slot2 is formed by elA's type -> elA is the matcher.
+        //   - Pattern at slot1 is formed by elB's type -> elB is the matcher.
+        // If both sides form a pattern, prefer elA (keeps stable behaviour).
+        var r1 = pick.position.x, c1 = pick.position.y;
+        var r2 = pick.position.x + dd.dr, c2 = pick.position.y + dd.dc;
+        var pf = CoreGame.PatternFinder;
+
+        var patternAtA = (pf.getPatternPositionsAfterSwapAt)
+            ? pf.getPatternPositionsAfterSwapAt(this.mapGrid, r1, c1, r2, c2, r2, c2)
+            : [];
+        var patternAtB = (pf.getPatternPositionsAfterSwapAt)
+            ? pf.getPatternPositionsAfterSwapAt(this.mapGrid, r1, c1, r2, c2, r1, c1)
+            : [];
+
+        var mover, partner, patternPositions;
+        if (patternAtA.length > 0) {
+            mover = elA; partner = elB; patternPositions = patternAtA;
+        } else if (patternAtB.length > 0) {
+            mover = elB; partner = elA; patternPositions = patternAtB;
+        } else {
+            // No pattern through either endpoint (shouldn't happen for a valid
+            // swappable move, but be safe): fall back to elA with no glow.
+            mover = elA; partner = elB; patternPositions = [];
+        }
+
+        // Nudge the chosen mover toward its partner slot.
+        var partnerPos = cc.p(partner.ui.x, partner.ui.y);
+        mover.ui.playHintAnim(partnerPos);
+        this.hintElements.push(mover);
+        this.isHinting = true;
+
+        // Glow every gem matching the mover's type in the resulting pattern,
+        // including the mover itself at its destination.
+        this.hintGlowElements = this.hintGlowElements || [];
+        for (var p = 0; p < patternPositions.length; p++) {
+            var pp = patternPositions[p];
+            var slotP = this.getSlot(pp.row, pp.col);
+            if (!slotP) continue;
+            var gem;
+            // The mover's destination slot is the partner's current slot; the
+            // mover still physically lives in its own slot pre-swap, so pick it
+            // up from there when the pattern cell is its destination.
+            var partnerR = partner.position ? partner.position.x : -1;
+            var partnerC = partner.position ? partner.position.y : -1;
+            if (pp.row === partnerR && pp.col === partnerC) {
+                gem = mover;
+            } else {
+                gem = slotP.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
+            }
+            if (gem && gem.type === mover.type && gem.ui && gem.ui.playHintGlowAnim) {
+                gem.ui.playHintGlowAnim();
+                this.hintGlowElements.push(gem);
             }
         }
     },
@@ -1943,9 +2352,20 @@ CoreGame.BoardMgr = cc.Class.extend({
             var el = this.hintElements[i];
             if (el && el.ui) {
                 el.ui.stopHintAnim();
+                el.ui.stopHintGlowAnim();
             }
         }
         this.hintElements = [];
+
+        if (this.hintGlowElements) {
+            for (var j = 0; j < this.hintGlowElements.length; j++) {
+                var ge = this.hintGlowElements[j];
+                if (ge && ge.ui && ge.ui.stopHintGlowAnim) {
+                    ge.ui.stopHintGlowAnim();
+                }
+            }
+            this.hintGlowElements = [];
+        }
     },
 
     autoPlay: function () {
@@ -1992,6 +2412,18 @@ CoreGame.BoardMgr = cc.Class.extend({
             return slot ? slot.getType() : -1;
         };
 
+        // 1. KIỂM TRA KHÔNG ĐƯỢC CÓ MATCH CÓ SẴN (No pre-existing matches)
+        for (var r = 0; r < this.rows; r++) {
+            for (var c = 0; c < this.cols; c++) {
+                var t = getType(r, c);
+                if (t >= 0 && this._shuffleCheckMatch(getType, r, c, t)) {
+                    // Nếu phát hiện có Match sẵn mà không cần swap -> Loại bỏ bản shuffle này
+                    return false;
+                }
+            }
+        }
+
+        // 2. KIỂM TRA CÓ NƯỚC ĐI (POSSIBLE MOVES) BẰNG CÁCH GIẢ LẬP SWAP
         var directions = [{ dr: 1, dc: 0 }, { dr: 0, dc: 1 }];
 
         for (var r = 0; r < this.rows; r++) {
@@ -2049,13 +2481,53 @@ CoreGame.BoardMgr = cc.Class.extend({
      * Force a guaranteed match by placing 3 same-type gems in a line.
      * Only called as last resort if random shuffles all fail.
      * @param {Array} slots - Array of {r, c}
-     * @param {Array} gems - Type array to modify in-place
+     * @param {Array} gems - Array of GemObject to rearrange in-place
+     * @returns {boolean} True if successfully forced a move
      */
-    _forceValidMove: function (slots, types) {
+    _forceValidMove: function (slots, gems) {
         var slotIndex = {};
         for (var i = 0; i < slots.length; i++) {
             slotIndex[slots[i].r + "," + slots[i].c] = i;
         }
+
+        var typeCounts = {};
+        for (var i = 0; i < gems.length; i++) {
+            var t = gems[i].type;
+            typeCounts[t] = (typeCounts[t] || 0) + 1;
+        }
+        var targetType = -1;
+        for (var t in typeCounts) {
+            if (typeCounts[t] >= 3) {
+                targetType = parseInt(t);
+                break;
+            }
+        }
+        if (targetType === -1) return false;
+
+        var applyForceMatch = function (idx0, idx1, idx2) {
+            var pool = gems.slice();
+            var targetGems = [];
+            // Extract 3 gems of targetType
+            for (var i = pool.length - 1; i >= 0; i--) {
+                if (pool[i].type === targetType) {
+                    targetGems.push(pool.splice(i, 1)[0]);
+                    if (targetGems.length === 3) break;
+                }
+            }
+            // Reassign to gems array
+            for (var i = 0; i < gems.length; i++) {
+                if (i === idx0) {
+                    gems[i] = targetGems[0];
+                } else if (i === idx1) {
+                    gems[i] = targetGems[1];
+                } else if (i === idx2) {
+                    gems[i] = targetGems[2];
+                } else {
+                    gems[i] = pool.pop();
+                }
+            }
+            return true;
+        };
 
         // Try horizontal: find 3 consecutive shuffleable slots in a row
         for (var r = 0; r < this.rows; r++) {
@@ -2064,12 +2536,10 @@ CoreGame.BoardMgr = cc.Class.extend({
                 var k1 = r + "," + (c + 1);
                 var k2 = r + "," + (c + 2);
                 if ((k0 in slotIndex) && (k1 in slotIndex) && (k2 in slotIndex)) {
-                    var forceType = types[slotIndex[k0]];
-                    types[slotIndex[k0]] = forceType;
-                    types[slotIndex[k1]] = forceType;
-                    types[slotIndex[k2]] = forceType;
-                    cc.log("Forced match-3 at row", r, "cols", c, c + 1, c + 2, "type", forceType);
-                    return;
+                    if (applyForceMatch(slotIndex[k0], slotIndex[k1], slotIndex[k2])) {
+                        cc.log("Forced match-3 at row", r, "cols", c, c + 1, c + 2, "type", targetType);
+                        return true;
+                    }
                 }
             }
         }
@@ -2081,15 +2551,14 @@ CoreGame.BoardMgr = cc.Class.extend({
                 var k1 = (r + 1) + "," + c;
                 var k2 = (r + 2) + "," + c;
                 if ((k0 in slotIndex) && (k1 in slotIndex) && (k2 in slotIndex)) {
-                    var forceType = types[slotIndex[k0]];
-                    types[slotIndex[k0]] = forceType;
-                    types[slotIndex[k1]] = forceType;
-                    types[slotIndex[k2]] = forceType;
-                    cc.log("Forced match-3 at col", c, "rows", r, r + 1, r + 2, "type", forceType);
-                    return;
+                    if (applyForceMatch(slotIndex[k0], slotIndex[k1], slotIndex[k2])) {
+                        cc.log("Forced match-3 at col", c, "rows", r, r + 1, r + 2, "type", targetType);
+                        return true;
+                    }
                 }
             }
         }
+        return false;
     },
 
     _isSwapValid: function (slot1, slot2) {

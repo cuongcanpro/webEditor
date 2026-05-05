@@ -7,7 +7,15 @@ let SceneBoard = BaseLayer.extend({
     },
 
     playMusic: function () {
-        fr.Sound.playMusic(resMusic.ingame, true);
+        fr.Sound.playMusic(this.getSceneMusic(), true);
+    },
+
+    getSceneMusic: function () {
+        if (levelMgr.isBossLevel(this.getLevelWithVer())) {
+            return resMusic.kong_theme[Math.floor(Math.random() * resMusic.kong_theme.length)];
+        }
+
+        return resMusic.ingame;
     },
 
     setLevel: function (level) {
@@ -37,6 +45,10 @@ let SceneBoard = BaseLayer.extend({
     },
 
     addPlayNewCore: function (gameUI) {
+        if(this.gameUI){
+            this.gameUI.removeFromParent();
+            this.gameUI= undefined;
+        }
         this.gameUI = gameUI;
         this.addChild(this.gameUI);
         this.gameUI.efxStart();
@@ -56,5 +68,11 @@ let SceneBoard = BaseLayer.extend({
         }
         return "";
     },
+
+    onExit:function(){
+        this.gameUI.removeFromParent();
+        this.gameUI = undefined;
+        this._super();
+    }
 });
 SceneBoard.className = "SceneBoard";

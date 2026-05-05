@@ -152,6 +152,10 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
     ctor: function () {
         this._super();
     },
+    setTargetElement: function (target) {
+        this._super(target);
+        this.targetElement.customData.spawnElementType = this.configData.type;
+    },
     /**
      * Check if condition is met
      * @param {ElementObject} element - The element instance
@@ -194,60 +198,64 @@ CoreGame.Strategies.RandomSpawnElementAction = CoreGame.Strategies.NormalAction.
         // Collect all valid slots
         var prioritySlots = [];
         var normalSlots = [];
-        
-        for (var r = 0; r < boardMgr.rows; r++) {
-            for (var c = 0; c < boardMgr.cols; c++) {
-                if (Math.abs(r - element.position.x) > this.configData.range || Math.abs(c - element.position.y) > this.configData.range)
-                    continue;
-                var slot = boardMgr.getSlot(r, c);
-                if (!slot) continue;
-                
-                if (slot.isEmpty()) {
-                    normalSlots.push({ row: r, col: c });
-                } else {
-                    var hasPriority = false;
-                    var hasNormal = false;
-                    
-                    for (var i = 0; i < slot.listElement.length; i++) {
-                        var elem = slot.listElement[i];
-                        if (!elem.isIdle()) continue;
-
-                        // Check for priority targets first
-                        if (priorityTargets.length > 0 && priorityTargets.indexOf(elem.type) !== -1) {
-                            hasPriority = true;
-                            break;
-                        }
-
-                        // Normal valid targets: GEM or PowerUP (CONTENT layer)
-                        if (elem instanceof CoreGame.GemObject || elem instanceof CoreGame.PowerUP) {
-                            hasNormal = true;
-                        }
-                    }
-                    
-                    if (hasPriority) {
-                        prioritySlots.push({ row: r, col: c });
-                    } else if (hasNormal) {
-                        normalSlots.push({ row: r, col: c });
-                    }
-                }
-            }
-        }
-
-        // Combine slots based on priority
-        var finalSlots = [];
-        this.shuffleArray(prioritySlots, boardMgr.random);
-        this.shuffleArray(normalSlots, boardMgr.random);
-        
-        finalSlots = prioritySlots.concat(normalSlots);
-
-        if (finalSlots.length === 0) return;
-
-        var numSpawned = Math.min(numToSpawn, finalSlots.length);
-        var targetSlots = finalSlots.slice(0, numSpawned);
 
         var delayTime = Math.max(0, time - 0.05);
 
         CoreGame.TimedActionMgr.addAction(delayTime, function () {
+            for (var r = 0; r < boardMgr.rows; r++) {
+                for (var c = 0; c < boardMgr.cols; c++) {
+                    if (Math.abs(r - element.position.x) > this.configData.range || Math.abs(c - element.position.y) > this.configData.range)
+                        continue;
+                    var slot = boardMgr.getSlot(r, c);
+                    if (!slot) continue;
+
+                    if (slot.isEmpty()) {
+                        normalSlots.push({ row: r, col: c });
+                    } else {
+                        var hasPriority = false;
+                        var hasNormal = true;
+
+                        for (var i = 0; i < slot.listElement.length; i++) {
+                            var elem = slot.listElement[i];
+                            if (!elem.isIdle()) continue;
+
+                            var hasAttachment = (elem.attachments && elem.attachments.length > 0);
+
+                            // Check for priority targets first - only if not blocked by attachment
+                            if (priorityTargets.length > 0 && priorityTargets.indexOf(elem.type) !== -1) {
+                                if (!hasAttachment) {
+                                    hasPriority = true;
+                                }
+                            }
+
+                            // Normal valid targets: GEM or PowerUP (CONTENT layer) 
+                            // and no attachments (like Soap, Chain, etc.)
+                            if (!(elem instanceof CoreGame.GemObject || elem instanceof CoreGame.PowerUP) || hasAttachment) {
+                                hasNormal = false;
+                            }
+                        }
+
+                        if (hasPriority) {
+                            prioritySlots.push({ row: r, col: c });
+                        } else if (hasNormal) {
+                            normalSlots.push({ row: r, col: c });
+                        }
+                    }
+                }
+            }
+
+            // Combine slots based on priority
+            var finalSlots = [];
+            this.shuffleArray(prioritySlots, boardMgr.random);
+            this.shuffleArray(normalSlots, boardMgr.random);
+
+            finalSlots = prioritySlots.concat(normalSlots);
+
+            if (finalSlots.length === 0) return;
+
+            var numSpawned = Math.min(numToSpawn, finalSlots.length);
+            var targetSlots = finalSlots.slice(0, numSpawned);
+
             var endPointNode = null;
             if (element.ui) {
                 endPointNode = UIUtils.seekWidgetByName(element.ui, "endPointSpawn");

@@ -1516,10 +1516,10 @@ var EditMapSceneNew = cc.Layer.extend({
             this.tfMoves.setString("" + data.numMove);
         }
         if (this.targetListUI) this.targetListUI.setEntries(data.targetElements || []);
-        
+
         this._mapDifficulty = data.difficulty || "Easy";
         if (this._btnDifficulty) this._btnDifficulty.setTitleText(this._mapDifficulty);
-        
+
         if (this._tfTPP && data.tpp !== undefined) this._tfTPP.setString("" + data.tpp);
         if (this._tfTargetMove) this._tfTargetMove.setString("" + (data.targetMove || 0));
         if (data.spawnStrategy) {
@@ -1577,6 +1577,11 @@ var EditMapSceneNew = cc.Layer.extend({
         mapData.reward = 100;
         mapData.spawnStrategy = this._spawnStrategyKey || "RandomSpawnStrategy";
         mapData.numTest = parseInt(this._tfPlayTest ? this._tfPlayTest.getString() : "1") || 1;
+        mapData['scoreConfig'] = {
+            star1Threshold: 5000,
+            star2Threshold: 15000,
+            star3Threshold: 20000
+        }
 
         var gemTypes = [];
         if (this._gemColorActive) {

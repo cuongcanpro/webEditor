@@ -157,8 +157,20 @@ CoreGame.GridSlot = cc.Class.extend({
                 let isStop = element.isStopAction(CoreGame.ElementObject.Action.MATCH) || element.isStopActionByAttachment(CoreGame.ElementObject.Action.MATCH);
                 // if (element.hasAction(CoreGame.ElementObject.Action.MATCH))
                 element.onMatch(matchContext);
-                if (isStop)
+                if (isStop) {
+                    // An OVERLAY/attachment absorbed the match (e.g. Chain on
+                    // gem). Any element below that a caller pre-reserved via
+                    // MATCHING state (e.g. RainbowPU / RainbowPUPlus) will
+                    // never get matched this cycle — release the reservation
+                    // so the gem stays swappable/matchable afterwards.
+                    for (var j = i + 1; j < dumpElement.length; j++) {
+                        var below = dumpElement[j];
+                        if (below.state === CoreGame.ElementState.MATCHING) {
+                            below.setState(CoreGame.ElementState.IDLE);
+                        }
+                    }
                     return;
+                }
             }
         }
     },
@@ -205,19 +217,38 @@ CoreGame.GridSlot = cc.Class.extend({
     addElement: function (element, silent) {
         if (this.listElement.indexOf(element) !== -1) return;
 
-        cc.log("Add Element in GridSlot " + element.getTypeName() + " to slot " + this.row + "," + this.col);
+        // cc.log("Add Element in GridSlot " + element.getTypeName() + " to slot " + this.row + "," + this.col);
         // Default behavior if undefined
         var behavior = (typeof element.layerBehavior !== 'undefined') ?
             element.layerBehavior : CoreGame.LayerBehavior.CONTENT;
 
         // 1. Exclusive Check (Box/Cloud/Cookie)
         if (behavior === CoreGame.LayerBehavior.EXCLUSIVE) {
-            // Skip clearElements if in silent mode (temporary grid update)
+            // Skip clearElements if in silent mode (temporary grid update, e.g. swap doSwap)
             if (!silent) {
-                cc.log("Exclusive element added, clearing existing elements in slot " + this.row + "," + this.col);
+                // cc.log("Exclusive element added, clearing existing elements in slot " + this.row + "," + this.col);
                 this.clearElementsBelowExclusive();
+                // After clear, only OVERLAY (> EXCLUSIVE) items may remain; push to end preserves OVERLAY-first ordering.
+                this.listElement.push(element);
+            } else {
+                // Silent mode: lower-priority elements (Grass/Gem/etc.) may still be present.
+                // Must insert at correct priority position so getFirstInteractable sees EXCLUSIVE
+                // before BACKGROUND. Otherwise the blocker becomes un-swappable/un-interactable
+                // because Grass.isStopAction(SWAP) short-circuits the lookup.
+                var insertedExc = false;
+                for (var k = 0; k < this.listElement.length; k++) {
+                    var existingBehaviorExc = (typeof this.listElement[k].layerBehavior !== 'undefined') ?
+                        this.listElement[k].layerBehavior : CoreGame.LayerBehavior.CONTENT;
+                    if (behavior > existingBehaviorExc) {
+                        this.listElement.splice(k, 0, element);
+                        insertedExc = true;
+                        break;
+                    }
+                }
+                if (!insertedExc) {
+                    this.listElement.push(element);
+                }
             }
-            this.listElement.push(element);
             element.boardMgr = this.boardMgr;
             return;
         }
@@ -328,6 +359,23 @@ CoreGame.GridSlot = cc.Class.extend({
     },
 
     /**
+     * Check if the slot already holds a CONTENT-layer element
+     * (i.e. a Gem or PowerUp — something the player can swap).
+     * Background-only slots (e.g. only Grass / floor blocker) return false.
+     * Use this instead of `isEmpty()` when deciding whether a slot needs a
+     * fresh playable gem dropped into it.
+     */
+    hasContentElement: function () {
+        for (var i = 0; i < this.listElement.length; i++) {
+            var b = (typeof this.listElement[i].layerBehavior !== 'undefined')
+                ? this.listElement[i].layerBehavior
+                : CoreGame.LayerBehavior.CONTENT;
+            if (b === CoreGame.LayerBehavior.CONTENT) return true;
+        }
+        return false;
+    },
+
+    /**
      * Check if slot has a blocker
      */
     hasBlocker: function () {
@@ -367,6 +415,19 @@ CoreGame.GridSlot = cc.Class.extend({
     },
 
     /**
+     * Like hasElementType, but also requires hitPoints to match. Used by the
+     * grid-border renderer when different HP tiers (e.g. hp=1 vs hp=2 grass)
+     * need to be drawn with different sprite sets.
+     */
+    hasElementTypeWithHP: function (type, hp) {
+        for (var i = 0; i < this.listElement.length; i++) {
+            var el = this.listElement[i];
+            if (el.type === type && el.hitPoints === hp) return true;
+        }
+        return false;
+    },
+
+    /**
      * Get pixel position for this slot
      */
     getPosition: function () {
@@ -378,11 +439,23 @@ CoreGame.GridSlot = cc.Class.extend({
      */
     isIdle: function () {
         for (var i = 0; i < this.listElement.length; i++) {
-            if (!this.listElement[i].isIdle()) {
+            var state = this.listElement[i].state;
+            // cc.log("State ", state + " " + this.listElement[i].getTypeName());
+            if (!this.listElement[i].isIdle() && state !== CoreGame.ElementState.PENDING) {
                 return false;
             }
         }
         return true;
+    },
+
+    getSlotState: function () {
+        for (var i = 0; i < this.listElement.length; i++) {
+            var state = this.listElement[i].state;
+            if (!this.listElement[i].isIdle() && state !== CoreGame.ElementState.PENDING) {
+                return state + " " + this.listElement[i].getTypeName();
+            }
+        }
+        return "EMPTY";
     },
 
     /**

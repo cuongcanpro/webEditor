@@ -72,6 +72,23 @@ CoreGame.RocketBombPU = CoreGame.CustomCreatorPU.extend({
 
         this.setCreateData(data);
         return this;
+    },
+
+    createUI: function (parent) {
+        this._super(parent);
+
+        for (let subPU of this.listSubPU) {
+            subPU.ui.setVisible(false);
+        }
+
+        return this.ui;
+    },
+
+    /**
+     * Create visual ui
+     */
+    createUIInstance: function () {
+        return new CoreGame.BombUI(this);
     }
 });
 

@@ -2,6 +2,8 @@
     resAnim: "",
     skin: "normal",
 
+    isSubPU: false,
+
     initSprite: function () {
         this.mainSpr = gv.createSpineAnimation(this.resAnim);
         this.mainSpr.setScale(CoreGame.PowerUpUI.DEFAULT_SCALE);

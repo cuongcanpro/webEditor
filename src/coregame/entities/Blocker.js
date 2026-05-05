@@ -6,6 +6,7 @@ var CoreGame = CoreGame || {};
 
 CoreGame.Blocker = CoreGame.ElementObject.extend({
     cooldownSpawn: 0,
+
     configData: {
         maxHP: 1
     },
@@ -69,21 +70,62 @@ CoreGame.Blocker = CoreGame.ElementObject.extend({
      * Take damage from nearby matches
      */
     takeDamage: function (amount, typeId, row, col) {
+        if (this.hitPoints <= 0) return;
+        // Clamp overkill so HP never goes negative — otherwise the old
+        // `if (hitPoints < 0) return` path fired before doExplode() and the
+        // monster got stuck alive at negative HP (invincible).
+        if (amount > this.hitPoints) amount = this.hitPoints;
         this.hitPoints -= amount;
         cc.log("take Damage " + this.hitPoints);
-        if (this.hitPoints < 0)
-            return;
+
+        // ── Scoring (per §3.1 of the 3-Star design) ─────────────────────────
+        // Score every damage event, not just the killing hit. Multi-HP
+        // blockers (Box, Chain) and bosses pay out `baseValue × amount` per
+        // damage call, which matches the doc's "per HP" semantics.
+        // Killing hits are scored here too; removedElement intentionally
+        // skips Blocker instances to avoid double-counting.
+        if (this.boardMgr && this.boardMgr.scoreMgr) {
+            this.boardMgr.scoreMgr.addClearEvent({
+                elementType: this.type,
+                hp: amount,
+                isObjective: this.boardMgr.isObjectiveType(this.type),
+                clearMethod: this.boardMgr.getCurrentClearMethod(),
+                cascadeDepth: this.boardMgr.getCurrentCascadeDepth()
+            });
+        }
 
         // this.avatar.playExplodeEffect(this.hitPoints);
         this.updateHPBar();
         if (this.isMonster()) {
-            dispatcherMgr.dispatchEvent('updateHpMonster', { element: this, hp: this.hitPoints, maxHp: this.maxHP || this.configData.maxHP });
+            dispatcherMgr.dispatchEvent(
+                'updateHpMonster',
+                { element: this, hp: this.hitPoints, maxHp: this.maxHP || this.configData.maxHP }
+            );
+
+            // Floating damage number feedback (monsters/bosses only).
+            // Fires for both non-killing and killing hits so the final HP loss
+            // is still visible before the explode animation.
+            if (this.ui && typeof this.ui.playLoseLifeEffect === 'function') {
+                this.ui.playLoseLifeEffect(amount);
+            }
+
+            //Play Monster Sound
+            fr.Sound.playMonsterSound(this.type, this.hitPoints <= 0 ? "defeated" : "hurt");
         }
         if (this.hitPoints <= 0) {
             this.doExplode(row, col);
         } else {
             this.ui.playTakeDamageEffect(amount, row, col);
             this.updateVisual();
+
+            // Connected-UI blockers (e.g. Grass) may render different border
+            // tiers per HP — when HP changes but the element is still alive,
+            // the existing add/remove triggers don't fire, so adjacency
+            // patterns keyed off `hasElementTypeWithHP` would go stale. Force
+            // a border refresh here so the visual matches the new HP tier.
+            if (this.isConnectedUI && this.boardMgr && this.boardMgr.boardUI) {
+                this.boardMgr.boardUI.refreshBorders();
+            }
         }
     },
 

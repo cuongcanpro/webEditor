@@ -141,7 +141,11 @@ let GameBoardEndGame = BaseLayer.extend({
         cc.log("onClickCloseWin");
         this.hide();
 
-        let rewardCoin = 10;
+        let levelId = this.gameUI.getLevel();
+        let newStars = this.gameUI.boardUI.boardMgr.endStar;
+        let oldStars = this.gameUI.oldStarBeforePlay || 0; // fallback if not tracked yet
+
+        let rewardCoin = userMgr.calculateWinGold(levelId, newStars, oldStars);
         this.onEarnCoin(rewardCoin);
 
         this.runAction(cc.sequence(
@@ -161,6 +165,11 @@ let GameBoardEndGame = BaseLayer.extend({
 
     onClickCloseLose: function () {
         this.onEventLose();
+
+        let rewardCoin = userMgr.calculateLoseGold();
+        this.onEarnCoin(rewardCoin);
+        userMgr.updateHeart(-1);
+
         sceneMgr.openScene(SceneLobby.className);
 
         return;
@@ -301,17 +310,17 @@ let GameBoardEndGame = BaseLayer.extend({
         fr.Sound.playSoundEffect(resSound.end_level_positive, false);
     },
 
-    showResult: function (result, targets, delayTime = 0) {
+    showResult: function (result, targets, noMoveShuffle = false) {
         this.isWin = result == BoardResult.WIN;
 
-        cc.log("GameBoardEndGame showResult", JSON.stringify(targets));
+        cc.log("GameBoardEndGame showResult", JSON.stringify(targets), " noMoveShuffle ", noMoveShuffle);
 
         // if (this.isWin && levelConfig["endScript"]) {
         //     gv.tutMgr.startScript(levelConfig["endScript"]);
         //     return;
         // }
 
-        // if (this.guiBuyMoveBonus) this.guiBuyMoveBonus.setVisible(!this.isWin);
+
 
         this.showReaction(false);
         // this.showReaction(this.isWin);
@@ -330,20 +339,10 @@ let GameBoardEndGame = BaseLayer.extend({
             this.showReward();
         } else {
             this.showTarget(targets);
+            if (this.btnReplay) this.btnReplay.setVisible(!noMoveShuffle);
         }
 
-        // this.show(delayTime);
 
-        // mark as win
-        // if (this.isWin) {
-        //     var listPass = JSON.parse(fr.UserData.getStringFromKey(KeyStorage.KEY_LIST_MAP_PASS, "{}"));
-        //     cc.log("listPass " + JSON.stringify(listPass));
-        //     if (JSON.stringify(listPass).length == 0) this.btnBack.setTitleText("get fail");
-        //
-        //     listPass[this.gameUI.levelId] = true;
-        //     cc.log("listPass " + JSON.stringify(listPass));
-        //     fr.UserData.setStringFromKey(KeyStorage.KEY_LIST_MAP_PASS, JSON.stringify(listPass));
-        // }
         m3.trackEndGame(this.gameUI.levelId, result);
     },
 
@@ -366,8 +365,11 @@ let GameBoardEndGame = BaseLayer.extend({
 
         this.lblWin.setString(lblLevel);
 
-        var reward = this.gameUI.levelConfig.mapConfig.reward;
-        reward = 10;
+        let levelId = this.gameUI.getLevel();
+        let newStars = this.gameUI.boardUI.boardMgr.endStar;
+        let oldStars = this.gameUI.oldStarBeforePlay || 0;
+        var reward = userMgr.calculateWinGold(levelId, newStars, oldStars);
+
         var rootPos = { x: this.bg_target.width / 2, y: this.bg_target.height / 2 - 5 }, padding = 120;
         var listNode = [];
         var coin = this.createTarget("coin", reward);
@@ -492,14 +494,14 @@ let GameBoardEndGame = BaseLayer.extend({
     },
 
     getMovePrice: function () {
-        // var price = gv.itemPriceCfg.getMovePrice(Math.min(this.gameUI.boughtMoveTurn, 4));
-        let price = {
-            gold: 10
-        }
+        var price = {
+            gold: CurrencyConfig.getExtraMovePrice(this.gameUI.boughtMoveTurn + 1)
+        };
         return price;
     },
 
     showBuyMove: function () {
+        cc.log("Show Buy Move =========== ");
         this.onBuyingMove = false;
         // User Gold
         let userGold = userMgr.getData().gold;
@@ -533,7 +535,7 @@ let GameBoardEndGame = BaseLayer.extend({
 
         centerNode.x = centerNode.rawPos.x - totalWidth * 0.5;
 
-        this.btnReplay.setVisible(parseInt(userGold) >= parseInt(cost));
+        // this.btnReplay.setVisible(parseInt(userGold) >= parseInt(cost));
         this.btnReplay.setPosition(this.btnReplay.rawPos);
 
         this.btnExit.setVisible(true);
@@ -613,8 +615,9 @@ let GameBoardEndGame = BaseLayer.extend({
             // if (gv.alert && gv.alert.showNotEnoughGoldG) {
             //     gv.alert.showNotEnoughGoldG(ResourceType.GOLD, null);
             // } else {
-            LogLayer.show("Not enough gold!");
+            //LogLayer.show("Not enough gold!");
             // }
+            ToastFloat.makeToast(2.0, fr.Localization.text("lang_not_enough_gold"));
         }
     },
 

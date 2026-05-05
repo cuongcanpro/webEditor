@@ -101,15 +101,15 @@
               },
               {
                 "IsCustomSize": true,
-                "FontSize": 30,
-                "LabelText": "100",
+                "FontSize": 45,
+                "LabelText": "9",
                 "FontResource": {
                   "Type": "Normal",
                   "Path": "font/BalooPaaji2-ExtraBold.ttf",
                   "Plist": ""
                 },
                 "HorizontalAlignmentType": "HT_Right",
-                "OutlineSize": 2,
+                "OutlineSize": 3,
                 "OutlineColor": {
                   "R": 71,
                   "G": 77,
@@ -127,8 +127,8 @@
                   "ScaleX": 1.0
                 },
                 "Position": {
-                  "X": 73.0,
-                  "Y": -5.0
+                  "X": 72.2671,
+                  "Y": -10.4961
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -137,24 +137,24 @@
                 "CColor": {},
                 "IconVisible": false,
                 "PrePosition": {
-                  "X": 0.9481,
-                  "Y": -0.0649
+                  "X": 0.9385,
+                  "Y": -0.1363
                 },
                 "PreSize": {
                   "X": 1.4675,
-                  "Y": 0.5455
+                  "Y": 0.8052
                 },
                 "HorizontalEdge": "RightEdge",
                 "VerticalEdge": "TopEdge",
-                "LeftMargin": -40.0,
-                "RightMargin": 4.0,
-                "TopMargin": 40.0,
-                "BottomMargin": -5.0,
+                "LeftMargin": -40.7329,
+                "RightMargin": 4.7329,
+                "TopMargin": 25.4961,
+                "BottomMargin": -10.4961,
                 "Tag": 143,
                 "ActionTag": 435714521,
                 "Size": {
                   "X": 113.0,
-                  "Y": 42.0
+                  "Y": 62.0
                 },
                 "Name": "label",
                 "ctype": "TextObjectData"

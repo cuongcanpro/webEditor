@@ -89,8 +89,18 @@ CoreGame.NormalSwap = CoreGame.LogicSwap.extend({
             element2.visualSwapBack(pixelPos1, duration, false);
             // Schedule Idle State
             CoreGame.TimedActionMgr.addAction(duration * 2, function () {
-                element1.setState(CoreGame.ElementState.IDLE);
-                element2.setState(CoreGame.ElementState.IDLE);
+                // Force IDLE unconditionally. Blockers (Egg, Donut, …) inherit
+                // Blocker.blockBaseAction=[1,1,1,1], so once their state slips
+                // to anything != IDLE, GridSlot.getFirstInteractable(SWAP)
+                // takes the isStopAction branch and returns null — the
+                // blocker becomes permanently un-swappable until something
+                // else resets its state. Snap both back to IDLE to close
+                // that window.
+                element1.state = CoreGame.ElementState.IDLE;
+                element2.state = CoreGame.ElementState.IDLE;
+                cc.log("NormalSwap invalid: reset to IDLE"
+                    + " e1=" + element1.getTypeName() + "(" + element1.position.x + "," + element1.position.y + ")"
+                    + " e2=" + element2.getTypeName() + "(" + element2.position.x + "," + element2.position.y + ")");
                 // self.boardMgr.state = CoreGame.BoardState.IDLE;
             });
             self.boardMgr.state = CoreGame.BoardState.IDLE;

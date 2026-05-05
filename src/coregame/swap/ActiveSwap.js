@@ -89,10 +89,27 @@ CoreGame.ActiveSwap = CoreGame.LogicSwap.extend({
                         }
                     }
 
-                    // Create the new powerup at the gem's position
+                    // Create the new powerup at the gem's position. Mark it
+                    // immune to activation so the PU we just swapped with
+                    // (and its chain reactions) cannot consume it on the
+                    // same turn. Immunity is cleared in BoardMgr.onFinishTurn
+                    // once the cascade fully settles — clearing synchronously
+                    // here would be too early because PU activation damages
+                    // neighbours asynchronously via TimedActionMgr.
                     newPowerUp = self.boardMgr.addNewElement(gemRow, gemCol, puType);
                     if (newPowerUp) {
                         newPowerUp._immuneToActivation = true;
+                        if (!self.boardMgr.immuneActivationElements) {
+                            self.boardMgr.immuneActivationElements = [];
+                        }
+                        self.boardMgr.immuneActivationElements.push(newPowerUp);
+                    }
+                    // §3.3 PU creation bonus — this path creates a PU outside
+                    // MatchMgr's normal "match-of-4 spawns PU" flow, so MatchMgr
+                    // doesn't see it. Score it here so all PU spawns are
+                    // covered exactly once.
+                    if (self.boardMgr.scoreMgr) {
+                        self.boardMgr.scoreMgr.addPUCreatedEvent(puType);
                     }
                 } else if (matchGroup.length >= CoreGame.Config.MIN_MATCH) {
                     // Regular match - just remove the matched gems
@@ -110,13 +127,10 @@ CoreGame.ActiveSwap = CoreGame.LogicSwap.extend({
                 }
             }
 
-            // Activate the power-up
+            // Activate the power-up. Immunity on `newPowerUp` (if any) stays
+            // set through the whole activation chain; it is cleared later in
+            // BoardMgr.onFinishTurn when the board returns to IDLE.
             powerUp.active(targetGem.type);
-
-            // Clear immunity after activation effects settle
-            if (newPowerUp) {
-                newPowerUp._immuneToActivation = false;
-            }
         });
         return true;
     }

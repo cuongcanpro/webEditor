@@ -9,8 +9,6 @@
     stepStart: false,
     stepEnd: false,
 
-    isSubPU: false,
-
     ctor: function (element) {
         this._super(element);
         this.targetSlot = null;
@@ -200,7 +198,10 @@
         // straight-line distance `len`; a longer curved path scales up
         // proportionally.
         var bezierLen = this._computeBezierLength(startPos, c1, c2, this.desPos, 24);
-        var flyTime = this.TIME_FLY * (bezierLen / (CoreGame.Config.CELL_SIZE * 5));
+        var flyTime = Math.max(Math.min(
+            this.TIME_FLY * (bezierLen / (CoreGame.Config.CELL_SIZE * 5)),
+            CoreGame.PlaneUI.MAX_FLY
+        ), CoreGame.PlaneUI.MIN_FLY);
 
         this.runAction(cc.sequence(
             cc.spawn(
@@ -285,7 +286,7 @@
 
         if (this.trail && cc.sys.isObjectValid(this.trail)) {
             this.trail.runAction(cc.sequence(
-                cc.scaleTo(0.2, 0).easing(cc.easeOut(2.5)),
+                cc.delayTime(1),
                 cc.removeSelf()
             ));
         }
@@ -294,3 +295,5 @@
 CoreGame.PlaneUI.OFF_SET = cc.p(-10, -15);
 CoreGame.PlaneUI.SCALE = 0.725;
 CoreGame.PlaneUI.DELAY = 0.2;
+CoreGame.PlaneUI.MAX_FLY = 1;
+CoreGame.PlaneUI.MIN_FLY = 0.25;

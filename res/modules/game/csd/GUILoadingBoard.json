@@ -207,7 +207,7 @@
                   "ScaleY": 0.5
                 },
                 "Position": {
-                  "X": 362.448,
+                  "X": 360.0,
                   "Y": 132.8239
                 },
                 "Scale": {
@@ -218,15 +218,15 @@
                 "IconVisible": false,
                 "PositionPercentXEnabled": true,
                 "PrePosition": {
-                  "X": 0.5034,
+                  "X": 0.5,
                   "Y": 0.1038
                 },
                 "PreSize": {
                   "X": 0.1889,
                   "Y": 0.0117
                 },
-                "LeftMargin": 294.448,
-                "RightMargin": 289.552,
+                "LeftMargin": 292.0,
+                "RightMargin": 292.0,
                 "TopMargin": 1139.6761,
                 "BottomMargin": 125.3239,
                 "Tag": 60,
@@ -249,11 +249,11 @@
                 "Scale9Width": 109,
                 "Scale9Height": 27,
                 "AnchorPoint": {
-                  "ScaleX": 0.5,
+                  "ScaleX": 0.36,
                   "ScaleY": 0.5
                 },
                 "Position": {
-                  "X": 363.672,
+                  "X": 360.0,
                   "Y": 163.328
                 },
                 "Scale": {
@@ -265,18 +265,64 @@
                 "PositionPercentXEnabled": true,
                 "PositionPercentYEnabled": true,
                 "PrePosition": {
-                  "X": 0.5051,
+                  "X": 0.5,
                   "Y": 0.1276
                 },
                 "PreSize": {
                   "X": 0.2181,
                   "Y": 0.0313
                 },
-                "LeftMargin": 285.172,
-                "RightMargin": 277.828,
+                "LeftMargin": 303.48,
+                "RightMargin": 259.52,
                 "TopMargin": 1096.672,
                 "BottomMargin": 143.328,
                 "Tag": 61,
+                "Children": [
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "common/loading.png",
+                      "Plist": ""
+                    },
+                    "Scale9OriginX": 13,
+                    "Scale9OriginY": 13,
+                    "Scale9Width": 14,
+                    "Scale9Height": 14,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": -25.0,
+                      "Y": 20.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PositionPercentYEnabled": true,
+                    "PrePosition": {
+                      "X": -0.1592,
+                      "Y": 0.5
+                    },
+                    "PreSize": {
+                      "X": 0.2548,
+                      "Y": 1.0
+                    },
+                    "LeftMargin": -45.0,
+                    "RightMargin": 162.0,
+                    "Tag": 16,
+                    "ActionTag": -844429471,
+                    "Size": {
+                      "X": 40.0,
+                      "Y": 40.0
+                    },
+                    "Name": "imgLoadingCircle",
+                    "ctype": "ImageViewObjectData"
+                  }
+                ],
                 "ActionTag": 477079882,
                 "Size": {
                   "X": 157.0,
@@ -497,6 +543,8 @@
                 "ColorVector": {
                   "ScaleY": 1.0
                 },
+                "Scale9Width": 1,
+                "Scale9Height": 1,
                 "AnchorPoint": {
                   "ScaleX": 0.5,
                   "ScaleY": 0.5
@@ -538,8 +586,8 @@
                       "ScaleY": 0.5
                     },
                     "Position": {
-                      "X": 96.5076,
-                      "Y": 549.631
+                      "X": 96.48,
+                      "Y": 549.632
                     },
                     "Scale": {
                       "ScaleX": 3.75,
@@ -559,10 +607,10 @@
                     },
                     "HorizontalEdge": "BothEdge",
                     "VerticalEdge": "BothEdge",
-                    "LeftMargin": -165.4924,
-                    "RightMargin": 361.4924,
-                    "TopMargin": 460.369,
-                    "BottomMargin": 279.631,
+                    "LeftMargin": -165.52,
+                    "RightMargin": 361.52,
+                    "TopMargin": 460.368,
+                    "BottomMargin": 279.632,
                     "Tag": 64,
                     "ActionTag": -712839986,
                     "Size": {
@@ -704,6 +752,7 @@
       "UsedResources": [
         "../../common/alert_180min.png",
         "../../common/bg.png",
+        "../../common/loading.png",
         "../cutScenes/0.jpg",
         "../cutScenes/0_0.png",
         "../cutScenes/0_1.png",

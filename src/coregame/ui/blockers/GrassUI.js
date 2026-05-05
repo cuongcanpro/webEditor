@@ -19,7 +19,7 @@ CoreGame.GrassUI = CoreGame.ElementUI.extend({
 
         // 1. Background piece (grass_piece_0.png) - Stationary base
         this.sprBg = fr.createSprite("grass_piece_0.png");
-        this.sprBg.setScale(1.0); 
+        this.sprBg.setScale(1.0);
 
         // this.sprBg.setVisible(false);
 
@@ -38,15 +38,24 @@ CoreGame.GrassUI = CoreGame.ElementUI.extend({
 
         // Update main sprite
         if (this.sprite) {
-            fr.changeSprite(this.sprite, layerName, "res/modules/game/element/" + (500 + this.element.hitPoints));
+            fr.changeSprite(this.sprite, layerName);
         }
+
+        // Update bg sprite
+        if (this.sprBg) {
+            fr.changeSprite(this.sprBg, (this.element.hitPoints > 1 ? "2" : "") + "grass_piece_0.png");
+        }
+
+        let bgZOrder = this.element.layerBehavior - (CoreGame.GridBorderMgr.HP_THRESHOLD - this.element.hitPoints);
 
         if (this.getParent()) {
             if (!this.sprBg.getParent()) {
-                this.getParent().addChild(this.sprBg, CoreGame.LayerBehavior.BACKGROUND - 2); // Behind the main layer
+                this.getParent().addChild(this.sprBg, bgZOrder); // Behind the main layer
                 this.sprBg.setPosition(this.getPosition());
             }
         }
+
+        this.sprBg.setLocalZOrder(bgZOrder)
     },
 
     setPosition: function (posX, posY) {
@@ -82,12 +91,12 @@ CoreGame.GrassUI = CoreGame.ElementUI.extend({
     },
 
     playAnimation: function (animationName) {
-        cc.log("Run here === 2 ");
+        //cc.log("Run here === 2 ");
         this.playTakeDamageEffect();
     },
 
     removeFromParent: function (clean) {
-        cc.log("Run here removeFromParent Grass ========  ");
+        //cc.log("Run here removeFromParent Grass ========  ");
         if (this.sprBg && this.sprBg.getParent()) {
             this.sprBg.removeFromParent(clean);
         }

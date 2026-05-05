@@ -1,4 +1,4 @@
-﻿var CoreGame = CoreGame || {};
+var CoreGame = CoreGame || {};
 
 GameBoardInfoUI = BaseLayer.extend({
     alert_180min_18: null,
@@ -45,6 +45,7 @@ GameBoardInfoUI = BaseLayer.extend({
     imgMonsterName: null,
     lbMeetUpMonster: null,
     nodeMonsterSprite: null,
+
     // Extra monster info strip (small avatar + icon + description)
     bgExtraMonsterInfo: null,
     imgSmallAvatar: null,
@@ -72,6 +73,16 @@ GameBoardInfoUI = BaseLayer.extend({
     pSkip: null,
     btnSkip: null,
     lbContinue: null,
+
+    //Stars
+    pStarProgress: null,
+    starProgressBar: null,
+    starBg_0: null,
+    starBg_1: null,
+    starBg_2: null,
+    starReached_0: null,
+    starReached_1: null,
+    starReached_2: null,
 
     ctor: function (gameUI) {
         this._super();
@@ -108,7 +119,6 @@ GameBoardInfoUI = BaseLayer.extend({
         this.imgSmallAvatar.ignoreContentAdaptWithSize(true);
 
         this.pSkip.setVisible(false);
-
         this.demo.setVisible(false);
     },
 
@@ -121,6 +131,7 @@ GameBoardInfoUI = BaseLayer.extend({
         if (monsterBanner && this.nodeMonster.isVisible()) {
             let efxTimeMonster = 0.5;
             let deltaTimeMonster = 0.25;
+            waitShowTime = 3;
 
             this.imgMonsterBg.stopAllActions();
             this.imgMonsterBg.setOpacity(0);
@@ -128,6 +139,9 @@ GameBoardInfoUI = BaseLayer.extend({
             this.imgMonsterBg.x -= cc.winSize.width;
             this.imgMonsterBg.runAction(cc.sequence(
                 cc.delayTime(delayTime),
+                cc.callFunc(function () {
+                    fr.Sound.playSoundEffect(resSound.game_start);
+                }),
                 cc.spawn(
                     cc.fadeIn(efxTimeMonster),
                     cc.moveTo(efxTimeMonster, this.imgMonsterBg.rawPos).easing(cc.easeBackOut())
@@ -246,6 +260,9 @@ GameBoardInfoUI = BaseLayer.extend({
             this.nodeObjectives.x -= cc.winSize.width;
             this.nodeObjectives.runAction(cc.sequence(
                 cc.delayTime(delayTime),
+                cc.callFunc(function () {
+                    fr.Sound.playSoundEffect(resSound.game_start);
+                }),
                 cc.spawn(
                     cc.moveTo(efxTime, this.nodeObjectives.rawPos).easing(cc.easeBackOut()),
                     cc.fadeIn(efxTime).easing(cc.easeOut(2.5)),
@@ -297,12 +314,20 @@ GameBoardInfoUI = BaseLayer.extend({
             cc.delayTime(delayTime + efxTime + lifeTime),
             cc.moveTo(efxTime, this.pInfo.rawPos).easing(cc.easeBackOut())
         ));
+
+        this.pStarProgress.stopAllActions();
+        this.pStarProgress.setPosition(this.pStarProgress.rawPos);
+        this.pStarProgress.y += 100;
+        this.pStarProgress.runAction(cc.sequence(
+            cc.delayTime(delayTime + efxTime + lifeTime + efxTime),
+            cc.moveTo(efxTime, this.pStarProgress.rawPos).easing(cc.easeOut(2.5))
+        ));
     },
 
     efxNpcGuide: function (config) {
         this.lbTextBubble.stopAllActions();
-        this.lbTextBubble.setString(config["dialog"]);
-        this.lbTextBubblePhantom.setString(config["dialog"]);
+        this.lbTextBubble.setString(fr.Localization.text(config["dialog"]));
+        this.lbTextBubblePhantom.setString(fr.Localization.text(config["dialog"]));
         ccui.Helper.doLayout(this.lbTextBubble);
 
         let efxTime = 0.25;
@@ -335,6 +360,44 @@ GameBoardInfoUI = BaseLayer.extend({
         }
 
         this.spine_cat.setAnimation(0, move <= 3 ? 'worry' : 'idle', true);
+    },
+
+    setScore: function (score, scoreConfig) {
+        if (!cc.sys.isObjectValid(this.starProgressBar)) {
+            return;
+        }
+
+        if (!this.pStarProgress.isVisible())
+            return;
+
+        // cc.log("GAME BOARD INFO SET SCORE: ", JSON.stringify(score), JSON.stringify(scoreConfig));
+
+        let maxScore = scoreConfig.star3Threshold;
+
+        this.starProgressBar.setPercent(score * 100 / maxScore);
+
+        for (let i = 0; i < 3; i++) {
+            let star = this["starBg_" + i];
+            let starReached = this["starReached_" + i];
+            let mileStone = scoreConfig["star" + (i + 1) + "Threshold"];
+
+            star.x = this.starProgressBar.width * (mileStone / maxScore);
+
+            if (score >= mileStone && !starReached.isVisible()) {
+                let efxTime = 0.5;
+                starReached.stopAllActions();
+                starReached.setScale(2.5);
+                starReached.setOpacity(0);
+                starReached.setRotation(0);
+                starReached.runAction(cc.spawn(
+                    cc.scaleTo(efxTime, 1).easing(cc.easeIn(2.5)),
+                    cc.fadeIn(efxTime),
+                    cc.rotateBy(efxTime, 2 * 360).easing(cc.easeIn(2.5))
+                ))
+            }
+
+            starReached.setVisible(score >= mileStone);
+        }
     },
 
     setListTarget: function (targetElements) {
@@ -396,7 +459,7 @@ GameBoardInfoUI = BaseLayer.extend({
                 // TODO: finalize the art path convention; current placeholder
                 // loads a texture keyed by element.id from the monster art folder.
                 this.imgMonsterName.loadTexture(
-                    "res/modules/game/monster/name_" + element.id + ".png"
+                    "res/modules/game/gui/start_game/imgMonsterName_" + element.id + ".png"
                 );
                 this.imgSmallAvatar.loadTexture(
                     "res/modules/game/element/icon/" + element.id + ".png"
@@ -425,7 +488,7 @@ GameBoardInfoUI = BaseLayer.extend({
 
     createTarget: function (parent, list, isIntro = false) {
         let newTargetNode = ccs.load(
-            "game/csd/GameBoardInfoObjectiveSlot" + (isIntro? "Intro" : "") + ".json",
+            "game/csd/GameBoardInfoObjectiveSlot" + (isIntro ? "Intro" : "") + ".json",
             ""
         ).node;
         newTargetNode.setContentSize(cc.size(
@@ -462,7 +525,7 @@ GameBoardInfoUI = BaseLayer.extend({
             case "coin":
                 node.collectElement = function (amount) {
                     node.number += amount;
-                    cc.log("collectElement number=" + node.number);
+                    //cc.log("collectElement number=" + node.number);
                     node.lbl.addValue(amount);
                     if (node.lbl.value <= 0) {
                         node.lbl.setVisible(false);
@@ -480,9 +543,9 @@ GameBoardInfoUI = BaseLayer.extend({
             default:
                 node.collectElement = function (amount) {
                     node.number += amount;
-                    cc.log("collectElement number=" + node.number);
+                    //cc.log("collectElement number=" + node.number);
                     let remain = node.number;
-                    cc.log("collectElement", remain, node.lastRemain, node.type)
+                    //cc.log("collectElement", remain, node.lastRemain, node.type)
                     if (node.lastRemain == remain) return;
                     node.lastRemain = remain;
                     node.lbl.addValue(remain - node.lbl.value);
@@ -496,7 +559,7 @@ GameBoardInfoUI = BaseLayer.extend({
 
         node.unCollectElement = function (amount = 0) {
             node.number += amount;
-            cc.log("unCollect number=" + node.number);
+            //cc.log("unCollect number=" + node.number);
             node.addValue(amount)
         };
     },
@@ -510,7 +573,7 @@ GameBoardInfoUI = BaseLayer.extend({
         cc.log("suckElement " + element.id, this.mainScene.mainBoard.listCurTarget[CoreGame.Config.ElementType.GOLD_BONUS]);
 
         if (element.getCurState() == Element.State.NONE) return;
-        cc.log("element " + element.id + " suck " + element.type +' '+ element.isCollected)
+        cc.log("element " + element.id + " suck " + element.type + ' ' + element.isCollected)
         var nodeTarget = this.getNodeTarget(element.getType());
         if (nodeTarget == null) return;
         if (!element.isCollectible()) {
@@ -523,7 +586,7 @@ GameBoardInfoUI = BaseLayer.extend({
         element.getBoard().removeElement(element);
         for (let i = 0; i < element.width; i++)
             for (let j = 0; j < element.height; j++) {
-                this.board.getSlot(element.row-i, element.col-j).removeElement(element);
+                this.board.getSlot(element.row - i, element.col - j).removeElement(element);
             }
 
         UIUtils.changeParent(element, cc.director.getRunningScene());
@@ -551,10 +614,9 @@ GameBoardInfoUI = BaseLayer.extend({
             cc.delayTime(timeDelay),
             cc.callFunc(function () {
                 element.setCurState(Element.State.NONE);
-                if(element.getType() >= CoreGame.Config.ElementType.GREEN && element.getType() <= CoreGame.Config.ElementType.CYAN){
+                if (element.getType() >= CoreGame.Config.ElementType.GREEN && element.getType() <= CoreGame.Config.ElementType.CYAN) {
                     element.shadow = new GameBoardInfoUI.NodeShadow(element, timeMove, "icon_" + element.getType() + "_shadow.png");
-                }else
-                {
+                } else {
                     element.shadow = new GameBoardInfoUI.NodeShadow(element, timeMove);
                 }
                 element.shadow.setShadowZOder(CoreGame.Config.zOrder.OBJECTIVE + zOrderInc - 1);
@@ -620,8 +682,8 @@ GameBoardInfoUI = BaseLayer.extend({
                     coin.runAction(cc.scaleTo(timeMove * 0.4, 100 / 80, 100 / 80));
                 }
                 var actionScaleShadow = cc.sequence(
-                    cc.scaleTo(timeMove/2, 1.5),
-                    cc.scaleTo(timeMove - timeMove/2, 1.0)
+                    cc.scaleTo(timeMove / 2, 1.5),
+                    cc.scaleTo(timeMove - timeMove / 2, 1.0)
                 )
                 coin.shadow = new GameBoardInfoUI.NodeShadow(coin, timeMove, null, actionScaleShadow);
                 coin.runAction(cc.sequence(
@@ -666,9 +728,9 @@ GameBoardInfoUI = BaseLayer.extend({
         };
         this.btnTest.addClickEventListener(this.showTest.bind(this));
         this.onTestSetMove = function () {
-            if (!gv.isRelease){
+            if (!gv.isRelease) {
                 var inputMove = Number(this.tfTestSetMove.getString());
-                if (1 <= inputMove && inputMove <= 100){
+                if (1 <= inputMove && inputMove <= 100) {
                     this.board.setMove(inputMove);
                 }
             }
@@ -677,13 +739,17 @@ GameBoardInfoUI = BaseLayer.extend({
     },
 
     showSkip: function () {
-        this.pSkip.setVisible(true);
+        try {
+            this.pSkip.setVisible(true);
+        } catch (e) {
+            cc.log("GameBoardInfoUI showSkip error:", e.stack);
+        }
     },
 
     setIntroNewBlock: function (config) {
-        this.lbIntroBlock.setString(config["description"]);
-        this.lbBlockName.setString(config["name"]);
-        this.imgBlock.loadTexture("res/modules/game/element/" + config["blockId"] + ".png");
+        this.lbIntroBlock.setString(fr.Localization.text("lang_block_des_" + config["blockId"]));
+        this.lbBlockName.setString(fr.Localization.text("lang_block_name_" + config["blockId"]));
+        this.imgBlock.loadTexture("res/modules/game/element/bigElements/" + config["blockId"] + ".png");
 
         let efxTime = 0.5;
         let delta = 0.125;
@@ -866,7 +932,7 @@ GameBoardInfoUI.animMonster = {
     10000: {
         name: "Giant\nKong",
         scale: 1.5,
-        offset: cc.p(0, -125),
+        offset: cc.p(0, 0),
         anim: "anim0_idle"
     }
 };
@@ -884,53 +950,52 @@ GameBoardInfoUI.NodeShadow = cc.Node.extend({
      * @param shadowZOrder: ZOder shadow
      * @param timeMove: total time move animation
      */
-    ctor:function (objectFly, timeMove, shadowResourcesPath, actionScale ) {
+    ctor: function (objectFly, timeMove, shadowResourcesPath, actionScale) {
         this._super();
         objectFly.getParent().addChild(this);
         this.objectFly = objectFly;
 
         //init shadow resources path
-        if(_.isUndefined(shadowResourcesPath) || shadowResourcesPath == null){
+        if (_.isUndefined(shadowResourcesPath) || shadowResourcesPath == null) {
             shadowResourcesPath = res.img_shadow;
         }
 
         this._shadow = UIUtils.createSprite(shadowResourcesPath, objectFly.getParent());
-        this._shadow.setLocalZOrder(objectFly.getLocalZOrder()-1);
+        this._shadow.setLocalZOrder(objectFly.getLocalZOrder() - 1);
         // run action scale custom, if actionScale = null then scale on update with scale rate = object fly'scale rate
-        if(!_.isUndefined(actionScale) && actionScale !=  null)
-        {
+        if (!_.isUndefined(actionScale) && actionScale != null) {
             this.actionScaleCustome = actionScale;
             this._shadow.runAction(actionScale);
         }
         this.timeMove = timeMove;
-        if(_.isUndefined(timeMove) || timeMove == null){
+        if (_.isUndefined(timeMove) || timeMove == null) {
             this.timeMove = 1.0;
         }
 
 
         this._shadow.getParent().runAction(cc.sequence(
-            cc.delayTime(timeMove*0.9),
+            cc.delayTime(timeMove * 0.9),
             cc.callFunc(function () {
                 this.remove();
             }.bind(this))
         ))
 
 
-        this.distance = {x: 0, y : 0};
+        this.distance = { x: 0, y: 0 };
         this.delta = 5;
         this.timeFly = 0;
         this.scheduleUpdate();
 
     },
-    setShadowZOder:function(shadowZOrder){
+    setShadowZOder: function (shadowZOrder) {
         this._shadow.setLocalZOrder(shadowZOrder);
     },
     /**
      * remove after fly done
      */
-    remove:function(){
+    remove: function () {
 
-        if(this._shadow == null) return;
+        if (this._shadow == null) return;
 
         this._shadow.setVisible(false);
         this._shadow.removeFromParent(false);
@@ -941,32 +1006,32 @@ GameBoardInfoUI.NodeShadow = cc.Node.extend({
     /**
      * Update _shadow position along to shadowFake position.
      */
-    update:function (dt) {
-        if(_.isUndefined(this._shadow) || this._shadow == null) return;
+    update: function (dt) {
+        if (_.isUndefined(this._shadow) || this._shadow == null) return;
 
-        this.timeFly+= dt;
+        this.timeFly += dt;
 
-        if(this.timeFly < this.timeMove/2){
+        if (this.timeFly < this.timeMove / 2) {
             this.distance.y -= this.delta;
             this.distance.x -= this.delta;
         }
-        else{
+        else {
             this.distance.y += this.delta;
             this.distance.x += this.delta;
         }
-        if(!cc.sys.isObjectValid(this.objectFly)){
+        if (!cc.sys.isObjectValid(this.objectFly)) {
             return;
         }
         this._shadow.x = this.objectFly.x + this.distance.x;
         this._shadow.y = this.objectFly.y + this.distance.y;
-        if(this._shadow.y > this.objectFly.y){
+        if (this._shadow.y > this.objectFly.y) {
             this._shadow.y = this.objectFly.y;
         }
-        if(this._shadow.x > this.objectFly.x){
+        if (this._shadow.x > this.objectFly.x) {
             this._shadow.x = this.objectFly.x;
         }
 
-        if(_.isUndefined(this.actionScaleCustome)){
+        if (_.isUndefined(this.actionScaleCustome)) {
 
             this._shadow.setScale(this.objectFly.getScaleX(), this.objectFly.getScaleY());
         }

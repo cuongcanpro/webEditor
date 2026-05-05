@@ -1,4 +1,3 @@
-
 var GUILoadingBoardScene = cc.Scene.extend({
     ctor: function () {
         this._super();
@@ -12,13 +11,12 @@ var GUILoadingBoardScene = cc.Scene.extend({
 
     switchToLobby: function () {
         cc.log("switchToLobby");
-        if (this.layer.finishLoadLogo){
+        if (this.layer.finishLoadLogo) {
             sceneMgr.openScene(SceneLobby.className);
 
             CoreGame.BlockerFactory.preloadAllConfigs();
             // cc.director.runScene(new SceneLobby);
-        }
-        else{
+        } else {
             this.layer.loadLogoDoneCallBack = function () {
                 cc.director.runScene(new SceneLobby);
             }
@@ -26,37 +24,39 @@ var GUILoadingBoardScene = cc.Scene.extend({
     },
 });
 
-var GUILoadingBoard = cc.Node.extend({
+var GUILoadingBoard = BaseLayer.extend({
     p0: null,
     p5: null,
+    demo: null,
+
+    bg: null,
+    balloon: null,
+    env: null,
+    pbLoading: null,
+    imgLoading: null,
+
+    backgroundStreet: null,
+
+    imgLoadingCircle: null,
 
     ctor: function (mainScene) {
         this._super();
         this.mainScene = mainScene;
         this.finishLoadLogo = false;
         this.loadLogoDoneCallBack = null;
-        this.initUI();
+
+        this.initWithJsonFile("res/modules/game/csd/GUILoadingBoard.json");
     },
-    initUI: function () {
-        var json = ccs.load(res.ZCSD_GUI_LOADING_BOARD, "");
-        this._rootNode = json.node;
-        m3.log(JSON.stringify(cc.winSize));
-        this._rootNode.setContentSize(cc.winSize);
-        ccui.Helper.doLayout(this._rootNode);
-        this.addChild(this._rootNode);
-        UIUtils.mappingChildren(this._rootNode, this);
 
-        // this.setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
-
+    initLayer: function () {
         //set position
         this.bg.width = cc.winSize.width;
         this.bg.height = cc.winSize.height;
 
-        this.balloon.x = this.bg.width /2;
-        this.env.x = this.bg.width /2;
-        this.pbLoading.x = this.bg.width /2;
-        this.imgLoading.x = this.bg.width /2;
-
+        this.balloon.x = this.bg.width / 2;
+        this.env.x = this.bg.width / 2;
+        this.pbLoading.x = this.bg.width / 2;
+        this.imgLoading.x = this.bg.width / 2;
 
 
         // cc.log("Localization",('logo'+fr.Localization.getLang()))
@@ -80,17 +80,23 @@ var GUILoadingBoard = cc.Node.extend({
         this.finishLoadLogo = true;
 
         this.logo = new cc.Sprite("res/modules/no_pack/update/logo_" + Utility.getResourcesCountryCode() + ".png")
-        this.logo.setPosition(this.backgroundStreet.width/2, this.backgroundStreet.height * 0.81);
+        this.logo.setPosition(this.backgroundStreet.width / 2, this.backgroundStreet.height * 0.81);
         this.backgroundStreet.addChild(this.logo);
-        this.bg.setVisible(false);
-        this.backgroundStreet.setScale(cc.winSize.height/this.backgroundStreet.height)
-        if(Utility.isIOS()){
-            this.env.setScaleX(cc.winSize.width/this.env.width);
+        // this.bg.setVisible(false);
+        this.backgroundStreet.setScale(cc.winSize.height / this.backgroundStreet.height)
+        if (Utility.isIOS()) {
+            this.env.setScaleX(cc.winSize.width / this.env.width);
         }
-        this.bg.setPosition(cc.winSize.width/2, cc.winSize.height/2);
+        this.bg.setPosition(cc.winSize.width / 2, cc.winSize.height / 2);
 
         this.p0.setVisible(false);
         this.p5.setVisible(false);
+        this.demo.setVisible(false);
+    },
+
+    onEnterFinish: function () {
+        this.imgLoadingCircle.stopAllActions();
+        this.imgLoadingCircle.runAction(cc.rotateBy(2.5, 360).repeatForever());
     },
 
     show: function () {
@@ -219,13 +225,14 @@ var GUILoadingBoard = cc.Node.extend({
         }
     },
 });
+GUILoadingBoard.className = "GUILoadingBoard";
 
 /***
  * chuyển từ gui loading đầu game sang SceneLobby, vì lúc chuyển cc.director.getRunningScene().switchToLobby bị indefined,
  * đã check là do gui đang chạy getName k phải GUILoadingBoardScene.
  */
-var switchToLobby = function (){
-    if(typeof cc.director.getRunningScene().switchToLobby === "function") {
+var switchToLobby = function () {
+    if (typeof cc.director.getRunningScene().switchToLobby === "function") {
         cc.log("switchToLobby");
         clearInterval(cc.game.switchToLobbyInterval);
         cc.director.getRunningScene().switchToLobby();

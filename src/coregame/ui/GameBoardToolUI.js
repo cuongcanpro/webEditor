@@ -16,6 +16,7 @@ GameBoardToolUI = BaseLayer.extend({
     btnQuit: null,
     btnSound: null,
     btnMusic: null,
+    btnVibrate: null,
     btnClose: null,
 
     nodeToolInfo: null,
@@ -57,11 +58,14 @@ GameBoardToolUI = BaseLayer.extend({
         this.btnSound.getChildByName('icon_off').setVisible(!fr.Sound.effectOn);
         this.btnMusic.getChildByName('icon_on').setVisible(fr.Sound.musicOn);
         this.btnMusic.getChildByName('icon_off').setVisible(!fr.Sound.musicOn);
+        this.btnVibrate.getChildByName('icon_on').setVisible(fr.Sound.vibrateOn);
+        this.btnVibrate.getChildByName('icon_off').setVisible(!fr.Sound.vibrateOn);
 
         this.btnQuit.addClickEventListener(this.onClickQuit.bind(this));
         this.btnPause.addClickEventListener(this.onClickPause.bind(this));
         this.btnSound.addClickEventListener(this.onClickSound.bind(this));
         this.btnMusic.addClickEventListener(this.onClickMusic.bind(this));
+        this.btnVibrate.addClickEventListener(this.onClickVibrate.bind(this));
 
         this.btnClose.setSwallowTouches(false);
         this.btnClose.addClickEventListener(this.onClickPause.bind(this));
@@ -124,7 +128,7 @@ GameBoardToolUI = BaseLayer.extend({
     },
 
     showGUIPause: function (bool, isAnim = true) {
-        const listBtn = [this.btnQuit, this.btnSound, this.btnMusic, this.btnClose];
+        const listBtn = [this.btnQuit, this.btnSound, this.btnMusic, this.btnVibrate, this.btnClose];
         // for (let i = 0; i < listBtn.length; i++) {
             // UIUtils.changeParent(listBtn[i], this.btnPause.getParent(), 100000, false);
             // listBtn[i].setVisible(true);
@@ -214,6 +218,13 @@ GameBoardToolUI = BaseLayer.extend({
         fr.Sound.switchMusic();
         this.btnMusic.getChildByName('icon_on').setVisible(fr.Sound.musicOn);
         this.btnMusic.getChildByName('icon_off').setVisible(!fr.Sound.musicOn);
+    },
+
+    // click event registered in cocos studio
+    onClickVibrate:function(){
+        fr.Sound.switchVibrate();
+        this.btnVibrate.getChildByName('icon_on').setVisible(fr.Sound.vibrateOn);
+        this.btnVibrate.getChildByName('icon_off').setVisible(!fr.Sound.vibrateOn);
     },
 
     // click event registered in cocos studio

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * RainbowPU - Rainbow power-up element (5 in a line match)
  * Part of Match-3 Core Game
  */
@@ -18,23 +18,45 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
             return;
         }
         if (this.attachments.length > 0) {
-            cc.log("State === " + JSON.stringify(this.attachments[0].blockBaseAction));
+            // cc.log("State === " + JSON.stringify(this.attachments[0].blockBaseAction));
         }
         if (this.isStopActionByAttachment(CoreGame.ElementObject.Action.ACTIVE)) {
-            cc.log("Stop ====================== ");
+            // cc.log("Stop ====================== ");
             return;
         }
 
-        this.setState(CoreGame.ElementState.REMOVING);
-        CoreGame.TimedActionMgr.addAction(0.25, function () {
-            this.activeLogic(data);
-        }.bind(this));
+        // this.setState(CoreGame.ElementState.REMOVING);
+        // CoreGame.TimedActionMgr.addAction(0.25, function () {
+        //     this.activeLogic(data);
+        // }.bind(this));
+        this.activeLogic(data);
     },
 
     /**
      * Clear all gems of target color and deal damage to orthogonally adjacent blockers.
      */
     activeLogic: function (typeToClear) {
+        // Deferred Fire: wait for board to settle
+        this.isPendingFire = true;
+        this._pendingTypeToClear = typeToClear;
+
+        this.setState(CoreGame.ElementState.PENDING);
+
+        // Thêm Code ở trạng thái Comment, tôi sẽ thay thế vào khi cần
+        if (this.ui) {
+            this.ui.startPending();
+        }
+
+        if (this.boardMgr) {
+            this.boardMgr.pendingRainbowPUs.push(this);
+            this.boardMgr.isAutoMatchBlocked = true;
+        }
+    },
+
+    firePending: function () {
+        this.isPendingFire = false;
+        var typeToClear = this._pendingTypeToClear;
+
         var targetSlots = this.collectTargets(typeToClear);
         var targets = targetSlots.map(function (slot) {
             return this.boardMgr.gridToPixel(slot.row, slot.col);
@@ -62,8 +84,9 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
         var selfRow = this.position.x;
         var selfCol = this.position.y;
 
+        var puType = this.type;
         CoreGame.TimedActionMgr.addAction(this.activeDuration, function () {
-            let context = { type: "normal" };
+            let context = { type: "normal", puType: puType };
             for (var i = 0; i < targetSlots.length; i++) {
                 targetSlots[i].matchElement(context, true);
                 boardMgr.matchMgr.notifyNearbySlots(targetSlots[i].row, targetSlots[i].col, context);
@@ -79,9 +102,7 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
         CoreGame.TimedActionMgr.addAction(this.activeDuration, function () {
             this.remove();
             var mgr = CoreGame.BoardUI.getInstance().boardMgr;
-            if (!mgr.gameEnded) {
-                mgr.state = CoreGame.BoardState.MATCHING;
-            }
+            mgr.state = CoreGame.BoardState.MATCHING;
         }.bind(this));
     },
 
@@ -133,6 +154,11 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
     createUIInstance: function () {
         return new CoreGame.RainbowUI(this);
     },
+
+    remove: function () {
+        this._super();
+        cc.log("Remove Rainbow =-====");
+    },
 });
 
 CoreGame.RainbowPUPlus = CoreGame.RainbowPU.extend({
@@ -156,9 +182,7 @@ CoreGame.RainbowPUPlus = CoreGame.RainbowPU.extend({
         CoreGame.TimedActionMgr.addAction(CoreGame.RainbowPlusUI.EXPLODE_TIME, function () {
             this.remove();
             var mgr = CoreGame.BoardUI.getInstance().boardMgr;
-            if (!mgr.gameEnded) {
-                mgr.state = CoreGame.BoardState.MATCHING;
-            }
+            mgr.state = CoreGame.BoardState.MATCHING;
         }.bind(this));
     },
 
@@ -171,7 +195,8 @@ CoreGame.RainbowPUPlus = CoreGame.RainbowPU.extend({
             return this.boardMgr.gridToPixel(slot.row, slot.col);
         }.bind(this));
 
-        // Reserve target gems: set to MATCHING state to prevent drop and normal matching
+        // Reserve target gems: set to MATCHING state to prevent drop and normal
+        // matching during the ~1.5s explosion animation window.
         for (var i = 0; i < targetSlots.length; i++) {
             var gem = targetSlots[i].getMatchableElement();
             if (gem && gem.state === CoreGame.ElementState.IDLE) {
@@ -190,21 +215,21 @@ CoreGame.RainbowPUPlus = CoreGame.RainbowPU.extend({
         var selfRow = this.position.x;
         var selfCol = this.position.y;
 
+        var puType = this.type;
         CoreGame.TimedActionMgr.addAction(duration, function () {
-            let context = { type: "normal" };
+            let context = { type: "normal", puType: puType };
+            // Always matchElement on every slot. The slot's own matchElement
+            // pipeline destroys the gem and, as a consequence, any blocker
+            // sharing the slot (Grass, Chain, attachments...) runs its own
+            // MATCH action — which is typically a TakeDamageAction(1). That's
+            // exactly the design: gem destruction → blocker damage.
+            //
+            // The previous branching on hasBlocker() bypassed gem destruction
+            // in those slots, which both prevented the intended damage
+            // propagation AND stranded the reserved gem in MATCHING state
+            // forever (causing un-swappable tiles).
             for (var i = 0; i < targetSlots.length; i++) {
-                var slot = targetSlots[i];
-
-                if (slot.hasBlocker()) {
-                    for (var j = 0; j < slot.listElement.length; j++) {
-                        var el = slot.listElement[j];
-                        if (el instanceof CoreGame.Blocker && el.canTakeDamage()) {
-                            el.takeDamage(1, null, slot.row, slot.col);
-                        }
-                    }
-                } else {
-                    slot.matchElement(context, true);
-                }
+                targetSlots[i].matchElement(context, true);
             }
             var selfSlot = boardMgr.getSlot(selfRow, selfCol);
             if (selfSlot) selfSlot.matchElement(context);

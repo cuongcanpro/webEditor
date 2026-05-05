@@ -56,6 +56,20 @@ CoreGame.QueueBlocker = CoreGame.Blocker.extend({
     takeDamage: function (hitpoints, typeId, row, column) {
         if (!this.canTakeDamage(typeId)) return false;
 
+        // ── Scoring (per §3.1, one payout per item collected) ───────────────
+        // QueueBlocker collects one queued item per damage call (e.g. Pinwheel
+        // collecting a sequence of gem types). Score one event per shift,
+        // regardless of whether this completes the queue.
+        if (this.boardMgr && this.boardMgr.scoreMgr) {
+            this.boardMgr.scoreMgr.addClearEvent({
+                elementType: this.type,
+                hp: 1,
+                isObjective: this.boardMgr.isObjectiveType(this.type),
+                clearMethod: this.boardMgr.getCurrentClearMethod(),
+                cascadeDepth: this.boardMgr.getCurrentCascadeDepth()
+            });
+        }
+
         // Remove first item from queue
         this.queueTypeIds.shift();
 

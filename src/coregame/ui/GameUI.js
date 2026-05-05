@@ -15,9 +15,9 @@ CoreGame.GameUI = cc.Layer.extend({
     levelId: 0,
 
     // ── Agent relay ──────────────────────────────────────────────────────────
-    RELAY_URL:        "http://127.0.0.1:3001",
-    _relaySessionId:  null,
-    _relayPollCb:     null,   // stored so we can unschedule it
+    RELAY_URL: "http://127.0.0.1:3001",
+    _relaySessionId: null,
+    _relayPollCb: null,   // stored so we can unschedule it
 
     /**
      * Constructor
@@ -93,6 +93,12 @@ CoreGame.GameUI = cc.Layer.extend({
 
         this.boardUI.boardMgr.gameUI = this;
         this.levelId = this.boardUI.boardMgr.getLevelId();
+        try {
+            this.oldStarBeforePlay = userMgr.getData().getStarByLevel(this.levelId);
+        }
+        catch (ex) {
+            this.oldStarBeforePlay = 0;
+        }
 
         // AI agent
         this._aiAgent = null;
@@ -109,6 +115,8 @@ CoreGame.GameUI = cc.Layer.extend({
         this.gameBoardEffectLayer.setVisible(false);
         this.boardUI.boardMgr.setMove(levelConfig.mapConfig ? (levelConfig.mapConfig.numMove || 0) : 0);
 
+        this.onScoreChanged(0, levelConfig.mapConfig.scoreConfig);
+
         // Apply spawn strategy from map config if specified
         var stratKey = levelConfig.mapConfig && levelConfig.mapConfig.spawnStrategy;
         if (stratKey && CoreGame.DropStrategy[stratKey] && this.boardUI.boardMgr.dropMgr) {
@@ -117,12 +125,12 @@ CoreGame.GameUI = cc.Layer.extend({
 
         // Init AdaptiveTPP dynamic difficulty
         if (CoreGame.AdaptiveTPP) {
-            var mapCfg    = levelConfig.mapConfig || {};
-            var boardTEs  = this.boardUI.boardMgr.targetElements || [];
+            var mapCfg = levelConfig.mapConfig || {};
+            var boardTEs = this.boardUI.boardMgr.targetElements || [];
 
             // Build HP-per-type map from level elements (bosses have hp > 1)
             var hpPerType = {};
-            var mapElems  = mapCfg.elements || [];
+            var mapElems = mapCfg.elements || [];
             for (var ei = 0; ei < mapElems.length; ei++) {
                 var me = mapElems[ei];
                 if (me.hp && me.hp > 1) {
@@ -139,8 +147,8 @@ CoreGame.GameUI = cc.Layer.extend({
 
             CoreGame.AdaptiveTPP.init(this.boardUI.boardMgr, {
                 targetMoves: mapCfg.targetMove || mapCfg.numMove || 30,
-                targets:     tppTargets,
-                levelId:     mapCfg.levelId || null
+                targets: tppTargets,
+                levelId: mapCfg.levelId || null
             });
         }
 
@@ -214,8 +222,17 @@ CoreGame.GameUI = cc.Layer.extend({
         this.addChild(btn, 1000);
         this._aiButton = btn;
 
+        // ── Thinking timer label (shown above the AI button while LLM is running) ─
+        var thinkLabel = new cc.LabelTTF("", "Arial", 13);
+        thinkLabel.setAnchorPoint(cc.p(0.5, 0));
+        thinkLabel.setPosition(winW - 40, 78);
+        thinkLabel.setColor(cc.color(255, 220, 50));
+        thinkLabel.setVisible(false);
+        this.addChild(thinkLabel, 1001);
+        this._aiThinkingLabel = thinkLabel;
+
         // ── Mini popup menu (appears above the AI button) ────────────────────
-        var menuW = 130, menuH = 96;
+        var menuW = 130, menuH = 134;
         var menuX = winW - menuW - 5;
         var menuY = 95;
 
@@ -245,6 +262,27 @@ CoreGame.GameUI = cc.Layer.extend({
         });
         this.addChild(aiToggleBtn, 1002);
         this._aiToggleBtn = aiToggleBtn;
+
+        // Sub-button: BENCH (opens LLM benchmark scene)
+        var benchBtn = new ccui.Button(
+            "res/tool/res/btn_green_2.png",
+            "res/tool/res/btn_green_2.png"
+        );
+        benchBtn.setTitleText("BENCH");
+        benchBtn.setTitleFontSize(18);
+        benchBtn.setTitleColor(cc.color(80, 200, 255));
+        benchBtn.setScale9Enabled(true);
+        benchBtn.setContentSize(menuW - 10, 36);
+        benchBtn.setPosition(menuX + menuW / 2, menuY + menuH / 2);
+        benchBtn.setVisible(false);
+        benchBtn.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) {
+                self._closeAIMenu();
+                cc.director.runScene(new CoreGame.SceneLLMBench());
+            }
+        });
+        this.addChild(benchBtn, 1002);
+        this._benchBtn = benchBtn;
 
         // Sub-button: DBG
         var dbgBtn = new ccui.Button(
@@ -310,15 +348,17 @@ CoreGame.GameUI = cc.Layer.extend({
 
     _toggleAIMenu: function () {
         this._aiMenuVisible = !this._aiMenuVisible;
-        if (this._aiMenuBg)     this._aiMenuBg.setVisible(this._aiMenuVisible);
-        if (this._aiToggleBtn)  this._aiToggleBtn.setVisible(this._aiMenuVisible);
+        if (this._aiMenuBg) this._aiMenuBg.setVisible(this._aiMenuVisible);
+        if (this._aiToggleBtn) this._aiToggleBtn.setVisible(this._aiMenuVisible);
+        if (this._benchBtn) this._benchBtn.setVisible(this._aiMenuVisible);
         if (this._dbgToggleBtn) this._dbgToggleBtn.setVisible(this._aiMenuVisible);
     },
 
     _closeAIMenu: function () {
         this._aiMenuVisible = false;
-        if (this._aiMenuBg)     this._aiMenuBg.setVisible(false);
-        if (this._aiToggleBtn)  this._aiToggleBtn.setVisible(false);
+        if (this._aiMenuBg) this._aiMenuBg.setVisible(false);
+        if (this._aiToggleBtn) this._aiToggleBtn.setVisible(false);
+        if (this._benchBtn) this._benchBtn.setVisible(false);
         if (this._dbgToggleBtn) this._dbgToggleBtn.setVisible(false);
     },
 
@@ -355,7 +395,7 @@ CoreGame.GameUI = cc.Layer.extend({
 
     _toggleDebugOverlay: function () {
         this._debugVisible = !this._debugVisible;
-        if (this._debugBg)    this._debugBg.setVisible(this._debugVisible);
+        if (this._debugBg) this._debugBg.setVisible(this._debugVisible);
         if (this._debugLabel) this._debugLabel.setVisible(this._debugVisible);
 
         if (this._debugVisible) {
@@ -383,7 +423,7 @@ CoreGame.GameUI = cc.Layer.extend({
             for (var ti = 0; ti < tes.length; ti++) {
                 totalCleared += (tes[ti].count - tes[ti].current);
             }
-            var dev    = tpp.getDeviation(movesUsed, totalCleared);
+            var dev = tpp.getDeviation(movesUsed, totalCleared);
             var devStr = (dev >= 0 ? "+" : "") + dev.toFixed(3);
             var streak = tpp._assistStreak || 0;
             lines.push("=== AdaptiveTPP ===");
@@ -397,18 +437,18 @@ CoreGame.GameUI = cc.Layer.extend({
         }
 
         // ── Targets ──────────────────────────────────────────────────────────
-        var _GEM = {1:"G",2:"B",3:"R",4:"Y",5:"P",6:"C"};
-        var _PU  = {101:"h",102:"n",103:"*",104:"+",105:"L",106:"v"};
+        var _GEM = { 1: "G", 2: "B", 3: "R", 4: "Y", 5: "P", 6: "C" };
+        var _PU = { 101: "h", 102: "n", 103: "*", 104: "+", 105: "L", 106: "v" };
         lines.push("=== Targets ===");
         var tes2 = bm.targetElements || [];
         if (tes2.length === 0) {
             lines.push("  (none)");
         } else {
             for (var i = 0; i < tes2.length; i++) {
-                var te   = tes2[i];
-                var lbl  = _GEM[te.id] || _PU[te.id] || ("T" + te.id);
+                var te = tes2[i];
+                var lbl = _GEM[te.id] || _PU[te.id] || ("T" + te.id);
                 var done = te.count - te.current;
-                var bar  = "";
+                var bar = "";
                 for (var b = 0; b < te.count && b < 10; b++) bar += (b < done ? "#" : ".");
                 lines.push(lbl + ": " + done + "/" + te.count
                     + " [" + bar + "] " + te.current + " rem");
@@ -423,12 +463,12 @@ CoreGame.GameUI = cc.Layer.extend({
         // ── Token stats ──────────────────────────────────────────────────────
         var agent = this._aiAgent;
         if (agent && agent._tokenStats && agent._tokenStats.calls > 0) {
-            var ts     = agent._tokenStats;
-            var avgIn  = Math.round(ts.in  / ts.calls);
+            var ts = agent._tokenStats;
+            var avgIn = Math.round(ts.in / ts.calls);
             var avgOut = Math.round(ts.out / ts.calls);
             lines.push("=== Tokens ===");
             lines.push("Calls: " + ts.calls);
-            lines.push("In:  " + ts.in  + "  (~" + avgIn  + "/call)");
+            lines.push("In:  " + ts.in + "  (~" + avgIn + "/call)");
             lines.push("Out: " + ts.out + "  (~" + avgOut + "/call)");
         }
 
@@ -436,14 +476,15 @@ CoreGame.GameUI = cc.Layer.extend({
     },
 
     _toggleAI: function () {
+        var self = this;
         var bm = this.boardUI && this.boardUI.boardMgr;
         if (!bm) return;
         var mainBtn = this._aiButton;
-        var subBtn  = this._aiToggleBtn;
+        var subBtn = this._aiToggleBtn;
         if (!this._aiAgent) {
             this._aiAgent = new CoreGame.LLMAgent();
-            var richText        = this._aiRichText;
-            var reasoningBg     = this._aiReasoningBg;
+            var richText = this._aiRichText;
+            var reasoningBg = this._aiReasoningBg;
             var reasoningScroll = this._aiReasoningScroll;
 
             var richElemCount = 0;  // track added elements for clearing (native has no _richElements)
@@ -467,11 +508,11 @@ CoreGame.GameUI = cc.Layer.extend({
                 }
 
                 richText.formatText();
-                reasoningScroll.scrollToTop(0, false);
                 reasoningScroll.setVisible(true);
                 if (reasoningBg) reasoningBg.setVisible(true);
             };
             this._aiAgent.onStatus = function (status) {
+                var lbl = self._aiThinkingLabel;
                 if (status === "thinking") {
                     mainBtn.setTitleColor(cc.color(255, 220, 50));
                     mainBtn.stopAllActions();
@@ -480,29 +521,44 @@ CoreGame.GameUI = cc.Layer.extend({
                         cc.scaleTo(0.35, 1.18),
                         cc.scaleTo(0.25, 1.0)
                     )));
+                    // Start elapsed-time ticker
+                    self._thinkStartTime = Date.now();
+                    if (self._thinkTimer) { clearInterval(self._thinkTimer); }
+                    if (lbl) { lbl.setString("Thinking... 0.0s"); lbl.setVisible(true); }
+                    self._thinkTimer = setInterval(function () {
+                        if (!lbl) return;
+                        var elapsed = (Date.now() - self._thinkStartTime) / 1000;
+                        lbl.setString("Thinking... " + elapsed.toFixed(1) + "s");
+                    }, 100);
                 } else if (status === "moving") {
+                    if (self._thinkTimer) { clearInterval(self._thinkTimer); self._thinkTimer = null; }
                     mainBtn.stopAllActions();
                     mainBtn.setScale(1.0);
                     mainBtn.setTitleColor(cc.color(50, 200, 255));
+                    if (lbl) { lbl.setString("Moving..."); lbl.setVisible(true); }
                 } else {
+                    if (self._thinkTimer) { clearInterval(self._thinkTimer); self._thinkTimer = null; }
                     mainBtn.stopAllActions();
                     mainBtn.setScale(1.0);
                     mainBtn.setTitleColor(cc.color(80, 255, 80));
+                    if (lbl) { lbl.setVisible(false); }
                 }
             };
             this._aiAgent.start(bm);
             mainBtn.setTitleColor(cc.color(80, 255, 80));
-            if (subBtn) { subBtn.setTitleText("AI: ON");  subBtn.setTitleColor(cc.color(80, 255, 80)); }
+            if (subBtn) { subBtn.setTitleText("AI: ON"); subBtn.setTitleColor(cc.color(80, 255, 80)); }
             this._aiAgent.onTurnReady();
         } else {
             this._aiAgent.stop();
             this._aiAgent = null;
+            if (this._thinkTimer) { clearInterval(this._thinkTimer); this._thinkTimer = null; }
+            if (this._aiThinkingLabel) this._aiThinkingLabel.setVisible(false);
             mainBtn.stopAllActions();
             mainBtn.setScale(1.0);
             mainBtn.setTitleColor(cc.color(255, 80, 80));
             if (subBtn) { subBtn.setTitleText("AI: OFF"); subBtn.setTitleColor(cc.color(255, 80, 80)); }
             if (this._aiReasoningScroll) this._aiReasoningScroll.setVisible(false);
-            if (this._aiReasoningBg)     this._aiReasoningBg.setVisible(false);
+            if (this._aiReasoningBg) this._aiReasoningBg.setVisible(false);
         }
     },
 
@@ -636,6 +692,7 @@ CoreGame.GameUI = cc.Layer.extend({
      */
     onExit: function () {
         this._relayStopPoll();
+        this.boardUI.removeFromParent();
         this._super();
     },
 
@@ -652,10 +709,10 @@ CoreGame.GameUI = cc.Layer.extend({
      * Check the type and decrease
      */
     onUpdateTargetElement: function (element) {
-        cc.log("removedElement", element.type);
+        //cc.log("removedElement", element.type);
         let node = this.gameBoardInfoUI.getNodeTarget(element.type);
         if (node) {
-            cc.log("removedElement collectElement", element.type);
+            //cc.log("removedElement collectElement", element.type);
             node.collectElement(-1);
         }
     },
@@ -668,6 +725,10 @@ CoreGame.GameUI = cc.Layer.extend({
         let node = this.gameBoardInfoUI.setMove(numbMove);
     },
 
+    onScoreChanged: function (score, scoreConfig) {
+        this.gameBoardInfoUI.setScore(score, scoreConfig);
+    },
+
     /**
      * Happy Cheese and confetti
      */
@@ -678,17 +739,17 @@ CoreGame.GameUI = cc.Layer.extend({
     /**
      * Check the type and decrease
      */
-    onEndGame: function (isWin = true, targets) {
+    onEndGame: function (isWin = true, targets, noMoveShuffle = false) {
         // Stop debug overlay if running
         if (this._debugUpdateCb) this.unschedule(this._debugUpdateCb);
-        if (this._debugBg)       this._debugBg.setVisible(false);
-        if (this._debugLabel)    this._debugLabel.setVisible(false);
+        if (this._debugBg) this._debugBg.setVisible(false);
+        if (this._debugLabel) this._debugLabel.setVisible(false);
         this._debugVisible = false;
 
         // Stop AI agent if running
         this._closeAIMenu();
         if (this._aiReasoningScroll) this._aiReasoningScroll.setVisible(false);
-        if (this._aiReasoningBg)     this._aiReasoningBg.setVisible(false);
+        if (this._aiReasoningBg) this._aiReasoningBg.setVisible(false);
         if (this._aiAgent) {
             this._aiAgent.stop();
             this._aiAgent = null;
@@ -721,9 +782,9 @@ CoreGame.GameUI = cc.Layer.extend({
                 this.gameBoardEffectLayer.showLevelCompleteLabel();
             }
 
-            guiEndGame.showResult(BoardResult.WIN, this.levelConfig, isShowed? 1.5 : 0);
+            guiEndGame.showResult(BoardResult.WIN, this.levelConfig, isShowed ? 1.5 : 0);
         } else {
-            guiEndGame.showResult(BoardResult.LOSE, targets);
+            guiEndGame.showResult(BoardResult.LOSE, targets, noMoveShuffle);
         }
     },
 
@@ -828,36 +889,58 @@ CoreGame.GameUI = cc.Layer.extend({
      * @returns {Object}
      */
     _buildMetrics: function (isWin) {
-        var bm  = this.boardUI && this.boardUI.boardMgr;
+        var bm = this.boardUI && this.boardUI.boardMgr;
         var tpp = (CoreGame.AdaptiveTPP) ? CoreGame.AdaptiveTPP.getMetrics() : null;
 
         var deviceId = "";
-        try { deviceId = fr.platformWrapper ? fr.platformWrapper.getDeviceID() : ""; } catch (e) {}
+        try { deviceId = fr.platformWrapper ? fr.platformWrapper.getDeviceID() : ""; } catch (e) { }
+
+        // Target completion: how far each target got (% cleared)
+        var targetCompletion = {};
+        if (bm && bm.targetElements) {
+            for (var ti = 0; ti < bm.targetElements.length; ti++) {
+                var te = bm.targetElements[ti];
+                var cleared = Math.max(0, te.count - te.current);
+                targetCompletion[te.id] = (te.count > 0) ? Math.round(cleared / te.count * 100) : 100;
+            }
+        }
 
         var bd = {
             device_id: deviceId,
-            is_win:    !!isWin,
-            pu_count:  tpp ? tpp.pu_count : 0
+            is_win: !!isWin,
+            pu_count: tpp ? tpp.pu_count : 0
         };
 
         var ad = null;
         if (tpp) {
             var d = tpp.deviation_distribution;
             ad = {
-                deviation_mean:    d.mean,
-                deviation_median:  d.median,
-                deviation_p25:     d.p25,
-                deviation_p75:     d.p75,
-                boost_switches:    tpp.boost_switches,
+                deviation_mean: d.mean,
+                deviation_median: d.median,
+                deviation_p25: d.p25,
+                deviation_p75: d.p75,
+                boost_switches: tpp.boost_switches,
                 suppress_switches: tpp.suppress_switches,
-                move_surplus:      tpp.move_surplus,
-                pu_rate:           tpp.pu_rate,
-                retry_count:       tpp.retry_count,
-                retry_factor:      tpp.retry_factor
+                move_surplus: tpp.move_surplus,
+                pu_rate: tpp.pu_rate,
+                retry_count: tpp.retry_count,
+                retry_factor: tpp.retry_factor,
+                // ── New metrics ──
+                pu_rockets: tpp.pu_rockets,
+                pu_bombs: tpp.pu_bombs,
+                pu_rainbows: tpp.pu_rainbows,
+                pu_planes: tpp.pu_planes,
+                cascade_avg: tpp.cascade_avg,
+                cascade_max: tpp.cascade_max,
+                avg_tiles_per_move: tpp.avg_tiles_per_move,
+                shuffle_count: tpp.shuffle_count,
+                min_valid_moves: tpp.min_valid_moves,
+                moves_used: tpp.moves_used,
+                total_moves: tpp.total_moves
             };
         }
 
-        return { board: bd, adaptive: ad };
+        return { board: bd, adaptive: ad, target_completion: targetCompletion };
     },
 
     /**
@@ -868,30 +951,48 @@ CoreGame.GameUI = cc.Layer.extend({
      * @param {Object} metrics  Result of _buildMetrics()
      */
     sendMetrics: function (metrics) {
-        var mapCfg  = this.levelConfig && this.levelConfig.mapConfig;
+        var mapCfg = this.levelConfig && this.levelConfig.mapConfig;
         var levelId = (mapCfg && mapCfg.levelId != null) ? mapCfg.levelId : "unknown";
-        var ad      = metrics.adaptive || {};
-        var bd      = metrics.board    || {};
+        var ad = metrics.adaptive || {};
+        var bd = metrics.board || {};
 
         var payload = {
-            level_id:          levelId,
-            device_id:         bd.device_id          || "",
-            is_win:            bd.is_win ? 1 : 0,
-            pu_count:          bd.pu_count            || 0,
-            pu_rate:           ad.pu_rate             || 0,
-            move_surplus:      ad.move_surplus        || 0,
-            boost_switches:    ad.boost_switches      || 0,
-            suppress_switches: ad.suppress_switches   || 0,
-            deviation_mean:    ad.deviation_mean      || 0,
-            deviation_median:  ad.deviation_median    || 0,
-            deviation_p25:     ad.deviation_p25       || 0,
-            deviation_p75:     ad.deviation_p75       || 0,
-            retry_count:       ad.retry_count         || 0,
-            retry_factor:      ad.retry_factor        != null ? ad.retry_factor : 1
+            level_id: levelId,
+            device_id: bd.device_id || "",
+            is_win: bd.is_win ? 1 : 0,
+            pu_count: bd.pu_count || 0,
+            pu_rate: ad.pu_rate || 0,
+            move_surplus: ad.move_surplus || 0,
+            boost_switches: ad.boost_switches || 0,
+            suppress_switches: ad.suppress_switches || 0,
+            deviation_mean: ad.deviation_mean || 0,
+            deviation_median: ad.deviation_median || 0,
+            deviation_p25: ad.deviation_p25 || 0,
+            deviation_p75: ad.deviation_p75 || 0,
+            retry_count: ad.retry_count || 0,
+            retry_factor: ad.retry_factor != null ? ad.retry_factor : 1,
+            // ── Group 1: Match quality ──
+            cascade_avg: ad.cascade_avg || 0,
+            cascade_max: ad.cascade_max || 0,
+            avg_tiles_per_move: ad.avg_tiles_per_move || 0,
+            // ── Group 2: PU breakdown ──
+            pu_rockets: ad.pu_rockets || 0,
+            pu_bombs: ad.pu_bombs || 0,
+            pu_rainbows: ad.pu_rainbows || 0,
+            pu_planes: ad.pu_planes || 0,
+            // ── Group 3: Target bottleneck ──
+            target_completion: metrics.target_completion || {},
+            // ── Group 4: Board health ──
+            shuffle_count: ad.shuffle_count || 0,
+            min_valid_moves: ad.min_valid_moves != null ? ad.min_valid_moves : -1,
+            // ── Group 5: Move efficiency ──
+            moves_used: ad.moves_used || 0,
+            total_moves: ad.total_moves || 0
         };
 
+        var metric_url = "http://127.0.0.1:3000/metrics";
         try {
-            fr.Network.xmlHttpRequestPost("http://120.138.72.4:8081/metrics", payload, function (result) {
+            fr.Network.xmlHttpRequestPost(metric_url, payload, function (result) {
                 cc.log("[GameUI] sendMetrics →", result ? "OK" : "FAIL");
             });
         } catch (e) {
@@ -936,16 +1037,16 @@ CoreGame.GameUI = cc.Layer.extend({
         var targets = {}, targetsCleared = {};
         for (var i = 0; i < bm.targetElements.length; i++) {
             var te = bm.targetElements[i];
-            targets[te.id]        = te.count;
+            targets[te.id] = te.count;
             targetsCleared[te.id] = te.count - te.current;
         }
 
         // Convert getAllSwappableMoves() to [[r1,c1,r2,c2], ...] for agent
         var _dirDelta = {};
-        _dirDelta[CoreGame.Direction.UP]    = { dr:  1, dc:  0 };
-        _dirDelta[CoreGame.Direction.DOWN]  = { dr: -1, dc:  0 };
-        _dirDelta[CoreGame.Direction.LEFT]  = { dr:  0, dc: -1 };
-        _dirDelta[CoreGame.Direction.RIGHT] = { dr:  0, dc:  1 };
+        _dirDelta[CoreGame.Direction.UP] = { dr: 1, dc: 0 };
+        _dirDelta[CoreGame.Direction.DOWN] = { dr: -1, dc: 0 };
+        _dirDelta[CoreGame.Direction.LEFT] = { dr: 0, dc: -1 };
+        _dirDelta[CoreGame.Direction.RIGHT] = { dr: 0, dc: 1 };
         var validMoves = [];
         var swappable = bm.getAllSwappableMoves();
         for (var mi = 0; mi < swappable.length; mi++) {
@@ -953,32 +1054,32 @@ CoreGame.GameUI = cc.Layer.extend({
             var d = _dirDelta[m.moveDirect];
             if (d) {
                 validMoves.push([m.position.x, m.position.y,
-                                 m.position.x + d.dr, m.position.y + d.dc]);
+                m.position.x + d.dr, m.position.y + d.dc]);
             }
         }
 
         var body = JSON.stringify({
-            session_id:      this._relaySessionId,
-            level_id:        bm.getLevelId(),
-            board:           board,
-            rows:            bm.rows,
-            cols:            bm.cols,
-            targets:         targets,
+            session_id: this._relaySessionId,
+            level_id: bm.getLevelId(),
+            board: board,
+            rows: bm.rows,
+            cols: bm.cols,
+            targets: targets,
             targets_cleared: targetsCleared,
             moves_remaining: bm.numMove,
-            total_moves:     bm.totalMove,
-            valid_moves:     validMoves,
-            status:          status || "playing"
+            total_moves: bm.totalMove,
+            valid_moves: validMoves,
+            status: status || "playing"
         });
 
-        try {
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", this.RELAY_URL + "/state", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(body);
-        } catch (e) {
-            cc.log("[AgentRelay] pushState error:", e);
-        }
+        // try {
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open("POST", this.RELAY_URL + "/state", true);
+        //     xhr.setRequestHeader("Content-Type", "application/json");
+        //     xhr.send(body);
+        // } catch (e) {
+        //     cc.log("[AgentRelay] pushState error:", e);
+        // }
     },
 
     _relayStartPoll: function () {
@@ -1001,46 +1102,46 @@ CoreGame.GameUI = cc.Layer.extend({
         if (!bm || !bm.canInteract()) return;
 
         var self = this;
-        try {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", this.RELAY_URL + "/move/pending", true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState !== 4 || xhr.status !== 200) return;
-                var data;
-                try { data = JSON.parse(xhr.responseText); } catch (e) { return; }
-                if (!data || !data.move || data.move.row1 == null) return;
+        // try {
+        //     var xhr = new XMLHttpRequest();
+        //     xhr.open("GET", this.RELAY_URL + "/move/pending", true);
+        //     xhr.onreadystatechange = function () {
+        //         if (xhr.readyState !== 4 || xhr.status !== 200) return;
+        //         var data;
+        //         try { data = JSON.parse(xhr.responseText); } catch (e) { return; }
+        //         if (!data || !data.move || data.move.row1 == null) return;
 
-                var move = data.move;
+        //         var move = data.move;
 
-                // Validate move is for current session
-                if (move.session_id && move.session_id !== self._relaySessionId) return;
+        //         // Validate move is for current session
+        //         if (move.session_id && move.session_id !== self._relaySessionId) return;
 
-                // Re-check before executing (state may have changed during XHR round-trip)
-                if (!bm.canInteract()) return;
+        //         // Re-check before executing (state may have changed during XHR round-trip)
+        //         if (!bm.canInteract()) return;
 
-                var slot1 = bm.getSlot(move.row1, move.col1);
-                var slot2 = bm.getSlot(move.row2, move.col2);
-                if (!slot1 || !slot2) {
-                    cc.log("[AgentRelay] invalid slot (" + move.row1 + "," + move.col1
-                        + ")→(" + move.row2 + "," + move.col2 + ")");
-                } else {
-                    cc.log("[AgentRelay] exec (" + move.row1 + "," + move.col1
-                        + ")→(" + move.row2 + "," + move.col2 + ")");
-                    bm.trySwapSlots(slot1, slot2);
-                }
+        //         var slot1 = bm.getSlot(move.row1, move.col1);
+        //         var slot2 = bm.getSlot(move.row2, move.col2);
+        //         if (!slot1 || !slot2) {
+        //             cc.log("[AgentRelay] invalid slot (" + move.row1 + "," + move.col1
+        //                 + ")→(" + move.row2 + "," + move.col2 + ")");
+        //         } else {
+        //             cc.log("[AgentRelay] exec (" + move.row1 + "," + move.col1
+        //                 + ")→(" + move.row2 + "," + move.col2 + ")");
+        //             bm.trySwapSlots(slot1, slot2);
+        //         }
 
-                // Ack regardless (don't retry a bad move)
-                try {
-                    var ack = new XMLHttpRequest();
-                    ack.open("POST", self.RELAY_URL + "/move/ack", true);
-                    ack.setRequestHeader("Content-Type", "application/json");
-                    ack.send(JSON.stringify({ session_id: self._relaySessionId }));
-                } catch (e) {}
-            };
-            xhr.send();
-        } catch (e) {
-            cc.log("[AgentRelay] pollMove error:", e);
-        }
+        //         // Ack regardless (don't retry a bad move)
+        //         try {
+        //             var ack = new XMLHttpRequest();
+        //             ack.open("POST", self.RELAY_URL + "/move/ack", true);
+        //             ack.setRequestHeader("Content-Type", "application/json");
+        //             ack.send(JSON.stringify({ session_id: self._relaySessionId }));
+        //         } catch (e) { }
+        //     };
+        //     xhr.send();
+        // } catch (e) {
+        //     cc.log("[AgentRelay] pollMove error:", e);
+        // }
     },
 
     // ── End agent relay ──────────────────────────────────────────────────────
@@ -1093,8 +1194,6 @@ CoreGame.GameUI = cc.Layer.extend({
         let heartAfter;
         if (heartBefore == 0) {
             heartAfter = 0;
-        } else if (FreeFunction.getInstance().isInFreeResourceDuration(ResourceType.HEART)) {
-            heartAfter = heartBefore;
         } else {
             heartAfter = heartBefore - 1;
         }
@@ -1102,21 +1201,6 @@ CoreGame.GameUI = cc.Layer.extend({
         let levelId = this.getLevel();
         let dataArr = [levelId, ResourceType.HEART, heartBefore, heartAfter, heartAfter - heartBefore];
         let actionType = this.isBossRun ? ActionType.BOSS_RUN_END_GAME_LOSE : ActionType.END_GAME_LOSE;
-        eventProcessor.addNewAction(actionType, dataArr);
-
-        if (logType == ActionType.LOG_LOSE_SUBTRACT_HEART) {
-            gv.clientNetwork.connector.sendMetricLevel([
-                Number(ActionType.LOG_LOSE_SUBTRACT_HEART),
-                this.getLevel(),
-                0, // version
-                this.getLevelWithVer(),
-                0, // numPlay
-                fr.platformWrapper.getVersionCode(),
-                0, // winStreakLevel
-                FreeFunction.getInstance().getResourceFreeTimeRemainInSec(ResourceType.HEART),
-                heartAfter
-            ]);
-        }
     },
 
     //region GET
@@ -1412,6 +1496,8 @@ CoreGame.GameUI = cc.Layer.extend({
             cc.callFunc(function () {
                 bossUI.setHijacked(true);
                 bossUI["ccSpine"].setAnimation(0, "Appear_01", false);
+
+                fr.Sound.playSoundEffect(resSound.monster["10000"].roar, false);
             }.bind(bossUI)),
             // Jump down from off-screen to top of board
             cc.jumpTo(

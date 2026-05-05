@@ -74,7 +74,7 @@ CoreGame.BoardUI = cc.Layer.extend({
         this.scheduleUpdate();
 
         // Debug: show row,col labels on each cell
-        this.renderDebugLabels();
+        // this.renderDebugLabels();
 
         return true;
     },
@@ -175,9 +175,28 @@ CoreGame.BoardUI = cc.Layer.extend({
         // Cloud
         this.gridBorderMgr.render(CoreGame.Config.ElementType.CLOUD, "cloud_piece_", CoreGame.Config.CloudPieceInfo);
 
-        // Grass (example of how easy it is to add now)
+        // Grass — render hp=1 and hp=2 tiers as separate border layers so the
+        // tougher (hp=2) grass reads visually distinct from regular grass.
+        // Each tier uses its own sprite prefix and adjacency pattern, so dense
+        // grass borders only connect to other dense grass cells (and likewise
+        // for regular grass).
         if (CoreGame.Config.GrassPieceInfo) {
-            this.gridBorderMgr.render(CoreGame.Config.ElementType.GRASS, "grass_piece_", CoreGame.Config.GrassPieceInfo);
+            // hp=1 (regular grass)
+            this.gridBorderMgr.render(
+                CoreGame.Config.ElementType.GRASS,
+                "grass_piece_",
+                CoreGame.Config.GrassPieceInfo,
+                1
+            );
+            // hp=2 (dense grass). Falls back to GrassPieceInfo if a dedicated
+            // adjacency map isn't provided, so adding the feature only requires
+            // shipping the new sprite atlas.
+            this.gridBorderMgr.render(
+                CoreGame.Config.ElementType.GRASS,
+                "2grass_piece_",
+                CoreGame.Config.Grass2PieceInfo,
+                2
+            );
         }
     },
 
@@ -195,7 +214,7 @@ CoreGame.BoardUI = cc.Layer.extend({
      */
     renderBoardBorder: function () {
         //Render mapBorder
-        let resPath = "game/board/nen/" + (CoreGame.Config.BG_COLOR === 'light' ? 'light_' : 'dark_');
+        let resPath = (CoreGame.Config.BG_COLOR === 'light' ? 'light_' : 'dark_');
         this.listBorder = [];
         cc.log("Render mapBorder Start");
         for (let row = 0; row <= this.boardMgr.rows; row++) {

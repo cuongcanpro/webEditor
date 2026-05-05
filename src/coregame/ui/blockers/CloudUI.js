@@ -18,38 +18,6 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
         this.setCascadeOpacityEnabled(true);
 
         let spine = gv.createSpineAnimation(resAni['spine_' + 900]);
-
-        // // 1. Background piece (Z-order lower)
-        // this.sprBg = fr.createSprite("cloud_piece_00.png");
-        // // this.sprBg.setScale(0.5); // Following Gem/Box scale convention
-        // this.addChild(this.sprBg, -1);
-        //
-        // // 2. Cloud layer (Z-order higher)
-        // // Handled dynamically by updateVisual based on offsets
-        //
-        // // 3. Spine initialization (if available)
-        // if (typeof resAni !== 'undefined' && resAni['spine_' + type]) {
-        //     this.spineInit = gv.createSpineAnimation(resAni['spine_' + type]);
-        //     if (this.spineInit) {
-        //         //  this.spineInit.setScale(0.375); // Half of 0.75 from original to match 0.5 overall scale
-        //         this.addChild(this.spineInit, 1);
-        //
-        //         this.spineInit.clearTracks();
-        //         this.spineInit.setAnimation(0, "run_2", false);
-        //         this.spineInit.setCompleteListener(function () {
-        //             // Small delay to ensure frame update before removal
-        //             setTimeout(function () {
-        //                 if (this.spineInit && cc.sys.isObjectValid(this.spineInit)) {
-        //                     this.spineInit.runAction(cc.sequence(
-        //                         cc.fadeOut(0.2),
-        //                         cc.removeSelf()
-        //                     ));
-        //                 }
-        //             }.bind(this));
-        //         }.bind(this));
-        //     }
-        // }
-
         return true;
     },
 
@@ -114,8 +82,9 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
                     if (resAni['spine_900']) {
                         var spineAdd = gv.createSpineAnimation(resAni['spine_900']);
                         spineAdd.setPosition(pixelPos);
-                        this.addChild(spineAdd, 2);
+                        this.addChild(spineAdd, CoreGame.LayerBehavior.EXCLUSIVE - 4);
                         spineAdd.setAnimation(0, 'run_2', false);
+                        spineAdd.setScale(CoreGame.CloudUI.SPINE_SCALE);
                         gv.removeSpineAfterRun(spineAdd);
                     }
 
@@ -151,6 +120,7 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
                         if (resAni['spine_900']) {
                             var spineExplode = gv.createSpineAnimation(resAni['spine_900']);
                             spineExplode.setPosition(node.getPosition());
+                            spineExplode.setScale(CoreGame.CloudUI.SPINE_SCALE);
                             if (this.getParent()) {
                                 this.getParent().addChild(spineExplode, 2000);
                             } else {
@@ -182,3 +152,4 @@ CoreGame.CloudUI = CoreGame.ElementUI.extend({
         this._super(clean);
     }
 });
+CoreGame.CloudUI.SPINE_SCALE = 0.8;

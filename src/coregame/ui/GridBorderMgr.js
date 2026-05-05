@@ -22,13 +22,20 @@ CoreGame.GridBorderMgr = cc.Class.extend({
      * @param {number} type - CoreGame.Config.ElementType
      * @param {string} spritePrefix - e.g. "cloud_piece_"
      * @param {object} infoConfig - CoreGame.Config.CloudPieceInfo or similar
+     * @param {number} hpFilter - Some layers separate by HP in addition
      */
-    render: function (type, spritePrefix, infoConfig) {
+    render: function (type, spritePrefix, infoConfig, hpFilter) {
         if (!this.boardMgr || !this.boardUI) return;
 
-        // 1. Clear existing pieces for this type
-        this.clearType(type);
-        this.renderedPieces[type] = [];
+        // Cache key namespaces by HP filter so two passes for the same type
+        // (different HP tiers, e.g. hp=1 vs hp=2 grass) don't clobber each
+        // other's sprites.
+        var hasFilter = (typeof hpFilter !== 'undefined' && hpFilter !== null);
+        var cacheKey = hasFilter ? (type + ':hp' + hpFilter) : type;
+
+        // 1. Clear existing pieces for this cache key
+        this.clearType(cacheKey);
+        this.renderedPieces[cacheKey] = [];
 
         var rows = this.boardMgr.rows;
         var cols = this.boardMgr.cols;
@@ -36,7 +43,7 @@ CoreGame.GridBorderMgr = cc.Class.extend({
         // 2. Scan grid intersections
         for (var row = rows - 1; row >= -1; row--) {
             for (var col = 0; col <= cols; col++) {
-                var pattern = this.getAdjacencyPattern(row, col, type);
+                var pattern = this.getAdjacencyPattern(row, col, type, hpFilter);
                 var info = infoConfig[pattern];
                 if (info) {
 
@@ -58,12 +65,15 @@ CoreGame.GridBorderMgr = cc.Class.extend({
 
                         // Z-Order logic (keeping current convention)
                         var zOrder = (info[i] == '1_2_3_4') ? (CoreGame.Config.zOrder.CLOUD - 2) : (CoreGame.Config.zOrder.CLOUD - 1);
-                        if (type === CoreGame.Config.ElementType.GRASS)
-                            zOrder = CoreGame.LayerBehavior.BACKGROUND - 1;
-                        else
+
+                        if (type === CoreGame.Config.ElementType.GRASS) {
+                            zOrder = CoreGame.LayerBehavior.BACKGROUND
+                                - (CoreGame.GridBorderMgr.HP_THRESHOLD - hpFilter);
+                        } else {
                             zOrder = CoreGame.LayerBehavior.EXCLUSIVE - 1;
+                        }
                         this.boardUI.root.addChild(spr, zOrder);
-                        this.renderedPieces[type].push(spr);
+                        this.renderedPieces[cacheKey].push(spr);
                     }
                 }
             }
@@ -77,8 +87,9 @@ CoreGame.GridBorderMgr = cc.Class.extend({
      * Grid system: row=0 at bottom, increases upward
      * So row+1 is ABOVE intersection, row is BELOW
      */
-    getAdjacencyPattern: function (row, col, type) {
+    getAdjacencyPattern: function (row, col, type, hpFilter) {
         var pattern = "";
+        var hasFilter = (typeof hpFilter !== 'undefined' && hpFilter !== null);
 
         // Pattern for intersection at (row, col):
         // [top-left, top-right, bottom-left, bottom-right]
@@ -90,7 +101,13 @@ CoreGame.GridBorderMgr = cc.Class.extend({
         ];
 
         for (var i = 0; i < slots.length; i++) {
-            pattern += (!slots[i] || !slots[i].hasElementType(type)) ? "0" : "1";
+            var occupied = false;
+            if (slots[i]) {
+                occupied = hasFilter
+                    ? slots[i].hasElementTypeWithHP(type, hpFilter)
+                    : slots[i].hasElementType(type);
+            }
+            pattern += occupied ? "1" : "0";
         }
 
         return pattern;
@@ -117,3 +134,4 @@ CoreGame.GridBorderMgr = cc.Class.extend({
         }
     }
 });
+CoreGame.GridBorderMgr.HP_THRESHOLD = 5;

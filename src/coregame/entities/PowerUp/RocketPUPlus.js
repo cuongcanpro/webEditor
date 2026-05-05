@@ -39,7 +39,7 @@
     },
 });
 
-// Register PlanePowerUP for MATCH_SQUARE type
+// Register PlanePU for MATCH_SQUARE type
 CoreGame.PowerUP.registerCombined(CoreGame.PowerUPType.MATCH_4_H, CoreGame.PowerUPType.MATCH_4_V, CoreGame.RocketPlusPU);
 CoreGame.PowerUP.registerCombined(CoreGame.PowerUPType.MATCH_4_H, CoreGame.PowerUPType.MATCH_4_H, CoreGame.RocketPlusPU);
 CoreGame.PowerUP.registerCombined(CoreGame.PowerUPType.MATCH_4_V, CoreGame.PowerUPType.MATCH_4_V, CoreGame.RocketPlusPU);

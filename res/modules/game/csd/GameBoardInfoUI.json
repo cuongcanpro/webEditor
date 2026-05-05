@@ -106,6 +106,438 @@
             "Tag": 147,
             "Children": [
               {
+                "ClipAble": false,
+                "BackColorAlpha": 102,
+                "ComboBoxIndex": 1,
+                "SingleColor": {
+                  "R": 150,
+                  "G": 200
+                },
+                "FirstColor": {
+                  "R": 150,
+                  "G": 200
+                },
+                "EndColor": {},
+                "ColorVector": {
+                  "ScaleY": 1.0
+                },
+                "Scale9Width": 1,
+                "Scale9Height": 1,
+                "TouchEnable": true,
+                "AnchorPoint": {
+                  "ScaleX": 0.5,
+                  "ScaleY": 0.5
+                },
+                "Position": {
+                  "X": 383.976,
+                  "Y": -247.0
+                },
+                "Scale": {
+                  "ScaleX": 1.0,
+                  "ScaleY": 1.0
+                },
+                "CColor": {},
+                "IconVisible": false,
+                "PrePosition": {
+                  "X": 0.5333,
+                  "Y": 0.0
+                },
+                "PreSize": {
+                  "X": 0.2778,
+                  "Y": 0.0
+                },
+                "HorizontalEdge": "BothEdge",
+                "VerticalEdge": "TopEdge",
+                "LeftMargin": 283.976,
+                "RightMargin": 236.024,
+                "TopMargin": 247.0,
+                "BottomMargin": -247.0,
+                "Tag": 58,
+                "Children": [
+                  {
+                    "FileData": {
+                      "Type": "Normal",
+                      "Path": "game/board/starProgress/bgStarProgress.png",
+                      "Plist": ""
+                    },
+                    "Scale9OriginX": 101,
+                    "Scale9OriginY": 20,
+                    "Scale9Width": 106,
+                    "Scale9Height": 21,
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 100.0,
+                      "Y": 0.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PositionPercentXEnabled": true,
+                    "PrePosition": {
+                      "X": 0.5,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 1.54,
+                      "Y": 0.0
+                    },
+                    "LeftMargin": -54.0,
+                    "RightMargin": -54.0,
+                    "TopMargin": -30.5,
+                    "BottomMargin": -30.5,
+                    "Tag": 64,
+                    "ActionTag": -602666492,
+                    "Size": {
+                      "X": 308.0,
+                      "Y": 61.0
+                    },
+                    "Name": "bgStarProgress",
+                    "ctype": "ImageViewObjectData"
+                  },
+                  {
+                    "ProgressInfo": 100,
+                    "ImageFileData": {
+                      "Type": "Normal",
+                      "Path": "game/board/starProgress/barProgress.png",
+                      "Plist": ""
+                    },
+                    "AnchorPoint": {
+                      "ScaleX": 0.5,
+                      "ScaleY": 0.5
+                    },
+                    "Position": {
+                      "X": 100.0,
+                      "Y": 4.0
+                    },
+                    "Scale": {
+                      "ScaleX": 1.0,
+                      "ScaleY": 1.0
+                    },
+                    "CColor": {},
+                    "IconVisible": false,
+                    "PositionPercentXEnabled": true,
+                    "PrePosition": {
+                      "X": 0.5,
+                      "Y": 0.0
+                    },
+                    "PreSize": {
+                      "X": 1.0,
+                      "Y": 0.0
+                    },
+                    "TopMargin": -12.5,
+                    "BottomMargin": -4.5,
+                    "Tag": 57,
+                    "Children": [
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/board/starProgress/starProgress_dis.png",
+                          "Plist": ""
+                        },
+                        "Scale9OriginX": -7,
+                        "Scale9OriginY": -12,
+                        "Scale9Width": 48,
+                        "Scale9Height": 56,
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 200.0,
+                          "Y": 5.0
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PositionPercentXEnabled": true,
+                        "PrePosition": {
+                          "X": 1.0,
+                          "Y": 0.2941
+                        },
+                        "PreSize": {
+                          "X": 0.17,
+                          "Y": 1.8824
+                        },
+                        "LeftMargin": 183.0,
+                        "RightMargin": -17.0,
+                        "TopMargin": -4.0,
+                        "BottomMargin": -11.0,
+                        "Tag": 63,
+                        "Children": [
+                          {
+                            "FileData": {
+                              "Type": "Normal",
+                              "Path": "game/board/starProgress/starProgress.png",
+                              "Plist": ""
+                            },
+                            "Scale9OriginX": -5,
+                            "Scale9OriginY": -10,
+                            "Scale9Width": 46,
+                            "Scale9Height": 54,
+                            "AnchorPoint": {
+                              "ScaleX": 0.5,
+                              "ScaleY": 0.5
+                            },
+                            "Position": {
+                              "X": 17.0,
+                              "Y": 16.0
+                            },
+                            "Scale": {
+                              "ScaleX": 1.0,
+                              "ScaleY": 1.0
+                            },
+                            "CColor": {},
+                            "IconVisible": false,
+                            "PositionPercentXEnabled": true,
+                            "PositionPercentYEnabled": true,
+                            "PrePosition": {
+                              "X": 0.5,
+                              "Y": 0.5
+                            },
+                            "PreSize": {
+                              "X": 1.0588,
+                              "Y": 1.0625
+                            },
+                            "LeftMargin": -1.0,
+                            "RightMargin": -1.0,
+                            "TopMargin": -1.0,
+                            "BottomMargin": -1.0,
+                            "Tag": 66,
+                            "ActionTag": -177036070,
+                            "Size": {
+                              "X": 36.0,
+                              "Y": 34.0
+                            },
+                            "Name": "starReached_2",
+                            "ctype": "ImageViewObjectData"
+                          }
+                        ],
+                        "ActionTag": -253951866,
+                        "Size": {
+                          "X": 34.0,
+                          "Y": 32.0
+                        },
+                        "Name": "starBg_2",
+                        "ctype": "ImageViewObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/board/starProgress/starProgress_dis.png",
+                          "Plist": ""
+                        },
+                        "Scale9OriginX": -7,
+                        "Scale9OriginY": -12,
+                        "Scale9Width": 48,
+                        "Scale9Height": 56,
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 150.0,
+                          "Y": 5.0
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PositionPercentXEnabled": true,
+                        "PrePosition": {
+                          "X": 0.75,
+                          "Y": 0.2941
+                        },
+                        "PreSize": {
+                          "X": 0.17,
+                          "Y": 1.8824
+                        },
+                        "LeftMargin": 133.0,
+                        "RightMargin": 33.0,
+                        "TopMargin": -4.0,
+                        "BottomMargin": -11.0,
+                        "Tag": 62,
+                        "Children": [
+                          {
+                            "FileData": {
+                              "Type": "Normal",
+                              "Path": "game/board/starProgress/starProgress.png",
+                              "Plist": ""
+                            },
+                            "Scale9OriginX": -5,
+                            "Scale9OriginY": -10,
+                            "Scale9Width": 46,
+                            "Scale9Height": 54,
+                            "AnchorPoint": {
+                              "ScaleX": 0.5,
+                              "ScaleY": 0.5
+                            },
+                            "Position": {
+                              "X": 17.0,
+                              "Y": 16.0
+                            },
+                            "Scale": {
+                              "ScaleX": 1.0,
+                              "ScaleY": 1.0
+                            },
+                            "CColor": {},
+                            "IconVisible": false,
+                            "PositionPercentXEnabled": true,
+                            "PositionPercentYEnabled": true,
+                            "PrePosition": {
+                              "X": 0.5,
+                              "Y": 0.5
+                            },
+                            "PreSize": {
+                              "X": 1.0588,
+                              "Y": 1.0625
+                            },
+                            "LeftMargin": -1.0,
+                            "RightMargin": -1.0,
+                            "TopMargin": -1.0,
+                            "BottomMargin": -1.0,
+                            "Tag": 65,
+                            "ActionTag": 1008929526,
+                            "Size": {
+                              "X": 36.0,
+                              "Y": 34.0
+                            },
+                            "Name": "starReached_1",
+                            "ctype": "ImageViewObjectData"
+                          }
+                        ],
+                        "ActionTag": 1348957179,
+                        "Size": {
+                          "X": 34.0,
+                          "Y": 32.0
+                        },
+                        "Name": "starBg_1",
+                        "ctype": "ImageViewObjectData"
+                      },
+                      {
+                        "FileData": {
+                          "Type": "Normal",
+                          "Path": "game/board/starProgress/starProgress_dis.png",
+                          "Plist": ""
+                        },
+                        "Scale9OriginX": -7,
+                        "Scale9OriginY": -12,
+                        "Scale9Width": 48,
+                        "Scale9Height": 56,
+                        "AnchorPoint": {
+                          "ScaleX": 0.5,
+                          "ScaleY": 0.5
+                        },
+                        "Position": {
+                          "X": 100.0,
+                          "Y": 5.0
+                        },
+                        "Scale": {
+                          "ScaleX": 1.0,
+                          "ScaleY": 1.0
+                        },
+                        "CColor": {},
+                        "IconVisible": false,
+                        "PositionPercentXEnabled": true,
+                        "PrePosition": {
+                          "X": 0.5,
+                          "Y": 0.2941
+                        },
+                        "PreSize": {
+                          "X": 0.17,
+                          "Y": 1.8824
+                        },
+                        "LeftMargin": 83.0,
+                        "RightMargin": 83.0,
+                        "TopMargin": -4.0,
+                        "BottomMargin": -11.0,
+                        "Tag": 61,
+                        "Children": [
+                          {
+                            "FileData": {
+                              "Type": "Normal",
+                              "Path": "game/board/starProgress/starProgress.png",
+                              "Plist": ""
+                            },
+                            "Scale9OriginX": -5,
+                            "Scale9OriginY": -10,
+                            "Scale9Width": 46,
+                            "Scale9Height": 54,
+                            "AnchorPoint": {
+                              "ScaleX": 0.5,
+                              "ScaleY": 0.5
+                            },
+                            "Position": {
+                              "X": 17.0,
+                              "Y": 16.0
+                            },
+                            "Scale": {
+                              "ScaleX": 1.0,
+                              "ScaleY": 1.0
+                            },
+                            "CColor": {},
+                            "IconVisible": false,
+                            "PositionPercentXEnabled": true,
+                            "PositionPercentYEnabled": true,
+                            "PrePosition": {
+                              "X": 0.5,
+                              "Y": 0.5
+                            },
+                            "PreSize": {
+                              "X": 1.0588,
+                              "Y": 1.0625
+                            },
+                            "LeftMargin": -1.0,
+                            "RightMargin": -1.0,
+                            "TopMargin": -1.0,
+                            "BottomMargin": -1.0,
+                            "Tag": 64,
+                            "ActionTag": 1729819781,
+                            "Size": {
+                              "X": 36.0,
+                              "Y": 34.0
+                            },
+                            "Name": "starReached_0",
+                            "ctype": "ImageViewObjectData"
+                          }
+                        ],
+                        "ActionTag": -2024129649,
+                        "Size": {
+                          "X": 34.0,
+                          "Y": 32.0
+                        },
+                        "Name": "starBg_0",
+                        "ctype": "ImageViewObjectData"
+                      }
+                    ],
+                    "ActionTag": 1337021542,
+                    "Size": {
+                      "X": 200.0,
+                      "Y": 17.0
+                    },
+                    "Name": "starProgressBar",
+                    "ctype": "LoadingBarObjectData"
+                  }
+                ],
+                "ActionTag": 448585609,
+                "Size": {
+                  "X": 200.0,
+                  "Y": 0.0
+                },
+                "Name": "pStarProgress",
+                "ctype": "PanelObjectData"
+              },
+              {
                 "FileData": {
                   "Type": "Normal",
                   "Path": "game/gui/board_info/bg_top.png",
@@ -250,7 +682,7 @@
                       {
                         "IsCustomSize": true,
                         "FontSize": 25,
-                        "LabelText": "Move",
+                        "LabelText": "lang_move_title",
                         "FontResource": {
                           "Type": "Normal",
                           "Path": "font/BalooPaaji2-ExtraBold.ttf",
@@ -1513,13 +1945,13 @@
                       {
                         "FileData": {
                           "Type": "Normal",
-                          "Path": "game/gui/start_game/imgMonsterName_10000_vi.png",
+                          "Path": "game/gui/start_game/imgMonsterName_15000.png",
                           "Plist": ""
                         },
-                        "Scale9OriginX": 127,
+                        "Scale9OriginX": 63,
                         "Scale9OriginY": 22,
-                        "Scale9Width": 132,
-                        "Scale9Height": 23,
+                        "Scale9Width": 140,
+                        "Scale9Height": 41,
                         "AnchorPoint": {
                           "ScaleX": 0.5,
                           "ScaleY": 0.5
@@ -1539,19 +1971,19 @@
                           "Y": 0.825
                         },
                         "PreSize": {
-                          "X": 0.5361,
-                          "Y": 0.335
+                          "X": 0.3694,
+                          "Y": 0.425
                         },
                         "HorizontalEdge": "BothEdge",
-                        "LeftMargin": 287.024,
-                        "RightMargin": 46.976,
-                        "TopMargin": 1.5,
-                        "BottomMargin": 131.5,
+                        "LeftMargin": 347.024,
+                        "RightMargin": 106.976,
+                        "TopMargin": -7.5,
+                        "BottomMargin": 122.5,
                         "Tag": 121,
                         "ActionTag": 772517877,
                         "Size": {
-                          "X": 386.0,
-                          "Y": 67.0
+                          "X": 266.0,
+                          "Y": 85.0
                         },
                         "Name": "imgMonsterName",
                         "ctype": "ImageViewObjectData"
@@ -1918,7 +2350,7 @@
                     "Children": [
                       {
                         "FontSize": 35,
-                        "LabelText": "Objectives",
+                        "LabelText": "lang_objectives",
                         "FontResource": {
                           "Type": "Normal",
                           "Path": "font/BalooPaaji2-ExtraBold.ttf",
@@ -1959,17 +2391,17 @@
                           "Y": 0.5
                         },
                         "PreSize": {
-                          "X": 0.2009,
+                          "X": 0.2968,
                           "Y": 0.1472
                         },
-                        "LeftMargin": 88.0,
-                        "RightMargin": 604.0,
+                        "LeftMargin": 46.5,
+                        "RightMargin": 562.5,
                         "TopMargin": 127.5,
                         "BottomMargin": 127.5,
                         "Tag": 78,
                         "ActionTag": 1228366625,
                         "Size": {
-                          "X": 174.0,
+                          "X": 257.0,
                           "Y": 44.0
                         },
                         "Name": "lbObjectives",
@@ -2136,7 +2568,7 @@
                   {
                     "IsCustomSize": true,
                     "FontSize": 35,
-                    "LabelText": "New object unlocked!",
+                    "LabelText": "lang_boss_intro_des",
                     "FontResource": {
                       "Type": "Normal",
                       "Path": "font/BalooPaaji2-Medium.ttf",
@@ -2316,13 +2748,13 @@
                       {
                         "FileData": {
                           "Type": "Normal",
-                          "Path": "game/element/1000.png",
+                          "Path": "game/element/bigElements/1000.png",
                           "Plist": ""
                         },
                         "Scale9OriginX": 29,
                         "Scale9OriginY": 29,
-                        "Scale9Width": 31,
-                        "Scale9Height": 31,
+                        "Scale9Width": 90,
+                        "Scale9Height": 90,
                         "AnchorPoint": {
                           "ScaleX": 0.5,
                           "ScaleY": 0.5
@@ -2332,8 +2764,8 @@
                           "Y": 15.0
                         },
                         "Scale": {
-                          "ScaleX": 3.5,
-                          "ScaleY": 3.5
+                          "ScaleX": 2.0,
+                          "ScaleY": 2.0
                         },
                         "CColor": {},
                         "IconVisible": false,
@@ -2345,15 +2777,15 @@
                           "X": 0.0,
                           "Y": 0.0
                         },
-                        "LeftMargin": -44.5,
-                        "RightMargin": -44.5,
-                        "TopMargin": -59.5,
-                        "BottomMargin": -29.5,
+                        "LeftMargin": -74.0,
+                        "RightMargin": -74.0,
+                        "TopMargin": -89.0,
+                        "BottomMargin": -59.0,
                         "Tag": 193,
                         "ActionTag": -1033975711,
                         "Size": {
-                          "X": 89.0,
-                          "Y": 89.0
+                          "X": 148.0,
+                          "Y": 148.0
                         },
                         "Name": "imgBlock",
                         "ctype": "ImageViewObjectData"
@@ -2828,9 +3260,13 @@
         "../../font/BalooPaaji2-Bold.ttf",
         "../../font/BalooPaaji2-ExtraBold.ttf",
         "../../font/BalooPaaji2-Medium.ttf",
+        "../board/starProgress/barProgress.png",
+        "../board/starProgress/bgStarProgress.png",
+        "../board/starProgress/starProgress.png",
+        "../board/starProgress/starProgress_dis.png",
         "../demo/Layer 13.png",
-        "../element/1000.png",
         "../element/3.png",
+        "../element/bigElements/1000.png",
         "../element/icon/10000.png",
         "../gui/board_info/bg_cat.png",
         "../gui/board_info/bg_cat_border.png",
@@ -2842,7 +3278,7 @@
         "../gui/start_game/bgIntroBlock.png",
         "../gui/start_game/decoIntro.png",
         "../gui/start_game/imgIcon_10000.png",
-        "../gui/start_game/imgMonsterName_10000_vi.png",
+        "../gui/start_game/imgMonsterName_15000.png",
         "../gui/start_game/monster_banner.png",
         "../gui/start_game/monster_banner_extra.png",
         "../gui/start_game/particle.png",

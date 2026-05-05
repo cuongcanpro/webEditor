@@ -73,6 +73,25 @@ CoreGame.AdaptiveTPP = {
     /** Number of power-ups created this level. */
     _puCount:        0,
 
+    /** Power-up counts by category: rockets, bombs, rainbows, planes. */
+    _puRockets:      0,
+    _puBombs:        0,
+    _puRainbows:     0,
+    _puPlanes:       0,
+
+    /** Cascade (combo) stats per level. */
+    _cascadeSum:     0,
+    _cascadeMax:     0,
+
+    /** Tiles removed sum (for avg_tiles_per_move). */
+    _tilesRemovedSum: 0,
+
+    /** Board shuffle count (no valid moves). */
+    _shuffleCount:   0,
+
+    /** Minimum valid-move count seen across turns. */
+    _minValidMoves:  Infinity,
+
     /** Number of turns elapsed (for PU rate denominator). */
     _turnCount:      0,
 
@@ -123,6 +142,15 @@ CoreGame.AdaptiveTPP = {
         this._deviationLog    = [];
         this._triggerCounts   = { baseline: 0, yes_pu_l1: 0, yes_pu_l2: 0, no_pu_l1: 0, no_pu_l2: 0 };
         this._puCount         = 0;
+        this._puRockets       = 0;
+        this._puBombs         = 0;
+        this._puRainbows      = 0;
+        this._puPlanes        = 0;
+        this._cascadeSum      = 0;
+        this._cascadeMax      = 0;
+        this._tilesRemovedSum = 0;
+        this._shuffleCount    = 0;
+        this._minValidMoves   = Infinity;
         this._turnCount       = 0;
         this._levelCompleted  = false;
         this._movesUsedFinal  = 0;
@@ -132,9 +160,34 @@ CoreGame.AdaptiveTPP = {
             CoreGame.EventMgr.off('powerUpCreated', this._puHandler);
         }
         var self = this;
-        this._puHandler = function () { self._puCount++; };
+        this._puHandler = function (evt) {
+            self._puCount++;
+            // Track PU by category
+            var PT = CoreGame.PowerUPType;
+            if (evt && evt.type != null && PT) {
+                switch (evt.type) {
+                    case PT.MATCH_4_H: case PT.MATCH_4_V:
+                        self._puRockets++; break;
+                    case PT.MATCH_T: case PT.MATCH_L:
+                        self._puBombs++; break;
+                    case PT.MATCH_5:
+                        self._puRainbows++; break;
+                    case PT.MATCH_SQUARE:
+                        self._puPlanes++; break;
+                }
+            }
+        };
         if (CoreGame.EventMgr) {
             CoreGame.EventMgr.on('powerUpCreated', this._puHandler);
+        }
+
+        // Shuffle event listener
+        if (this._shuffleHandler && CoreGame.EventMgr) {
+            CoreGame.EventMgr.off('boardShuffled', this._shuffleHandler);
+        }
+        this._shuffleHandler = function () { self._shuffleCount++; };
+        if (CoreGame.EventMgr) {
+            CoreGame.EventMgr.on('boardShuffled', this._shuffleHandler);
         }
 
         this._strategies = {
@@ -162,9 +215,23 @@ CoreGame.AdaptiveTPP = {
      *
      * @param {number} movesUsed      Total moves made so far this level
      * @param {number} targetsCleared Total target items destroyed so far
+     * @param {Object} [turnInfo]     Optional per-turn stats from BoardMgr
+     *   - cascadeCount: number of match rounds this turn
+     *   - tilesRemoved: number of elements removed this turn
+     *   - validMoves:   number of valid moves after turn
      */
-    onTurnEnd: function (movesUsed, targetsCleared) {
+    onTurnEnd: function (movesUsed, targetsCleared, turnInfo) {
         this._turnCount++;
+
+        // Accumulate per-turn board stats
+        if (turnInfo) {
+            var cc2 = turnInfo.cascadeCount || 0;
+            this._cascadeSum += cc2;
+            if (cc2 > this._cascadeMax) this._cascadeMax = cc2;
+            this._tilesRemovedSum += (turnInfo.tilesRemoved || 0);
+            var vm = turnInfo.validMoves;
+            if (vm != null && vm < this._minValidMoves) this._minValidMoves = vm;
+        }
 
         if (movesUsed < this.ADAPTIVE_START_TURN) return;
 
@@ -220,6 +287,10 @@ CoreGame.AdaptiveTPP = {
         if (CoreGame.EventMgr && this._puHandler) {
             CoreGame.EventMgr.off('powerUpCreated', this._puHandler);
             this._puHandler = null;
+        }
+        if (CoreGame.EventMgr && this._shuffleHandler) {
+            CoreGame.EventMgr.off('boardShuffled', this._shuffleHandler);
+            this._shuffleHandler = null;
         }
 
         // Update mercy factor: halve on loss (capped at floor), reset on win
@@ -279,9 +350,22 @@ CoreGame.AdaptiveTPP = {
             retry_count:         this._retryCount,
             move_surplus:        this._totalMoves - (this._movesUsedFinal || 0),
             pu_count:            this._puCount || 0,
+            pu_rockets:          this._puRockets || 0,
+            pu_bombs:            this._puBombs || 0,
+            pu_rainbows:         this._puRainbows || 0,
+            pu_planes:           this._puPlanes || 0,
             pu_rate:             (this._movesUsedFinal > 0) ? this._puCount / this._movesUsedFinal
                                  : (this._turnCount   > 0) ? this._puCount / this._turnCount
                                  : 0,
+            cascade_avg:         (this._turnCount > 0) ? this._cascadeSum / this._turnCount : 0,
+            cascade_max:         this._cascadeMax || 0,
+            avg_tiles_per_move:  (this._movesUsedFinal > 0) ? this._tilesRemovedSum / this._movesUsedFinal
+                                 : (this._turnCount > 0)    ? this._tilesRemovedSum / this._turnCount
+                                 : 0,
+            shuffle_count:       this._shuffleCount || 0,
+            min_valid_moves:     (this._minValidMoves === Infinity) ? -1 : this._minValidMoves,
+            moves_used:          this._movesUsedFinal || 0,
+            total_moves:         this._totalMoves || 0,
             retry_factor:        this._retryFactor
         };
     },

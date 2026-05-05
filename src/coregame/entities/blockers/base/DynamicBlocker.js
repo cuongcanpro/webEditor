@@ -1,4 +1,4 @@
-﻿/**
+/**
  * DynamicBlocker - Blocker with arbitrary shape defined by a list of relative positions
  * Part of Match-3 Core Game
  */
@@ -21,7 +21,16 @@ CoreGame.DynamicBlocker = CoreGame.Blocker.extend({
      */
     init: function (row, col, type, hitPoints, cells) {
         this._super(row, col, type, hitPoints);
-        this.cells = cells || [{ r: row, c: col }];
+        
+        if (cells) {
+            this.cells = [];
+            for (var i = 0; i < cells.length; i++) {
+                this.cells.push({ r: cells[i].r, c: cells[i].c });
+            }
+        } else {
+            this.cells = [{ r: row, c: col }];
+        }
+        
         cc.log("List Cell " + JSON.stringify(this.cells));
         //  for (let cell of this.cells) {
         //      this.cells.push(cell);
@@ -105,12 +114,28 @@ CoreGame.DynamicBlocker = CoreGame.Blocker.extend({
         if (this.cells.length === 0)
             return;
 
+        // ── Scoring (per §3.1, "per tile") ──────────────────────────────────
+        // Each takeDamage call removes exactly one cell from a multi-cell
+        // dynamic blocker (e.g. Cloud), so score one tile-payout per call.
+        // The remove-cell flow further down may also hit removedElement when
+        // the last cell goes; the BoardMgr.removedElement scorer skips
+        // Blocker instances so we don't double-count.
+        if (this.boardMgr && this.boardMgr.scoreMgr) {
+            this.boardMgr.scoreMgr.addClearEvent({
+                elementType: this.type,
+                hp: 1,
+                isObjective: this.boardMgr.isObjectiveType(this.type),
+                clearMethod: this.boardMgr.getCurrentClearMethod(),
+                cascadeDepth: this.boardMgr.getCurrentCascadeDepth()
+            });
+        }
+
         // Note: Logic here might need to remove specific cell?
         // User previously used offsets.length check.
         // Assuming we remove ONE cell per damage call if hit?
         // OR simply checking total health/parts?
 
-        // Existing logic was: 
+        // Existing logic was:
         // if offsets.length <= 0 explode. else play effect on parts.
 
         if (this.cells.length <= 0) {

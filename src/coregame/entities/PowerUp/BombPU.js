@@ -21,9 +21,10 @@ CoreGame.BombPU = CoreGame.PowerUP.extend({
             this.activeDuration = CoreGame.BombPUPlus.EXPLODE_DELAY;
         }
 
+        var puType = this.type;
         CoreGame.TimedActionMgr.addAction(this.activeDuration, function (listCell) {
             for (var i = 0; i < listCell.length; i++)
-                listCell[i].matchElement({type: "normal"});
+                listCell[i].matchElement({type: "normal", puType: puType});
         }.bind(null, listCell));
 
         this.ui.startActive();
@@ -34,9 +35,7 @@ CoreGame.BombPU = CoreGame.PowerUP.extend({
         CoreGame.TimedActionMgr.addAction(this.activeDuration, function () {
             this.remove();
             var mgr = CoreGame.BoardUI.getInstance().boardMgr;
-            if (!mgr.gameEnded) {
-                mgr.state = CoreGame.BoardState.MATCHING;
-            }
+            mgr.state = CoreGame.BoardState.MATCHING;
         }.bind(this));
     },
 

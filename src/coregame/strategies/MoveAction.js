@@ -1,4 +1,4 @@
-﻿/**
+/**
  * MoveAction - Strategy to move element to a neighbor, removing any swapable elements in the way
  * Part of Match-3 Core Game
  */
@@ -24,6 +24,7 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
      * @param {Object} context - Context data for execution
      */
     execute: function (element, context) {
+        cc.log("MoveAction execute");
         var boardMgr = element.boardMgr;
         if (!boardMgr) return;
 
@@ -82,8 +83,8 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
                     var target = elementsInSlot[j];
                     if (target === element) continue;
 
-                    // If target grid is swapable then remove it
-                    if (target.canSwap && target.canSwap()) {
+                    // If target grid is Gem or PowerUp then remove it
+                    if (target instanceof CoreGame.GemObject || target instanceof CoreGame.PowerUP) {
                         if (potentialTargetsToRemove.indexOf(target) === -1) {
                             potentialTargetsToRemove.push(target);
                         }
@@ -142,11 +143,15 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
             });
         });
 
-        // 5. Fill left behind slots with new elements (no immediate matches)
+        // 5. Fill left behind slots with new elements (no immediate matches).
+        // Use hasContentElement() instead of isEmpty(): a slot may still hold
+        // background-layer elements (e.g. Grass) after the mover vacates, and
+        // we still want a playable gem on top. isEmpty() would skip those and
+        // leave the slot without a swappable gem until the next refill wave.
         for (var i = 0; i < leftBehind.length; i++) {
             var cell = leftBehind[i];
             var slot = boardMgr.getSlot(cell.x, cell.y);
-            if (slot && slot.isEmpty()) {
+            if (slot && !slot.hasContentElement()) {
                 var type = this._getNoMatchColor(boardMgr, cell.x, cell.y);
                 boardMgr.addNewElement(cell.x, cell.y, type);
             }
@@ -167,10 +172,17 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
             element.visualMoveTo(targetPixelPos, duration);
         }
 
+        cc.log("Perform Move =============== ");
         // 7. Cleanup/State management
         CoreGame.TimedActionMgr.addAction(duration, function () {
             if (element.setState) element.setState(CoreGame.ElementState.IDLE);
+            cc.log("MoveAction completed. Element at (" + newRow + "," + newCol + ")" + " board state updated." + boardMgr.state);
             boardMgr.setMatchingRequired(true);
+            // Check for available moves after immediate spawn
+            if (!boardMgr.gameEnded && boardMgr.hasPossibleMoves && !boardMgr.hasPossibleMoves()) {
+                cc.log("No possible moves after spawn! Shuffling board...");
+                boardMgr.shuffleBoard();
+            }
         });
     },
 
