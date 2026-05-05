@@ -128,26 +128,30 @@ CoreGame.GameUI = cc.Layer.extend({
             var mapCfg = levelConfig.mapConfig || {};
             var boardTEs = this.boardUI.boardMgr.targetElements || [];
 
-            // Build HP-per-type map from level elements (bosses have hp > 1)
-            var hpPerType = {};
-            var mapElems = mapCfg.elements || [];
-            for (var ei = 0; ei < mapElems.length; ei++) {
-                var me = mapElems[ei];
-                if (me.hp && me.hp > 1) {
-                    hpPerType[me.type] = me.hp;
-                }
-            }
-
-            // Weight each target by HP so bosses count proportionally
+            // Use raw target counts (no HP weighting). Matches tppCleared in
+            // BoardMgr which uses el.count - el.current (the game's own counter).
             var tppTargets = {};
+            var targetIdSet = {};
             for (var ti = 0; ti < boardTEs.length; ti++) {
                 var te = boardTEs[ti];
-                tppTargets[te.id] = te.count * (hpPerType[te.id] || 1);
+                tppTargets[te.id] = te.count;
+                targetIdSet[te.id] = true;
+            }
+
+            // v2: Compute total initial HP across all objective element instances.
+            // Used for HP-based fractional progress (boss/multi-HP tracking).
+            var objectiveTotalHp = 0;
+            var mapElements = mapCfg.elements || [];
+            for (var ei = 0; ei < mapElements.length; ei++) {
+                if (targetIdSet[mapElements[ei].type]) {
+                    objectiveTotalHp += (mapElements[ei].hp || 1);
+                }
             }
 
             CoreGame.AdaptiveTPP.init(this.boardUI.boardMgr, {
                 targetMoves: mapCfg.targetMove || mapCfg.numMove || 30,
                 targets: tppTargets,
+                objectiveTotalHp: objectiveTotalHp,
                 levelId: mapCfg.levelId || null
             });
         }
@@ -990,7 +994,7 @@ CoreGame.GameUI = cc.Layer.extend({
             total_moves: ad.total_moves || 0
         };
 
-        var metric_url = "http://127.0.0.1:3000/metrics";
+        var metric_url = "http://120.138.72.4:8081/metrics";
         try {
             fr.Network.xmlHttpRequestPost(metric_url, payload, function (result) {
                 cc.log("[GameUI] sendMetrics →", result ? "OK" : "FAIL");

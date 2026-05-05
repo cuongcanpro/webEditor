@@ -1,28 +1,34 @@
 /**
- * AdaptiveTPP.js
+ * AdaptiveTPP.js  v2
  * Dynamic Difficulty Adjustment (DDA) system based on Target Progress Pace.
  *
  * Spec: doc/AdaptiveTPP.md
  *
  * Measures each turn how far the player's actual progress deviates from
- * the expected linear pace, then switches the active spawn strategy to
- * push the player back toward the design line.
+ * the expected pace, then switches the active spawn strategy to push the
+ * player back toward the design line.
  *
- * Formulas:
- *   actual_progress   = targets_cleared / initial_targets
- *   expected_progress = moves_used      / total_moves
- *   deviation         = actual_progress - expected_progress  ∈ [-1, 1]
+ * v2 improvements:
+ *   1. HP-based fractional progress for boss / multi-HP elements
+ *   2. Post-cap dead-zone fix (uncapped expected, early-return on win)
+ *   3. EMA deviation smoothing
+ *   4. Non-linear (back-loaded) pace curve
+ *   5. Assist streak cooldown instead of hard cap oscillation
  *
- * Strategy map (tiered by deviation):
- *   < -EXTREME_THRESHOLD  → yes_pu_l2   (very far behind — maximum assist)
- *   < -TPP_THRESHOLD      → yes_pu_l1   (behind — moderate assist, streak-capped)
- *   [-TPP, +HARD]         → baseline    (normal)
- *   > +HARD_THRESHOLD     → no_pu_l1    (ahead — block immediate PU spawns)
- *   > +EXTREME_THRESHOLD  → no_pu_l2    (very far ahead — block swap-ahead PU too)
+ * Formulas (v2):
+ *   count_progress = targets_cleared / initial_targets
+ *   hp_progress    = objective_damage_dealt / objective_total_hp
+ *   actual         = min(max(hp_progress, count_progress), 1)
+ *   expected       = pow(moves_used / total_moves, PACE_CURVE_EXP)
+ *   raw_deviation  = clamp(actual - expected, -1, 1)
+ *   smoothed       = ALPHA * raw + (1 - ALPHA) * prev_smoothed
  *
- * Safeguards:
- *   MAX_ASSIST_STREAK  = 3   — caps consecutive dominant_boost turns
- *   ADAPTIVE_START_TURN = 5  — ignores the first N turns (early-game stability)
+ * Strategy map (tiered by smoothed deviation):
+ *   < -EXTREME_THRESHOLD  -> yes_pu_l2   (very far behind -- maximum assist)
+ *   < -TPP_THRESHOLD      -> yes_pu_l1   (behind -- moderate assist, streak-capped)
+ *   [-TPP, +HARD]         -> baseline    (normal)
+ *   > +HARD_THRESHOLD     -> no_pu_l1    (ahead -- block immediate PU spawns)
+ *   > +EXTREME_THRESHOLD  -> no_pu_l2    (very far ahead -- block swap-ahead PU too)
  *
  * Usage:
  *   CoreGame.AdaptiveTPP.init(boardMgr, levelConfig);
@@ -35,7 +41,7 @@ CoreGame.AdaptiveTPP = {
 
     // ── Configuration ──────────────────────────────────────────────────────
 
-    /** Deviation margin before the system intervenes (±10%). */
+    /** Deviation margin before the system intervenes (+-10%). */
     TPP_THRESHOLD:       0.10,
 
     /** Deviation threshold for no_powerup strategy (player 30% ahead). */
@@ -44,14 +50,23 @@ CoreGame.AdaptiveTPP = {
     /** Deviation threshold for no_powerup_l2 strategy (player 50% ahead). */
     EXTREME_THRESHOLD:   0.50,
 
-    /** Maximum consecutive turns of dominant_boost before forcing baseline. */
+    /** Maximum consecutive turns of yes_pu_l1 before cooldown kicks in. */
     MAX_ASSIST_STREAK:   3,
 
-    /** Turns before the adaptive logic activates (early-game guard). */
-    ADAPTIVE_START_TURN: 5,
+    /** Forced baseline turns after assist streak hits MAX_ASSIST_STREAK. */
+    ASSIST_COOLDOWN:     1,
 
-    /** Floor for the per-level retry mercy factor (50% → 25% max reduction). */
+    /** Turns before the adaptive logic activates (0 = from first move). */
+    ADAPTIVE_START_TURN: 0,
+
+    /** Floor for the per-level retry mercy factor (50% -> 25% max reduction). */
     MIN_RETRY_FACTOR:    0.25,
+
+    /** EMA weight for new raw deviation (0.3 = 30% new, 70% old). */
+    SMOOTHING_ALPHA:     0.3,
+
+    /** Pace curve exponent. >1.0 = back-loaded (expects less early, more late). */
+    PACE_CURVE_EXP:      1.4,
 
     // ── Internal state ─────────────────────────────────────────────────────
 
@@ -62,9 +77,25 @@ CoreGame.AdaptiveTPP = {
     _currentName:    "baseline",
     _strategies:     null,
 
+    // ── v2: HP-based progress (Improvement 1) ──────────────────────────────
+
+    _objectiveDamageDealt: 0,
+    _objectiveTotalHp:     0,
+    _scoreChangedHandler:  null,
+
+    // ── v2: Smoothing state (Improvement 3) ────────────────────────────────
+
+    _smoothedDeviation:  0,
+    _rawDeviationLog:    null,
+
+    // ── v2: Assist cooldown state (Improvement 5) ──────────────────────────
+
+    _assistCooldownLeft:  0,
+    _assistCooldownCount: 0,
+
     // ── Metrics state ───────────────────────────────────────────────────────
 
-    /** Deviations recorded each turn (after ADAPTIVE_START_TURN). */
+    /** Smoothed deviations recorded each turn. */
     _deviationLog:   null,
 
     /** Number of strategy switches per strategy name this level. */
@@ -105,8 +136,9 @@ CoreGame.AdaptiveTPP = {
     _puHandler:      null,
 
     /**
-     * Per-level mercy factor. Starts at 1.0; halved on each loss (floor: MIN_RETRY_FACTOR);
-     * reset to 1.0 on win. Persisted in storage so it survives app restarts.
+     * Per-level mercy factor applied to targetMoves. Starts at 1.0; halved on each loss
+     * (floor: MIN_RETRY_FACTOR); reset to 1.0 on win. Persisted in storage.
+     * Lower value -> system thinks pace should be faster -> deviation goes negative -> boost spawns.
      */
     _retryFactor:    1.0,
 
@@ -117,11 +149,10 @@ CoreGame.AdaptiveTPP = {
      * the baseline strategy immediately.
      *
      * @param {BoardMgr} boardMgr
-     * @param {Object}   levelConfig  { targetMoves: number, targets: {typeId: count} }
+     * @param {Object}   levelConfig  { targetMoves, targets, levelId, objectiveTotalHp }
      */
     init: function (boardMgr, levelConfig) {
         this._boardMgr     = boardMgr;
-        this._totalMoves   = levelConfig.targetMoves || 25;
         this._assistStreak = 0;
         this._currentName  = "baseline";
 
@@ -131,15 +162,29 @@ CoreGame.AdaptiveTPP = {
             this._retryCount++;
             // _retryFactor already updated by the previous onLevelEnd
         } else {
-            this._retryCount  = 0;
             this._levelId     = newId;
-            this._retryFactor = this._loadRetryFactor(newId);
+            var data = this._loadRetryData(newId);
+            this._retryFactor = data.factor;
+            this._retryCount  = data.count;
         }
 
-        // Apply mercy factor: effective targets shrink on repeated losses
-        this._initialTargets = this._sumTargets(levelConfig.targets) * this._retryFactor;
+        // Apply mercy factor to targetMoves (pace target):
+        var baseMoves = levelConfig.targetMoves || 25;
+        this._totalMoves     = Math.max(1, Math.round(baseMoves * this._retryFactor));
+        this._initialTargets = this._sumTargets(levelConfig.targets);
 
+        cc.log("[AdaptiveTPP] init level=" + this._levelId
+            + "  retry_count=" + this._retryCount
+            + "  retry_factor=" + this._retryFactor
+            + "  targetMoves=" + baseMoves + " -> " + this._totalMoves
+            + "  targets=" + this._initialTargets
+            + "  totalHp=" + (levelConfig.objectiveTotalHp || 0)
+            + "  curve=" + this.PACE_CURVE_EXP
+            + "  alpha=" + this.SMOOTHING_ALPHA);
+
+        // ── Reset metrics ─────────────────────────────────────────────────
         this._deviationLog    = [];
+        this._rawDeviationLog = [];
         this._triggerCounts   = { baseline: 0, yes_pu_l1: 0, yes_pu_l2: 0, no_pu_l1: 0, no_pu_l2: 0 };
         this._puCount         = 0;
         this._puRockets       = 0;
@@ -155,14 +200,26 @@ CoreGame.AdaptiveTPP = {
         this._levelCompleted  = false;
         this._movesUsedFinal  = 0;
 
+        // v2: HP-based progress
+        this._objectiveDamageDealt = 0;
+        this._objectiveTotalHp     = levelConfig.objectiveTotalHp || 0;
+
+        // v2: Smoothing
+        this._smoothedDeviation = 0;
+
+        // v2: Assist cooldown
+        this._assistCooldownLeft  = 0;
+        this._assistCooldownCount = 0;
+
+        // ── Event listeners ───────────────────────────────────────────────
+        var self = this;
+
         // PU creation event listener
         if (this._puHandler && CoreGame.EventMgr) {
             CoreGame.EventMgr.off('powerUpCreated', this._puHandler);
         }
-        var self = this;
         this._puHandler = function (evt) {
             self._puCount++;
-            // Track PU by category
             var PT = CoreGame.PowerUPType;
             if (evt && evt.type != null && PT) {
                 switch (evt.type) {
@@ -190,19 +247,31 @@ CoreGame.AdaptiveTPP = {
             CoreGame.EventMgr.on('boardShuffled', this._shuffleHandler);
         }
 
+        // v2: scoreChanged listener for HP-based progress tracking
+        if (this._scoreChangedHandler && CoreGame.EventMgr) {
+            CoreGame.EventMgr.off('scoreChanged', this._scoreChangedHandler);
+        }
+        this._scoreChangedHandler = function (evt) {
+            if (!evt || !evt.details) return;
+            var d = evt.details;
+            if (d.kind === 'clear' && d.isObjective && d.hp > 0) {
+                self._objectiveDamageDealt += d.hp;
+            }
+        };
+        if (CoreGame.EventMgr) {
+            CoreGame.EventMgr.on('scoreChanged', this._scoreChangedHandler);
+        }
+
+        // ── Strategy setup ────────────────────────────────────────────────
         this._strategies = {
-            // Normal spawn
             baseline:   new CoreGame.DropStrategy.RandomSpawnStrategy(),
-            // Assist: prefer spawns that let cascade or one swap create a PU
             yes_pu_l1:  new CoreGame.DropStrategy.YesPUSpawnL1(),
             yes_pu_l2:  new CoreGame.DropStrategy.YesPUSpawnL2(),
-            // Hard: avoid spawning gems that create PU (increasingly strict)
             no_pu_l1:   new CoreGame.DropStrategy.NoPUSpawnL1v2(),
             no_pu_l2:   new CoreGame.DropStrategy.NoPUSpawnL2v2()
         };
 
-        // Apply baseline directly without going through _applyStrategy to avoid
-        // inflating the trigger count on init (baseline count should start at 0).
+        // Apply baseline directly (don't inflate trigger count on init)
         this._currentName = "baseline";
         if (this._boardMgr && this._boardMgr.dropMgr) {
             this._boardMgr.dropMgr.setSpawnStrategy(this._strategies["baseline"]);
@@ -211,14 +280,10 @@ CoreGame.AdaptiveTPP = {
 
     /**
      * Call after every turn, once cascade resolution is complete.
-     * Re-evaluates deviation and switches strategy when necessary.
      *
      * @param {number} movesUsed      Total moves made so far this level
-     * @param {number} targetsCleared Total target items destroyed so far
-     * @param {Object} [turnInfo]     Optional per-turn stats from BoardMgr
-     *   - cascadeCount: number of match rounds this turn
-     *   - tilesRemoved: number of elements removed this turn
-     *   - validMoves:   number of valid moves after turn
+     * @param {number} targetsCleared  Total target items destroyed so far
+     * @param {Object} [turnInfo]      Optional per-turn stats from BoardMgr
      */
     onTurnEnd: function (movesUsed, targetsCleared, turnInfo) {
         this._turnCount++;
@@ -235,38 +300,72 @@ CoreGame.AdaptiveTPP = {
 
         if (movesUsed < this.ADAPTIVE_START_TURN) return;
 
-        var deviation = this._computeDeviation(movesUsed, targetsCleared);
-        this._deviationLog.push(deviation);
+        // ── Early exit: all targets cleared ─────────────────────────────
+        if (targetsCleared >= this._initialTargets && this._initialTargets > 0) {
+            if (this._currentName !== "baseline") {
+                this._applyStrategy("baseline", 0);
+            }
+            this._deviationLog.push(0);
+            this._rawDeviationLog.push(0);
+            this._smoothedDeviation = this.SMOOTHING_ALPHA * 0
+                                    + (1 - this.SMOOTHING_ALPHA) * this._smoothedDeviation;
+            cc.log("[AdaptiveTPP] turn=" + movesUsed + "/" + this._totalMoves
+                + "  ALL TARGETS CLEARED  strat=baseline");
+            return;
+        }
 
+        // ── Compute deviation (v2: hybrid actual + pace curve) ──────────
+        var rawDev = this._computeDeviation(movesUsed, targetsCleared);
+
+        // ── EMA smoothing (Improvement 3) ───────────────────────────────
+        this._smoothedDeviation = this.SMOOTHING_ALPHA * rawDev
+                                + (1 - this.SMOOTHING_ALPHA) * this._smoothedDeviation;
+        this._rawDeviationLog.push(rawDev);
+        this._deviationLog.push(this._smoothedDeviation);
+
+        var deviation = this._smoothedDeviation;
+
+        // ── Per-turn log ────────────────────────────────────────────────
+        var countProg = (this._initialTargets > 0) ? (targetsCleared / this._initialTargets) : 0;
+        var hpProg    = (this._objectiveTotalHp > 0) ? (this._objectiveDamageDealt / this._objectiveTotalHp) : 0;
+        var actual    = Math.min(Math.max(hpProg, countProg), 1);
+        var t         = (this._totalMoves > 0) ? (movesUsed / this._totalMoves) : 0;
+        var expected  = Math.pow(t, this.PACE_CURVE_EXP);
+
+        cc.log("[AdaptiveTPP] turn=" + movesUsed + "/" + this._totalMoves
+            + "  cleared=" + targetsCleared + "/" + this._initialTargets
+            + "  dmg=" + this._objectiveDamageDealt + "/" + this._objectiveTotalHp
+            + "  actual=" + (actual * 100).toFixed(1) + "%(hp:" + (hpProg * 100).toFixed(1) + "%)"
+            + "  expected=" + (expected * 100).toFixed(1) + "%"
+            + "  raw=" + (rawDev >= 0 ? "+" : "") + rawDev.toFixed(3)
+            + "  smooth=" + (deviation >= 0 ? "+" : "") + deviation.toFixed(3)
+            + "  strat=" + this._currentName);
+
+        // ── Strategy selection (uses smoothed deviation) ────────────────
         var next = this._selectStrategyName(deviation);
         if (next !== this._currentName) {
-            this._applyStrategy(next);
+            this._applyStrategy(next, deviation);
         }
     },
 
     /**
-     * Compute the current TPP deviation without changing any state.
-     * Useful for logging or HUD display.
-     *
-     * @param {number} movesUsed
-     * @param {number} targetsCleared
-     * @returns {number}  deviation in [-1, 1]
+     * Returns the current smoothed deviation.
+     * @returns {number}  smoothed deviation in [-1, 1]
      */
-    getDeviation: function (movesUsed, targetsCleared) {
-        return this._computeDeviation(movesUsed, targetsCleared);
+    getDeviation: function () {
+        return this._smoothedDeviation;
     },
 
     /**
      * Name of the strategy currently active.
-     * @returns {string}  "baseline" | "yes_pu_l1" | "yes_pu_l2" | "no_pu_l1" | "no_pu_l2"
+     * @returns {string}
      */
     getCurrentStrategyName: function () {
         return this._currentName;
     },
 
     /**
-     * Current mercy factor for this level (1.0 = full targets, 0.5 = half, 0.25 = quarter).
-     * GameUI can multiply board targetElements counts by this to reduce the actual win condition.
+     * Current mercy factor for this level.
      * @returns {number}
      */
     getRetryFactor: function () {
@@ -275,7 +374,6 @@ CoreGame.AdaptiveTPP = {
 
     /**
      * Call when the level ends (win or out-of-moves).
-     * Records completion status and move surplus/deficit.
      *
      * @param {number}  movesUsed   Total moves made this level
      * @param {boolean} completed   True if all targets were cleared
@@ -284,6 +382,7 @@ CoreGame.AdaptiveTPP = {
         this._levelCompleted  = completed;
         this._movesUsedFinal  = movesUsed;
 
+        // Cleanup event listeners
         if (CoreGame.EventMgr && this._puHandler) {
             CoreGame.EventMgr.off('powerUpCreated', this._puHandler);
             this._puHandler = null;
@@ -292,25 +391,39 @@ CoreGame.AdaptiveTPP = {
             CoreGame.EventMgr.off('boardShuffled', this._shuffleHandler);
             this._shuffleHandler = null;
         }
+        if (CoreGame.EventMgr && this._scoreChangedHandler) {
+            CoreGame.EventMgr.off('scoreChanged', this._scoreChangedHandler);
+            this._scoreChangedHandler = null;
+        }
 
         // Update mercy factor: halve on loss (capped at floor), reset on win
+        var prevRf = this._retryFactor;
         if (!completed) {
             this._retryFactor = Math.max(this.MIN_RETRY_FACTOR, this._retryFactor * 0.5);
         } else {
             this._retryFactor = 1.0;
+            this._retryCount  = 0;
         }
-        this._saveRetryFactor(this._levelId, this._retryFactor);
+        cc.log("[AdaptiveTPP] " + (completed ? "WIN" : "LOSE")
+            + "  retry_count=" + this._retryCount
+            + "  retry_factor " + prevRf + " -> " + this._retryFactor);
+        this._saveRetryData(this._levelId, this._retryFactor, this._retryCount);
 
         var m = this.getMetrics();
         var d = m.deviation_distribution;
         cc.log("[AdaptiveTPP] ── End-of-level metrics ───────────────────────");
-        cc.log("[AdaptiveTPP] Deviation  mean=" + d.mean.toFixed(3)
+        cc.log("[AdaptiveTPP] Deviation  smooth_mean=" + d.mean.toFixed(3)
+            + "  raw_mean=" + m.raw_dev_mean.toFixed(3)
             + "  median=" + d.median.toFixed(3)
-            + "  P25="    + d.p25.toFixed(3)
-            + "  P75="    + d.p75.toFixed(3));
+            + "  P25=" + d.p25.toFixed(3)
+            + "  P75=" + d.p75.toFixed(3));
         cc.log("[AdaptiveTPP] Switches   boost=" + m.boost_switches
             + "  suppress=" + m.suppress_switches
-            + "  baseline=" + m.trigger_counts.baseline);
+            + "  baseline=" + m.trigger_counts.baseline
+            + "  cooldowns=" + m.assist_cooldowns);
+        cc.log("[AdaptiveTPP] HP         dmg=" + m.objective_damage_dealt + "/" + m.objective_total_hp
+            + "  hp_progress=" + (m.hp_progress_final >= 0 ? m.hp_progress_final.toFixed(3) : "N/A")
+            + "  curve=" + m.curve_exponent);
         cc.log("[AdaptiveTPP] Result     " + (completed ? "WIN" : "LOSE")
             + "  surplus=" + m.move_surplus
             + "  pu_rate=" + m.pu_rate.toFixed(3));
@@ -319,21 +432,12 @@ CoreGame.AdaptiveTPP = {
 
     /**
      * Returns a snapshot of all collected metrics for this level attempt.
-     *
-     * @returns {Object}
-     *   deviation_distribution: { mean, median, p25, p75 }
-     *   trigger_counts:         { baseline, yes_pu_l1, yes_pu_l2, no_pu_l1, no_pu_l2 }
-     *   boost_switches:         number — times a boost strategy (yes_pu_*) was applied
-     *   suppress_switches:      number — times a suppress strategy (no_pu_*) was applied
-     *   completed_in_budget:    boolean — finished within _totalMoves
-     *   retry_count:            number  — times init() was called for same levelId
-     *   move_surplus:           number  — positive = moves left, negative = over budget
-     *   pu_count:               number  — total power-ups created this level
-     *   pu_rate:                number  — power-ups per turn (or 0 if no turns)
      */
     getMetrics: function () {
         var log = this._deviationLog || [];
+        var rawLog = this._rawDeviationLog || [];
         var sorted = log.slice().sort(function (a, b) { return a - b; });
+        var rawSorted = rawLog.slice().sort(function (a, b) { return a - b; });
         var tc = this._triggerCounts || {};
 
         return {
@@ -366,62 +470,93 @@ CoreGame.AdaptiveTPP = {
             min_valid_moves:     (this._minValidMoves === Infinity) ? -1 : this._minValidMoves,
             moves_used:          this._movesUsedFinal || 0,
             total_moves:         this._totalMoves || 0,
-            retry_factor:        this._retryFactor
+            retry_factor:        this._retryFactor,
+
+            // ── v2 metrics ──────────────────────────────────────────────
+            hp_progress_final:      (this._objectiveTotalHp > 0)
+                                    ? this._objectiveDamageDealt / this._objectiveTotalHp
+                                    : -1,
+            smoothed_dev_mean:      this._mean(sorted),
+            raw_dev_mean:           this._mean(rawSorted),
+            assist_cooldowns:       this._assistCooldownCount || 0,
+            curve_exponent:         this.PACE_CURVE_EXP,
+            objective_total_hp:     this._objectiveTotalHp || 0,
+            objective_damage_dealt: this._objectiveDamageDealt || 0
         };
     },
 
     // ── Private helpers ────────────────────────────────────────────────────
 
+    /**
+     * v2: Hybrid actual (HP + count), non-linear expected, clamped output.
+     */
     _computeDeviation: function (movesUsed, targetsCleared) {
         if (this._initialTargets === 0 || this._totalMoves === 0) return 0;
-        var actual   = targetsCleared / this._initialTargets;
-        var expected = movesUsed      / this._totalMoves;
-        return actual - expected;
+
+        // Hybrid actual: max of HP-based and count-based progress
+        var countProg = targetsCleared / this._initialTargets;
+        var hpProg    = (this._objectiveTotalHp > 0)
+                      ? this._objectiveDamageDealt / this._objectiveTotalHp
+                      : 0;
+        var actual = Math.min(Math.max(hpProg, countProg), 1);
+
+        // Non-linear pace curve (back-loaded): expected uncapped
+        var t = movesUsed / this._totalMoves;
+        var expected = Math.pow(t, this.PACE_CURVE_EXP);
+
+        // Clamp deviation to [-1, 1]
+        var raw = actual - expected;
+        return Math.max(-1, Math.min(1, raw));
     },
 
     /**
-     * Tiered strategy selection based on deviation magnitude.
+     * v2: Tiered strategy selection with assist cooldown.
      *
-     * Behind pace (negative deviation):
-     *   < -EXTREME_THRESHOLD → yes_pu_l2  (very far behind — max assist)
-     *   < -TPP_THRESHOLD     → yes_pu_l1  (behind — moderate assist, streak-capped)
-     *
-     * Ahead of pace (positive deviation):
-     *   > EXTREME_THRESHOLD  → no_pu_l2   (very far ahead — block swap-ahead PU)
-     *   > HARD_THRESHOLD     → no_pu_l1   (well ahead — block immediate PU spawns)
-     *
-     * Within [-TPP_THRESHOLD, +HARD_THRESHOLD] → baseline
+     * Cooldown: after MAX_ASSIST_STREAK consecutive yes_pu_l1 turns,
+     * force ASSIST_COOLDOWN turns of baseline before allowing assist again.
+     * yes_pu_l2 (extreme assist) bypasses streak/cooldown entirely.
      */
     _selectStrategyName: function (deviation) {
+        // ── Cooldown: forced baseline ───────────────────────────────────
+        if (this._assistCooldownLeft > 0) {
+            this._assistCooldownLeft--;
+            this._assistStreak = 0;
+            return "baseline";
+        }
+
+        // ── Very far behind: max assist (no streak cap for L2) ─────────
         if (deviation < -this.EXTREME_THRESHOLD) {
-            // Very far behind — maximum assist (no streak cap at this tier)
             this._assistStreak = 0;
             return "yes_pu_l2";
         }
 
+        // ── Behind pace: moderate assist, streak-capped with cooldown ──
         if (deviation < -this.TPP_THRESHOLD) {
-            // Behind pace — moderate assist, respect streak cap
-            if (this._assistStreak < this.MAX_ASSIST_STREAK) {
-                this._assistStreak++;
-                return "yes_pu_l1";
+            this._assistStreak++;
+            if (this._assistStreak > this.MAX_ASSIST_STREAK) {
+                this._assistCooldownLeft = this.ASSIST_COOLDOWN;
+                this._assistCooldownCount++;
+                this._assistStreak = 0;
+                return "baseline";
             }
-            return "baseline"; // streak cap reached
+            return "yes_pu_l1";
         }
 
-        // On pace or ahead — reset assist streak
+        // ── On pace or ahead: reset streak ─────────────────────────────
         this._assistStreak = 0;
 
         if (deviation > this.EXTREME_THRESHOLD) {
-            return "no_pu_l2";  // very far ahead — extreme difficulty
+            return "no_pu_l2";
         }
         if (deviation > this.HARD_THRESHOLD) {
-            return "no_pu_l1";  // well ahead — hard
+            return "no_pu_l1";
         }
 
         return "baseline";
     },
 
-    _applyStrategy: function (name) {
+    _applyStrategy: function (name, deviation) {
+        var prev = this._currentName;
         this._currentName = name;
         if (this._triggerCounts && this._triggerCounts.hasOwnProperty(name)) {
             this._triggerCounts[name]++;
@@ -429,10 +564,27 @@ CoreGame.AdaptiveTPP = {
         if (this._boardMgr && this._boardMgr.dropMgr) {
             this._boardMgr.dropMgr.setSpawnStrategy(this._strategies[name]);
         }
-        cc.log("[AdaptiveTPP] Strategy → " + name);
+        var reason = "";
+        if (deviation != null) {
+            var dStr = (deviation >= 0 ? "+" : "") + deviation.toFixed(3);
+            if (name === "yes_pu_l2")
+                reason = " (smooth=" + dStr + " < -" + this.EXTREME_THRESHOLD + ", max assist)";
+            else if (name === "yes_pu_l1")
+                reason = " (smooth=" + dStr + " < -" + this.TPP_THRESHOLD
+                       + ", streak=" + this._assistStreak + "/" + this.MAX_ASSIST_STREAK + ")";
+            else if (name === "no_pu_l2")
+                reason = " (smooth=" + dStr + " > +" + this.EXTREME_THRESHOLD + ", max suppress)";
+            else if (name === "no_pu_l1")
+                reason = " (smooth=" + dStr + " > +" + this.HARD_THRESHOLD + ", suppress)";
+            else if (this._assistCooldownLeft > 0 || this._assistCooldownCount > 0)
+                reason = " (smooth=" + dStr + ", cooldown)";
+            else
+                reason = " (smooth=" + dStr + ", normal)";
+        }
+        cc.log("[AdaptiveTPP] Strategy " + prev + " -> " + name + reason);
     },
 
-    /** Average of a sorted (or unsorted) numeric array. Returns 0 for empty. */
+    /** Average of a numeric array. Returns 0 for empty. */
     _mean: function (arr) {
         if (!arr || arr.length === 0) return 0;
         var sum = 0;
@@ -441,7 +593,7 @@ CoreGame.AdaptiveTPP = {
     },
 
     /**
-     * p-th percentile (0–100) of a pre-sorted numeric array.
+     * p-th percentile (0-100) of a pre-sorted numeric array.
      * Uses linear interpolation. Returns 0 for empty arrays.
      */
     _percentile: function (sorted, p) {
@@ -454,21 +606,32 @@ CoreGame.AdaptiveTPP = {
         return sorted[lo] + frac * (sorted[lo + 1] - sorted[lo]);
     },
 
-    /** Load the persisted mercy factor for a level from storage. Defaults to 1.0. */
-    _loadRetryFactor: function (levelId) {
-        if (levelId == null) return 1.0;
-        try {
-            var raw = fr.UserData.getStringFromKey("tpp_rf_" + levelId, "1");
-            var f   = parseFloat(raw);
-            return (isNaN(f) || f <= 0 || f > 1) ? 1.0 : f;
-        } catch (e) { return 1.0; }
+    _retryFactorKey: function (levelId) {
+        var uid = "";
+        try { uid = userMgr.getData().uId || ""; } catch (e) {}
+        return "tpp_rf_" + uid + "_" + levelId;
     },
 
-    /** Persist the mercy factor for a level to storage. */
-    _saveRetryFactor: function (levelId, factor) {
+    /** Load persisted retry data for a level. Returns { factor, count }. */
+    _loadRetryData: function (levelId) {
+        if (levelId == null) return { factor: 1.0, count: 0 };
+        try {
+            var raw = fr.UserData.getStringFromKey(this._retryFactorKey(levelId), "1");
+            if (raw.charAt(0) === '{') {
+                var obj = JSON.parse(raw);
+                var f = obj.f, c = obj.c || 0;
+                return { factor: (isNaN(f) || f <= 0 || f > 1) ? 1.0 : f, count: c };
+            }
+            var f = parseFloat(raw);
+            return { factor: (isNaN(f) || f <= 0 || f > 1) ? 1.0 : f, count: 0 };
+        } catch (e) { return { factor: 1.0, count: 0 }; }
+    },
+
+    /** Persist retry data for a level to storage. */
+    _saveRetryData: function (levelId, factor, count) {
         if (levelId == null) return;
         try {
-            fr.UserData.setStringFromKey("tpp_rf_" + levelId, String(factor));
+            fr.UserData.setStringFromKey(this._retryFactorKey(levelId), JSON.stringify({ f: factor, c: count }));
         } catch (e) {}
     },
 

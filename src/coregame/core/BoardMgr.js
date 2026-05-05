@@ -198,15 +198,6 @@ CoreGame.BoardMgr = cc.Class.extend({
             this.totalMove = this.numMove;
             this.mapConfig = mapConfig;
 
-            // Build HP-per-type map for AdaptiveTPP boss-progress tracking
-            this._tppTargetInitHp = {};
-            var initElems = mapConfig["elements"] || [];
-            for (var _ei = 0; _ei < initElems.length; _ei++) {
-                var _me = initElems[_ei];
-                if (_me.hp && _me.hp > 1) {
-                    this._tppTargetInitHp[_me.type] = _me.hp;
-                }
-            }
         }
 
         // var slotMap = [
@@ -1629,17 +1620,7 @@ CoreGame.BoardMgr = cc.Class.extend({
             var tppCleared = 0;
             for (var ti = 0; ti < this.targetElements.length; ti++) {
                 var el = this.targetElements[ti];
-                var initHp = (this._tppTargetInitHp && this._tppTargetInitHp[el.id]) || 1;
-                if (initHp > 1) {
-                    // HP-weighted: fully dead instances + damage dealt to alive ones
-                    tppCleared += Math.max(0, el.count - el.current) * initHp;
-                    var alive = this.getElementsByType(el.id);
-                    for (var ai = 0; ai < alive.length; ai++) {
-                        tppCleared += initHp - (alive[ai].hp || 0);
-                    }
-                } else {
-                    tppCleared += Math.max(0, el.count - el.current);
-                }
+                tppCleared += Math.max(0, el.count - el.current);
             }
             var turnInfo = {
                 cascadeCount: this.cascadeCount,
