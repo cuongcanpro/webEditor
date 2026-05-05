@@ -461,5 +461,11 @@
         2,
         3,
         4
-    ]
+    ],
+    "scoreConfig": {
+        "star2Threshold": 18000,
+        "star3Threshold": 24000,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=15000 [BossBunny(3×HPΣ=30)×500=15000], tier=L1-L20 (Newbie), ×1.2/×1.6"
+    }
 }

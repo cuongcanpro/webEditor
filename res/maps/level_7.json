@@ -59,10 +59,10 @@
             0,
             1,
             1,
-            0,
             1,
             1,
-            0,
+            1,
+            1,
             1,
             1
         ],
@@ -70,10 +70,10 @@
             0,
             1,
             1,
-            0,
             1,
             1,
-            0,
+            1,
+            1,
             1,
             1
         ],
@@ -462,6 +462,12 @@
         },
         {
             "row": 5,
+            "col": 3,
+            "type": 700,
+            "hp": 5
+        },
+        {
+            "row": 5,
             "col": 4,
             "type": 1,
             "hp": 1
@@ -471,6 +477,12 @@
             "col": 5,
             "type": 2,
             "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 6,
+            "type": 700,
+            "hp": 5
         },
         {
             "row": 5,
@@ -498,6 +510,12 @@
         },
         {
             "row": 6,
+            "col": 3,
+            "type": 700,
+            "hp": 5
+        },
+        {
+            "row": 6,
             "col": 4,
             "type": 2,
             "hp": 1
@@ -507,6 +525,12 @@
             "col": 5,
             "type": 1,
             "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 6,
+            "type": 700,
+            "hp": 5
         },
         {
             "row": 6,
@@ -625,19 +649,23 @@
         },
         {
             "id": 700,
-            "count": 12
+            "count": 16
         }
     ],
-    "notes": "",
-    "numTest": 50,
+    "difficulty": "Medium",
     "tpp": 1,
     "targetMove": 15,
     "spawnStrategy": "RandomSpawnStrategy",
-    "agentType": "GreedyBot",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ]
+    ],
+    "scoreConfig": {
+        "star2Threshold": 17472,
+        "star3Threshold": 23296,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=14560 [Grass(24×HPΣ=48)×120=5760 + Box(16×HPΣ=44)×200=8800], tier=L1-L20 (Newbie), ×1.2/×1.6"
+    }
 }

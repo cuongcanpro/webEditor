@@ -133,8 +133,14 @@
         {
             "row": 1,
             "col": 4,
-            "type": 15000,
-            "hp": 10
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 1,
+            "col": 5,
+            "type": 700,
+            "hp": 3
         },
         {
             "row": 1,
@@ -171,6 +177,18 @@
             "col": 3,
             "type": 5000,
             "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 4,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 2,
+            "col": 5,
+            "type": 700,
+            "hp": 3
         },
         {
             "row": 2,
@@ -337,8 +355,14 @@
         {
             "row": 6,
             "col": 1,
-            "type": 15000,
-            "hp": 10
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 6,
+            "col": 2,
+            "type": 700,
+            "hp": 3
         },
         {
             "row": 6,
@@ -367,8 +391,26 @@
         {
             "row": 6,
             "col": 7,
-            "type": 15000,
-            "hp": 10
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 6,
+            "col": 8,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 7,
+            "col": 1,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 7,
+            "col": 2,
+            "type": 700,
+            "hp": 3
         },
         {
             "row": 7,
@@ -393,6 +435,18 @@
             "col": 6,
             "type": 5000,
             "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 7,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 700,
+            "hp": 3
         },
         {
             "row": 8,
@@ -443,24 +497,32 @@
             "hp": 1
         }
     ],
-    "numMove": 22,
+    "numMove": 25,
     "targetElements": [
         {
-            "id": 15000,
-            "count": 3
+            "id": 5000,
+            "count": 34
+        },
+        {
+            "id": 700,
+            "count": 12
         }
     ],
-    "notes": "",
-    "numTest": 50,
+    "difficulty": "Medium",
     "tpp": 1,
     "targetMove": 18,
     "spawnStrategy": "RandomSpawnStrategy",
-    "agentType": "GreedyBot",
     "gemTypes": [
         1,
         2,
         3,
         4,
         5
-    ]
+    ],
+    "scoreConfig": {
+        "star2Threshold": 20880,
+        "star3Threshold": 27840,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=17400 [Egg(34×HPΣ=34)×300=10200 + Box(12×HPΣ=36)×200=7200], tier=L1-L20 (Newbie), ×1.2/×1.6"
+    }
 }

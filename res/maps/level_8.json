@@ -336,16 +336,20 @@
             "count": 4
         }
     ],
-    "notes": "",
-    "numTest": 50,
+    "difficulty": "Medium",
     "tpp": 1,
     "targetMove": 10,
     "spawnStrategy": "RandomSpawnStrategy",
-    "agentType": "GreedyBot",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ]
+    ],
+    "scoreConfig": {
+        "star2Threshold": 24000,
+        "star3Threshold": 32000,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=20000 [BossBunny(4×HPΣ=40)×500=20000], tier=L1-L20 (Newbie), ×1.2/×1.6"
+    }
 }

@@ -115,12 +115,18 @@
         {
             "row": 0,
             "col": 0,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 0,
+            "col": 0,
             "type": 2,
             "hp": 1
         },
         {
             "row": 0,
-            "col": 0,
+            "col": 1,
             "type": 600,
             "hp": 2
         },
@@ -129,12 +135,6 @@
             "col": 1,
             "type": 4,
             "hp": 1
-        },
-        {
-            "row": 0,
-            "col": 1,
-            "type": 600,
-            "hp": 2
         },
         {
             "row": 0,
@@ -181,12 +181,18 @@
         {
             "row": 1,
             "col": 0,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 0,
             "type": 3,
             "hp": 1
         },
         {
             "row": 1,
-            "col": 0,
+            "col": 1,
             "type": 600,
             "hp": 2
         },
@@ -195,12 +201,6 @@
             "col": 1,
             "type": 2,
             "hp": 1
-        },
-        {
-            "row": 1,
-            "col": 1,
-            "type": 600,
-            "hp": 2
         },
         {
             "row": 1,
@@ -247,26 +247,26 @@
         {
             "row": 2,
             "col": 0,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 0,
             "type": 2,
             "hp": 1
         },
         {
             "row": 2,
-            "col": 0,
+            "col": 1,
             "type": 600,
             "hp": 2
         },
         {
             "row": 2,
             "col": 1,
-            "type": 5,
+            "type": 3,
             "hp": 1
-        },
-        {
-            "row": 2,
-            "col": 1,
-            "type": 600,
-            "hp": 2
         },
         {
             "row": 2,
@@ -309,6 +309,12 @@
             "col": 8,
             "type": 4,
             "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 0,
+            "type": 600,
+            "hp": 2
         },
         {
             "row": 3,
@@ -318,7 +324,7 @@
         },
         {
             "row": 3,
-            "col": 0,
+            "col": 1,
             "type": 600,
             "hp": 2
         },
@@ -327,12 +333,6 @@
             "col": 1,
             "type": 2,
             "hp": 1
-        },
-        {
-            "row": 3,
-            "col": 1,
-            "type": 600,
-            "hp": 2
         },
         {
             "row": 3,
@@ -379,26 +379,26 @@
         {
             "row": 4,
             "col": 0,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 0,
             "type": 2,
             "hp": 1
         },
         {
             "row": 4,
-            "col": 0,
+            "col": 1,
             "type": 600,
             "hp": 2
         },
         {
             "row": 4,
             "col": 1,
-            "type": 5,
+            "type": 2,
             "hp": 1
-        },
-        {
-            "row": 4,
-            "col": 1,
-            "type": 600,
-            "hp": 2
         },
         {
             "row": 4,
@@ -445,12 +445,18 @@
         {
             "row": 5,
             "col": 0,
-            "type": 5,
-            "hp": 1
+            "type": 600,
+            "hp": 2
         },
         {
             "row": 5,
             "col": 0,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 1,
             "type": 600,
             "hp": 2
         },
@@ -459,12 +465,6 @@
             "col": 1,
             "type": 1,
             "hp": 1
-        },
-        {
-            "row": 5,
-            "col": 1,
-            "type": 600,
-            "hp": 2
         },
         {
             "row": 5,
@@ -596,16 +596,20 @@
             "count": 12
         }
     ],
-    "notes": "",
-    "numTest": 50,
+    "difficulty": "Hard",
     "tpp": 1,
     "targetMove": 20,
     "spawnStrategy": "RandomSpawnStrategy",
-    "agentType": "GreedyBot",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ]
+    ],
+    "scoreConfig": {
+        "star2Threshold": 14400,
+        "star3Threshold": 19200,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=12000 [Chain(12×HPΣ=24)×250=6000 + Box(6×HPΣ=12)×200=2400 + Egg(12×HPΣ=12)×300=3600], tier=L1-L20 (Newbie), ×1.2/×1.6"
+    }
 }

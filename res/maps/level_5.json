@@ -705,5 +705,11 @@
         2,
         3,
         4
-    ]
+    ],
+    "scoreConfig": {
+        "star2Threshold": 10680,
+        "star3Threshold": 13888,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=8680 [Box(13×HPΣ=26)×200=5200 + Grass(29×HPΣ=29)×120=3480], tier=L1-L20 (Newbie), ×1.2/×1.6"
+    }
 }

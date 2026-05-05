@@ -440,19 +440,19 @@
             "row": 4,
             "col": 0,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 4,
             "col": 1,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 4,
             "col": 2,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 4,
@@ -476,37 +476,37 @@
             "row": 4,
             "col": 6,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 4,
             "col": 7,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 4,
             "col": 8,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 5,
             "col": 0,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 5,
             "col": 1,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 5,
             "col": 2,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 5,
@@ -530,19 +530,19 @@
             "row": 5,
             "col": 6,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 5,
             "col": 7,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 5,
             "col": 8,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 6,
@@ -733,5 +733,11 @@
         2,
         3,
         4
-    ]
+    ],
+    "scoreConfig": {
+        "star2Threshold": 24048,
+        "star3Threshold": 32064,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=20040 [Grass(27×HPΣ=27)×120=3240 + Egg(36×HPΣ=36)×300=10800 + Box(15×HPΣ=30)×200=6000], tier=L1-L20 (Newbie), ×1.2/×1.6"
+    }
 }

@@ -1,1 +1,601 @@
-{"slotMap": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 0, 0, 0, 1, 1, 1], [1, 1, 1, 0, 0, 0, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 2, 2, 2, 2, 2], [0, 0, 0, 0, 0, 0, 0, 0, 0]], "elements": [{"row": 8, "col": 0, "type": 2, "hp": 1}, {"row": 8, "col": 1, "type": 3, "hp": 1}, {"row": 8, "col": 2, "type": 4, "hp": 1}, {"row": 8, "col": 3, "type": 2, "hp": 1}, {"row": 8, "col": 4, "type": 4, "hp": 1}, {"row": 8, "col": 5, "type": 1, "hp": 1}, {"row": 8, "col": 6, "type": 2, "hp": 1}, {"row": 8, "col": 7, "type": 4, "hp": 1}, {"row": 8, "col": 8, "type": 1, "hp": 1}, {"row": 7, "col": 0, "type": 5000, "hp": 1}, {"row": 7, "col": 1, "type": 900, "hp": 1}, {"row": 7, "col": 2, "type": 5000, "hp": 1}, {"row": 7, "col": 3, "type": 900, "hp": 1}, {"row": 7, "col": 4, "type": 5000, "hp": 1}, {"row": 7, "col": 5, "type": 900, "hp": 1}, {"row": 7, "col": 6, "type": 5000, "hp": 1}, {"row": 7, "col": 7, "type": 5000, "hp": 1}, {"row": 7, "col": 8, "type": 900, "hp": 1}, {"row": 6, "col": 0, "type": 900, "hp": 1}, {"row": 6, "col": 1, "type": 5000, "hp": 1}, {"row": 6, "col": 2, "type": 900, "hp": 1}, {"row": 6, "col": 3, "type": 700, "hp": 3}, {"row": 6, "col": 4, "type": 900, "hp": 1}, {"row": 6, "col": 5, "type": 700, "hp": 3}, {"row": 6, "col": 6, "type": 900, "hp": 1}, {"row": 6, "col": 7, "type": 900, "hp": 1}, {"row": 6, "col": 8, "type": 5000, "hp": 1}, {"row": 5, "col": 0, "type": 900, "hp": 1}, {"row": 5, "col": 1, "type": 700, "hp": 3}, {"row": 5, "col": 2, "type": 700, "hp": 3}, {"row": 5, "col": 6, "type": 700, "hp": 3}, {"row": 5, "col": 7, "type": 700, "hp": 3}, {"row": 5, "col": 8, "type": 5000, "hp": 1}, {"row": 4, "col": 0, "type": 5000, "hp": 1}, {"row": 4, "col": 1, "type": 5000, "hp": 1}, {"row": 4, "col": 2, "type": 5000, "hp": 1}, {"row": 4, "col": 6, "type": 5000, "hp": 1}, {"row": 4, "col": 7, "type": 900, "hp": 1}, {"row": 4, "col": 8, "type": 5000, "hp": 1}, {"row": 3, "col": 0, "type": 700, "hp": 3}, {"row": 3, "col": 1, "type": 700, "hp": 3}, {"row": 3, "col": 2, "type": 700, "hp": 1}, {"row": 3, "col": 3, "type": 700, "hp": 1}, {"row": 3, "col": 4, "type": 700, "hp": 1}, {"row": 3, "col": 5, "type": 900, "hp": 1}, {"row": 3, "col": 6, "type": 700, "hp": 1}, {"row": 3, "col": 7, "type": 700, "hp": 3}, {"row": 3, "col": 8, "type": 700, "hp": 3}, {"row": 2, "col": 0, "type": 3, "hp": 1}, {"row": 2, "col": 1, "type": 1, "hp": 1}, {"row": 2, "col": 2, "type": 900, "hp": 1}, {"row": 2, "col": 3, "type": 5000, "hp": 1}, {"row": 2, "col": 4, "type": 5000, "hp": 1}, {"row": 2, "col": 5, "type": 5000, "hp": 1}, {"row": 2, "col": 6, "type": 700, "hp": 1}, {"row": 2, "col": 7, "type": 1, "hp": 1}, {"row": 2, "col": 8, "type": 1, "hp": 1}, {"row": 1, "col": 0, "type": 4, "hp": 1}, {"row": 1, "col": 1, "type": 3, "hp": 1}, {"row": 1, "col": 2, "type": 5000, "hp": 1}, {"row": 1, "col": 3, "type": 1, "hp": 1}, {"row": 1, "col": 4, "type": 3, "hp": 1}, {"row": 1, "col": 5, "type": 2, "hp": 1}, {"row": 1, "col": 6, "type": 5000, "hp": 1}, {"row": 1, "col": 7, "type": 1, "hp": 1}, {"row": 1, "col": 8, "type": 4, "hp": 1}], "numMove": 24, "targetElements": [{"id": 700, "count": 15}, {"id": 5000, "count": 18}], "gemTypes": [1, 2, 3, 4, 5], "placementMode": "symmetric", "visualQuality": 0.97, "presetPU": [{"type": "rocket", "count": 1}], "levelId": 37, "mapName": "Progressive Level 37", "genDescription": {"archetype": "collectible", "difficulty": "hard", "difficultyDetail": "Mật độ blocker 88%-100% cells, 23-30 moves, HP trung bình 2.8", "maskShape": "O_ellipse_h", "maskDetail": "", "heatmapPattern": "center_mass", "heatmapDetail": "Blocker dày ở trung tâm, rìa trống → excavation gameplay, phá từ ngoài vào", "puBias": null, "puBiasDetail": null, "curriculumPhase": "freeplay", "curriculumPhaseDetail": "Tự do — tất cả blocker đã mở, độ khó theo curve", "currentBlocker": "Cloud", "currentBlockerTeach": "Mây — phủ lên trên, side-match để phá, tự sinh thêm sau vài turn. Dạy excavation.", "unlockedBlockers": ["Box", "BossBunny", "Grass", "BossKong", "FabergeEgg", "Chain", "Donut", "BossBunnyElite", "Cloud"], "blockerTypes": ["Box", "FabergeEgg", "Chain", "Cloud"], "blockerCount": 46, "hpMax": 3, "hpAvg": 1.4, "hpDetail": "HP range 1-3, trung bình 1.4", "cellWeightMax": 3, "cellWeightAvg": 1.4, "stackedCells": 0, "weightMap": null, "activeCells": 66, "numMoves": 24, "gemColors": [1, 2, 3, 4], "numGemColors": 4, "symmetryChance": "82%", "clusteringWeight": "76%", "presetPU": [{"type": "rocket", "count": 1}], "playerStage": "practicing", "hintSeeds": 2, "placementMode": "symmetric"}, "targetMove": 20}
+{
+    "slotMap": [
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    ],
+    "elements": [
+        {
+            "row": 1,
+            "col": 2,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 1,
+            "col": 3,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 4,
+            "type": 900,
+            "hp": 1,
+            "cells": [
+                {
+                    "r": 1,
+                    "c": 4
+                },
+                {
+                    "r": 2,
+                    "c": 4
+                }
+            ]
+        },
+        {
+            "row": 1,
+            "col": 4,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 5,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 6,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 2,
+            "col": 1,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 2,
+            "col": 2,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 3,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 5,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 6,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 7,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 3,
+            "col": 0,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 3,
+            "col": 1,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 2,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 4,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 5,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 6,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 7,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 8,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 4,
+            "col": 0,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 1,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 2,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 3,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 4,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 5,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 6,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 7,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 8,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 0,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 0,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 1,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 2,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 3,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 4,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 5,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 6,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 7,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 8,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 8,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 0,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 0,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 1,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 2,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 3,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 4,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 5,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 6,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 7,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 8,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 8,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 0,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 0,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 1,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 1,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 2,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 4,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 5,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 6,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 7,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 7,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 0,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 1,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 2,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 3,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 4,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 5,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 6,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 7,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 8,
+            "type": 4,
+            "hp": 1
+        }
+    ],
+    "numMove": 24,
+    "targetElements": [
+        {
+            "id": 700,
+            "count": 19
+        },
+        {
+            "id": 600,
+            "count": 8
+        },
+        {
+            "id": 1000,
+            "count": 6
+        }
+    ],
+    "difficulty": "Medium",
+    "tpp": 1,
+    "targetMove": 20,
+    "spawnStrategy": "RandomSpawnStrategy",
+    "gemTypes": [
+        1,
+        2,
+        3,
+        4
+    ],
+    "scoreConfig": {
+        "star2Threshold": 18032,
+        "star3Threshold": 25760,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=12880 [Box(19×HPΣ=39)×200=7800 + Chain(8×HPΣ=16)×250=4000 + Donut(6×HPΣ=6)×180=1080], tier=L21-L50 (Standard), ×1.4/×2.0"
+    }
+}

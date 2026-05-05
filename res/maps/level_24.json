@@ -1,487 +1,970 @@
 {
-  "slotMap": [
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+    "slotMap": [
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
     ],
-    [
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0
+    "elements": [
+        {
+            "row": 1,
+            "col": 0,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 1,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 2,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 4,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 5,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 6,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 7,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 8,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 0,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 1,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 2,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 3,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 4,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 5,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 6,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 7,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 8,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 0,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 1,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 2,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 3,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 4,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 5,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 6,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 7,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 8,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 0,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 1,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 1,
+            "type": 500,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 2,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 4,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 5,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 5,
+            "type": 500,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 6,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 7,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 8,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 0,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 1,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 2,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 3,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 4,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 5,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 6,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 7,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 8,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 0,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 1,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 2,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 4,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 5,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 6,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 7,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 8,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 0,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 1,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 2,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 3,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 4,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 5,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 6,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 7,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 0,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 1,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 2,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 3,
+            "type": 500,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 4,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 5,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 6,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 7,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 8,
+            "type": 1000,
+            "hp": 1
+        }
     ],
-    [
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0
+    "numMove": 25,
+    "targetElements": [
+        {
+            "id": 500,
+            "count": 65
+        },
+        {
+            "id": 700,
+            "count": 18
+        },
+        {
+            "id": 1000,
+            "count": 9
+        }
     ],
-    [
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
+    "difficulty": "Hard",
+    "tpp": 1,
+    "targetMove": 20,
+    "spawnStrategy": "RandomSpawnStrategy",
+    "gemTypes": [
+        1,
+        2,
+        3,
+        4,
+        5
     ],
-    [
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
-    ],
-    [
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
-    ],
-    [
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
-    ],
-    [
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0
-    ],
-    [
-      0,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      0
-    ],
-    [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ]
-  ],
-  "elements": [
-    {
-      "row": 8,
-      "col": 1,
-      "type": 4,
-      "hp": 1
-    },
-    {
-      "row": 8,
-      "col": 2,
-      "type": 3,
-      "hp": 1
-    },
-    {
-      "row": 8,
-      "col": 3,
-      "type": 2,
-      "hp": 1
-    },
-    {
-      "row": 8,
-      "col": 4,
-      "type": 1,
-      "hp": 1
-    },
-    {
-      "row": 8,
-      "col": 5,
-      "type": 3,
-      "hp": 1
-    },
-    {
-      "row": 8,
-      "col": 6,
-      "type": 3,
-      "hp": 1
-    },
-    {
-      "row": 8,
-      "col": 7,
-      "type": 4,
-      "hp": 1
-    },
-    {
-      "row": 7,
-      "col": 1,
-      "type": 5000,
-      "hp": 1
-    },
-    {
-      "row": 7,
-      "col": 2,
-      "type": 700,
-      "hp": 1
-    },
-    {
-      "row": 7,
-      "col": 3,
-      "type": 5000,
-      "hp": 1
-    },
-    {
-      "row": 7,
-      "col": 4,
-      "type": 1000,
-      "hp": 1
-    },
-    {
-      "row": 7,
-      "col": 5,
-      "type": 5000,
-      "hp": 1
-    },
-    {
-      "row": 7,
-      "col": 6,
-      "type": 5000,
-      "hp": 1
-    },
-    {
-      "row": 7,
-      "col": 7,
-      "type": 700,
-      "hp": 1
-    },
-    {
-      "row": 6,
-      "col": 1,
-      "type": 1000,
-      "hp": 1
-    },
-    {
-      "row": 6,
-      "col": 2,
-      "type": 2,
-      "hp": 1
-    },
-    {
-      "row": 6,
-      "col": 3,
-      "type": 700,
-      "hp": 1
-    },
-    {
-      "row": 6,
-      "col": 4,
-      "type": 700,
-      "hp": 1
-    },
-    {
-      "row": 6,
-      "col": 5,
-      "type": 700,
-      "hp": 1
-    },
-    {
-      "row": 6,
-      "col": 6,
-      "type": 700,
-      "hp": 1
-    },
-    {
-      "row": 6,
-      "col": 7,
-      "type": 4,
-      "hp": 1
-    },
-    {
-      "row": 6,
-      "col": 8,
-      "type": 2,
-      "hp": 1
-    },
-    {
-      "row": 5,
-      "col": 3,
-      "type": 1000,
-      "hp": 1
-    },
-    {
-      "row": 5,
-      "col": 4,
-      "type": 3,
-      "hp": 1
-    },
-    {
-      "row": 5,
-      "col": 5,
-      "type": 4,
-      "hp": 1
-    },
-    {
-      "row": 5,
-      "col": 6,
-      "type": 4,
-      "hp": 1
-    },
-    {
-      "row": 4,
-      "col": 1,
-      "type": 15000,
-      "hp": 10
-    },
-    {
-      "row": 4,
-      "col": 7,
-      "type": 15000,
-      "hp": 10
-    },
-    {
-      "row": 3,
-      "col": 1,
-      "type": 2,
-      "hp": 1
-    },
-    {
-      "row": 3,
-      "col": 2,
-      "type": 3,
-      "hp": 1
-    },
-    {
-      "row": 3,
-      "col": 3,
-      "type": 15000,
-      "hp": 10
-    },
-    {
-      "row": 3,
-      "col": 5,
-      "type": 15000,
-      "hp": 10
-    },
-    {
-      "row": 3,
-      "col": 7,
-      "type": 2,
-      "hp": 1
-    },
-    {
-      "row": 3,
-      "col": 8,
-      "type": 4,
-      "hp": 1
-    },
-    {
-      "row": 2,
-      "col": 1,
-      "type": 2,
-      "hp": 1
-    },
-    {
-      "row": 2,
-      "col": 2,
-      "type": 1000,
-      "hp": 1
-    },
-    {
-      "row": 2,
-      "col": 3,
-      "type": 3,
-      "hp": 1
-    },
-    {
-      "row": 2,
-      "col": 4,
-      "type": 3,
-      "hp": 1
-    },
-    {
-      "row": 2,
-      "col": 5,
-      "type": 2,
-      "hp": 1
-    },
-    {
-      "row": 2,
-      "col": 6,
-      "type": 2,
-      "hp": 1
-    },
-    {
-      "row": 2,
-      "col": 7,
-      "type": 1,
-      "hp": 1
-    },
-    {
-      "row": 1,
-      "col": 1,
-      "type": 5000,
-      "hp": 1
-    },
-    {
-      "row": 1,
-      "col": 2,
-      "type": 5000,
-      "hp": 1
-    },
-    {
-      "row": 1,
-      "col": 3,
-      "type": 5000,
-      "hp": 1
-    },
-    {
-      "row": 1,
-      "col": 4,
-      "type": 5000,
-      "hp": 1
-    },
-    {
-      "row": 1,
-      "col": 5,
-      "type": 2,
-      "hp": 1
-    },
-    {
-      "row": 1,
-      "col": 6,
-      "type": 5000,
-      "hp": 1
-    },
-    {
-      "row": 1,
-      "col": 7,
-      "type": 5000,
-      "hp": 1
+    "scoreConfig": {
+        "star2Threshold": 30323,
+        "star3Threshold": 43320,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=21660 [Grass(65×HPΣ=127)×120=15240 + Box(18×HPΣ=24)×200=4800 + Donut(9×HPΣ=9)×180=1620], tier=L21-L50 (Standard), ×1.4/×2.0"
     }
-  ],
-  "numMove": 25,
-  "targetElements": [
-    {
-      "id": 15000,
-      "count": 4
-    }
-  ],
-  "gemTypes": [
-    1,
-    2,
-    3,
-    4,
-    5
-  ],
-  "placementMode": "symmetric",
-  "visualQuality": 0.95,
-  "presetPU": [
-    {
-      "type": "bomb",
-      "count": 1
-    }
-  ],
-  "levelId": 24,
-  "mapName": "Progressive Level 24",
-  "genDescription": {
-    "archetype": "boss_collect",
-    "difficulty": "medium",
-    "difficultyDetail": "Mật độ blocker 55%-75% cells, 22-28 moves, HP trung bình 2.0",
-    "maskShape": "plus_tall_v",
-    "maskDetail": "",
-    "heatmapPattern": "pillars",
-    "heatmapDetail": "Cột blocker dọc → tạo bottleneck, buộc player chơi theo lane",
-    "puBias": null,
-    "puBiasDetail": null,
-    "curriculumPhase": "freeplay",
-    "curriculumPhaseDetail": "Tự do — tất cả blocker đã mở, độ khó theo curve",
-    "currentBlocker": "Donut",
-    "currentBlockerTeach": "Donut — rơi xuống đáy để collect. Dạy gravity planning.",
-    "unlockedBlockers": [
-      "Box",
-      "BossBunny",
-      "Grass",
-      "BossKong",
-      "FabergeEgg",
-      "Chain",
-      "Donut"
-    ],
-    "blockerTypes": [
-      "BossBunny",
-      "Box",
-      "FabergeEgg",
-      "Donut"
-    ],
-    "blockerCount": 24,
-    "hpMax": 10,
-    "hpAvg": 2.5,
-    "hpDetail": "HP range 1-10, trung bình 2.5",
-    "cellWeightMax": 10,
-    "cellWeightAvg": 2.5,
-    "stackedCells": 0,
-    "weightMap": null,
-    "activeCells": 60,
-    "numMoves": 25,
-    "gemColors": [
-      1,
-      2,
-      3,
-      4
-    ],
-    "numGemColors": 4,
-    "symmetryChance": "89%",
-    "clusteringWeight": "67%",
-    "presetPU": [
-      {
-        "type": "bomb",
-        "count": 1
-      }
-    ],
-    "playerStage": "learning",
-    "hintSeeds": 3,
-    "placementMode": "symmetric"
-  },
-  "targetMove": 19
 }

@@ -563,5 +563,11 @@
         2,
         3,
         4
-    ]
+    ],
+    "scoreConfig": {
+        "star2Threshold": 11600,
+        "star3Threshold": 15360,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=9600 [Egg(32×HPΣ=32)×300=9600], tier=L1-L20 (Newbie), ×1.2/×1.6"
+    }
 }

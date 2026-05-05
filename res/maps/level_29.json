@@ -1,1 +1,407 @@
-{"slotMap": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 1, 1, 1, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1, 1, 1, 1], [0, 1, 1, 1, 1, 1, 1, 1, 1], [0, 1, 1, 1, 1, 1, 1, 1, 1], [0, 2, 2, 2, 2, 2, 2, 2, 2], [0, 0, 0, 0, 0, 0, 0, 0, 0]], "elements": [{"row": 8, "col": 1, "type": 4, "hp": 1}, {"row": 8, "col": 2, "type": 1, "hp": 1}, {"row": 8, "col": 3, "type": 3, "hp": 1}, {"row": 8, "col": 4, "type": 1, "hp": 1}, {"row": 8, "col": 5, "type": 2, "hp": 1}, {"row": 8, "col": 6, "type": 1, "hp": 1}, {"row": 8, "col": 7, "type": 3, "hp": 1}, {"row": 8, "col": 8, "type": 3, "hp": 1}, {"row": 7, "col": 1, "type": 1, "hp": 1}, {"row": 7, "col": 2, "type": 4, "hp": 1}, {"row": 7, "col": 3, "type": 3, "hp": 1}, {"row": 7, "col": 4, "type": 2, "hp": 1}, {"row": 7, "col": 5, "type": 4, "hp": 1}, {"row": 7, "col": 6, "type": 3, "hp": 1}, {"row": 7, "col": 7, "type": 4, "hp": 1}, {"row": 7, "col": 8, "type": 4, "hp": 1}, {"row": 6, "col": 1, "type": 700, "hp": 4}, {"row": 6, "col": 2, "type": 700, "hp": 4}, {"row": 6, "col": 3, "type": 700, "hp": 4}, {"row": 6, "col": 4, "type": 700, "hp": 4}, {"row": 6, "col": 5, "type": 2, "hp": 1}, {"row": 6, "col": 6, "type": 700, "hp": 4}, {"row": 6, "col": 7, "type": 11001, "hp": 5}, {"row": 6, "col": 8, "type": 11001, "hp": 5}, {"row": 5, "col": 1, "type": 4, "hp": 1}, {"row": 5, "col": 2, "type": 700, "hp": 1}, {"row": 5, "col": 3, "type": 700, "hp": 1}, {"row": 5, "col": 4, "type": 2, "hp": 1}, {"row": 5, "col": 5, "type": 2, "hp": 1}, {"row": 5, "col": 6, "type": 700, "hp": 1}, {"row": 5, "col": 7, "type": 11001, "hp": 5}, {"row": 5, "col": 8, "type": 11001, "hp": 5}, {"row": 4, "col": 1, "type": 2, "hp": 1}, {"row": 4, "col": 2, "type": 1000, "hp": 1}, {"row": 4, "col": 3, "type": 1000, "hp": 1}, {"row": 4, "col": 4, "type": 1000, "hp": 1}, {"row": 4, "col": 5, "type": 1000, "hp": 1}, {"row": 4, "col": 6, "type": 1000, "hp": 1}, {"row": 4, "col": 7, "type": 3, "hp": 1}, {"row": 3, "col": 1, "type": 1, "hp": 1}, {"row": 3, "col": 1, "type": 600, "hp": 1}, {"row": 3, "col": 2, "type": 2, "hp": 1}, {"row": 3, "col": 2, "type": 600, "hp": 1}, {"row": 3, "col": 5, "type": 11001, "hp": 5}, {"row": 3, "col": 6, "type": 11001, "hp": 5}, {"row": 3, "col": 7, "type": 1, "hp": 1}, {"row": 2, "col": 2, "type": 1, "hp": 1}, {"row": 2, "col": 2, "type": 600, "hp": 1}, {"row": 2, "col": 5, "type": 11001, "hp": 5}, {"row": 2, "col": 6, "type": 11001, "hp": 5}, {"row": 1, "col": 2, "type": 1, "hp": 1}, {"row": 1, "col": 2, "type": 600, "hp": 1}, {"row": 1, "col": 3, "type": 2, "hp": 1}, {"row": 1, "col": 3, "type": 600, "hp": 1}, {"row": 1, "col": 4, "type": 1, "hp": 1}, {"row": 1, "col": 5, "type": 3, "hp": 1}, {"row": 1, "col": 6, "type": 1, "hp": 1}, {"row": 1, "col": 6, "type": 600, "hp": 1}], "numMove": 34, "targetElements": [{"id": 11001, "count": 3}], "gemTypes": [1, 2, 3, 4, 5], "placementMode": "symmetric", "visualQuality": 0.96, "presetPU": [{"type": "bomb", "count": 1}], "levelId": 29, "mapName": "Progressive Level 29", "genDescription": {"archetype": "boss_collect", "difficulty": "hard", "difficultyDetail": "Mật độ blocker 60%-80% cells, 28-35 moves, HP trung bình 2.5", "maskShape": "staircase_wide", "maskDetail": "", "heatmapPattern": "fortress", "heatmapDetail": "Blocker dày phía dưới → dễ bắt đầu nhưng khó ở cuối game", "puBias": null, "puBiasDetail": null, "curriculumPhase": "master", "curriculumPhaseDetail": "Thuần thục — tất cả blocker đã mở, mật độ cao hơn", "currentBlocker": "BossBunnyElite", "currentBlockerTeach": "Khỉ Con Tinh Nghịch 2×2 HP 5/cell — evolved bunny, mạnh hơn. Dạy PU priority.", "unlockedBlockers": ["Box", "BossBunny", "Grass", "BossKong", "FabergeEgg", "Chain", "Donut", "BossBunnyElite"], "blockerTypes": ["BossBunnyElite", "Box", "Chain", "Donut"], "blockerCount": 27, "hpMax": 5, "hpAvg": 2.7, "hpDetail": "HP range 1-5, trung bình 2.7", "cellWeightMax": 5, "cellWeightAvg": 2.7, "stackedCells": 0, "weightMap": null, "activeCells": 56, "numMoves": 34, "gemColors": [1, 2, 3, 4], "numGemColors": 4, "symmetryChance": "89%", "clusteringWeight": "67%", "presetPU": [{"type": "bomb", "count": 1}], "playerStage": "learning", "hintSeeds": 3, "placementMode": "symmetric"}, "targetMove": 29}
+{
+    "slotMap": [
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            2,
+            2,
+            1,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2
+        ],
+        [
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            2,
+            2,
+            2,
+            2,
+            2,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    ],
+    "elements": [
+        {
+            "row": 1,
+            "col": 2,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 1,
+            "col": 3,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 1,
+            "col": 4,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 1,
+            "col": 5,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 1,
+            "col": 6,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 2,
+            "col": 2,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 3,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 4,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 5,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 6,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 0,
+            "type": 11001,
+            "hp": 10
+        },
+        {
+            "row": 3,
+            "col": 2,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 4,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 5,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 6,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 7,
+            "type": 11001,
+            "hp": 10
+        },
+        {
+            "row": 4,
+            "col": 2,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 3,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 4,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 5,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 6,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 0,
+            "type": 11001,
+            "hp": 10
+        },
+        {
+            "row": 5,
+            "col": 2,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 4,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 5,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 6,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 7,
+            "type": 11001,
+            "hp": 10
+        },
+        {
+            "row": 6,
+            "col": 2,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 4,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 5,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 6,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 2,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 3,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 4,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 5,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 6,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 2,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 4,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 5,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 6,
+            "type": 1000,
+            "hp": 1
+        }
+    ],
+    "numMove": 20,
+    "targetElements": [
+        {
+            "id": 11001,
+            "count": 4
+        },
+        {
+            "id": 1000,
+            "count": 12
+        }
+    ],
+    "difficulty": "Medium",
+    "tpp": 1,
+    "targetMove": 20,
+    "spawnStrategy": "RandomSpawnStrategy",
+    "gemTypes": [
+        1,
+        2,
+        3,
+        4
+    ],
+    "scoreConfig": {
+        "star2Threshold": 31023,
+        "star3Threshold": 44320,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=22160 [MobileBossBunny(4×HPΣ=40)×500=20000 + Donut(12×HPΣ=12)×180=2160], tier=L21-L50 (Standard), ×1.4/×2.0"
+    }
+}

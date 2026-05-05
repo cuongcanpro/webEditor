@@ -682,5 +682,11 @@
         3,
         4,
         5
-    ]
+    ],
+    "scoreConfig": {
+        "star2Threshold": 13260,
+        "star3Threshold": 17680,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=11050 [Chain(19×HPΣ=19)×250=4750 + Egg(21×HPΣ=21)×300=6300], tier=L1-L20 (Newbie), ×1.2/×1.6"
+    }
 }

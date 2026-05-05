@@ -1,1 +1,963 @@
-{"slotMap": [[0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 0, 1, 1, 1, 1, 1, 0, 0], [0, 1, 1, 1, 1, 1, 1, 1, 0], [0, 1, 1, 1, 1, 1, 1, 1, 0], [1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1], [2, 2, 2, 2, 2, 2, 2, 2, 2], [0, 0, 0, 0, 0, 0, 0, 0, 0]], "elements": [{"row": 8, "col": 0, "type": 1, "hp": 1}, {"row": 8, "col": 1, "type": 3, "hp": 1}, {"row": 8, "col": 2, "type": 3, "hp": 1}, {"row": 8, "col": 3, "type": 2, "hp": 1}, {"row": 8, "col": 4, "type": 700, "hp": 1}, {"row": 8, "col": 5, "type": 3, "hp": 1}, {"row": 8, "col": 6, "type": 4, "hp": 1}, {"row": 8, "col": 7, "type": 3, "hp": 1}, {"row": 8, "col": 8, "type": 1, "hp": 1}, {"row": 7, "col": 0, "type": 900, "hp": 1}, {"row": 7, "col": 1, "type": 900, "hp": 1}, {"row": 7, "col": 2, "type": 5000, "hp": 1}, {"row": 7, "col": 3, "type": 5000, "hp": 1}, {"row": 7, "col": 4, "type": 900, "hp": 1}, {"row": 7, "col": 5, "type": 900, "hp": 1}, {"row": 7, "col": 6, "type": 900, "hp": 1}, {"row": 7, "col": 7, "type": 5000, "hp": 1}, {"row": 7, "col": 8, "type": 5000, "hp": 1}, {"row": 6, "col": 0, "type": 5000, "hp": 1}, {"row": 6, "col": 1, "type": 5000, "hp": 1}, {"row": 6, "col": 2, "type": 900, "hp": 1}, {"row": 6, "col": 3, "type": 700, "hp": 2}, {"row": 6, "col": 4, "type": 900, "hp": 1}, {"row": 6, "col": 5, "type": 700, "hp": 2}, {"row": 6, "col": 6, "type": 5000, "hp": 1}, {"row": 6, "col": 7, "type": 5000, "hp": 1}, {"row": 6, "col": 8, "type": 5000, "hp": 1}, {"row": 5, "col": 0, "type": 700, "hp": 2}, {"row": 5, "col": 1, "type": 700, "hp": 2}, {"row": 5, "col": 2, "type": 700, "hp": 2}, {"row": 5, "col": 3, "type": 3, "hp": 1}, {"row": 5, "col": 4, "type": 900, "hp": 1}, {"row": 5, "col": 5, "type": 4, "hp": 1}, {"row": 5, "col": 6, "type": 700, "hp": 2}, {"row": 5, "col": 7, "type": 700, "hp": 2}, {"row": 5, "col": 8, "type": 700, "hp": 2}, {"row": 4, "col": 1, "type": 900, "hp": 1}, {"row": 4, "col": 2, "type": 900, "hp": 1}, {"row": 4, "col": 3, "type": 5000, "hp": 1}, {"row": 4, "col": 4, "type": 900, "hp": 1}, {"row": 4, "col": 5, "type": 2, "hp": 1}, {"row": 4, "col": 6, "type": 2, "hp": 1}, {"row": 4, "col": 6, "type": 600, "hp": 1}, {"row": 4, "col": 7, "type": 1, "hp": 1}, {"row": 4, "col": 7, "type": 600, "hp": 1}, {"row": 3, "col": 1, "type": 4, "hp": 1}, {"row": 3, "col": 1, "type": 600, "hp": 1}, {"row": 3, "col": 2, "type": 3, "hp": 1}, {"row": 3, "col": 2, "type": 600, "hp": 1}, {"row": 3, "col": 3, "type": 900, "hp": 1}, {"row": 3, "col": 4, "type": 900, "hp": 1}, {"row": 3, "col": 5, "type": 5000, "hp": 1}, {"row": 3, "col": 6, "type": 4, "hp": 1}, {"row": 3, "col": 6, "type": 600, "hp": 1}, {"row": 3, "col": 7, "type": 2, "hp": 1}, {"row": 3, "col": 7, "type": 600, "hp": 1}, {"row": 2, "col": 2, "type": 4, "hp": 1}, {"row": 2, "col": 2, "type": 600, "hp": 1}, {"row": 2, "col": 3, "type": 5000, "hp": 1}, {"row": 2, "col": 4, "type": 5000, "hp": 1}, {"row": 2, "col": 5, "type": 900, "hp": 1}, {"row": 2, "col": 6, "type": 2, "hp": 1}, {"row": 2, "col": 6, "type": 600, "hp": 1}, {"row": 1, "col": 2, "type": 4, "hp": 1}, {"row": 1, "col": 2, "type": 600, "hp": 1}, {"row": 1, "col": 3, "type": 1, "hp": 1}, {"row": 1, "col": 3, "type": 600, "hp": 1}, {"row": 1, "col": 4, "type": 3, "hp": 1}, {"row": 1, "col": 4, "type": 600, "hp": 1}, {"row": 1, "col": 5, "type": 2, "hp": 1}, {"row": 1, "col": 5, "type": 600, "hp": 1}, {"row": 1, "col": 6, "type": 2, "hp": 1}, {"row": 1, "col": 6, "type": 600, "hp": 1}], "numMove": 24, "targetElements": [{"id": 700, "count": 9}, {"id": 5000, "count": 13}, {"id": 600, "count": 13}], "gemTypes": [1, 2, 3, 4, 5], "placementMode": "symmetric", "visualQuality": 0.97, "levelId": 34, "mapName": "Progressive Level 34", "genDescription": {"archetype": "collectible", "difficulty": "hard", "difficultyDetail": "Mật độ blocker 88%-100% cells, 23-30 moves, HP trung bình 2.8", "maskShape": "staircase_wide", "maskDetail": "", "heatmapPattern": "two_islands", "heatmapDetail": "Hai cụm blocker tách biệt → dual-objective, player tự chọn chiến thuật", "puBias": null, "puBiasDetail": null, "curriculumPhase": "freeplay", "curriculumPhaseDetail": "Tự do — tất cả blocker đã mở, độ khó theo curve", "currentBlocker": "Cloud", "currentBlockerTeach": "Mây — phủ lên trên, side-match để phá, tự sinh thêm sau vài turn. Dạy excavation.", "unlockedBlockers": ["Box", "BossBunny", "Grass", "BossKong", "FabergeEgg", "Chain", "Donut", "BossBunnyElite", "Cloud"], "blockerTypes": ["Box", "FabergeEgg", "Chain", "Cloud"], "blockerCount": 49, "hpMax": 2, "hpAvg": 1.2, "hpDetail": "HP range 1-2, trung bình 1.2", "cellWeightMax": 2, "cellWeightAvg": 1.2, "stackedCells": 0, "weightMap": null, "activeCells": 60, "numMoves": 24, "gemColors": [1, 2, 3, 4], "numGemColors": 4, "symmetryChance": "82%", "clusteringWeight": "76%", "presetPU": [], "playerStage": "practicing", "hintSeeds": 2, "placementMode": "symmetric"}, "targetMove": 20}
+{
+    "slotMap": [
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ]
+    ],
+    "elements": [
+        {
+            "row": 1,
+            "col": 0,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 1,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 0,
+            "type": 900,
+            "hp": 1,
+            "cells": [
+                {
+                    "r": 4,
+                    "c": 0
+                },
+                {
+                    "r": 4,
+                    "c": 1
+                },
+                {
+                    "r": 4,
+                    "c": 2
+                },
+                {
+                    "r": 3,
+                    "c": 2
+                },
+                {
+                    "r": 3,
+                    "c": 6
+                },
+                {
+                    "r": 4,
+                    "c": 6
+                },
+                {
+                    "r": 4,
+                    "c": 7
+                },
+                {
+                    "r": 4,
+                    "c": 8
+                },
+                {
+                    "r": 1,
+                    "c": 2
+                },
+                {
+                    "r": 1,
+                    "c": 3
+                },
+                {
+                    "r": 2,
+                    "c": 4
+                },
+                {
+                    "r": 1,
+                    "c": 5
+                },
+                {
+                    "r": 1,
+                    "c": 6
+                }
+            ]
+        },
+        {
+            "row": 1,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 4,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 7,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 1,
+            "col": 8,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 0,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 1,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 2,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 2,
+            "type": 500,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 3,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 5,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 6,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 7,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 2,
+            "col": 8,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 0,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 1,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 3,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 3,
+            "type": 500,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 4,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 4,
+            "type": 500,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 5,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 5,
+            "type": 500,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 7,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 8,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 3,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 3,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 5,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 5,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 4,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 0,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 1,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 2,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 3,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 5,
+            "type": 600,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 5,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 6,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 7,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 5,
+            "col": 8,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 0,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 1,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 2,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 3,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 4,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 5,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 6,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 7,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 8,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 0,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 1,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 2,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 3,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 4,
+            "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 5,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 6,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 7,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 0,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 0,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 1,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 1,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 2,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 2,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 3,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 3,
+            "type": 500,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 4,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 4,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 5,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 5,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 6,
+            "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 6,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 7,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 7,
+            "type": 500,
+            "hp": 2
+        },
+        {
+            "row": 8,
+            "col": 8,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 8,
+            "type": 500,
+            "hp": 2
+        }
+    ],
+    "numMove": 30,
+    "targetElements": [
+        {
+            "id": 500,
+            "count": 65
+        },
+        {
+            "id": 900,
+            "count": 1
+        },
+        {
+            "id": 1000,
+            "count": 3
+        }
+    ],
+    "difficulty": "Easy",
+    "tpp": 1,
+    "targetMove": 26,
+    "spawnStrategy": "RandomSpawnStrategy",
+    "gemTypes": [
+        1,
+        2,
+        3,
+        4
+    ],
+    "scoreConfig": {
+        "star2Threshold": 21966,
+        "star3Threshold": 31380,
+        "overrideMultipliers": false,
+        "notes": "Auto-calculated: BaselineScore=15690 [Grass(65×HPΣ=125)×120=15000 + Cloud(1×HPΣ=1)×150=150 + Donut(3×HPΣ=3)×180=540], tier=L21-L50 (Standard), ×1.4/×2.0"
+    }
+}
