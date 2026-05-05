@@ -24,6 +24,9 @@ CoreGame.Blocker = CoreGame.ElementObject.extend({
         this._super(row, col, type);
         if (hitPoints) {
             this.hitPoints = hitPoints;
+            if (hitPoints > this.configData.maxHP) {
+                this.configData.maxHP = hitPoints;
+            }
         } else if (this.configData && this.configData.maxHP) {
             // Map did not specify hp — spawn at full HP from config.
             this.hitPoints = 1;

@@ -74,7 +74,7 @@ CoreGame.BoardUI = cc.Layer.extend({
         this.scheduleUpdate();
 
         // Debug: show row,col labels on each cell
-        // this.renderDebugLabels();
+        this.renderDebugLabels();
 
         return true;
     },

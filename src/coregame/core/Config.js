@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Config - Game configuration constants
  * Part of Match-3 Core Game
  */
@@ -282,7 +282,7 @@ CoreGame.Config.zOrder = {
     SCALLOP: 9,
     SAFE: 30,
     SOAP_PUMP: 9,
-    GOLD_BONUS:7,
+    GOLD_BONUS: 7,
     GOLDEN_PIG: 9,
     COLLECT_BALLOON: 12,
     BALLOON_ROPE: 11,

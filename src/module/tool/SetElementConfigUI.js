@@ -188,9 +188,9 @@ var SetElementConfigUI = cc.Node.extend({
         if (isNaN(hp) || hp < 1) {
             hp = 1;
         }
-        if (this.currentElement && hp > this.currentElement.maxHP) {
-            hp = this.currentElement.maxHP;
-        }
+        // if (this.currentElement && hp > this.currentElement.maxHP) {
+            // hp = this.currentElement.maxHP;
+        // }
         return hp;
     },
 
@@ -199,13 +199,14 @@ var SetElementConfigUI = cc.Node.extend({
      */
     incrementHP: function () {
         if (!this.currentElement) return;
-
+        
         var currentHP = this.getHP();
-        if (currentHP < this.currentElement.maxHP) {
+        // if (currentHP < this.currentElement.maxHP) {
             currentHP++;
+            cc.log("Increment HP " + currentHP);
             this.hpInput.setString(currentHP.toString());
             this.onHPChanged();
-        }
+        // }
     },
 
     /**

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * DropMgr - Handles element dropping and board refilling logic
  * Part of Match-3 Core Game
  *
@@ -43,10 +43,8 @@ CoreGame.DropMgr = cc.Class.extend({
      * Refill the board (drop and spawn new gems)
      */
     refillMap: function () {
-        cc.log("Refill Map ");
-        this.boardMgr.state = CoreGame.BoardState.DROPPING;
+        // cc.log("Refill Map ");
         this.boardMgr.requiredRefill = false;
-
         this.dropDelayCol = [];
         for (let i = 0; i < this.boardMgr.cols; i++) {
             this.dropDelayCol.push(0);
@@ -57,10 +55,13 @@ CoreGame.DropMgr = cc.Class.extend({
 
         if (hasDrop || hasSpawn) {
             var self = this;
-            CoreGame.TimedActionMgr.addAction(0.5, function () {
+            CoreGame.TimedActionMgr.addAction(0.1, function () {
                 self.boardMgr.setMatchingRequired(true);
             }, this);
+            this.boardMgr.state = CoreGame.BoardState.DROPPING;
+            return true;
         }
+        return false;
     },
 
     // ─── Drop logic ──────────────────────────────────────────────────────────
@@ -83,7 +84,6 @@ CoreGame.DropMgr = cc.Class.extend({
         //                          (will disappear soon — should NOT trigger diagonal drops)
         var grid = [];
         var isBlocked = [];
-        var isTempBlocked = [];
 
         // 1a. Collect unique multi-cell elements (size > 1x1)
         var multiCellElems = [];
@@ -91,13 +91,11 @@ CoreGame.DropMgr = cc.Class.extend({
         for (var r = 0; r < rows; r++) {
             grid[r] = [];
             isBlocked[r] = [];
-            isTempBlocked[r] = [];
             for (var c = 0; c < cols; c++) {
                 var slot = this.boardMgr.mapGrid[r][c];
                 if (!slot.enable) {
                     grid[r][c] = null;
                     isBlocked[r][c] = true;
-                    isTempBlocked[r][c] = false;
                     continue;
                 }
                 var elem = slot.getFirstInteractable(CoreGame.ElementObject.Action.DROP);
@@ -107,40 +105,88 @@ CoreGame.DropMgr = cc.Class.extend({
                 if (elemNotIdle) {
                     grid[r][c] = null;
                     isBlocked[r][c] = true;
-                    // MATCHING/REMOVING elements will disappear — mark as temporary blockers
-                    // so they don't trigger diagonal drops (the gap will fill vertically
-                    // in a future refill cycle once the element is fully removed)
-                    isTempBlocked[r][c] = (elem.state === CoreGame.ElementState.MATCHING
-                        || elem.state === CoreGame.ElementState.REMOVING);
                     continue;
                 }
                 grid[r][c] = elem;
+                if (elem != null)
+                    grid[r][c].typeDrop = CoreGame.DropMgr.DropType.NONE;
                 isBlocked[r][c] = (elem == null && !slot.isEmptyToDrop());
-
-                // When elem is null but slot isn't empty, the block may be caused by
-                // MATCHING/REMOVING elements (hasAction(DROP) returns false for non-IDLE
-                // gems, so getFirstInteractable skips them). Scan listElement directly
-                // to detect if ALL non-background elements are temporary (will disappear).
-                if (isBlocked[r][c] && elem == null) {
-                    var allTemp = true;
-                    for (var ei = 0; ei < slot.listElement.length; ei++) {
-                        var slotElem = slot.listElement[ei];
-                        if (slotElem.isBackground()) continue;
-                        if (slotElem.state !== CoreGame.ElementState.MATCHING
-                            && slotElem.state !== CoreGame.ElementState.REMOVING) {
-                            allTemp = false;
-                            break;
-                        }
-                    }
-                    isTempBlocked[r][c] = allTemp;
-                } else {
-                    isTempBlocked[r][c] = false;
-                }
 
                 // Track multi-cell elements (deduplicated)
                 if (elem && elem.size && (elem.size.width > 1 || elem.size.height > 1)) {
                     if (multiCellElems.indexOf(elem) === -1) {
                         multiCellElems.push(elem);
+                    }
+                }
+            }
+        }
+
+        // 1b. Build reachability map (canFillMap)
+        // A slot receives a gem if there is a clear path from a spawner.
+        var canFillMap = [];
+        var isPathBlocked = [];
+        for (var r = 0; r < rows; r++) {
+            canFillMap[r] = [];
+            isPathBlocked[r] = [];
+            for (var c = 0; c < cols; c++) {
+                var slot = this.boardMgr.mapGrid[r][c];
+                // Initial state: true if it's a spawner
+                canFillMap[r][c] = slot.canSpawn;
+                if (!slot.enable) {
+                    isPathBlocked[r][c] = true;
+                } else {
+
+                    //isPathBlocked[r][c] = (dropElem == null && !slot.isEmptyToDrop());
+                    if (slot.isEmptyToDrop()) {
+                        isPathBlocked[r][c] = false;
+                    }
+                    else {
+                        var element = slot.listElement[0];
+                        if (!element.haveBaseAction[CoreGame.ElementObject.Action.DROP]) {
+                            isPathBlocked[r][c] = true;
+                            canFillMap[r][c] = false;
+                        }
+                        else {
+                            isPathBlocked[r][c] = false;
+                            canFillMap[r][c] = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        var mapChanged = true;
+        var mapIterations = 0;
+        var MAX_MAP_ITERATIONS = rows * cols;
+        while (mapChanged && mapIterations < MAX_MAP_ITERATIONS) {
+            mapChanged = false;
+            mapIterations++;
+            for (var r = 0; r < rows; r++) {
+                for (var c = 0; c < cols; c++) {
+                    if (canFillMap[r][c] || isPathBlocked[r][c]) continue;
+
+                    var canReach = false;
+                    var isReverse = this.isReverseCol(c);
+
+                    if (isReverse) {
+                        var rr = r - 1; // Look below
+                        if (rr >= 0) {
+                            if (!isPathBlocked[rr][c] && canFillMap[rr][c]) canReach = true;
+                            else if (c - 1 >= 0 && !isPathBlocked[rr][c - 1] && canFillMap[rr][c - 1]) canReach = true;
+                            else if (c + 1 < cols && !isPathBlocked[rr][c + 1] && canFillMap[rr][c + 1]) canReach = true;
+                        }
+                    } else {
+                        var rr = r + 1; // Look above
+                        if (rr < rows) {
+                            if (!isPathBlocked[rr][c] && canFillMap[rr][c]) canReach = true;
+                            else if (c - 1 >= 0 && !isPathBlocked[rr][c - 1] && canFillMap[rr][c - 1]) canReach = true;
+                            else if (c + 1 < cols && !isPathBlocked[rr][c + 1] && canFillMap[rr][c + 1]) canReach = true;
+                        }
+                    }
+
+                    if (canReach) {
+                        canFillMap[r][c] = true;
+                        mapChanged = true;
                     }
                 }
             }
@@ -167,7 +213,7 @@ CoreGame.DropMgr = cc.Class.extend({
         //    Phase 1 — Vertical-only drops until stable (fill everything possible vertically)
         //    Phase 2 — Diagonal drops for remaining gaps (only where vertical truly can't reach)
         var changed = true;
-        var allowDiagonal = false;
+        var allowDiagonal = true;
         var maxIterations = rows * cols * 2;
         var iteration = 0;
 
@@ -214,8 +260,21 @@ CoreGame.DropMgr = cc.Class.extend({
                 }
             }
 
+            // xay dung map danh dau nhung o co the co hat (tu spawn hoac co the duoc sinh ra tu viec roi phia tren xuong (roi thang va roi cheo))
+
             // 2b. Per-column sweep for 1x1 elements
-            for (var c = 0; c < cols; c++) {
+
+            var colIndices = [];
+            for (var i = 0; i < cols; i++) colIndices.push(i);
+            for (var i = colIndices.length - 1; i > 0; i--) {
+                var j = Math.floor(cc.random0To1() * (i + 1));
+                var temp = colIndices[i];
+                colIndices[i] = colIndices[j];
+                colIndices[j] = temp;
+            }
+
+            for (var i = 0; i < colIndices.length; i++) {
+                var c = colIndices[i];
                 if (this.isReverseCol(c)) {
                     // ── Reverse column: elements rise (row rows-1 is the "floor") ──
                     for (var r = rows - 1; r > 0; r--) {
@@ -223,46 +282,43 @@ CoreGame.DropMgr = cc.Class.extend({
                         if (grid[r][c] != null) continue;
 
                         var foundVertical = false;
-                        var verticalBlocked = false;
                         for (var rr = r - 1; rr >= 0; rr--) {
-                            if (isBlocked[rr][c]) {
-                                // Only permanent blockers trigger diagonal fallback.
-                                // Temp blockers (MATCHING/REMOVING) will disappear —
-                                // vertical will work in a future refill cycle.
-                                if (!isTempBlocked[rr][c]) {
-                                    verticalBlocked = true;
-                                }
-                                break;
-                            }
-                            if (grid[rr][c] != null) {
-                                // Skip multi-cell elements — they handle themselves
-                                if (_isMultiCell(grid[rr][c])) {
-                                    verticalBlocked = true;
+                            if (canFillMap[rr][c]) {
+                                foundVertical = true;
+                                if (grid[rr][c] != null && (grid[rr][c].typeDrop === CoreGame.DropMgr.DropType.NONE || grid[rr][c].typeDrop === CoreGame.DropMgr.DropType.VERTICAL)) {
+                                    // Skip multi-cell elements — they handle themselves
+                                    if (_isMultiCell(grid[rr][c])) {
+                                        break;
+                                    }
+                                    grid[r][c] = grid[rr][c];
+                                    grid[r][c].typeDrop = CoreGame.DropMgr.DropType.VERTICAL;
+                                    grid[rr][c] = null;
+                                    changed = true;
                                     break;
                                 }
-                                grid[r][c] = grid[rr][c];
-                                grid[rr][c] = null;
-                                changed = true;
-                                foundVertical = true;
-                                break;
+                                else if (grid[rr][c] == null) {
+                                    break;
+                                }
                             }
-                            var scanSlot = this.boardMgr.mapGrid[rr][c];
-                            if (scanSlot.canSpawn) {
-                                foundVertical = true;
+                            else {
                                 break;
                             }
                         }
 
                         // Diagonal: only after all vertical drops are exhausted
-                        if (allowDiagonal && !foundVertical && verticalBlocked && r - 1 >= 0) {
+                        if (allowDiagonal && !foundVertical && r - 1 >= 0) {
                             if (c - 1 >= 0 && grid[r - 1][c - 1] != null && !_isMultiCell(grid[r - 1][c - 1])
-                                && (isBlocked[r][c - 1] || grid[r][c - 1] != null)) {
+                                && (isBlocked[r][c - 1] || grid[r][c - 1] != null)
+                                && (grid[r - 1][c - 1].typeDrop === CoreGame.DropMgr.DropType.NONE || grid[r - 1][c - 1].typeDrop === CoreGame.DropMgr.DropType.DIAGONAL_LEFT)) {
                                 grid[r][c] = grid[r - 1][c - 1];
+                                grid[r][c].typeDrop = CoreGame.DropMgr.DropType.DIAGONAL_LEFT;
                                 grid[r - 1][c - 1] = null;
                                 changed = true;
                             } else if (c + 1 < cols && grid[r - 1][c + 1] != null && !_isMultiCell(grid[r - 1][c + 1])
-                                && (isBlocked[r][c + 1] || grid[r][c + 1] != null)) {
+                                && (isBlocked[r][c + 1] || grid[r][c + 1] != null)
+                                && (grid[r - 1][c + 1].typeDrop === CoreGame.DropMgr.DropType.NONE || grid[r - 1][c + 1].typeDrop === CoreGame.DropMgr.DropType.DIAGONAL_RIGHT)) {
                                 grid[r][c] = grid[r - 1][c + 1];
+                                grid[r][c].typeDrop = CoreGame.DropMgr.DropType.DIAGONAL_RIGHT;
                                 grid[r - 1][c + 1] = null;
                                 changed = true;
                             }
@@ -275,58 +331,49 @@ CoreGame.DropMgr = cc.Class.extend({
                         if (grid[r][c] != null) continue;
 
                         var foundVertical = false;
-                        var verticalBlocked = false;
                         for (var rr = r + 1; rr < rows; rr++) {
-                            if (isBlocked[rr][c]) {
-                                // Only permanent blockers trigger diagonal fallback.
-                                // Temp blockers (MATCHING/REMOVING) will disappear —
-                                // vertical will work in a future refill cycle.
-                                if (!isTempBlocked[rr][c]) {
-                                    verticalBlocked = true;
-                                }
-                                break;
-                            }
-                            if (grid[rr][c] != null) {
-                                // Skip multi-cell elements — they handle themselves
-                                if (_isMultiCell(grid[rr][c])) {
-                                    verticalBlocked = true;
+                            if (canFillMap[rr][c]) {
+                                foundVertical = true;
+                                if (grid[rr][c] != null && (grid[rr][c].typeDrop === CoreGame.DropMgr.DropType.NONE || grid[rr][c].typeDrop === CoreGame.DropMgr.DropType.VERTICAL)) {
+                                    // Skip multi-cell elements — they handle themselves
+                                    if (_isMultiCell(grid[rr][c])) {
+                                        break;
+                                    }
+                                    grid[r][c] = grid[rr][c];
+                                    grid[r][c].typeDrop = CoreGame.DropMgr.DropType.VERTICAL;
+                                    grid[rr][c] = null;
+                                    changed = true;
                                     break;
                                 }
-                                grid[r][c] = grid[rr][c];
-                                grid[rr][c] = null;
-                                changed = true;
-                                foundVertical = true;
-                                break;
+                                else if (grid[rr][c] == null) {
+                                    break;
+                                }
                             }
-                            var scanSlot = this.boardMgr.mapGrid[rr][c];
-                            if (scanSlot.canSpawn) {
-                                foundVertical = true;
+                            else {
                                 break;
                             }
                         }
 
                         // Diagonal: only after all vertical drops are exhausted
-                        if (allowDiagonal && !foundVertical && verticalBlocked && r + 1 < rows) {
+                        if (allowDiagonal && !foundVertical && r + 1 < rows) {
                             if (c - 1 >= 0 && grid[r + 1][c - 1] != null && !_isMultiCell(grid[r + 1][c - 1])
-                                && (isBlocked[r][c - 1] || grid[r][c - 1] != null)) {
+                                && (isBlocked[r][c - 1] || grid[r][c - 1] != null)
+                                && (grid[r + 1][c - 1].typeDrop === CoreGame.DropMgr.DropType.NONE || grid[r + 1][c - 1].typeDrop === CoreGame.DropMgr.DropType.DIAGONAL_LEFT)) {
                                 grid[r][c] = grid[r + 1][c - 1];
+                                grid[r][c].typeDrop = CoreGame.DropMgr.DropType.DIAGONAL_LEFT;
                                 grid[r + 1][c - 1] = null;
                                 changed = true;
                             } else if (c + 1 < cols && grid[r + 1][c + 1] != null && !_isMultiCell(grid[r + 1][c + 1])
-                                && (isBlocked[r][c + 1] || grid[r][c + 1] != null)) {
+                                && (isBlocked[r][c + 1] || grid[r][c + 1] != null)
+                                && (grid[r + 1][c + 1].typeDrop === CoreGame.DropMgr.DropType.NONE || grid[r + 1][c + 1].typeDrop === CoreGame.DropMgr.DropType.DIAGONAL_RIGHT)) {
                                 grid[r][c] = grid[r + 1][c + 1];
+                                grid[r][c].typeDrop = CoreGame.DropMgr.DropType.DIAGONAL_RIGHT;
                                 grid[r + 1][c + 1] = null;
                                 changed = true;
                             }
                         }
                     }
                 }
-            }
-
-            // Phase transition: when vertical is fully stable, enable diagonal
-            if (!changed && !allowDiagonal) {
-                allowDiagonal = true;
-                changed = true; // re-enter loop with diagonal enabled
             }
         }
 
@@ -344,7 +391,7 @@ CoreGame.DropMgr = cc.Class.extend({
                     droppedElements.push(element);
                     if (element.position.x !== r || element.position.y !== c) {
                         hasDrop = true;
-                        cc.log("Drop gem (normal) to slot r=" + r + " c=" + c);
+                        // cc.log("Drop gem (normal) to slot r=" + r + " c=" + c);
                         this.dropGemToSlot(
                             element,
                             this.boardMgr.mapGrid[r][c],
@@ -361,7 +408,7 @@ CoreGame.DropMgr = cc.Class.extend({
                     droppedElements.push(element);
                     if (element.position.x !== r || element.position.y !== c) {
                         hasDrop = true;
-                        cc.log("Drop gem (reverse) to slot r=" + r + " c=" + c);
+                        // cc.log("Drop gem (reverse) to slot r=" + r + " c=" + c);
                         this.dropGemToSlot(
                             element,
                             this.boardMgr.mapGrid[r][c],
@@ -380,7 +427,7 @@ CoreGame.DropMgr = cc.Class.extend({
                     droppedElements.push(element);
                     if (element.position.x !== r || element.position.y !== c) {
                         hasDrop = true;
-                        cc.log("Drop gem (normal) to slot r=" + r + " c=" + c + " Element " + element.getTypeName());
+                        // cc.log("Drop gem (normal) to slot r=" + r + " c=" + c + " Element " + element.getTypeName());
                         this.dropGemToSlot(
                             element,
                             this.boardMgr.mapGrid[r][c],
@@ -401,7 +448,7 @@ CoreGame.DropMgr = cc.Class.extend({
      * Drop a gem to target slot (works for both normal and reverse columns)
      */
     dropGemToSlot: function (gem, targetSlot, delayTime = 0, speed = CoreGame.Config.DROP_SPEED) {
-        // cc.log("dropGemToSlot row " + targetSlot.row + " col " + targetSlot.col);
+        // cc.log("gem pos " + gem.position.x + "," + gem.position.y + " dropGemToSlot row " + targetSlot.row + " col " + targetSlot.col);
         var targetPixelPos = this.boardMgr.gridToPixel(targetSlot.row, targetSlot.col);
         var currentPixelPos = this.boardMgr.gridToPixel(gem.position.x, gem.position.y);
 
@@ -419,19 +466,10 @@ CoreGame.DropMgr = cc.Class.extend({
         // Gravity-based duration: t = sqrt(2d / g), where g = speed acts as gravity
         var duration = Math.sqrt(2 * distance / speed);
 
-        gem.setState(CoreGame.ElementState.DROPPING);
+        //gem.setState(CoreGame.ElementState.DROPPING);
         gem.dropTo(targetSlot.row, targetSlot.col, duration, delayTime);
 
-        CoreGame.TimedActionMgr.addAction(duration, function () {
-            fr.Sound.playSoundEffect(resSound.seed_drop);
 
-            gem.setState(CoreGame.ElementState.IDLE);
-            // if (gem.ui) {
-            //     gem.ui.playBounceAnim();
-            // }
-            this.boardMgr.setMatchingRequired(true);
-            this.boardMgr.setRefillRequired(true);
-        }.bind(this));
 
         return duration;
     },
@@ -503,7 +541,6 @@ CoreGame.DropMgr = cc.Class.extend({
                 maxDisRow = Math.max(Math.abs(desRow - startRow), maxDisRow);
             }
             let speedMul = Math.max(1, maxDisRow / 5);
-            cc.log("SPEED MUL", maxDisRow, speedMul);
 
             // Spawn gems: visual start above the spawn source
             count = 0;
@@ -576,3 +613,10 @@ CoreGame.DropMgr = cc.Class.extend({
         return hasSpawn;
     }
 });
+
+CoreGame.DropMgr.DropType = {
+    NONE: -1,
+    VERTICAL: 0,
+    DIAGONAL_LEFT: 2,
+    DIAGONAL_RIGHT: 3
+};

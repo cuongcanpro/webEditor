@@ -61,9 +61,9 @@ fr.Localization = cc.Class.extend(
         _loadTextForCurrentLanguage: function () {
             this._localizedStrings = {};
             var contents = cc.loader.getRes(this.getPathFileLang(this._currentLang.folder));
-
+            var lines;
             try {
-                var lines = contents.split('\n');
+                lines = contents.split('\n');
             }
             catch (err) {
                 cc.log("ERROR: Localization::loadTextForCurrentLanguage: %s", err);

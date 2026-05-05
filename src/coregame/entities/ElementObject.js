@@ -152,11 +152,23 @@ CoreGame.ElementObject = cc.Class.extend({
             }
 
             this.setState(CoreGame.ElementState.MOVING);
-            if (!this.ui) {
-                return;
+            let time = duration * 0.5;
+            if (this.ui) {
+                time = this.ui.playDropToAnim(targetPixelPos, duration, delayTime);
             }
-
-            this.ui.playDropToAnim(targetPixelPos, duration, delayTime);
+            cc.log("Time dropTo: " + time + " xy: " + row + "," + col);
+            time = duration;
+            CoreGame.TimedActionMgr.addAction(time, function () {
+                fr.Sound.playSoundEffect(resSound.seed_drop);
+                cc.log("Finish dropTo: " + time + " xy: " + this.position.x + "," + this.position.y);
+                this.setState(CoreGame.ElementState.IDLE);
+                // if (gem.ui) {
+                //     gem.ui.playBounceAnim();
+                // }
+                this.boardMgr.setMatchingRequired(true);
+                this.boardMgr.setRefillRequired(true);
+            }.bind(this));
+            
         }
     },
 
@@ -380,7 +392,7 @@ CoreGame.ElementObject = cc.Class.extend({
      * Remove element from game
      */
     remove: function () {
-        // cc.log("Remove Element === " + JSON.stringify(this.position) + " Name " + this.getTypeName());
+        cc.log("Remove Element === " + JSON.stringify(this.position) + " Name " + this.getTypeName());
         this.setState(CoreGame.ElementState.REMOVING);
         var boardUI = this.boardMgr ? this.boardMgr.boardUI : null;
 
