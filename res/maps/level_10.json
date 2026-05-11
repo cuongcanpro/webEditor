@@ -175,7 +175,7 @@
         {
             "row": 2,
             "col": 1,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -205,13 +205,13 @@
         {
             "row": 2,
             "col": 6,
-            "type": 4,
+            "type": 3,
             "hp": 1
         },
         {
             "row": 2,
             "col": 7,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -223,7 +223,7 @@
         {
             "row": 3,
             "col": 0,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -271,7 +271,7 @@
         {
             "row": 3,
             "col": 8,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -296,7 +296,7 @@
             "row": 4,
             "col": 3,
             "type": 10000,
-            "hp": 20
+            "hp": 60
         },
         {
             "row": 4,
@@ -319,7 +319,7 @@
         {
             "row": 5,
             "col": 0,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -349,7 +349,7 @@
         {
             "row": 5,
             "col": 8,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -361,7 +361,7 @@
         {
             "row": 6,
             "col": 1,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -379,7 +379,7 @@
         {
             "row": 6,
             "col": 7,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -504,23 +504,14 @@
             "count": 1
         }
     ],
-    "notes": "",
-    "numTest": 50,
+    "difficulty": "Hard",
     "tpp": 1,
-    "targetMove": 15,
+    "targetMove": 25,
     "spawnStrategy": "RandomSpawnStrategy",
-    "agentType": "GreedyBot",
     "gemTypes": [
         1,
         2,
         3,
-        4,
-        5
-    ],
-    "scoreConfig": {
-        "star2Threshold": 12000,
-        "star3Threshold": 16000,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=10000 [Kong(1×HPΣ=20)×500=10000], tier=L1-L20 (Newbie), ×1.2/×1.6"
-    }
+        4
+    ]
 }

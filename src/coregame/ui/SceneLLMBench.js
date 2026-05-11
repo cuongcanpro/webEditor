@@ -391,12 +391,12 @@ CoreGame.SceneLLMBench = cc.Scene.extend({
         // Override onEndGame — skip end-game GUI, but still send metrics
         var self = this;
         gameUI.onEndGame = function (isWin) {
-            // Call AdaptiveTPP.onLevelEnd + sendMetrics (same as original GameUI.onEndGame)
+            // Call AdaptiveTPP.onLevelEnd + sendTPPMetrics (same as original GameUI.onEndGame)
             var bm = gameUI.boardUI && gameUI.boardUI.boardMgr;
             if (CoreGame.AdaptiveTPP && bm) {
                 CoreGame.AdaptiveTPP.onLevelEnd(bm._tppMovesUsed || 0, !!isWin);
             }
-            gameUI.sendMetrics(gameUI._buildMetrics(isWin));
+            gameUI.sendTPPMetrics(gameUI._buildMetrics(isWin));
 
             self._onRunComplete(!!isWin);
         };

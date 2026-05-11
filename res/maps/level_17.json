@@ -121,7 +121,7 @@
         {
             "row": 1,
             "col": 3,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -139,7 +139,7 @@
         {
             "row": 1,
             "col": 6,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -163,7 +163,7 @@
         {
             "row": 2,
             "col": 4,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -181,7 +181,7 @@
         {
             "row": 2,
             "col": 7,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -224,7 +224,7 @@
             "row": 3,
             "col": 3,
             "type": 600,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 3,
@@ -247,14 +247,14 @@
         {
             "row": 3,
             "col": 5,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
             "row": 3,
             "col": 6,
             "type": 600,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 3,
@@ -295,7 +295,7 @@
         {
             "row": 3,
             "col": 8,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -308,19 +308,19 @@
             "row": 4,
             "col": 1,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 4,
             "col": 2,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 4,
             "col": 3,
             "type": 600,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -337,7 +337,7 @@
         {
             "row": 4,
             "col": 4,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -350,7 +350,7 @@
             "row": 4,
             "col": 6,
             "type": 600,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -368,36 +368,36 @@
             "row": 4,
             "col": 7,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 4,
             "col": 8,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 5,
             "col": 1,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 5,
             "col": 2,
             "type": 700,
-            "hp": 3
-        },
-        {
-            "row": 5,
-            "col": 3,
-            "type": 600,
             "hp": 2
         },
         {
             "row": 5,
             "col": 3,
-            "type": 5,
+            "type": 600,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 3,
+            "type": 4,
             "hp": 1
         },
         {
@@ -409,7 +409,7 @@
         {
             "row": 5,
             "col": 4,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -422,7 +422,7 @@
             "row": 5,
             "col": 6,
             "type": 600,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -440,13 +440,13 @@
             "row": 5,
             "col": 7,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 5,
             "col": 8,
             "type": 700,
-            "hp": 3
+            "hp": 2
         },
         {
             "row": 6,
@@ -457,7 +457,7 @@
         {
             "row": 6,
             "col": 1,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -488,7 +488,7 @@
             "row": 6,
             "col": 3,
             "type": 600,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 6,
@@ -511,14 +511,14 @@
         {
             "row": 6,
             "col": 5,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
             "row": 6,
             "col": 6,
             "type": 600,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 6,
@@ -559,7 +559,7 @@
         {
             "row": 6,
             "col": 8,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -583,7 +583,7 @@
         {
             "row": 7,
             "col": 4,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -601,7 +601,7 @@
         {
             "row": 7,
             "col": 7,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -637,7 +637,7 @@
         {
             "row": 8,
             "col": 7,
-            "type": 5,
+            "type": 4,
             "hp": 1
         }
     ],
@@ -658,19 +658,12 @@
     ],
     "difficulty": "Medium",
     "tpp": 1,
-    "targetMove": 30,
+    "targetMove": 15,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
         2,
         3,
-        4,
-        5
-    ],
-    "scoreConfig": {
-        "star2Threshold": 15264,
-        "star3Threshold": 20352,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=12720 [Grass(16×HPΣ=16)×120=1920 + Box(8×HPΣ=24)×200=4800 + Chain(16×HPΣ=24)×250=6000], tier=L1-L20 (Newbie), ×1.2/×1.6"
-    }
+        4
+    ]
 }

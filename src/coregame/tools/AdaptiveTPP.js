@@ -68,6 +68,18 @@ CoreGame.AdaptiveTPP = {
     /** Pace curve exponent. >1.0 = back-loaded (expects less early, more late). */
     PACE_CURVE_EXP:      1.4,
 
+    /** Max colors to exclude from spawn pool when assisting (0 = feature off). */
+    MAX_COLOR_REDUCE:    2,
+
+    /** Min colors that must remain in spawn pool (safety floor). */
+    MIN_COLORS:          3,
+
+    /** Deviation threshold for color reduce level 1 (exclude 1 rarest color). */
+    COLOR_REDUCE_L1_THRESHOLD: 0.50,
+
+    /** Deviation threshold for color reduce level 2 (exclude 2 rarest colors). */
+    COLOR_REDUCE_L2_THRESHOLD: 0.70,
+
     // ── Internal state ─────────────────────────────────────────────────────
 
     _boardMgr:       null,
@@ -92,6 +104,11 @@ CoreGame.AdaptiveTPP = {
 
     _assistCooldownLeft:  0,
     _assistCooldownCount: 0,
+
+    // ── v2: Color concentration state (DDA lever #2) ─────────────────────
+
+    _colorReduceCount:   0,
+    _currentColorReduce: 0,
 
     // ── Metrics state ───────────────────────────────────────────────────────
 
@@ -211,6 +228,11 @@ CoreGame.AdaptiveTPP = {
         this._assistCooldownLeft  = 0;
         this._assistCooldownCount = 0;
 
+        // v2: Color concentration
+        this._colorReduceCount   = 0;
+        this._currentColorReduce = 0;
+        if (this._boardMgr) this._boardMgr._tppExcludeColors = null;
+
         // ── Event listeners ───────────────────────────────────────────────
         var self = this;
 
@@ -305,6 +327,7 @@ CoreGame.AdaptiveTPP = {
             if (this._currentName !== "baseline") {
                 this._applyStrategy("baseline", 0);
             }
+            this._applyColorReduction(0);
             this._deviationLog.push(0);
             this._rawDeviationLog.push(0);
             this._smoothedDeviation = this.SMOOTHING_ALPHA * 0
@@ -332,6 +355,29 @@ CoreGame.AdaptiveTPP = {
         var t         = (this._totalMoves > 0) ? (movesUsed / this._totalMoves) : 0;
         var expected  = Math.pow(t, this.PACE_CURVE_EXP);
 
+        // ── Strategy selection (uses smoothed deviation) ────────────────
+        var next = this._selectStrategyName(deviation);
+        if (next !== this._currentName) {
+            this._applyStrategy(next, deviation);
+        }
+
+        // ── Color concentration (DDA lever #2) ──────────────────────────
+        var colorReduce = 0;
+        if (deviation < -this.COLOR_REDUCE_L2_THRESHOLD) {
+            colorReduce = 2;
+        } else if (deviation < -this.COLOR_REDUCE_L1_THRESHOLD) {
+            colorReduce = 1;
+        }
+        colorReduce = Math.min(colorReduce, this.MAX_COLOR_REDUCE);
+        this._applyColorReduction(colorReduce);
+
+        // ── Per-turn log ────────────────────────────────────────────────
+        var colorLog = "";
+        if (this._currentColorReduce > 0 && this._boardMgr && this._boardMgr._tppExcludeColors) {
+            colorLog = "  color=-" + this._currentColorReduce
+                     + "(excl:" + this._boardMgr._tppExcludeColors.join(",") + ")";
+        }
+
         cc.log("[AdaptiveTPP] turn=" + movesUsed + "/" + this._totalMoves
             + "  cleared=" + targetsCleared + "/" + this._initialTargets
             + "  dmg=" + this._objectiveDamageDealt + "/" + this._objectiveTotalHp
@@ -339,13 +385,7 @@ CoreGame.AdaptiveTPP = {
             + "  expected=" + (expected * 100).toFixed(1) + "%"
             + "  raw=" + (rawDev >= 0 ? "+" : "") + rawDev.toFixed(3)
             + "  smooth=" + (deviation >= 0 ? "+" : "") + deviation.toFixed(3)
-            + "  strat=" + this._currentName);
-
-        // ── Strategy selection (uses smoothed deviation) ────────────────
-        var next = this._selectStrategyName(deviation);
-        if (next !== this._currentName) {
-            this._applyStrategy(next, deviation);
-        }
+            + "  strat=" + this._currentName + colorLog);
     },
 
     /**
@@ -396,10 +436,13 @@ CoreGame.AdaptiveTPP = {
             this._scoreChangedHandler = null;
         }
 
+        // Clear color concentration
+        if (this._boardMgr) this._boardMgr._tppExcludeColors = null;
+
         // Update mercy factor: halve on loss (capped at floor), reset on win
         var prevRf = this._retryFactor;
         if (!completed) {
-            this._retryFactor = Math.max(this.MIN_RETRY_FACTOR, this._retryFactor * 0.5);
+            this._retryFactor = Math.max(this.MIN_RETRY_FACTOR, this._retryFactor * 0.92);
         } else {
             this._retryFactor = 1.0;
             this._retryCount  = 0;
@@ -423,7 +466,8 @@ CoreGame.AdaptiveTPP = {
             + "  cooldowns=" + m.assist_cooldowns);
         cc.log("[AdaptiveTPP] HP         dmg=" + m.objective_damage_dealt + "/" + m.objective_total_hp
             + "  hp_progress=" + (m.hp_progress_final >= 0 ? m.hp_progress_final.toFixed(3) : "N/A")
-            + "  curve=" + m.curve_exponent);
+            + "  curve=" + m.curve_exponent
+            + "  color_reduces=" + m.color_reduce_count);
         cc.log("[AdaptiveTPP] Result     " + (completed ? "WIN" : "LOSE")
             + "  surplus=" + m.move_surplus
             + "  pu_rate=" + m.pu_rate.toFixed(3));
@@ -481,7 +525,8 @@ CoreGame.AdaptiveTPP = {
             assist_cooldowns:       this._assistCooldownCount || 0,
             curve_exponent:         this.PACE_CURVE_EXP,
             objective_total_hp:     this._objectiveTotalHp || 0,
-            objective_damage_dealt: this._objectiveDamageDealt || 0
+            objective_damage_dealt: this._objectiveDamageDealt || 0,
+            color_reduce_count:     this._colorReduceCount || 0
         };
     },
 
@@ -582,6 +627,53 @@ CoreGame.AdaptiveTPP = {
                 reason = " (smooth=" + dStr + ", normal)";
         }
         cc.log("[AdaptiveTPP] Strategy " + prev + " -> " + name + reason);
+    },
+
+    /**
+     * DDA lever #2: Color Concentration.
+     * Scans the board, finds the N rarest colors, and excludes them from
+     * the spawn pool via boardMgr._tppExcludeColors.
+     * @param {number} n  Number of colors to exclude (0 = clear exclusion)
+     */
+    _applyColorReduction: function (n) {
+        if (!this._boardMgr) return;
+        this._currentColorReduce = n;
+        if (n <= 0) {
+            this._boardMgr._tppExcludeColors = null;
+            return;
+        }
+        this._colorReduceCount++;
+
+        // Count each gem color currently on the board
+        var counts = {};
+        var bm = this._boardMgr;
+        for (var r = 0; r < bm.rows; r++) {
+            for (var c = 0; c < bm.cols; c++) {
+                var slot = bm.getSlot(r, c);
+                if (!slot) continue;
+                var t = slot.getType();
+                if (t >= 1 && t <= CoreGame.Config.NUM_COLORS) {
+                    counts[t] = (counts[t] || 0) + 1;
+                }
+            }
+        }
+
+        // Get available color pool, sort by frequency ascending (rarest first)
+        var pool = (bm.gemTypes && bm.gemTypes.length > 0)
+                 ? bm.gemTypes.slice()
+                 : [];
+        if (pool.length === 0) {
+            for (var i = 1; i <= CoreGame.Config.NUM_COLORS; i++) pool.push(i);
+        }
+        pool.sort(function (a, b) { return (counts[a] || 0) - (counts[b] || 0); });
+
+        // Exclude N rarest, but keep at least MIN_COLORS
+        var maxExclude = Math.min(n, pool.length - this.MIN_COLORS);
+        if (maxExclude <= 0) {
+            bm._tppExcludeColors = null;
+            return;
+        }
+        bm._tppExcludeColors = pool.slice(0, maxExclude);
     },
 
     /** Average of a numeric array. Returns 0 for empty. */

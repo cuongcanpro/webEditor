@@ -20,28 +20,6 @@
             1,
             1,
             1,
-            0
-        ],
-        [
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            0
-        ],
-        [
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
             1
         ],
         [
@@ -86,7 +64,29 @@
             1,
             1,
             1,
-            0
+            1
+        ],
+        [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+        ],
+        [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
         ],
         [
             0,
@@ -97,7 +97,7 @@
             2,
             2,
             2,
-            0
+            1
         ],
         [
             0,
@@ -115,49 +115,55 @@
         {
             "row": 1,
             "col": 1,
-            "type": 1,
+            "type": 700,
             "hp": 1
         },
         {
             "row": 1,
             "col": 2,
             "type": 700,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 1,
             "col": 3,
             "type": 700,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 1,
             "col": 4,
             "type": 700,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 1,
             "col": 5,
             "type": 700,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 1,
             "col": 6,
             "type": 700,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 1,
             "col": 7,
             "type": 700,
-            "hp": 2
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 8,
+            "type": 700,
+            "hp": 1
         },
         {
             "row": 2,
             "col": 1,
-            "type": 4,
+            "type": 1000,
             "hp": 1
         },
         {
@@ -169,26 +175,14 @@
         {
             "row": 2,
             "col": 3,
-            "type": 1,
-            "hp": 1
-        },
-        {
-            "row": 2,
-            "col": 4,
-            "type": 1000,
-            "hp": 1
+            "type": 11001,
+            "hp": 30
         },
         {
             "row": 2,
             "col": 5,
             "type": 11001,
-            "hp": 5
-        },
-        {
-            "row": 2,
-            "col": 6,
-            "type": 4,
-            "hp": 1
+            "hp": 30
         },
         {
             "row": 2,
@@ -197,81 +191,75 @@
             "hp": 1
         },
         {
-            "row": 3,
-            "col": 1,
-            "type": 700,
-            "hp": 2
-        },
-        {
-            "row": 3,
-            "col": 2,
-            "type": 700,
-            "hp": 2
-        },
-        {
-            "row": 3,
-            "col": 3,
-            "type": 2,
-            "hp": 1
-        },
-        {
-            "row": 3,
-            "col": 4,
+            "row": 2,
+            "col": 8,
             "type": 1000,
             "hp": 1
         },
         {
             "row": 3,
+            "col": 1,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 3,
+            "col": 2,
+            "type": 700,
+            "hp": 3
+        },
+        {
+            "row": 3,
             "col": 7,
             "type": 700,
-            "hp": 2
+            "hp": 3
         },
         {
             "row": 3,
             "col": 8,
             "type": 700,
-            "hp": 2
+            "hp": 3
         },
         {
             "row": 4,
             "col": 1,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 2,
+            "type": 1000,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 3,
             "type": 3,
             "hp": 1
         },
         {
             "row": 4,
-            "col": 2,
-            "type": 2,
-            "hp": 1
-        },
-        {
-            "row": 4,
-            "col": 3,
-            "type": 1000,
-            "hp": 1
-        },
-        {
-            "row": 4,
             "col": 4,
-            "type": 1000,
-            "hp": 1
+            "type": 11001,
+            "hp": 30
         },
         {
             "row": 4,
-            "col": 5,
-            "type": 11001,
-            "hp": 5
+            "col": 6,
+            "type": 3,
+            "hp": 1
         },
         {
             "row": 4,
             "col": 7,
-            "type": 2,
+            "type": 1000,
             "hp": 1
         },
         {
             "row": 4,
             "col": 8,
-            "type": 1,
+            "type": 1000,
             "hp": 1
         },
         {
@@ -283,14 +271,20 @@
         {
             "row": 5,
             "col": 2,
-            "type": 3,
+            "type": 1000,
             "hp": 1
         },
         {
             "row": 5,
             "col": 3,
-            "type": 11001,
-            "hp": 5
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 5,
+            "col": 6,
+            "type": 4,
+            "hp": 1
         },
         {
             "row": 5,
@@ -318,20 +312,32 @@
         },
         {
             "row": 6,
+            "col": 3,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 4,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
             "col": 5,
-            "type": 1000,
+            "type": 4,
             "hp": 1
         },
         {
             "row": 6,
             "col": 6,
-            "type": 1000,
+            "type": 4,
             "hp": 1
         },
         {
             "row": 6,
             "col": 7,
-            "type": 1000,
+            "type": 3,
             "hp": 1
         },
         {
@@ -349,7 +355,7 @@
         {
             "row": 7,
             "col": 2,
-            "type": 700,
+            "type": 4,
             "hp": 1
         },
         {
@@ -361,7 +367,7 @@
         {
             "row": 7,
             "col": 4,
-            "type": 700,
+            "type": 4,
             "hp": 1
         },
         {
@@ -379,7 +385,13 @@
         {
             "row": 7,
             "col": 7,
-            "type": 700,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 4,
             "hp": 1
         },
         {
@@ -422,6 +434,12 @@
             "row": 8,
             "col": 7,
             "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 8,
+            "type": 4,
             "hp": 1
         }
     ],
@@ -437,24 +455,17 @@
         },
         {
             "id": 700,
-            "count": 13
+            "count": 12
         }
     ],
-    "difficulty": "Easy",
+    "difficulty": "Hard",
     "tpp": 1,
-    "targetMove": 21,
+    "targetMove": 31,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
         2,
         3,
-        4,
-        5
-    ],
-    "scoreConfig": {
-        "star2Threshold": 19460,
-        "star3Threshold": 27800,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=13900 [MobileBossBunny(3×HPΣ=15)×500=7500 + Donut(10×HPΣ=10)×180=1800 + Box(13×HPΣ=23)×200=4600], tier=L21-L50 (Standard), ×1.4/×2.0"
-    }
+        4
+    ]
 }

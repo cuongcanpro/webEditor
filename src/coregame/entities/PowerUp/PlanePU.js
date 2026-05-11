@@ -15,7 +15,6 @@ CoreGame.PlanePU = CoreGame.PowerUP.extend({
      * then fly to a priority target (level objectives first, random gem as fallback).
      */
     activeLogic: function () {
-        const EXPLODE = [[-1, 0], [1, 0], [0, 0], [0, -1], [0, 1]];
 
         // ── Step 1: Launch burst + track exploded slots ───────────────────
         // [IMPROVEMENT] Collect slots hit by launch so we can exclude them from
@@ -23,13 +22,17 @@ CoreGame.PlanePU = CoreGame.PowerUP.extend({
         // listElement during its death animation, so findListPriorityTarget would
         // still see it as a valid target without this exclusion.
         var explodedByLaunch = [];
-        for (var i = 0; i < EXPLODE.length; i++) {
-            var slot = this.boardMgr.getSlot(
-                this.position.x + EXPLODE[i][0],
-                this.position.y + EXPLODE[i][1]
-            );
-            if (slot) {
-                explodedByLaunch.push(slot);
+
+        if (!this.isSubPU) {
+            const EXPLODE = [[-1, 0], [1, 0], [0, 0], [0, -1], [0, 1]];
+            for (var i = 0; i < EXPLODE.length; i++) {
+                var slot = this.boardMgr.getSlot(
+                    this.position.x + EXPLODE[i][0],
+                    this.position.y + EXPLODE[i][1]
+                );
+                if (slot) {
+                    explodedByLaunch.push(slot);
+                }
             }
         }
 
@@ -128,6 +131,7 @@ CoreGame.PlanePU = CoreGame.PowerUP.extend({
             }
 
             var puType = this.type;
+            cc.log("Time Fly ======= " + timeFly);
             CoreGame.TimedActionMgr.addAction(timeFly, function () {
                 if (this.isEmpty()) return;
                 this.matchElement({ type: "normal", puType: puType });
@@ -154,7 +158,7 @@ CoreGame.PlaneMergePU = CoreGame.PlanePU.extend({
             if (this.preserveUI) {
                 timeFly = this.preserveUI.startFlyTo(this.targetSlot);
             }
-
+            cc.log("Time Fly 2======= " + timeFly);
             CoreGame.TimedActionMgr.addAction(timeFly, function () {
                 this.onTargetReached();
             }, this);

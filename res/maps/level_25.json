@@ -169,8 +169,14 @@
         {
             "row": 2,
             "col": 2,
-            "type": 11001,
-            "hp": 10
+            "type": 102,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 3,
+            "type": 3,
+            "hp": 1
         },
         {
             "row": 2,
@@ -187,8 +193,14 @@
         {
             "row": 2,
             "col": 6,
-            "type": 11001,
-            "hp": 10
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 7,
+            "type": 102,
+            "hp": 1
         },
         {
             "row": 2,
@@ -204,6 +216,18 @@
         },
         {
             "row": 3,
+            "col": 2,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
             "col": 4,
             "type": 1,
             "hp": 1
@@ -211,6 +235,18 @@
         {
             "row": 3,
             "col": 5,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 6,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 7,
             "type": 3,
             "hp": 1
         },
@@ -241,14 +277,8 @@
         {
             "row": 4,
             "col": 4,
-            "type": 3,
-            "hp": 1
-        },
-        {
-            "row": 4,
-            "col": 5,
-            "type": 2,
-            "hp": 1
+            "type": 11001,
+            "hp": 30
         },
         {
             "row": 4,
@@ -288,18 +318,6 @@
         },
         {
             "row": 5,
-            "col": 4,
-            "type": 1,
-            "hp": 1
-        },
-        {
-            "row": 5,
-            "col": 5,
-            "type": 4,
-            "hp": 1
-        },
-        {
-            "row": 5,
             "col": 6,
             "type": 1000,
             "hp": 1
@@ -325,8 +343,14 @@
         {
             "row": 6,
             "col": 2,
-            "type": 11001,
-            "hp": 10
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 3,
+            "type": 3,
+            "hp": 1
         },
         {
             "row": 6,
@@ -343,8 +367,14 @@
         {
             "row": 6,
             "col": 6,
-            "type": 11001,
-            "hp": 10
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 7,
+            "type": 3,
+            "hp": 1
         },
         {
             "row": 6,
@@ -360,6 +390,18 @@
         },
         {
             "row": 7,
+            "col": 2,
+            "type": 102,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 3,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 7,
             "col": 4,
             "type": 2,
             "hp": 1
@@ -368,6 +410,18 @@
             "row": 7,
             "col": 5,
             "type": 1,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 6,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 7,
+            "type": 102,
             "hp": 1
         },
         {
@@ -429,7 +483,7 @@
     "targetElements": [
         {
             "id": 11001,
-            "count": 4
+            "count": 1
         },
         {
             "id": 1000,
@@ -444,20 +498,14 @@
             "count": 4
         }
     ],
-    "difficulty": "Medium",
+    "difficulty": "Easy",
     "tpp": 1,
-    "targetMove": 25,
+    "targetMove": 10,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ],
-    "scoreConfig": {
-        "star2Threshold": 35952,
-        "star3Threshold": 51360,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=25680 [MobileBossBunny(4×HPΣ=40)×500=20000 + Donut(6×HPΣ=6)×180=1080 + Egg(10×HPΣ=10)×300=3000 + Box(4×HPΣ=8)×200=1600], tier=L21-L50 (Standard), ×1.4/×2.0"
-    }
+    ]
 }

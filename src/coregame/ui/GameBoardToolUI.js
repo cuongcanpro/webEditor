@@ -38,7 +38,7 @@ GameBoardToolUI = BaseLayer.extend({
 
     initLayer: function () {
         this.pnlFog.setContentSize(cc.winSize);
-        this.pnlFog.setPositionX(-cc.winSize.width/2);
+        this.pnlFog.setPositionX(-cc.winSize.width / 2);
         this.pnlFog.setLocalZOrder(GameBoardToolUI.zOrder.FOG);
         this.nodeToolInfo.setLocalZOrder(GameBoardToolUI.zOrder.INFO);
         this.pnlFog.setVisible(false);
@@ -71,6 +71,35 @@ GameBoardToolUI = BaseLayer.extend({
         this.btnClose.addClickEventListener(this.onClickPause.bind(this));
 
         this.btnCheat.setVisible(!gv.isRelease);
+
+        // ── AI button inside pause menu (gated by GeneralConfig) ──────────
+        this.btnAI = null;
+        if (generalConfig.isActiveAI() && Config.ENABLE_CHEAT) {
+            var btnAI = new ccui.Button(
+                "game/board/btn_orange.png",
+                "game/board/btn_orange.png"
+            );
+            btnAI.setScale9Enabled(true);
+            btnAI.setContentSize(90, 90);
+            btnAI.setAnchorPoint(cc.p(0.5, 0.5));
+            btnAI.setPosition(47, 550);
+            btnAI.oriPosition = cc.p(47, 550);
+            btnAI.setVisible(false);
+            this.btnPause.addChild(btnAI);
+            this.btnAI = btnAI;
+
+            var aiLabel = new cc.LabelTTF("AI", "font/BalooPaaji2-Bold.ttf", 38);
+            aiLabel.setColor(cc.color(255, 255, 255));
+            aiLabel.setAnchorPoint(cc.p(0.5, 0.5));
+            aiLabel.setPosition(45, 45);
+            btnAI.addChild(aiLabel);
+            this._aiLabel = aiLabel;
+
+            var selfTool = this;
+            btnAI.addClickEventListener(function () {
+                selfTool.onClickAI();
+            });
+        }
 
         this.showGUIPause(false, false);
     },
@@ -110,12 +139,11 @@ GameBoardToolUI = BaseLayer.extend({
             this.hideFogPause(this.pnlFog, timeAnim);
         }.bind(this));
         this.fogPause = this.pnlFog;
-
         this.showGUIPause(true);
     },
 
-    hideFogPause:function(fog, timeAnim){
-        if(fog.getNumberOfRunningActions() > 0) return;
+    hideFogPause: function (fog, timeAnim) {
+        if (fog.getNumberOfRunningActions() > 0) return;
         this.showGUIPause(false);
         fog.runAction(cc.sequence(
             cc.fadeOut(timeAnim),
@@ -128,10 +156,16 @@ GameBoardToolUI = BaseLayer.extend({
     },
 
     showGUIPause: function (bool, isAnim = true) {
-        const listBtn = [this.btnQuit, this.btnSound, this.btnMusic, this.btnVibrate, this.btnClose];
+        var listBtn = [this.btnQuit, this.btnSound, this.btnMusic, this.btnVibrate];
+
+        if (this.btnAI) {
+            listBtn.push(this.btnAI);
+        }
+
+        listBtn.push(this.btnClose);
         // for (let i = 0; i < listBtn.length; i++) {
-            // UIUtils.changeParent(listBtn[i], this.btnPause.getParent(), 100000, false);
-            // listBtn[i].setVisible(true);
+        // UIUtils.changeParent(listBtn[i], this.btnPause.getParent(), 100000, false);
+        // listBtn[i].setVisible(true);
         // }
 
         // this.pnlFog.setVisible(bool);
@@ -176,7 +210,7 @@ GameBoardToolUI = BaseLayer.extend({
     },
 
     // click event registered in cocos studio
-    onClickQuit:function(){
+    onClickQuit: function () {
         fr.temporaryDisableBtn(this.btnQuit, 1.0);
         this.btnQuit.setScale(1);
 
@@ -207,29 +241,39 @@ GameBoardToolUI = BaseLayer.extend({
     },
 
     // click event registered in cocos studio
-    onClickSound:function(){
+    onClickSound: function () {
         fr.Sound.switchSound();
         this.btnSound.getChildByName('icon_on').setVisible(fr.Sound.effectOn);
         this.btnSound.getChildByName('icon_off').setVisible(!fr.Sound.effectOn);
     },
 
     // click event registered in cocos studio
-    onClickMusic:function(){
+    onClickMusic: function () {
         fr.Sound.switchMusic();
         this.btnMusic.getChildByName('icon_on').setVisible(fr.Sound.musicOn);
         this.btnMusic.getChildByName('icon_off').setVisible(!fr.Sound.musicOn);
     },
 
     // click event registered in cocos studio
-    onClickVibrate:function(){
+    onClickVibrate: function () {
         fr.Sound.switchVibrate();
         this.btnVibrate.getChildByName('icon_on').setVisible(fr.Sound.vibrateOn);
         this.btnVibrate.getChildByName('icon_off').setVisible(!fr.Sound.vibrateOn);
     },
 
+    onClickAI: function () {
+        // Close pause menu, then open AI menu in GameUI
+        this.showGUIPause(false);
+        this.pausing = false;
+        this.pnlFog.setVisible(false);
+        if (this.mainScene && this.mainScene._toggleAIMenu) {
+            this.mainScene._toggleAIMenu();
+        }
+    },
+
     // click event registered in cocos studio
     onClickCheat: function () {
-        if(gv.isRelease) return;
+        if (gv.isRelease) return;
 
         this.mainScene.guiCheat.show();
     },
@@ -266,12 +310,12 @@ GameBoardToolUI = BaseLayer.extend({
 
         let nodeBalloon = this.board.getSingleElement(CoreGame.Config.ElementType.BALLOON)
             || this.board.getSingleElement(CoreGame.Config.ElementType.PROTECT_BALLOON);
-        if (nodeBalloon != null){
+        if (nodeBalloon != null) {
             nodeBalloon.origZorder = nodeBalloon.getLocalZOrder();
             nodeBalloon.origScaleX = nodeBalloon.getScaleX();
             nodeBalloon.origScaleY = nodeBalloon.getScaleY();
             // UIUtils.changeParent(nodeBalloon, this.board, MainScene.ZORDER.MAIN_BOARD, false);
-            nodeBalloon.setScale(this.board.panelBoard.getScaleX(),this.board.panelBoard.getScaleY());
+            nodeBalloon.setScale(this.board.panelBoard.getScaleX(), this.board.panelBoard.getScaleY());
         }
     },
 
@@ -295,13 +339,13 @@ GameBoardToolUI = BaseLayer.extend({
 
                 let nodeBalloon = this.board.getSingleElement(CoreGame.Config.ElementType.BALLOON)
                     || this.board.getSingleElement(CoreGame.Config.ElementType.PROTECT_BALLOON);
-                if (nodeBalloon != null){
+                if (nodeBalloon != null) {
                     // UIUtils.changeParent(nodeBalloon, this.board.panelBoard, nodeBalloon.origZorder, false);
-                    nodeBalloon.setScale(nodeBalloon.origScaleX ,nodeBalloon.origScaleY);
+                    nodeBalloon.setScale(nodeBalloon.origScaleX, nodeBalloon.origScaleY);
                 }
 
                 callback && callback();
-                if (this.curTool != null){
+                if (this.curTool != null) {
                     this.curTool.listSlot = [];
                     this.curTool = null;
                 }
@@ -321,7 +365,7 @@ GameBoardToolUI = BaseLayer.extend({
             this.listTool[i].updateAmount();
     },
 
-    checkEnableTools: function(){
+    checkEnableTools: function () {
         win32.log("checkEnableTools");
         // var isEnabled = gv.tutMgr.getData().isFinishedFeatureTut(TUTORIAL_FEATURE.TOOL);
         var isEnabled = true;
@@ -332,63 +376,63 @@ GameBoardToolUI = BaseLayer.extend({
         // }
     },
     enableTools: function (isEnabled) {
-        for (let i in this.listTool){
+        for (let i in this.listTool) {
             this.listTool[i].setEnableTool(isEnabled);
             this.listTool[i].btn.setColor(isEnabled ? cc.color(255, 255, 255) : cc.color(225, 225, 225));
-            this.listTool[i].getIcon().setOpacity(isEnabled ? 255 : 255*0.35);
+            this.listTool[i].getIcon().setOpacity(isEnabled ? 255 : 255 * 0.35);
         }
     },
-    getToolByType: function(toolType) {
-        for (let i in this.listTool){
+    getToolByType: function (toolType) {
+        for (let i in this.listTool) {
             if (this.listTool[i].type == toolType) return this.listTool[i];
         }
         return null;
     },
     showTools: function () {
         var count = 0;
-        for (let i in this.listTool){
+        for (let i in this.listTool) {
             var tool = this.listTool[i];
             tool.setEnableTool(true);
             var btn = tool.btn;
-            btn.setColor(cc.color(255,255,255));
+            btn.setColor(cc.color(255, 255, 255));
             btn.setEnabled(true);
             btn.runAction(cc.sequence(
-                cc.delayTime(count*0.1),
-                cc.scaleTo(0.1, tool._origScaleX*1.15, tool._origScaleY*1.15), cc.scaleTo(0.1, tool._origScaleX, tool._origScaleY)
+                cc.delayTime(count * 0.1),
+                cc.scaleTo(0.1, tool._origScaleX * 1.15, tool._origScaleY * 1.15), cc.scaleTo(0.1, tool._origScaleX, tool._origScaleY)
             ));
             this.listTool[i].getIcon().runAction(cc.sequence(
-                cc.delayTime(count*0.1),
+                cc.delayTime(count * 0.1),
                 cc.fadeIn(0.1)
             ));
             count++;
         }
     },
 
-    forceTouchTool: function(action){
+    forceTouchTool: function (action) {
         this.forceToolAction = action;
         var tool = this.getToolByType(action.toolType);
-        if (tool){
+        if (tool) {
             var btn = tool.btn;
             btn.setEnabled(true);
             btn.origZorder = btn.getLocalZOrder();
             btn.origScale = btn.getScale();
             btn.origPos = btn.getPosition();
             var scaleVal = 1.2;
-            var diffY = btn.getContentSize().height * (scaleVal-1) * btn.origScale;    // size scaleOut - size normal
+            var diffY = btn.getContentSize().height * (scaleVal - 1) * btn.origScale;    // size scaleOut - size normal
             UIUtils.addFog(this._rootNode, 100, "FOG_HIGHLIGHT_TOOL");
             btn.setLocalZOrder(101);
             var show = cc.sequence(
                 cc.delayTime(1.0),
                 cc.spawn(
-                    cc.scaleTo(0.5,btn.origScale*scaleVal).easing(cc.easeBackOut()),
+                    cc.scaleTo(0.5, btn.origScale * scaleVal).easing(cc.easeBackOut()),
                     cc.moveBy(0.5, 0, diffY)
                 )
             )
             btn.runAction(show);
         }
     },
-    checkFinishStepForceTool: function(toolType){
-        if (this.forceToolAction != null && this.forceToolAction.toolType == toolType){
+    checkFinishStepForceTool: function (toolType) {
+        if (this.forceToolAction != null && this.forceToolAction.toolType == toolType) {
             this.finishForceTool();
         }
     },
@@ -399,7 +443,7 @@ GameBoardToolUI = BaseLayer.extend({
         var fog = this._rootNode.getChildByName("FOG_HIGHLIGHT_TOOL");
         if (fog) fog.removeFromParent(true);
         var tool = this.getToolByType(this.forceToolAction.toolType);
-        if (tool){
+        if (tool) {
             var btn = tool.btn;
             if (btn.origZorder == null) btn.origZorder = 0;
             btn.setLocalZOrder(btn.origZorder);
@@ -409,7 +453,7 @@ GameBoardToolUI = BaseLayer.extend({
         this.forceToolAction = null;
     },
     setEnableToolOnTutorial: function (isEnabled) {
-        for (let i in this.listTool){
+        for (let i in this.listTool) {
             this.listTool[i].btn.setEnabled(isEnabled);
         }
     },

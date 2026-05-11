@@ -28,7 +28,7 @@ let SceneBoard = BaseLayer.extend({
         this.addChild(this.gameUI);
 
         if (userMgr.getData().getLevel() === level) {
-            if (!narrativeMgr.checkNarrative(SceneBoard.className, this)){
+            if (!narrativeMgr.checkNarrative(SceneBoard.className, this)) {
                 this.gameUI.efxStart();
             }
         } else {
@@ -42,6 +42,15 @@ let SceneBoard = BaseLayer.extend({
 
     specialStartEfx: function () {
 
+    },
+
+    replayLevel: function () {
+        if (!this.gameUI) return;
+        let level = this.gameUI.getLevel();
+        this.gameUI.removeFromParent();
+        this.gameUI = undefined;
+        CoreGame.BoardUI.instance = null;
+        this.setLevel(level);
     },
 
     addPlayNewCore: function (gameUI) {

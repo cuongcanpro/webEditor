@@ -13,36 +13,36 @@
         ],
         [
             0,
-            0,
             1,
             1,
             1,
             1,
             1,
             1,
-            0
+            1,
+            1
         ],
         [
             0,
-            0,
             1,
             1,
             1,
             1,
             1,
             1,
-            0
+            1,
+            1
         ],
         [
             0,
-            0,
             1,
             1,
             1,
             1,
             1,
             1,
-            0
+            1,
+            1
         ],
         [
             0,
@@ -114,6 +114,12 @@
     "elements": [
         {
             "row": 1,
+            "col": 1,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 1,
             "col": 2,
             "type": 700,
             "hp": 1
@@ -122,18 +128,30 @@
             "row": 1,
             "col": 3,
             "type": 11001,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 1,
             "col": 5,
             "type": 11001,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 1,
             "col": 7,
             "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 1,
+            "col": 8,
+            "type": 4,
+            "hp": 1
+        },
+        {
+            "row": 2,
+            "col": 1,
+            "type": 3,
             "hp": 1
         },
         {
@@ -149,6 +167,18 @@
             "hp": 1
         },
         {
+            "row": 2,
+            "col": 8,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 1,
+            "type": 3,
+            "hp": 1
+        },
+        {
             "row": 3,
             "col": 2,
             "type": 700,
@@ -158,18 +188,24 @@
             "row": 3,
             "col": 3,
             "type": 11001,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 3,
             "col": 5,
             "type": 11001,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 3,
             "col": 7,
             "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 3,
+            "col": 8,
+            "type": 3,
             "hp": 1
         },
         {
@@ -211,7 +247,7 @@
         {
             "row": 5,
             "col": 3,
-            "type": 1000,
+            "type": 700,
             "hp": 1
         },
         {
@@ -229,7 +265,7 @@
         {
             "row": 5,
             "col": 6,
-            "type": 1000,
+            "type": 700,
             "hp": 1
         },
         {
@@ -433,25 +469,17 @@
         },
         {
             "id": 1000,
-            "count": 6
+            "count": 4
         }
     ],
-    "notes": "",
-    "numTest": 50,
+    "difficulty": "Easy",
     "tpp": 1,
-    "targetMove": 19,
+    "targetMove": 16,
     "spawnStrategy": "RandomSpawnStrategy",
-    "agentType": "GreedyBot",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ],
-    "scoreConfig": {
-        "star2Threshold": 29511,
-        "star3Threshold": 42160,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=21080 [MobileBossBunny(4×HPΣ=40)×500=20000 + Donut(6×HPΣ=6)×180=1080], tier=L21-L50 (Standard), ×1.4/×2.0"
-    }
+    ]
 }

@@ -466,7 +466,7 @@
     ],
     "difficulty": "Hard",
     "tpp": 1,
-    "targetMove": 22,
+    "targetMove": 26,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
@@ -475,9 +475,11 @@
         4
     ],
     "scoreConfig": {
+        "star1Threshold": 12940,
         "star2Threshold": 18116,
         "star3Threshold": 25880,
+        "leftoverMoveBonus": 1000,
         "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=12940 [Egg(17×HPΣ=17)×300=5100 + Donut(8×HPΣ=8)×180=1440 + Box(16×HPΣ=32)×200=6400], tier=L21-L50 (Standard), ×1.4/×2.0"
+        "notes": "Auto-calculated: BaselineScore=12940 [Egg(17×HPΣ=17)×300=5100 + Donut(8×HPΣ=8)×180=1440 + Box(16×HPΣ=32)×200=6400], tier=L21-L50 (Standard), star1=baseline, ×1.4/×2.0. Star1Threshold dùng cho visual progress bar; logic chấm sao 1 vẫn = Objective complete. leftoverMoveBonus=1000/move (flat) — animation Lucky Shot độc lập với score."
     }
 }

@@ -46,32 +46,75 @@ var GUIQuitGame = BaseLayer.extend({
     },
 
     initTarget: function () {
-        this.title.setString(
-            fr.Localization.text('lang_level')
-            + " "
-            + levelMgr.getMapDataConfig()["levelId"]
-        );
+        var isChallengeRoom = typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet();
+
+        if (isChallengeRoom) {
+            var room = ChallengeRoomConfig.getRoomById(challengeRoomMgr.getCurrentRoomId());
+            var normalFloors = room.floors.length;
+            // if (room) {
+            //     for (var i = 0; i < room.floors.length; i++) {
+            //         if (!room.floors[i].isBoss) normalFloors++;
+            //     }
+            // }
+            if (challengeRoomMgr.isBossFight()) {
+                this.title.setString(fr.Localization.text("cr_floor_intro_boss_title"));
+            } else {
+                this.title.setString(fr.Localization.text("cr_floor_intro_title")
+                    .replace("@cur@", challengeRoomMgr.getCurrentFloorIndex() + 1)
+                    .replace("@total@", normalFloors));
+            }
+        } else {
+            this.title.setString(
+                fr.Localization.text('lang_level')
+                + " "
+                + CoreGame.BoardUI.getInstance().boardMgr.getLevelId()
+            );
+        }
 
         let targets = CoreGame.BoardUI.getInstance().boardMgr.targetElements;
+        cc.log("TARGETS ===== ", JSON.stringify(targets));
 
         let nodeBgTarget = this.target;
+        nodeBgTarget.removeAllChildren();
         var rootPos = { x: nodeBgTarget.width / 2, y: nodeBgTarget.height / 2 - 5 }, padding = 100;
         var listNode = [];
-        for (var target of targets) {
-            let type = target["id"];
-            var currentAmount = target["count"] - target["current"];
-            var amountTarget = target["count"];
-            cc.log("SHOW TARGET LOSE", JSON.stringify(target));
-            cc.log("SHOW TARGET LOSE", type, amountTarget, currentAmount);
 
-            var nodeInfo = null;
-            var node = null;
-            if (currentAmount < amountTarget) nodeInfo = currentAmount + "/" + amountTarget;
-            node = this.createTarget(type, nodeInfo);
-            nodeBgTarget.addChild(node, GameBoardEndGame.ELEMENT_ZORDER.TARGET);
-            listNode.push(node);
-            // }
+        if (isChallengeRoom && challengeRoomMgr.isBossFight()) {
+            let bossId = null;
+            for (let target of targets) {
+                if (target["id"] >= 10000) {
+                    bossId = target["id"];
+                    break;
+                }
+            }
+            if (bossId) {
+                let curHp = challengeRoomMgr.getBossHp();
+                let maxHp = challengeRoomMgr.getBossHpMax();
+
+                let nodeInfo = null;
+                if (curHp > 0) nodeInfo = curHp + "/" + maxHp;
+
+                let node = this.createTarget(bossId, nodeInfo);
+                nodeBgTarget.addChild(node, GameBoardEndGame.ELEMENT_ZORDER.TARGET);
+                listNode.push(node);
+            }
+        } else {
+            for (var target of targets) {
+                let type = target["id"];
+                var currentAmount = target["count"] - target["current"];
+                var amountTarget = target["count"];
+                cc.log("SHOW TARGET LOSE", JSON.stringify(target));
+                cc.log("SHOW TARGET LOSE", type, amountTarget, currentAmount);
+
+                var nodeInfo = null;
+                var node = null;
+                if (currentAmount < amountTarget) nodeInfo = currentAmount + "/" + amountTarget;
+                node = this.createTarget(type, nodeInfo);
+                nodeBgTarget.addChild(node, GameBoardEndGame.ELEMENT_ZORDER.TARGET);
+                listNode.push(node);
+            }
         }
+
         padding += (4 - listNode.length) * 10;
         for (var i in listNode) {
             listNode[i].setPosition(
@@ -119,7 +162,26 @@ var GUIQuitGame = BaseLayer.extend({
     },
 
     onQuitGame: function () {
-        userMgr.updateHeart(-1);
+        var gameUI = this.mainScene ? this.mainScene : null;
+        var bm = gameUI && gameUI.boardUI ? gameUI.boardUI.boardMgr : null;
+        var levelId = bm ? bm.getLevelId() : 0;
+        var isCR = 0, roomId = null;
+        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR = 1; roomId = challengeRoomMgr.getCurrentRoomId(); } } catch (e) {}
+        var pa = CoreGame.Metrics._buildPrefix();
+        pa.type = "level_attempt_end";
+        pa.level_id = levelId;
+        pa.outcome = "abandon";
+        pa.is_win = 0;
+        pa.starsAwarded = 0;
+        pa.movesUsed = bm ? (bm.totalMove - bm.numMove) : 0;
+        pa.totalMoves = bm ? bm.totalMove : 0;
+        pa.timeInLevelSec = gameUI && gameUI._levelStartTime ? Math.round((Date.now() - gameUI._levelStartTime) / 1000) : 0;
+        pa.isChallengeRoom = isCR;
+        pa.roomId = roomId;
+        try { pa.match_stats = bm && bm.matchMgr ? bm.matchMgr.getMatchStats() : null; } catch (e) { pa.match_stats = null; }
+        CoreGame.Metrics.send(pa);
+
+        userMgr.updateHeart(-1, "abandon");
         lobbyMgr.openScroll();
         challengeRoomMgr.exitGauntlet();
         sceneMgr.openScene(SceneLobby.className);

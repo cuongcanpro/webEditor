@@ -58,7 +58,8 @@ CoreGame.RainbowTransformPU = CoreGame.CustomCreatorPU.extend({
             posY: this.position.y,
             type: this.typeTransform[this.boardMgr.random.nextInt32Bound(this.typeTransform.length)],
             delay: 0,
-            isSelf: true
+            isSelf: true,
+            isSubPU: false
         }];
         var count = 0;
         for (var r = 0; r < this.boardMgr.rows; r++) {
@@ -71,7 +72,8 @@ CoreGame.RainbowTransformPU = CoreGame.CustomCreatorPU.extend({
                         posX: r,
                         posY: c,
                         type: this.typeTransform[this.boardMgr.random.nextInt32Bound(this.typeTransform.length)],
-                        delay: count * 0.05 // Staggered delay for logic activation
+                        delay: count * 0.05, // Staggered delay for logic activation,
+                        isSubPU: true
                     });
                     count++;
                 }

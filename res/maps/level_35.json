@@ -78,7 +78,6 @@
             0
         ],
         [
-            0,
             1,
             1,
             1,
@@ -86,29 +85,30 @@
             1,
             1,
             1,
-            0
+            1,
+            1
         ],
         [
-            0,
-            2,
-            2,
-            2,
-            2,
-            2,
-            2,
-            2,
-            0
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
         ],
         [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
         ]
     ],
     "elements": [
@@ -444,6 +444,12 @@
         },
         {
             "row": 7,
+            "col": 0,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 7,
             "col": 1,
             "type": 3,
             "hp": 1
@@ -464,6 +470,18 @@
             "row": 7,
             "col": 7,
             "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 0,
+            "type": 7,
             "hp": 1
         },
         {
@@ -507,9 +525,69 @@
             "col": 7,
             "type": 2,
             "hp": 1
+        },
+        {
+            "row": 8,
+            "col": 8,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 9,
+            "col": 0,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 9,
+            "col": 1,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 9,
+            "col": 2,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 9,
+            "col": 3,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 9,
+            "col": 4,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 9,
+            "col": 5,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 9,
+            "col": 6,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 9,
+            "col": 7,
+            "type": 7,
+            "hp": 1
+        },
+        {
+            "row": 9,
+            "col": 8,
+            "type": 7,
+            "hp": 1
         }
     ],
-    "numMove": 28,
+    "numMove": 25,
     "targetElements": [
         {
             "id": 700,
@@ -526,18 +604,12 @@
     ],
     "difficulty": "Medium",
     "tpp": 1,
-    "targetMove": 24,
+    "targetMove": 21,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ],
-    "scoreConfig": {
-        "star2Threshold": 15763,
-        "star3Threshold": 22520,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=11260 [Box(14×HPΣ=42)×200=8400 + Chain(10×HPΣ=10)×250=2500 + Donut(2×HPΣ=2)×180=360], tier=L21-L50 (Standard), ×1.4/×2.0"
-    }
+    ]
 }

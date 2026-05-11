@@ -159,12 +159,22 @@ CoreGame.Config.BOSS_LIST = [
 // Missing entries fall back to 1. Non-monster blockers ignore this table
 // and always take 1 per hit (see TakeDamageAction.execute).
 CoreGame.Config.PU_DAMAGE = {};
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_H] = 3;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_V] = 3;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_T]   = 5;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_L]   = 5;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_5]   = 1;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_SQUARE]   = 2;
+
+//Rocket
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_H] = 4;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_V] = 4;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU4_PU4] = 4;
+
+//Bomb
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_T] = 3;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_L] = 3;
+
+//Plane
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_SQUARE] = 4;
+
+//Disco
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_5] = 1;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5_PU5] = 5;
 
 // Whitelist of blocker typeIds that count as monster/boss for variable PU
 // damage. Designer-populated. Empty = feature dormant (everything takes 1).

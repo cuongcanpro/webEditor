@@ -403,7 +403,7 @@
     "notes": "",
     "numTest": 50,
     "tpp": 1,
-    "targetMove": 20,
+    "targetMove": 17,
     "spawnStrategy": "RandomSpawnStrategy",
     "agentType": "GreedyBot",
     "gemTypes": [
@@ -413,9 +413,12 @@
         4
     ],
     "scoreConfig": {
+        "star1Threshold": 5790,
         "star2Threshold": 8105,
         "star3Threshold": 11580,
+        "leftoverMoveBonus": 1000,
         "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=5790 [Box(11×HPΣ=20)×200=4000 + Chain(5×HPΣ=5)×250=1250 + Donut(3×HPΣ=3)×180=540], tier=L21-L50 (Standard), ×1.4/×2.0"
-    }
+        "notes": "Auto-calculated: BaselineScore=5790 [Box(11×HPΣ=20)×200=4000 + Chain(5×HPΣ=5)×250=1250 + Donut(3×HPΣ=3)×180=540], tier=L21-L50 (Standard), star1=baseline, ×1.4/×2.0. Star1Threshold dùng cho visual progress bar; logic chấm sao 1 vẫn = Objective complete. leftoverMoveBonus=1000/move (flat) — animation Lucky Shot độc lập với score."
+    },
+    "difficulty": "Easy"
 }

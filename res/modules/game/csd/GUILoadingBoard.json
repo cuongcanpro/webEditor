@@ -239,22 +239,34 @@
                 "ctype": "LoadingBarObjectData"
               },
               {
-                "FileData": {
+                "FontSize": 36,
+                "LabelText": "Loading...",
+                "FontResource": {
                   "Type": "Normal",
-                  "Path": "game/gui/loading/text_loading.png",
+                  "Path": "font/font_game.ttf",
                   "Plist": ""
                 },
-                "Scale9OriginX": 103,
-                "Scale9OriginY": 26,
-                "Scale9Width": 109,
-                "Scale9Height": 27,
+                "OutlineSize": 3,
+                "OutlineColor": {
+                  "R": 162,
+                  "G": 67,
+                  "B": 217
+                },
+                "OutlineEnabled": true,
+                "ShadowColor": {
+                  "R": 110,
+                  "G": 110,
+                  "B": 110
+                },
+                "ShadowOffsetX": 2.0,
+                "ShadowOffsetY": -2.0,
                 "AnchorPoint": {
-                  "ScaleX": 0.36,
+                  "ScaleX": 0.4,
                   "ScaleY": 0.5
                 },
                 "Position": {
-                  "X": 360.0,
-                  "Y": 163.328
+                  "X": 367.2,
+                  "Y": 163.0
                 },
                 "Scale": {
                   "ScaleX": 1.0,
@@ -262,21 +274,19 @@
                 },
                 "CColor": {},
                 "IconVisible": false,
-                "PositionPercentXEnabled": true,
-                "PositionPercentYEnabled": true,
                 "PrePosition": {
-                  "X": 0.5,
-                  "Y": 0.1276
+                  "X": 0.51,
+                  "Y": 0.1273
                 },
                 "PreSize": {
-                  "X": 0.2181,
-                  "Y": 0.0313
+                  "X": 0.2417,
+                  "Y": 0.0383
                 },
-                "LeftMargin": 303.48,
-                "RightMargin": 259.52,
-                "TopMargin": 1096.672,
-                "BottomMargin": 143.328,
-                "Tag": 61,
+                "LeftMargin": 297.6,
+                "RightMargin": 248.4,
+                "TopMargin": 1092.5,
+                "BottomMargin": 138.5,
+                "Tag": 202,
                 "Children": [
                   {
                     "FileData": {
@@ -294,7 +304,7 @@
                     },
                     "Position": {
                       "X": -25.0,
-                      "Y": 20.0
+                      "Y": 25.5
                     },
                     "Scale": {
                       "ScaleX": 1.0,
@@ -302,17 +312,20 @@
                     },
                     "CColor": {},
                     "IconVisible": false,
-                    "PositionPercentYEnabled": true,
                     "PrePosition": {
-                      "X": -0.1592,
-                      "Y": 0.5
+                      "X": -0.1437,
+                      "Y": 0.5204
                     },
                     "PreSize": {
-                      "X": 0.2548,
-                      "Y": 1.0
+                      "X": 0.2299,
+                      "Y": 0.8163
                     },
+                    "HorizontalEdge": "LeftEdge",
+                    "VerticalEdge": "TopEdge",
                     "LeftMargin": -45.0,
-                    "RightMargin": 162.0,
+                    "RightMargin": 179.0,
+                    "TopMargin": 3.5,
+                    "BottomMargin": 5.5,
                     "Tag": 16,
                     "ActionTag": -844429471,
                     "Size": {
@@ -323,13 +336,13 @@
                     "ctype": "ImageViewObjectData"
                   }
                 ],
-                "ActionTag": 477079882,
+                "ActionTag": 1860368006,
                 "Size": {
-                  "X": 157.0,
-                  "Y": 40.0
+                  "X": 177.0,
+                  "Y": 55.0
                 },
                 "Name": "imgLoading",
-                "ctype": "ImageViewObjectData"
+                "ctype": "TextObjectData"
               },
               {
                 "FileData": {
@@ -374,6 +387,7 @@
                   "X": 310.0,
                   "Y": 98.0
                 },
+                "VisibleForFrame": false,
                 "Name": "alert_180min_1",
                 "ctype": "SpriteObjectData"
               }
@@ -388,14 +402,14 @@
           },
           {
             "FileData": {
-              "Type": "Normal",
-              "Path": "game/cutScenes/0.jpg",
+              "Type": "Default",
+              "Path": "Default/ImageFile.png",
               "Plist": ""
             },
-            "Scale9OriginX": 178,
-            "Scale9OriginY": 317,
-            "Scale9Width": 724,
-            "Scale9Height": 1286,
+            "Scale9OriginX": -132,
+            "Scale9OriginY": -271,
+            "Scale9Width": 310,
+            "Scale9Height": 588,
             "AnchorPoint": {
               "ScaleX": 0.5,
               "ScaleY": 0.5
@@ -482,14 +496,14 @@
             "Children": [
               {
                 "FileData": {
-                  "Type": "Normal",
-                  "Path": "game/cutScenes/0_0.png",
+                  "Type": "Default",
+                  "Path": "Default/ImageFile.png",
                   "Plist": ""
                 },
-                "Scale9OriginX": 237,
-                "Scale9OriginY": 422,
-                "Scale9Width": 68,
-                "Scale9Height": 117,
+                "Scale9OriginX": -191,
+                "Scale9OriginY": -376,
+                "Scale9Width": 428,
+                "Scale9Height": 798,
                 "AnchorPoint": {
                   "ScaleX": 0.5,
                   "ScaleY": 0.5
@@ -573,14 +587,14 @@
                 "Children": [
                   {
                     "FileData": {
-                      "Type": "Normal",
-                      "Path": "game/cutScenes/0_1.png",
+                      "Type": "Default",
+                      "Path": "Default/ImageFile.png",
                       "Plist": ""
                     },
-                    "Scale9OriginX": 237,
-                    "Scale9OriginY": 118,
-                    "Scale9Width": 50,
-                    "Scale9Height": 304,
+                    "Scale9OriginX": -191,
+                    "Scale9OriginY": -376,
+                    "Scale9Width": 428,
+                    "Scale9Height": 798,
                     "AnchorPoint": {
                       "ScaleX": 0.5,
                       "ScaleY": 0.5
@@ -687,14 +701,14 @@
             "Children": [
               {
                 "FileData": {
-                  "Type": "Normal",
-                  "Path": "game/cutScenes/5_0.png",
+                  "Type": "Default",
+                  "Path": "Default/ImageFile.png",
                   "Plist": ""
                 },
-                "Scale9OriginX": 175,
-                "Scale9OriginY": 317,
-                "Scale9Width": 182,
-                "Scale9Height": 327,
+                "Scale9OriginX": -129,
+                "Scale9OriginY": -271,
+                "Scale9Width": 304,
+                "Scale9Height": 588,
                 "AnchorPoint": {
                   "ScaleX": 0.5,
                   "ScaleY": 0.5
@@ -753,15 +767,12 @@
         "../../common/alert_180min.png",
         "../../common/bg.png",
         "../../common/loading.png",
-        "../cutScenes/0.jpg",
-        "../cutScenes/0_0.png",
-        "../cutScenes/0_1.png",
-        "../cutScenes/5_0.png",
+        "../../Default/ImageFile.png",
+        "../../font/font_game.ttf",
         "../gui/loading/balloon.png",
         "../gui/loading/bar_loading.png",
         "../gui/loading/bg.png",
-        "../gui/loading/env.png",
-        "../gui/loading/text_loading.png"
+        "../gui/loading/env.png"
       ],
       "ctype": "GameFileData"
     }

@@ -53,7 +53,7 @@ CoreGame.GridSlot = cc.Class.extend({
         //     return;
         // }
 
-        var root = this.boardMgr.boardUI;
+        var root = this.boardMgr.boardUI.root;
         var pixelPos = this.boardMgr.gridToPixel(this.row, this.col);
 
         // light_1.png background
@@ -228,8 +228,24 @@ CoreGame.GridSlot = cc.Class.extend({
             if (!silent) {
                 // cc.log("Exclusive element added, clearing existing elements in slot " + this.row + "," + this.col);
                 this.clearElementsBelowExclusive();
-                // After clear, only OVERLAY (> EXCLUSIVE) items may remain; push to end preserves OVERLAY-first ordering.
-                this.listElement.push(element);
+                // Insert at correct priority position. clearElementsBelowExclusive
+                // intentionally keeps BACKGROUND (e.g. Grass) below; if we just
+                // pushed the new EXCLUSIVE to the end, it would sit AFTER the
+                // grass and getFirstInteractable would hit grass first, masking
+                // the blocker (e.g. DropMgr would treat the slot as un-fillable).
+                var insertedExc = false;
+                for (var k = 0; k < this.listElement.length; k++) {
+                    var existingBehaviorExc = (typeof this.listElement[k].layerBehavior !== 'undefined') ?
+                        this.listElement[k].layerBehavior : CoreGame.LayerBehavior.CONTENT;
+                    if (behavior > existingBehaviorExc) {
+                        this.listElement.splice(k, 0, element);
+                        insertedExc = true;
+                        break;
+                    }
+                }
+                if (!insertedExc) {
+                    this.listElement.push(element);
+                }
             } else {
                 // Silent mode: lower-priority elements (Grass/Gem/etc.) may still be present.
                 // Must insert at correct priority position so getFirstInteractable sees EXCLUSIVE
@@ -473,7 +489,12 @@ CoreGame.GridSlot = cc.Class.extend({
         for (var i = this.listElement.length - 1; i >= 0; i--) {
             var behavior = (typeof this.listElement[i].layerBehavior !== 'undefined') ?
                 this.listElement[i].layerBehavior : CoreGame.LayerBehavior.CONTENT;
-            if (behavior <= CoreGame.LayerBehavior.EXCLUSIVE) {
+            // Keep BACKGROUND (e.g. Grass) — EXCLUSIVE blockers sit ON TOP of
+            // the underlying terrain and reveal it when destroyed. Without this
+            // skip, an Egg/Box/Cookie dropping into a grass cell would silently
+            // remove the grass (no damage flow, no explode VFX).
+            if (behavior > CoreGame.LayerBehavior.BACKGROUND
+                && behavior <= CoreGame.LayerBehavior.EXCLUSIVE) {
                 this.listElement[i].remove();
             }
         }

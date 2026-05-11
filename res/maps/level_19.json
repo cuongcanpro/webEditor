@@ -116,13 +116,13 @@
             "row": 0,
             "col": 4,
             "type": 700,
-            "hp": 5
+            "hp": 3
         },
         {
             "row": 0,
             "col": 4,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 1,
@@ -170,7 +170,7 @@
             "row": 2,
             "col": 2,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 2,
@@ -182,7 +182,7 @@
             "row": 2,
             "col": 3,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 2,
@@ -194,7 +194,7 @@
             "row": 2,
             "col": 4,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 2,
@@ -206,7 +206,7 @@
             "row": 2,
             "col": 5,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 2,
@@ -218,7 +218,7 @@
             "row": 2,
             "col": 6,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 3,
@@ -314,7 +314,7 @@
             "row": 4,
             "col": 0,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -326,7 +326,7 @@
             "row": 4,
             "col": 1,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -338,7 +338,7 @@
             "row": 4,
             "col": 2,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -350,7 +350,7 @@
             "row": 4,
             "col": 3,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -362,7 +362,7 @@
             "row": 4,
             "col": 4,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -374,7 +374,7 @@
             "row": 4,
             "col": 5,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -386,7 +386,7 @@
             "row": 4,
             "col": 6,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -398,7 +398,7 @@
             "row": 4,
             "col": 7,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 4,
@@ -410,7 +410,7 @@
             "row": 4,
             "col": 8,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -422,7 +422,7 @@
             "row": 5,
             "col": 0,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -434,7 +434,7 @@
             "row": 5,
             "col": 1,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -446,7 +446,7 @@
             "row": 5,
             "col": 2,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -458,7 +458,7 @@
             "row": 5,
             "col": 3,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -470,7 +470,7 @@
             "row": 5,
             "col": 4,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -482,7 +482,7 @@
             "row": 5,
             "col": 5,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -494,7 +494,7 @@
             "row": 5,
             "col": 6,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -506,7 +506,7 @@
             "row": 5,
             "col": 7,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 5,
@@ -518,7 +518,7 @@
             "row": 5,
             "col": 8,
             "type": 500,
-            "hp": 2
+            "hp": 1
         },
         {
             "row": 6,
@@ -535,7 +535,7 @@
         {
             "row": 6,
             "col": 2,
-            "type": 5,
+            "type": 2,
             "hp": 1
         },
         {
@@ -643,7 +643,7 @@
         {
             "row": 8,
             "col": 2,
-            "type": 5,
+            "type": 2,
             "hp": 1
         },
         {
@@ -698,22 +698,14 @@
             "count": 15
         }
     ],
-    "notes": "",
-    "numTest": 50,
+    "difficulty": "Hard",
     "tpp": 1,
-    "targetMove": 20,
+    "targetMove": 25,
     "spawnStrategy": "RandomSpawnStrategy",
-    "agentType": "GreedyBot",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ],
-    "scoreConfig": {
-        "star2Threshold": 25032,
-        "star3Threshold": 33376,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=20860 [Grass(34×HPΣ=68)×120=8160 + Box(19×HPΣ=41)×200=8200 + Egg(15×HPΣ=15)×300=4500], tier=L1-L20 (Newbie), ×1.2/×1.6"
-    }
+    ]
 }

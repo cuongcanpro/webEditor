@@ -68,23 +68,23 @@
         ],
         [
             1,
-            0,
-            0,
             1,
             1,
             1,
-            0,
-            0,
+            1,
+            1,
+            1,
+            1,
             1
         ],
         [
             1,
             0,
-            0,
             1,
             1,
             1,
-            0,
+            1,
+            1,
             0,
             1
         ],
@@ -113,27 +113,11 @@
     ],
     "elements": [
         {
-            "row": 7,
+            "row": 3,
             "col": 0,
             "type": 900,
             "hp": 1,
             "cells": [
-                {
-                    "r": 7,
-                    "c": 0
-                },
-                {
-                    "r": 6,
-                    "c": 0
-                },
-                {
-                    "r": 7,
-                    "c": 8
-                },
-                {
-                    "r": 6,
-                    "c": 8
-                },
                 {
                     "r": 3,
                     "c": 0
@@ -188,19 +172,19 @@
             "row": 1,
             "col": 3,
             "type": 700,
-            "hp": 5
+            "hp": 4
         },
         {
             "row": 1,
             "col": 4,
             "type": 700,
-            "hp": 5
+            "hp": 4
         },
         {
             "row": 1,
             "col": 5,
             "type": 700,
-            "hp": 5
+            "hp": 4
         },
         {
             "row": 1,
@@ -242,13 +226,13 @@
             "row": 2,
             "col": 2,
             "type": 700,
-            "hp": 5
+            "hp": 4
         },
         {
             "row": 2,
             "col": 3,
             "type": 700,
-            "hp": 5
+            "hp": 4
         },
         {
             "row": 2,
@@ -260,13 +244,13 @@
             "row": 2,
             "col": 5,
             "type": 700,
-            "hp": 5
+            "hp": 4
         },
         {
             "row": 2,
             "col": 6,
             "type": 700,
-            "hp": 5
+            "hp": 4
         },
         {
             "row": 2,
@@ -350,7 +334,7 @@
             "row": 4,
             "col": 0,
             "type": 700,
-            "hp": 5
+            "hp": 3
         },
         {
             "row": 4,
@@ -374,7 +358,7 @@
             "row": 4,
             "col": 3,
             "type": 700,
-            "hp": 5
+            "hp": 4
         },
         {
             "row": 4,
@@ -386,7 +370,7 @@
             "row": 4,
             "col": 5,
             "type": 700,
-            "hp": 5
+            "hp": 4
         },
         {
             "row": 4,
@@ -410,7 +394,7 @@
             "row": 4,
             "col": 8,
             "type": 700,
-            "hp": 5
+            "hp": 3
         },
         {
             "row": 5,
@@ -468,6 +452,24 @@
         },
         {
             "row": 6,
+            "col": 0,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 6,
+            "col": 1,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 2,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
             "col": 3,
             "type": 4,
             "hp": 1
@@ -485,6 +487,36 @@
             "hp": 1
         },
         {
+            "row": 6,
+            "col": 6,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 7,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 6,
+            "col": 8,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 0,
+            "type": 700,
+            "hp": 2
+        },
+        {
+            "row": 7,
+            "col": 2,
+            "type": 2,
+            "hp": 1
+        },
+        {
             "row": 7,
             "col": 3,
             "type": 3,
@@ -501,6 +533,18 @@
             "col": 5,
             "type": 4,
             "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 6,
+            "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 8,
+            "type": 700,
+            "hp": 2
         },
         {
             "row": 8,
@@ -552,20 +596,14 @@
             "count": 2
         }
     ],
-    "difficulty": "Easy",
+    "difficulty": "Medium",
     "tpp": 1,
-    "targetMove": 24,
+    "targetMove": 25,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ],
-    "scoreConfig": {
-        "star2Threshold": 25984,
-        "star3Threshold": 37120,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=18560 [Chain(12×HPΣ=12)×250=3000 + Box(11×HPΣ=55)×200=11000 + Egg(14×HPΣ=14)×300=4200 + Donut(2×HPΣ=2)×180=360], tier=L21-L50 (Standard), ×1.4/×2.0"
-    }
+    ]
 }

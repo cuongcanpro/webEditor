@@ -326,7 +326,7 @@
             "row": 4,
             "col": 4,
             "type": 11001,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 4,
@@ -548,7 +548,7 @@
     ],
     "difficulty": "Medium",
     "tpp": 1,
-    "targetMove": 26,
+    "targetMove": 15,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
@@ -557,9 +557,11 @@
         4
     ],
     "scoreConfig": {
+        "star1Threshold": 18040,
         "star2Threshold": 25256,
         "star3Threshold": 36080,
+        "leftoverMoveBonus": 1000,
         "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=18040 [Donut(8×HPΣ=8)×180=1440 + MobileBossBunny(1×HPΣ=10)×500=5000 + Box(16×HPΣ=34)×200=6800 + Egg(16×HPΣ=16)×300=4800], tier=L21-L50 (Standard), ×1.4/×2.0"
+        "notes": "Auto-calculated: BaselineScore=18040 [Donut(8×HPΣ=8)×180=1440 + MobileBossBunny(1×HPΣ=10)×500=5000 + Box(16×HPΣ=34)×200=6800 + Egg(16×HPΣ=16)×300=4800], tier=L21-L50 (Standard), star1=baseline, ×1.4/×2.0. Star1Threshold dùng cho visual progress bar; logic chấm sao 1 vẫn = Objective complete. leftoverMoveBonus=1000/move (flat) — animation Lucky Shot độc lập với score."
     }
 }

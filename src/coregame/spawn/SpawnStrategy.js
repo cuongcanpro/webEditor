@@ -34,11 +34,20 @@ CoreGame.DropStrategy.SpawnStrategy = cc.Class.extend({
      * @returns {number[]}
      */
     _gemTypes: function (boardMgr) {
+        var base;
         if (boardMgr && boardMgr.gemTypes && boardMgr.gemTypes.length > 0) {
-            return boardMgr.gemTypes;
+            base = boardMgr.gemTypes;
+        } else {
+            base = [];
+            for (var i = 1; i <= CoreGame.Config.NUM_COLORS; i++) base.push(i);
         }
-        var types = [];
-        for (var i = 1; i <= CoreGame.Config.NUM_COLORS; i++) types.push(i);
-        return types;
+        // TPP color concentration: filter excluded colors if set
+        var excl = boardMgr && boardMgr._tppExcludeColors;
+        if (!excl || excl.length === 0) return base;
+        var filtered = [];
+        for (var j = 0; j < base.length; j++) {
+            if (excl.indexOf(base[j]) === -1) filtered.push(base[j]);
+        }
+        return (filtered.length >= 3) ? filtered : base;
     }
 });

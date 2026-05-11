@@ -58,12 +58,17 @@ CoreGame.GameUI = cc.Layer.extend({
         this.addChild(this.gameBoardBg);
 
         // Create BoardUI instance
+        if (CoreGame.BoardUI.instance == null) {
+            cc.log("BOARD UI NULL ======= ");
+        }
         this.boardUI = CoreGame.BoardUI.getInstance(levelConfig.mapConfig);
         this.addChild(this.boardUI);
 
         cc.log("GAME UI SIZES", JSON.stringify(this.getContentSize()));
         cc.log("GAME BOARD", JSON.stringify(this.boardUI.getPosition()));
         cc.log("GAME BOARD SIZES", JSON.stringify(this.boardUI.getContentSize()));
+
+        this.gameBoardBg.changeBackgroundByLevel(this.getLevel());
 
         // Create Back button
         if (isTest) {
@@ -100,12 +105,14 @@ CoreGame.GameUI = cc.Layer.extend({
             this.oldStarBeforePlay = 0;
         }
 
-        // AI agent
+        // AI agent (gated by GeneralConfig)
         this._aiAgent = null;
-        CoreGame.EventMgr.on("turnFinished", function () {
-            if (self._aiAgent) self._aiAgent.onTurnReady();
-        }, this);
-        this._createAIButton();
+        if (generalConfig.isActiveAI()) {
+            CoreGame.EventMgr.on("turnFinished", function () {
+                if (self._aiAgent) self._aiAgent.onTurnReady();
+            }, this);
+            this._createAIButton();
+        }
 
         this.boardUI.setVisible(false);
         this.gameBoardInfoUI.setVisible(false);
@@ -123,8 +130,9 @@ CoreGame.GameUI = cc.Layer.extend({
             this.boardUI.boardMgr.dropMgr.setSpawnStrategy(new CoreGame.DropStrategy[stratKey]());
         }
 
-        // Init AdaptiveTPP dynamic difficulty
-        if (CoreGame.AdaptiveTPP) {
+        // Init AdaptiveTPP dynamic difficulty (only if level config has tpp enabled)
+        if (CoreGame.AdaptiveTPP && levelConfig.mapConfig && levelConfig.mapConfig.tpp) {
+            cc.log("DEBUG DEBUG CoreGame.AdaptiveTPP.init");
             var mapCfg = levelConfig.mapConfig || {};
             var boardTEs = this.boardUI.boardMgr.targetElements || [];
 
@@ -154,9 +162,37 @@ CoreGame.GameUI = cc.Layer.extend({
                 objectiveTotalHp: objectiveTotalHp,
                 levelId: mapCfg.levelId || null
             });
+
         }
 
         // this._relayInit();
+
+        this._levelStartTime = Date.now();
+        this._puStats = { rocket: 0, bomb: 0, rainbow: 0, plane: 0, total: 0 };
+        var selfUI = this;
+        CoreGame.EventMgr.on("powerUpCreated", function (data) {
+            if (!selfUI._puStats) return;
+            selfUI._puStats.total++;
+            var t = data && data.type;
+            if (t === CoreGame.PowerUPType.MATCH_4_H || t === CoreGame.PowerUPType.MATCH_4_V) selfUI._puStats.rocket++;
+            else if (t === CoreGame.PowerUPType.MATCH_T || t === CoreGame.PowerUPType.MATCH_L) selfUI._puStats.bomb++;
+            else if (t === CoreGame.PowerUPType.MATCH_5) selfUI._puStats.rainbow++;
+            else if (t === CoreGame.PowerUPType.MATCH_SQUARE) selfUI._puStats.plane++;
+        }, this);
+
+        var mapCfgForMetrics = levelConfig.mapConfig || {};
+        CoreGame.Metrics._currentLevelId = this.levelId;
+        var pls = CoreGame.Metrics._buildPrefix();
+        pls.type = "level_attempt_start";
+        pls.level_id = this.levelId;
+        pls.timestamp = this._levelStartTime;
+        pls.is_replay = (this.oldStarBeforePlay > 0) ? 1 : 0;
+        pls.designedMoves = mapCfgForMetrics.numMove || 0;
+        pls.boostersUsed = this.boosters || [];
+        pls.livesAtStart = CoreGame.Metrics._getLives();
+        pls.isBoss = (function () { try { return levelMgr.isBossLevel(selfUI.levelId) ? 1 : 0; } catch (e) { return 0; } })();
+        pls.attemptNum = (function () { try { return CoreGame.AdaptiveTPP._retryCount || 0; } catch (e) { return 0; } })();
+        CoreGame.Metrics.send(pls);
     },
 
     /**
@@ -207,7 +243,7 @@ CoreGame.GameUI = cc.Layer.extend({
         var winW = cc.winSize.width;
         var winH = cc.winSize.height;
 
-        // ── Main "AI" button — bottom-right corner ───────────────────────────
+        // ── Main "AI" button — hidden, controlled from pause menu ────────────
         var btn = new ccui.Button(
             "res/modules/items/star.png",
             "res/modules/items/star.png"
@@ -218,11 +254,7 @@ CoreGame.GameUI = cc.Layer.extend({
         btn.setScale9Enabled(false);
         btn.setContentSize(60, 60);
         btn.setPosition(winW - 40, 45);
-        btn.addTouchEventListener(function (sender, type) {
-            if (type === ccui.Widget.TOUCH_ENDED) {
-                self._toggleAIMenu();
-            }
-        });
+        btn.setVisible(false);
         this.addChild(btn, 1000);
         this._aiButton = btn;
 
@@ -778,11 +810,11 @@ CoreGame.GameUI = cc.Layer.extend({
             CoreGame.AdaptiveTPP.onLevelEnd(bm._tppMovesUsed || 0, !!isWin);
         }
 
-        this.sendMetrics(this._buildMetrics(isWin));
+        this.sendTPPMetrics(this._buildMetrics(isWin));
 
         if (isWin) {
             let isShowed = this.gameBoardEffectLayer.char;
-            if (isShowed) {
+            if (!isShowed) {
                 this.gameBoardEffectLayer.showLevelCompleteLabel();
             }
 
@@ -948,19 +980,18 @@ CoreGame.GameUI = cc.Layer.extend({
     },
 
     /**
-     * POST end-of-level metrics to the local LogServer (dev-only).
-     * URL: http://127.0.0.1:8081/metrics
-     * Run bare:   cd client/LogServer && node server.js
-     * Run docker: cd client/LogServer && docker compose up -d
+     * Build and send TPP (adaptive difficulty) metrics.
+     * Delegates transport to CoreGame.Metrics.send().
      * @param {Object} metrics  Result of _buildMetrics()
      */
-    sendMetrics: function (metrics) {
+    sendTPPMetrics: function (metrics) {
         var mapCfg = this.levelConfig && this.levelConfig.mapConfig;
         var levelId = (mapCfg && mapCfg.levelId != null) ? mapCfg.levelId : "unknown";
         var ad = metrics.adaptive || {};
         var bd = metrics.board || {};
 
         var payload = {
+            type: "tpp",
             level_id: levelId,
             device_id: bd.device_id || "",
             is_win: bd.is_win ? 1 : 0,
@@ -994,14 +1025,7 @@ CoreGame.GameUI = cc.Layer.extend({
             total_moves: ad.total_moves || 0
         };
 
-        var metric_url = "http://120.138.72.4:8081/metrics";
-        try {
-            fr.Network.xmlHttpRequestPost(metric_url, payload, function (result) {
-                cc.log("[GameUI] sendMetrics →", result ? "OK" : "FAIL");
-            });
-        } catch (e) {
-            cc.log("[GameUI] sendMetrics error:", e);
-        }
+        CoreGame.Metrics.send(payload);
     },
 
     // ── Agent relay methods ──────────────────────────────────────────────────
@@ -1205,6 +1229,13 @@ CoreGame.GameUI = cc.Layer.extend({
         let levelId = this.getLevel();
         let dataArr = [levelId, ResourceType.HEART, heartBefore, heartAfter, heartAfter - heartBefore];
         let actionType = this.isBossRun ? ActionType.BOSS_RUN_END_GAME_LOSE : ActionType.END_GAME_LOSE;
+    },
+
+    onClickReplay: function () {
+        let guiEndGame = sceneMgr.getGUIByClassName(GameBoardEndGame.className);
+        if (guiEndGame) guiEndGame.onClose();
+        let scene = this.getParent();
+        if (scene && scene.replayLevel) scene.replayLevel();
     },
 
     //region GET
@@ -1648,8 +1679,10 @@ CoreGame.GameUI = cc.Layer.extend({
         this.gameBoardToolUI.setVisible(true);
         this.gameBoardToolUI.efxIn(totalTime + 0.5, efxTime);
 
-        this.gameBoardInfoUI.setVisible(true);
-        this.gameBoardInfoUI.efxIn(totalTime + 1.5, true);
+        if (!this.gameBoardInfoUI.isVisible()) {
+            this.gameBoardInfoUI.setVisible(true);
+            this.gameBoardInfoUI.efxIn(totalTime + 1.5, true);
+        }
 
         return totalTime;
     },
@@ -1677,8 +1710,10 @@ CoreGame.GameUI = cc.Layer.extend({
         this.gameBoardToolUI.setVisible(true);
         this.gameBoardToolUI.efxIn(delayTime + efxTime + 0.5, efxTime);
 
-        this.gameBoardInfoUI.setVisible(true);
-        this.gameBoardInfoUI.efxIn(delayTime, monsterBanner);
+        if (!this.gameBoardInfoUI.isVisible()) {
+            this.gameBoardInfoUI.setVisible(true);
+            this.gameBoardInfoUI.efxIn(delayTime, monsterBanner);
+        }
     },
 
     startNow: function () {

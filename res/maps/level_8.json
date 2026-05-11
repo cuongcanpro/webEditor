@@ -116,7 +116,7 @@
             "row": 1,
             "col": 2,
             "type": 15000,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 1,
@@ -128,7 +128,7 @@
             "row": 1,
             "col": 5,
             "type": 15000,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 2,
@@ -224,7 +224,7 @@
             "row": 5,
             "col": 1,
             "type": 15000,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 5,
@@ -248,7 +248,7 @@
             "row": 5,
             "col": 6,
             "type": 15000,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 6,
@@ -338,7 +338,7 @@
     ],
     "difficulty": "Medium",
     "tpp": 1,
-    "targetMove": 10,
+    "targetMove": 22,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
@@ -347,9 +347,11 @@
         4
     ],
     "scoreConfig": {
+        "star1Threshold": 20000,
         "star2Threshold": 24000,
         "star3Threshold": 32000,
+        "leftoverMoveBonus": 1000,
         "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=20000 [BossBunny(4×HPΣ=40)×500=20000], tier=L1-L20 (Newbie), ×1.2/×1.6"
+        "notes": "Auto-calculated: BaselineScore=20000 [BossBunny(4×HPΣ=40)×500=20000], tier=L1-L20 (Newbie), star1=baseline, ×1.2/×1.6. Star1Threshold dùng cho visual progress bar; logic chấm sao 1 vẫn = Objective complete. leftoverMoveBonus=1000/move (flat) — animation Lucky Shot độc lập với score."
     }
 }

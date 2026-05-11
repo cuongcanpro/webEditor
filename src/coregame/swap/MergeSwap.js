@@ -74,6 +74,18 @@ CoreGame.MergeSwap = CoreGame.LogicSwap.extend({
             powerUp2: this.element2
         });
 
+        // Metrics: pu_combo_activated
+        try {
+            var pCombo = CoreGame.Metrics._buildPrefix();
+            pCombo.type = "pu_combo_activated";
+            pCombo.puType1 = this.typeToName(this.element1.type);
+            pCombo.puType2 = this.typeToName(this.element2.type);
+            pCombo.comboKey = effect;
+            pCombo.level_id = CoreGame.Metrics._currentLevelId || 0;
+            pCombo.moveNum = (function () { try { var bm = CoreGame.BoardUI.getInstance().boardMgr; return bm ? (bm.totalMove - bm.numMove) : 0; } catch (e) { return 0; } })();
+            CoreGame.Metrics.send(pCombo);
+        } catch (e) {}
+
         // Create corresponding PowerUp to add to Board
         var pRow = this.element2.position.x;
         var pCol = this.element2.position.y;

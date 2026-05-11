@@ -45,12 +45,9 @@ CoreGame.BoardMgr = cc.Class.extend({
     ctor: function () {
         this.rows = CoreGame.Config.BOARD_ROWS;
         this.cols = CoreGame.Config.BOARD_COLS;
-        this.state = CoreGame.BoardState.IDLE;
         this.mapGrid = [];
-        this.removedElementTypes = []; // Track removed elements
-        this.cascadeCount = 0;         // Track cascade rounds per turn
         this.random = new CoreGame.Random(1);
-        CoreGame.TimedActionMgr.clear();
+
         this.matchMgr = new CoreGame.MatchMgr(this);
         this.dropMgr = new CoreGame.DropMgr(this);
         this.blockerMgr = new CoreGame.BlockerMgr(this);
@@ -65,6 +62,14 @@ CoreGame.BoardMgr = cc.Class.extend({
             enabled: false,
             splitCol: 4   // col 0-3: roi xu?ng | col 4-7: n?i l�n
         };
+        this.reset();
+    },
+
+    reset: function () {
+        CoreGame.TimedActionMgr.clear();
+        this.state = CoreGame.BoardState.IDLE;
+        this.removedElementTypes = []; // Track removed elements
+        this.cascadeCount = 0;         // Track cascade rounds per turn
         this.pendingRainbowPUs = [];
         this.isAutoMatchBlocked = false;
         this.idleTime = 0;
@@ -177,6 +182,9 @@ CoreGame.BoardMgr = cc.Class.extend({
      *                          Example: [[1,1,1], [1,0,1], [1,1,1]] for a cross shape
      */
     initGrid: function (mapConfig, testBoxes) {
+        // Seed the board RNG so each session produces different gem drops
+        this.random.seed((Date.now() & 0x7FFFFFFF) || 1);
+
         var slotMap = null;
         this.targetElements = [];
         this.numMove = 25;
@@ -199,17 +207,6 @@ CoreGame.BoardMgr = cc.Class.extend({
             this.mapConfig = mapConfig;
 
         }
-
-        // var slotMap = [
-        //     //     [1, 1, 1, 1, 1, 1, 1],  // Row 0
-        //     //     [1, 1, 1, 1, 1, 1, 1],  // Row 1
-        //     //     [1, 1, 1, 1, 1, 1, 1],  // Row 2
-        //     //     [1, 1, 1, 0, 1, 1, 1],  // Row 3
-        //     //     [0, 1, 1, 1, 1, 1, 1],  // Row 4
-        //     //     [1, 1, 1, 1, 1, 1, 1],  // Row 5
-        //     //     [1, 1, 1, 1, 1, 1, 1],  // Row 6
-        //     //     [0, 1, 1, 1, 1, 1, 1]   // Row 7
-        //     // ];
 
         // Create grid slots
         // slotMap values: 0=disabled, 1=enabled, 2=enabled+canSpawn
@@ -273,99 +270,8 @@ CoreGame.BoardMgr = cc.Class.extend({
             this.boardUI.renderBoardBorder();
         }
 
-        // if (testBoxes)
-        //     this.addTestingBlockers(testBoxes);
-
-        // // Create grid slots
-        // for (var r = 0; r < this.rows; r++) {
-        //     this.mapGrid[r] = [];
-        //     for (var c = 0; c < this.cols; c++) {
-        //         // Check if this slot should be enabled
-        //         var enabled = true;
-        //         if (slotMap && slotMap[r] && slotMap[r][c] !== undefined) {
-        //             enabled = slotMap[r][c] === 1;
-        //         }
-
-        //         var slot = new CoreGame.GridSlot(r, c, this, enabled);
-        //         this.mapGrid[r][c] = slot;
-        //     }
-        // }
-
-        // // Fill with gems (no initial matches)
-        // if (!noFill)
-        //     this.fillBoardNoMatches();
-
-        // // Add some boxes for testing
-        // this.addTestingBlockers(testBoxes);
     },
 
-    /**
-     * Add some blockers for logic verification
-     */
-    addTestingBlockers: function (testBoxes) {
-        if (!testBoxes) {
-            testBoxes = [
-                // { r: 3, c: 3, hp: 2, type: CoreGame.Config.ElementType.BOX },
-                // { r: 3, c: 4, hp: 2, type: CoreGame.Config.ElementType.BOX },
-                // { r: 2, c: 0, hp: 7, type: CoreGame.Config.ElementType.MILK_CABINET }, // Testing Milk Cabinet
-                // { r: 5, c: 0, hp: 1, type: CoreGame.Config.ElementType.SOAP_PUMP }, // Testing Soap Pump
-                // { r: 5, c: 3, hp: 3, type: CoreGame.Config.ElementType.TRAFFIC_LIGHT }, // Testing Traffic Light
-                // { r: 5, c: 6, hp: 4, type: CoreGame.Config.ElementType.PINWHEEL }, // Testing Pinwheel
-                // { r: 4, c: 3, hp: 3, type: CoreGame.Config.ElementType.CHERRY }, // Testing Cherry
-                // { r: 4, c: 5, hp: 3, type: CoreGame.Config.ElementType.BUSH }, // Testing Bush
-                // { r: 7, c: 3, hp: 5, type: CoreGame.Config.ElementType.BOX },
-                // { r: 4, c: 4, hp: 1, type: CoreGame.Config.ElementType.BOX },
-                // { r: 2, c: 2, hp: 1, type: CoreGame.Config.ElementType.CLOUD },
-                //{ r: 2, c: 5, hp: 1, type: CoreGame.Config.ElementType.CHAIN }, // Testing Chain
-                // { r: 0, c: 3, hp: 1, type: CoreGame.Config.ElementType.COOKIE }, // Testing Cookie
-                // { r: 0, c: 4, hp: 1, type: CoreGame.PowerUPType.MATCH_4_H },
-                // { r: 0, c: 5, hp: 1, type: CoreGame.Config.ElementType.GRASS }, // Testing connected Grass
-                //{ r: 3, c: 5, hp: 1, type: 568 }, // Testing connected Grass
-            ];
-        }
-
-
-        for (var i = 0; i < testBoxes.length; i++) {
-            var data = testBoxes[i];
-            this.addNewElement(data.r, data.c, data.type, data.hp);
-        }
-
-        // START TEST DYNAMIC BLOCKER
-
-        // Occupies: (2,2), (3,2), (3,3)
-        var lShapeOffsets = [{ r: 2, c: 2 }, { r: 3, c: 2 }, { r: 3, c: 3 }];
-        var dynamicBlocker = new CoreGame.Cloud();
-        dynamicBlocker.init(2, 2, CoreGame.Config.ElementType.CLOUD, 1, lShapeOffsets);
-
-        // Use general add helper but we need to pass instance or handle manual add
-        // addNewElement creates new instance. We need to support adding existing instance OR modify addNewElement to support offsets.
-        // Current addNewElement: create(row, col, type, hp) -> calls init.
-        // We need: create(row, col, type, hp, offsets)
-
-        // Let's modify addNewElement call or just manually add it here for testing.
-        dynamicBlocker.boardMgr = this;
-        var cells = dynamicBlocker.getGridCells();
-        for (var i = 0; i < cells.length; i++) {
-            var slot = this.getSlot(cells[i].x, cells[i].y);
-            slot.clearElements();
-            if (slot) slot.addElement(dynamicBlocker);
-        }
-        this.boardUI.addElementAvatar(dynamicBlocker);
-        dynamicBlocker.updateVisualPosition();
-        // END TEST DYNAMIC BLOCKER
-    },
-
-    /**
-     * Helper to create and add element to board
-     */
-    /**
-     * Add new element to board
-     * @param {number} row - Grid row
-     * @param {number} col - Grid column
-     * @param {number} type - Element type ID
-     * @param {number} hp - Hit points
-     * @returns {ElementObject} Created element
-     */
     /**
      * Add new element to board
      * @param {number} row - Grid row
@@ -1012,6 +918,13 @@ CoreGame.BoardMgr = cc.Class.extend({
         // targets afterwards — the board would just sit idle with no
         // congrats / end-game UI.
         this.doEndGame = false;
+        // Resume normal scoring — the player bought their way out of game-over,
+        // so the score-freeze and any pending leftover-move bookkeeping must
+        // be cleared before the next turn.
+        if (this.scoreMgr) {
+            this.scoreMgr.setGameEnded(false);
+        }
+        this.pendingLeftoverMoves = 0;
         if (this.gameUI) {
             this.gameUI.onUpdateMove(this.numMove);
         }
@@ -1381,11 +1294,13 @@ CoreGame.BoardMgr = cc.Class.extend({
             for (var c = 0; c < this.cols; c++) {
                 var slot = this.getSlot(r, c);
                 if (slot) {
-                    // Only shuffle gems that are swappable (not blocked by overlays like Chain)
-                    var swappable = slot.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
-                    if (swappable && swappable instanceof CoreGame.GemObject && swappable.type <= CoreGame.Config.NUM_GEN) {
-                        gems.push(swappable);
-                        slots.push({ r: r, c: c });
+                    // Include gems even if they are blocked by overlays (like Chain) as long as they are matchable
+                    var gem = slot.getMatchableElement();
+                    if (gem && gem instanceof CoreGame.GemObject && gem.type <= CoreGame.Config.NUM_GEN) {
+                        // Check if it's actually swappable (not blocked by overlays like Chain)
+                        var canSwap = !!slot.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
+                        gems.push(gem);
+                        slots.push({ r: r, c: c, canSwap: canSwap });
                     }
                 }
             }
@@ -1418,6 +1333,7 @@ CoreGame.BoardMgr = cc.Class.extend({
             }
 
             if (this._shuffleHasPossibleMoves(slots, gems)) {
+                cc.log("Array Slots " + JSON.stringify(slots));
                 cc.log("Shuffle: valid board found on attempt", attempt + 1);
                 shuffleSuccess = true;
                 break;
@@ -1627,7 +1543,12 @@ CoreGame.BoardMgr = cc.Class.extend({
                 tilesRemoved: this.removedElementTypes.length,
                 validMoves: this.getAllSwappableMoves().length
             };
-            CoreGame.AdaptiveTPP.onTurnEnd(this._tppMovesUsed, tppCleared, turnInfo);
+            try {
+                CoreGame.AdaptiveTPP.onTurnEnd(this._tppMovesUsed, tppCleared, turnInfo);
+            }
+            catch (e) {
+                cc.log("Error in AdaptiveTPP.onTurnEnd:", e);
+            }
         }
 
         //resetMatch count
@@ -1660,8 +1581,37 @@ CoreGame.BoardMgr = cc.Class.extend({
                 cc.log("checkEndGame GAME WIN");
                 this.doEndGame = true;
                 this.gameEnded = true;
-                this.setEndStar();
+
+                // Source the per-leftover-move bonus from the level's scoreConfig
+                // so setEndStar can include the precomputed leftover total.
+                // Default 1000 if not provided.
+                var leftoverBonusValue = 1000;
+                if (this.mapConfig && this.mapConfig.scoreConfig
+                    && typeof this.mapConfig.scoreConfig.leftoverMoveBonus === 'number') {
+                    leftoverBonusValue = this.mapConfig.scoreConfig.leftoverMoveBonus;
+                }
+                if (this.scoreMgr) {
+                    this.scoreMgr.setLeftoverMoveBonusValue(leftoverBonusValue);
+                }
+
+                // Precompute the FINAL score (current + every leftover move's
+                // bonus) so setEndStar evaluates against the same number the
+                // running score will reach when the bonus effect finishes.
+                this.pendingLeftoverMoves = this.numMove;
+                var leftoverTotal = this.scoreMgr
+                    ? this.scoreMgr.previewLeftoverMoveBonusTotal(this.numMove)
+                    : 0;
+                var finalScore = (this.scoreMgr ? this.scoreMgr.score : 0) + leftoverTotal;
+
+                this.setEndStar(finalScore);
                 this.setLevel();
+
+                // Freeze regular score sources — bonus-PU detonations during
+                // the leftover-moves effect must not move the total past
+                // finalScore. Only addLeftoverMoveBonus is still allowed.
+                if (this.scoreMgr) {
+                    this.scoreMgr.setGameEnded(true);
+                }
 
                 if (this.gameUI) {
                     this.gameUI.showEndGameWinEffect(true);
@@ -1725,13 +1675,13 @@ CoreGame.BoardMgr = cc.Class.extend({
         return false;
     },
 
-    setEndStar: function () {
+    setEndStar: function (finalScore) {
         let totalMove = this.totalMove;
         let remainMove = this.numMove;
         let usedMove = totalMove - remainMove;
-        cc.log("MAIN BOARD set END STAR", totalMove, remainMove, usedMove);
+        cc.log("MAIN BOARD set END STAR", totalMove, remainMove, usedMove, "finalScore:", finalScore);
 
-        this.endStar = this.scoreMgr.getStar(this.mapConfig.scoreConfig);
+        this.endStar = this.scoreMgr.getStar(this.mapConfig.scoreConfig, finalScore);
 
         if (this.mapConfig["endStarConfig"]) {
 
@@ -1788,13 +1738,16 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         var count = Math.min(this.numMove, candidates.length);
 
-        // §3.5 — flat +500 per leftover move regardless of whether the spawned
-        // PU finds anything to clear. "Lucky Shot!" bonus per the design's
-        // edge-case row.
-        if (this.scoreMgr) {
-            for (var lb = 0; lb < this.numMove; lb++) {
+        // Surplus leftover moves that won't get converted (no candidate gem
+        // available) still pay out their bonus immediately so the running
+        // score reaches the precomputed finalScore. Moves that WILL be
+        // converted get their bonus inside transformGemToPowerUp instead.
+        var surplus = this.numMove - count;
+        if (this.scoreMgr && surplus > 0) {
+            for (var sb = 0; sb < surplus; sb++) {
                 this.scoreMgr.addLeftoverMoveBonus();
             }
+            this.pendingLeftoverMoves = Math.max(0, (this.pendingLeftoverMoves || 0) - surplus);
         }
 
         if (count === 0) {
@@ -1838,6 +1791,13 @@ CoreGame.BoardMgr = cc.Class.extend({
         this.addElement(powerUp, row, col);
 
         this._bonusPowerUps.push(powerUp);
+
+        // Pay out this leftover move's bonus at the moment of conversion so
+        // the running score ticks up in lockstep with the visual effect.
+        if (this.scoreMgr) {
+            this.scoreMgr.addLeftoverMoveBonus();
+            this.pendingLeftoverMoves = Math.max(0, (this.pendingLeftoverMoves || 0) - 1);
+        }
     },
 
     /**
@@ -1891,6 +1851,19 @@ CoreGame.BoardMgr = cc.Class.extend({
      */
     finishRemainingMovesBonus: function () {
         cc.log("FINISH REMAINING MOVES BONUS");
+
+        // Safety net: any leftover move that didn't pay out (e.g. its slot
+        // changed and transformGemToPowerUp early-returned) gets its bonus
+        // here, so the running score always matches the finalScore that
+        // setEndStar was computed against.
+        if (this.scoreMgr && this.pendingLeftoverMoves > 0) {
+            var pending = this.pendingLeftoverMoves;
+            for (var p = 0; p < pending; p++) {
+                this.scoreMgr.addLeftoverMoveBonus();
+            }
+            this.pendingLeftoverMoves = 0;
+        }
+
         this._bonusPowerUps = null;
         this.state = CoreGame.BoardState.END_GAME;
         if (this.gameUI) {
@@ -1919,6 +1892,17 @@ CoreGame.BoardMgr = cc.Class.extend({
                     pu.remove();
                 }
             }
+        }
+
+        // Award the bonus for every leftover move that didn't make it through
+        // the conversion effect, so the running score still reaches the
+        // precomputed finalScore that setEndStar was based on.
+        if (this.scoreMgr && this.pendingLeftoverMoves > 0) {
+            var pending = this.pendingLeftoverMoves;
+            for (var p = 0; p < pending; p++) {
+                this.scoreMgr.addLeftoverMoveBonus();
+            }
+            this.pendingLeftoverMoves = 0;
         }
 
         this.finishRemainingMovesBonus();
@@ -2381,8 +2365,11 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         // Build lookup: "r,c" -> shuffled type
         var typeMap = {};
+        var swappableMap = {};
         for (var i = 0; i < slots.length; i++) {
-            typeMap[slots[i].r + "," + slots[i].c] = types[i];
+            var key = slots[i].r + "," + slots[i].c;
+            typeMap[key] = types[i];
+            swappableMap[key] = slots[i].canSwap;
         }
 
         var self = this;
@@ -2391,6 +2378,13 @@ CoreGame.BoardMgr = cc.Class.extend({
             if (key in typeMap) return typeMap[key];
             var slot = self.getSlot(r, c);
             return slot ? slot.getType() : -1;
+        };
+
+        var isSwappable = function (r, c) {
+            var key = r + "," + c;
+            if (key in swappableMap) return swappableMap[key];
+            var slot = self.getSlot(r, c);
+            return slot ? (slot.getFirstInteractable(CoreGame.ElementObject.Action.SWAP) !== null) : false;
         };
 
         // 1. KIỂM TRA KHÔNG ĐƯỢC CÓ MATCH CÓ SẴN (No pre-existing matches)
@@ -2409,6 +2403,8 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         for (var r = 0; r < this.rows; r++) {
             for (var c = 0; c < this.cols; c++) {
+                if (!isSwappable(r, c)) continue;
+
                 var t1 = getType(r, c);
                 if (t1 < 0) continue;
 
@@ -2416,6 +2412,8 @@ CoreGame.BoardMgr = cc.Class.extend({
                     var tr = r + directions[d].dr;
                     var tc = c + directions[d].dc;
                     if (tr >= this.rows || tc >= this.cols) continue;
+
+                    if (!isSwappable(tr, tc)) continue;
 
                     var t2 = getType(tr, tc);
                     if (t2 < 0 || t1 === t2) continue;

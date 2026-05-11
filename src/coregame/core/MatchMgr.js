@@ -10,6 +10,22 @@ CoreGame.MatchMgr = cc.Class.extend({
 
     ctor: function (boardMgr) {
         this.boardMgr = boardMgr;
+        this.resetMatchStats();
+    },
+
+    /** Reset per-level match statistics accumulator. */
+    resetMatchStats: function () {
+        this._matchStats = {
+            total: 0,
+            byShape: { line3: 0, line4: 0, line5: 0, T: 0, L: 0, square: 0 },
+            cellsCleared: 0,
+            blockersHit: 0
+        };
+    },
+
+    /** Get accumulated match stats for end-of-level emission. */
+    getMatchStats: function () {
+        return this._matchStats;
     },
 
     /**
@@ -95,6 +111,23 @@ CoreGame.MatchMgr = cc.Class.extend({
     processMatchGroup: function (group, targetPos) {
         var maxAnimDuration = 0;
         var shouldCreatePowerUp = group.length >= 4;
+
+        // Accumulate match stats for end-of-level aggregate
+        if (this._matchStats) {
+            this._matchStats.total++;
+            this._matchStats.cellsCleared += group.length;
+            if (group.length === 3) this._matchStats.byShape.line3++;
+            else if (shouldCreatePowerUp) {
+                var shapeType = this.detectPowerUpType(group);
+                var PU = CoreGame.PowerUPType;
+                if (shapeType === PU.MATCH_4_H || shapeType === PU.MATCH_4_V) this._matchStats.byShape.line4++;
+                else if (shapeType === PU.MATCH_5) this._matchStats.byShape.line5++;
+                else if (shapeType === PU.MATCH_T) this._matchStats.byShape.T++;
+                else if (shapeType === PU.MATCH_L) this._matchStats.byShape.L++;
+                else if (shapeType === PU.MATCH_SQUARE) this._matchStats.byShape.square++;
+            }
+        }
+
         if (!targetPos) {
             targetPos = {};
             var middleIndex = Math.floor(group.length / 2);
@@ -165,6 +198,17 @@ CoreGame.MatchMgr = cc.Class.extend({
                         row: pos.row, col: pos.col,
                         type: type, matchGroup: group
                     });
+                    // Metrics: pu_created
+                    try {
+                        var ppc = CoreGame.Metrics._buildPrefix();
+                        ppc.type = "pu_created";
+                        ppc.puType = CoreGame.MatchMgr.puTypeName(type);
+                        ppc.sourcePattern = CoreGame.MatchMgr.puSourcePattern(type);
+                        ppc.level_id = CoreGame.Metrics._currentLevelId || 0;
+                        ppc.moveNum = (function () { try { var bm2 = CoreGame.BoardUI.getInstance().boardMgr; return bm2 ? (bm2.totalMove - bm2.numMove) : 0; } catch (e) { return 0; } })();
+                        ppc.position = { row: pos.row, col: pos.col };
+                        CoreGame.Metrics.send(ppc);
+                    } catch (e) {}
                     // §3.3 PU creation bonus.
                     if (this.boardMgr && this.boardMgr.scoreMgr) {
                         this.boardMgr.scoreMgr.addPUCreatedEvent(type);
@@ -207,6 +251,9 @@ CoreGame.MatchMgr = cc.Class.extend({
             var slot = this.boardMgr.getSlot(nr, nc);
             // cc.log("Nearby Row " + nr + ", column " + nc);
             if (slot) {
+                if (slot.attachments && slot.attachments.length > 0 && this._matchStats) {
+                    this._matchStats.blockersHit++;
+                }
                 slot.onMatchNearby(context);
             }
         }
@@ -403,3 +450,28 @@ CoreGame.MatchMgr = cc.Class.extend({
         return CoreGame.PowerUPType.MATCH_L;
     }
 });
+
+/** Map PU type constant to readable name. */
+CoreGame.MatchMgr.puTypeName = function (type) {
+    var PU = CoreGame.PowerUPType;
+    switch (type) {
+        case PU.MATCH_4_H: case PU.MATCH_4_V: return "rocket";
+        case PU.MATCH_SQUARE: return "plane";
+        case PU.MATCH_5: return "rainbow";
+        case PU.MATCH_T: case PU.MATCH_L: return "bomb";
+        default: return "unknown";
+    }
+};
+
+/** Map PU type constant to source match pattern. */
+CoreGame.MatchMgr.puSourcePattern = function (type) {
+    var PU = CoreGame.PowerUPType;
+    switch (type) {
+        case PU.MATCH_4_H: case PU.MATCH_4_V: return "line4";
+        case PU.MATCH_5: return "line5";
+        case PU.MATCH_T: return "T";
+        case PU.MATCH_L: return "L";
+        case PU.MATCH_SQUARE: return "square";
+        default: return "unknown";
+    }
+};

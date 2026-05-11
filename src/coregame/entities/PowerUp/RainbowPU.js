@@ -17,6 +17,13 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
         if (this.state === CoreGame.ElementState.REMOVING) {
             return;
         }
+        // Prevent rapid re-activation while waiting for board to settle.
+        // Without this, repeated taps re-enter activeLogic() — pushing the
+        // same Disco into pendingRainbowPUs multiple times, replaying
+        // start-pending FX, and consuming a move per click via onSelectLastGrid.
+        if (this.state === CoreGame.ElementState.PENDING || this.isPendingFire) {
+            return;
+        }
         if (this.attachments.length > 0) {
             // cc.log("State === " + JSON.stringify(this.attachments[0].blockBaseAction));
         }

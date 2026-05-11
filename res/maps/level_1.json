@@ -416,7 +416,7 @@
             "row": 7,
             "col": 4,
             "type": 15000,
-            "hp": 5
+            "hp": 15
         },
         {
             "row": 7,
@@ -457,7 +457,7 @@
     "notes": "",
     "numTest": 50,
     "tpp": 1,
-    "targetMove": 5,
+    "targetMove": 8,
     "spawnStrategy": "RandomSpawnStrategy",
     "agentType": "GreedyBot",
     "gemTypes": [
@@ -467,9 +467,12 @@
         4
     ],
     "scoreConfig": {
+        "star1Threshold": 6500,
         "star2Threshold": 8500,
         "star3Threshold": 10400,
+        "leftoverMoveBonus": 1000,
         "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=6500 [Box(20×HPΣ=20)×200=4000 + BossBunny(1×HPΣ=5)×500=2500], tier=L1-L20 (Newbie), ×1.2/×1.6"
-    }
+        "notes": "Auto-calculated: BaselineScore=6500 [Box(20×HPΣ=20)×200=4000 + BossBunny(1×HPΣ=5)×500=2500], tier=L1-L20 (Newbie), star1=baseline, ×1.2/×1.6. Star1Threshold dùng cho visual progress bar; logic chấm sao 1 vẫn = Objective complete. leftoverMoveBonus=1000/move (flat) — animation Lucky Shot độc lập với score."
+    },
+    "difficulty": "Easy"
 }

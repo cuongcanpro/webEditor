@@ -82,6 +82,17 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
             }
         }
 
+        // Metrics: pu_activated
+        try {
+            var ppa = CoreGame.Metrics._buildPrefix();
+            ppa.type = "pu_activated";
+            ppa.puType = CoreGame.MatchMgr.puTypeName(this.type);
+            ppa.level_id = CoreGame.Metrics._currentLevelId || 0;
+            ppa.moveNum = (function () { try { var bm3 = CoreGame.BoardUI.getInstance().boardMgr; return bm3 ? (bm3.totalMove - bm3.numMove) : 0; } catch (e) { return 0; } })();
+            ppa.position = this.position ? { row: this.position.x, col: this.position.y } : null;
+            CoreGame.Metrics.send(ppa);
+        } catch (e) {}
+
         this.setState(CoreGame.ElementState.REMOVING);
         this.activeLogic(data);
         this.removeAfterActivate();

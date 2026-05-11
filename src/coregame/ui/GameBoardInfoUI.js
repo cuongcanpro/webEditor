@@ -83,6 +83,8 @@ GameBoardInfoUI = BaseLayer.extend({
     starReached_0: null,
     starReached_1: null,
     starReached_2: null,
+    nodeScoreCheat: null,
+    lbScore: null,
 
     ctor: function (gameUI) {
         this._super();
@@ -120,6 +122,8 @@ GameBoardInfoUI = BaseLayer.extend({
 
         this.pSkip.setVisible(false);
         this.demo.setVisible(false);
+
+        this.nodeScoreCheat.setVisible(Config.ENABLE_CHEAT);
     },
 
     //region EFX
@@ -128,6 +132,7 @@ GameBoardInfoUI = BaseLayer.extend({
         let waitShowTime = 1;
         let lifeTime = 0;
 
+        cc.log("GAME BOARD INFO UI", monsterBanner, this.nodeMonster.isVisible());
         if (monsterBanner && this.nodeMonster.isVisible()) {
             let efxTimeMonster = 0.5;
             let deltaTimeMonster = 0.25;
@@ -376,6 +381,8 @@ GameBoardInfoUI = BaseLayer.extend({
 
         this.starProgressBar.setPercent(score * 100 / maxScore);
 
+        let str = "";
+
         for (let i = 0; i < 3; i++) {
             let star = this["starBg_" + i];
             let starReached = this["starReached_" + i];
@@ -397,7 +404,12 @@ GameBoardInfoUI = BaseLayer.extend({
             }
 
             starReached.setVisible(score >= mileStone);
+
+            str += " - " + StringUtility.standartNumber(mileStone);
         }
+
+        str = StringUtility.standartNumber(score) + " /" + str;
+        this.lbScore.setString(str);
     },
 
     setListTarget: function (targetElements) {
@@ -459,7 +471,9 @@ GameBoardInfoUI = BaseLayer.extend({
                 // TODO: finalize the art path convention; current placeholder
                 // loads a texture keyed by element.id from the monster art folder.
                 this.imgMonsterName.loadTexture(
-                    "res/modules/game/gui/start_game/imgMonsterName_" + element.id + ".png"
+                    "res/modules/game/gui/start_game/monsterName_"
+                    + fr.Localization.getLang()
+                    + "/imgMonsterName_" + element.id + ".png"
                 );
                 this.imgSmallAvatar.loadTexture(
                     "res/modules/game/element/icon/" + element.id + ".png"
@@ -929,6 +943,12 @@ GameBoardInfoUI.animMonster = {
         offset: cc.p(0, 0),
         anim: "idle"
     },
+    11001: {
+        name: "Mischievous\nMonkeys",
+        scale: 0.25,
+        offset: cc.p(0, 0),
+        anim: "idle"
+    },
     10000: {
         name: "Giant\nKong",
         scale: 1.5,
@@ -1051,6 +1071,24 @@ GameBoardBg = BaseLayer.extend({
     },
 
     setBackground: function (texture = "res/modules/game/board/3.jpg") {
+        this.bg.loadTexture(texture);
+
+        this.bg.setScale(1);
+        if (this.bg.width < cc.winSize.width) {
+            this.bg.setScale(cc.winSize.width / this.bg.width);
+        }
+        if (this.bg.height * this.getScale() < cc.winSize.height) {
+            this.bg.setScale(cc.winSize.height / this.bg.height);
+        }
+    },
+
+    changeBackgroundByLevel: function (level) {
+        let texture = "";
+
+        if (level >= 44) {
+            texture = "res/modules/game/board/4.jpg"
+        }
+
         this.bg.loadTexture(texture);
 
         this.bg.setScale(1);

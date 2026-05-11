@@ -82,8 +82,8 @@
             1,
             1,
             1,
-            0,
-            0,
+            1,
+            1,
             1,
             1,
             1
@@ -200,13 +200,13 @@
             "row": 3,
             "col": 3,
             "type": 11001,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 3,
             "col": 5,
             "type": 11001,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 3,
@@ -356,6 +356,18 @@
             "row": 7,
             "col": 3,
             "type": 2,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 4,
+            "type": 3,
+            "hp": 1
+        },
+        {
+            "row": 7,
+            "col": 5,
+            "type": 3,
             "hp": 1
         },
         {
@@ -428,20 +440,14 @@
             "count": 20
         }
     ],
-    "difficulty": "Easy",
+    "difficulty": "Medium",
     "tpp": 1,
-    "targetMove": 17,
+    "targetMove": 12,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ],
-    "scoreConfig": {
-        "star2Threshold": 31359,
-        "star3Threshold": 44800,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=22400 [MobileBossBunny(2×HPΣ=20)×500=10000 + Box(16×HPΣ=32)×200=6400 + Egg(20×HPΣ=20)×300=6000], tier=L21-L50 (Standard), ×1.4/×2.0"
-    }
+    ]
 }

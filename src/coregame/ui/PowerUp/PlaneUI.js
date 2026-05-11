@@ -111,14 +111,14 @@
      * "confused" effect and remove self rather than flying to an empty slot.
      */
     startFlyTo: function (targetGrid) {
-        if (!targetGrid) return;
+        if (!targetGrid) return 0.2;
 
         // [IMPROVEMENT] Check if target became empty between pick and flight start.
         // Can happen if another power-up chain cleared it in those 0.2s.
         if (targetGrid.isEmpty && targetGrid.isEmpty()) {
             cc.log("[PlaneUI] Target slot empty at flight start, cancelling");
             this.removeFromParent();
-            return;
+            return 0.2;
         }
 
         this.targetSlot = targetGrid;

@@ -146,18 +146,18 @@
             "row": 1,
             "col": 7,
             "type": 15000,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 2,
             "col": 2,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
             "row": 2,
             "col": 3,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -193,7 +193,7 @@
         {
             "row": 3,
             "col": 3,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -218,7 +218,7 @@
             "row": 3,
             "col": 7,
             "type": 15000,
-            "hp": 10
+            "hp": 30
         },
         {
             "row": 4,
@@ -265,7 +265,7 @@
         {
             "row": 5,
             "col": 2,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -307,7 +307,7 @@
         {
             "row": 6,
             "col": 3,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -331,7 +331,7 @@
         {
             "row": 7,
             "col": 2,
-            "type": 5,
+            "type": 4,
             "hp": 1
         },
         {
@@ -398,19 +398,12 @@
     ],
     "difficulty": "Medium",
     "tpp": 1,
-    "targetMove": 17,
+    "targetMove": 25,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
         2,
         3,
-        4,
-        5
-    ],
-    "scoreConfig": {
-        "star2Threshold": 12000,
-        "star3Threshold": 16000,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=10000 [BossBunny(2×HPΣ=20)×500=10000], tier=L1-L20 (Newbie), ×1.2/×1.6"
-    }
+        4
+    ]
 }

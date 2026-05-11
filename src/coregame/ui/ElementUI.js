@@ -71,10 +71,10 @@ CoreGame.ElementUI = cc.Node.extend({
         //isGem
         if (this.type < 10 && this.type != 7) {
             //Add Shadow
-            // this.shawdow = gv.getSprite(this.type + "_shadow.png");
-            // this.sprite.addChild(this.shawdow, -1);
-            // UIUtils.posToCenter(this.shawdow);
-            // this.shawdow.y -= 5;
+            this.shadow = gv.getSprite(this.type + "_shadow.png");
+            this.sprite.addChild(this.shadow, -1);
+            UIUtils.posToCenter(this.shadow);
+            this.shadow.y -= 5;
 
             //Glow
             this.glow = gv.getSprite(this.type + "_glow.png");
@@ -100,9 +100,9 @@ CoreGame.ElementUI = cc.Node.extend({
         this.type = newType;
 
         // Recycle old visuals to sprite pool
-        if (this.shawdow) {
-            gv.pushSprite(this.shawdow);
-            this.shawdow = null;
+        if (this.shadow) {
+            gv.pushSprite(this.shadow);
+            this.shadow = null;
         }
         if (this.glow) {
             gv.pushSprite(this.glow);
@@ -507,8 +507,8 @@ CoreGame.ElementUI = cc.Node.extend({
         }
 
         //Hide shadow
-        if (this.shawdow) {
-            this.shawdow.runAction(
+        if (this.shadow) {
+            this.shadow.runAction(
                 cc.fadeOut(duration).easing(cc.easeOut(2.5))
             );
         }

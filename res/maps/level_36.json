@@ -224,7 +224,7 @@
             "row": 3,
             "col": 0,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 3,
@@ -236,7 +236,7 @@
             "row": 3,
             "col": 1,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 3,
@@ -322,7 +322,7 @@
             "row": 3,
             "col": 7,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 3,
@@ -334,7 +334,7 @@
             "row": 3,
             "col": 8,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 3,
@@ -346,7 +346,7 @@
             "row": 4,
             "col": 0,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 4,
@@ -358,7 +358,7 @@
             "row": 4,
             "col": 1,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 4,
@@ -370,7 +370,7 @@
             "row": 4,
             "col": 7,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 4,
@@ -382,7 +382,7 @@
             "row": 4,
             "col": 8,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 4,
@@ -394,7 +394,7 @@
             "row": 5,
             "col": 0,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 5,
@@ -406,7 +406,7 @@
             "row": 5,
             "col": 1,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 5,
@@ -418,7 +418,7 @@
             "row": 5,
             "col": 2,
             "type": 700,
-            "hp": 1
+            "hp": 5
         },
         {
             "row": 5,
@@ -436,13 +436,13 @@
             "row": 5,
             "col": 6,
             "type": 700,
-            "hp": 1
+            "hp": 5
         },
         {
             "row": 5,
             "col": 7,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 5,
@@ -454,7 +454,7 @@
             "row": 5,
             "col": 8,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 5,
@@ -466,7 +466,7 @@
             "row": 6,
             "col": 0,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 6,
@@ -478,25 +478,25 @@
             "row": 6,
             "col": 3,
             "type": 700,
-            "hp": 1
+            "hp": 5
         },
         {
             "row": 6,
             "col": 4,
             "type": 700,
-            "hp": 1
+            "hp": 5
         },
         {
             "row": 6,
             "col": 5,
             "type": 700,
-            "hp": 1
+            "hp": 5
         },
         {
             "row": 6,
             "col": 8,
             "type": 600,
-            "hp": 1
+            "hp": 2
         },
         {
             "row": 6,
@@ -519,7 +519,7 @@
         {
             "row": 7,
             "col": 2,
-            "type": 5,
+            "type": 1,
             "hp": 1
         },
         {
@@ -531,13 +531,13 @@
         {
             "row": 7,
             "col": 4,
-            "type": 5,
+            "type": 1,
             "hp": 1
         },
         {
             "row": 7,
             "col": 5,
-            "type": 5,
+            "type": 1,
             "hp": 1
         },
         {
@@ -628,23 +628,14 @@
             "count": 4
         }
     ],
-    "notes": "",
-    "numTest": 50,
+    "difficulty": "Hard",
     "tpp": 1,
-    "targetMove": 22,
+    "targetMove": 26,
     "spawnStrategy": "RandomSpawnStrategy",
-    "agentType": "GreedyBot",
     "gemTypes": [
         1,
         2,
         3,
-        4,
-        5
-    ],
-    "scoreConfig": {
-        "star2Threshold": 15959,
-        "star3Threshold": 22800,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=11400 [Chain(14×HPΣ=14)×250=3500 + Egg(23×HPΣ=23)×300=6900 + Box(5×HPΣ=5)×200=1000], tier=L21-L50 (Standard), ×1.4/×2.0"
-    }
+        4
+    ]
 }

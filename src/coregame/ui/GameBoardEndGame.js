@@ -6,6 +6,7 @@ let GameBoardEndGame = BaseLayer.extend({
 
     close: null,
     btnPlay: null,
+    btnBuyMove: null,
     btnReplay: null,
     btnExit: null,
 
@@ -18,6 +19,8 @@ let GameBoardEndGame = BaseLayer.extend({
     lblLevel: null,
 
     bg_target: null,
+
+    heartTime: null,
 
     nodeStars: null,
 
@@ -35,10 +38,10 @@ let GameBoardEndGame = BaseLayer.extend({
 
     initLayer: function () {
         // this.gold.setPosition(cc.winSize.width * -0.09, cc.winSize.height * 0.49);
-        // this.g.setPosition(cc.winSize.width * 0.25, cc.winSize.height * 0.49);
+        // this.heart.setPosition(cc.winSize.width * 0.25, cc.winSize.height * 0.49);
         if (fr.platformWrapper.isIOSHaveNotch()) {
             this.gold.y -= GUIConst.IOS_NOTCH_HEIGHT;
-            this.g.y -= GUIConst.IOS_NOTCH_HEIGHT;
+            this.heart.y -= GUIConst.IOS_NOTCH_HEIGHT;
         }
 
         // create Character
@@ -64,11 +67,41 @@ let GameBoardEndGame = BaseLayer.extend({
         this.enableFog();
     },
 
+    initHeartCooldownLabel: function () {
+        let baseLabel = this.heart.getChildByName('label');
+        let heartTime = new ccui.Text();
+        heartTime.setFontName(res.FONT_GAME_BOLD);
+        heartTime.setFontSize(22);
+        heartTime.setTextHorizontalAlignment(cc.TEXT_ALIGNMENT_CENTER);
+        heartTime.setColor(cc.color(255, 255, 255));
+        heartTime.enableOutline(cc.color(149, 86, 64, 255), 2);
+        heartTime.setAnchorPoint(0.5, 1);
+        heartTime.setPosition(this.heart.width / 2, -4);
+        this.heart.addChild(heartTime);
+        this.heartTime = heartTime;
+    },
+
+    updateHeartDisplay: function () {
+        let heartAmount = userMgr.getHeartWithUpdate();
+        this.heart.getChildByName('label').setString(heartAmount);
+
+        if (heartAmount >= ConfigResource.HEART_MAX) {
+            this.heartTime.setString(fr.Localization.text("lang_full"));
+        } else {
+            let remaining = userMgr.getData().healingTime - TimeSystem.getCurTimeServerInSecond();
+            if (remaining <= 0) {
+                this.heartTime.setString(fr.Localization.text("lang_full"));
+            } else {
+                this.heartTime.setString(Number(remaining).formatAsTime());
+            }
+        }
+    },
+
     onEnterFinish: function () {
         this.setShowHideAnimate(this.nodeMain);
 
         let efxTime = 0.25;
-        let elements = [this.g, this.gold];
+        let elements = [this.heart, this.gold];
         for (let i = 0; i < elements.length; i++) {
             let element = elements[i];
             element.stopAllActions();
@@ -86,6 +119,10 @@ let GameBoardEndGame = BaseLayer.extend({
         }
 
         this.addListenerUpdateResource();
+
+        this.updateHeartDisplay();
+        this.unschedule(this.updateHeartDisplay);
+        this.schedule(this.updateHeartDisplay, 1.0);
     },
 
     onButtonRelease: function (btn, id) {
@@ -103,8 +140,12 @@ let GameBoardEndGame = BaseLayer.extend({
                 this.onClickPlayNext();
                 break;
 
-            case this.btnReplay:
+            case this.btnBuyMove:
                 this.onClickBuyMove();
+                break;
+
+            case this.btnReplay:
+                this.onClickReplay();
                 break;
         }
     },
@@ -119,7 +160,7 @@ let GameBoardEndGame = BaseLayer.extend({
         //         if (resourceId == ResourceType.GOLD) {
         //             this.gold.getChildByName('label').setString(newVal.formatAsMoney());
         //         } else if (resourceId == ResourceType.G) {
-        //             this.g.getChildByName('label').setString(newVal.formatAsMoney());
+        //             this.heart.getChildByName('label').setString(newVal.formatAsMoney());
         //         }
         //     }.bind(this)
         // );
@@ -146,12 +187,44 @@ let GameBoardEndGame = BaseLayer.extend({
         let oldStars = this.gameUI.oldStarBeforePlay || 0; // fallback if not tracked yet
 
         let rewardCoin = userMgr.calculateWinGold(levelId, newStars, oldStars);
-        this.onEarnCoin(rewardCoin);
+        this.onEarnCoin(rewardCoin, "level_clear");
+
+        var bm = this.gameUI.boardUI ? this.gameUI.boardUI.boardMgr : null;
+        var objRemaining = 0;
+        var tes = bm ? (bm.targetElements || []) : [];
+        for (var ti = 0; ti < tes.length; ti++) { if (tes[ti].current > 0) objRemaining += tes[ti].current; }
+        var isBoss = 0;
+        var bossID = null;
+        try { isBoss = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID = levelMgr.bossID || null; } catch (e) {}
+        var isCR = 0, roomId = null;
+        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR = 1; roomId = challengeRoomMgr.getCurrentRoomId(); } } catch (e) {}
+        var tppDev = null;
+        try { var tppM = CoreGame.AdaptiveTPP.getMetrics(); tppDev = tppM && tppM.deviation_distribution ? tppM.deviation_distribution.mean : null; } catch (e) {}
+        var pw = CoreGame.Metrics._buildPrefix();
+        pw.type = "level_attempt_end";
+        pw.level_id = levelId;
+        pw.outcome = "win";
+        pw.is_win = 1;
+        pw.starsAwarded = newStars;
+        pw.movesUsed = bm ? (bm.totalMove - bm.numMove) : 0;
+        pw.totalMoves = bm ? bm.totalMove : 0;
+        pw.is_replay = (oldStars > 0) ? 1 : 0;
+        pw.gold_reward = rewardCoin;
+        pw.objectivesRemaining = objRemaining;
+        pw.timeInLevelSec = this.gameUI._levelStartTime ? Math.round((Date.now() - this.gameUI._levelStartTime) / 1000) : 0;
+        pw.isBoss = isBoss;
+        pw.bossID = bossID;
+        pw.isChallengeRoom = isCR;
+        pw.roomId = roomId;
+        pw.tppDeviationFinal = tppDev;
+        pw.pu_stats = this.gameUI._puStats || null;
+        try { pw.match_stats = bm && bm.matchMgr ? bm.matchMgr.getMatchStats() : null; } catch (e) { pw.match_stats = null; }
+        CoreGame.Metrics.send(pw);
 
         this.runAction(cc.sequence(
             cc.delayTime(0.3),
             cc.callFunc(function () {
-                lobbyMgr.setWin(this.gameUI.boardUI.boardMgr.isReplayWin);
+                lobbyMgr.setWin(this.gameUI.boardUI.boardMgr.isReplayWin, rewardCoin);
                 sceneMgr.openScene(SceneLobby.className);
 
                 // let mapReward = {
@@ -167,8 +240,42 @@ let GameBoardEndGame = BaseLayer.extend({
         this.onEventLose();
 
         let rewardCoin = userMgr.calculateLoseGold();
-        this.onEarnCoin(rewardCoin);
-        userMgr.updateHeart(-1);
+        this.onEarnCoin(rewardCoin, "lose_consolation");
+        userMgr.updateHeart(-1, "fail");
+
+        var levelId = this.gameUI.getLevel();
+        var oldStars = this.gameUI.oldStarBeforePlay || 0;
+        var bm = this.gameUI.boardUI ? this.gameUI.boardUI.boardMgr : null;
+        var objRemaining2 = 0;
+        var tes2 = bm ? (bm.targetElements || []) : [];
+        for (var ti2 = 0; ti2 < tes2.length; ti2++) { if (tes2[ti2].current > 0) objRemaining2 += tes2[ti2].current; }
+        var isBoss2 = 0;
+        var bossID2 = null;
+        try { isBoss2 = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID2 = levelMgr.bossID || null; } catch (e) {}
+        var isCR2 = 0, roomId2 = null;
+        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR2 = 1; roomId2 = challengeRoomMgr.getCurrentRoomId(); } } catch (e) {}
+        var tppDev2 = null;
+        try { var tppM2 = CoreGame.AdaptiveTPP.getMetrics(); tppDev2 = tppM2 && tppM2.deviation_distribution ? tppM2.deviation_distribution.mean : null; } catch (e) {}
+        var pl = CoreGame.Metrics._buildPrefix();
+        pl.type = "level_attempt_end";
+        pl.level_id = levelId;
+        pl.outcome = "fail";
+        pl.is_win = 0;
+        pl.starsAwarded = 0;
+        pl.movesUsed = bm ? (bm.totalMove - bm.numMove) : 0;
+        pl.totalMoves = bm ? bm.totalMove : 0;
+        pl.is_replay = (oldStars > 0) ? 1 : 0;
+        pl.gold_reward = rewardCoin;
+        pl.objectivesRemaining = objRemaining2;
+        pl.timeInLevelSec = this.gameUI._levelStartTime ? Math.round((Date.now() - this.gameUI._levelStartTime) / 1000) : 0;
+        pl.isBoss = isBoss2;
+        pl.bossID = bossID2;
+        pl.isChallengeRoom = isCR2;
+        pl.roomId = roomId2;
+        pl.tppDeviationFinal = tppDev2;
+        pl.pu_stats = this.gameUI._puStats || null;
+        try { pl.match_stats = bm && bm.matchMgr ? bm.matchMgr.getMatchStats() : null; } catch (e) { pl.match_stats = null; }
+        CoreGame.Metrics.send(pl);
 
         sceneMgr.openScene(SceneLobby.className);
 
@@ -246,6 +353,63 @@ let GameBoardEndGame = BaseLayer.extend({
     },
 
     onClickReplay: function () {
+        if (this.blockButton) return;
+
+        let hasFreeHeart = false;
+        try { hasFreeHeart = FreeFunction.getInstance().isInFreeResourceDuration(ResourceType.HEART); } catch (e) {}
+        if (!this.isWin && !hasFreeHeart && userMgr.getHeartWithUpdate() < 1) {
+            Dialog.showOkDialogWithAction(fr.Localization.text("ALERT_15").replace("@num", userMgr.getHeartCooldownMinutes()), this, function () {
+                this.onClickClose();
+            });
+            return;
+        }
+
+        let levelId = this.gameUI.getLevel();
+        let oldStars = this.gameUI.oldStarBeforePlay || 0;
+        let bm = this.gameUI.boardUI ? this.gameUI.boardUI.boardMgr : null;
+
+        let objRemaining = 0;
+        let tes = bm ? (bm.targetElements || []) : [];
+        for (let ti = 0; ti < tes.length; ti++) { if (tes[ti].current > 0) objRemaining += tes[ti].current; }
+        let isBoss = 0, bossID = null;
+        try { isBoss = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID = levelMgr.bossID || null; } catch (e) {}
+        let isCR = 0, roomId = null;
+        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR = 1; roomId = challengeRoomMgr.getCurrentRoomId(); } } catch (e) {}
+        let tppDev = null;
+        try { let tppM = CoreGame.AdaptiveTPP.getMetrics(); tppDev = tppM && tppM.deviation_distribution ? tppM.deviation_distribution.mean : null; } catch (e) {}
+
+        let rewardCoin = 0;
+        if (this.isWin) {
+            let newStars = bm ? bm.endStar : 0;
+            rewardCoin = userMgr.calculateWinGold(levelId, newStars, oldStars);
+            this.onEarnCoin(rewardCoin, "level_clear");
+            lobbyMgr.setWin(bm ? bm.isReplayWin : false, rewardCoin);
+        } else {
+            this.onEventLose();
+            userMgr.updateHeart(-1, "fail");
+        }
+
+        let p = CoreGame.Metrics._buildPrefix();
+        p.type = "level_attempt_end";
+        p.level_id = levelId;
+        p.outcome = this.isWin ? "win_replay" : "fail_replay";
+        p.is_win = this.isWin ? 1 : 0;
+        p.starsAwarded = this.isWin && bm ? bm.endStar : 0;
+        p.movesUsed = bm ? (bm.totalMove - bm.numMove) : 0;
+        p.totalMoves = bm ? bm.totalMove : 0;
+        p.is_replay = (oldStars > 0) ? 1 : 0;
+        p.gold_reward = rewardCoin;
+        p.objectivesRemaining = objRemaining;
+        p.timeInLevelSec = this.gameUI._levelStartTime ? Math.round((Date.now() - this.gameUI._levelStartTime) / 1000) : 0;
+        p.isBoss = isBoss;
+        p.bossID = bossID;
+        p.isChallengeRoom = isCR;
+        p.roomId = roomId;
+        p.tppDeviationFinal = tppDev;
+        p.pu_stats = this.gameUI._puStats || null;
+        try { p.match_stats = bm && bm.matchMgr ? bm.matchMgr.getMatchStats() : null; } catch (e) { p.match_stats = null; }
+        CoreGame.Metrics.send(p);
+
         this.gameUI.onClickReplay();
     },
 
@@ -260,8 +424,10 @@ let GameBoardEndGame = BaseLayer.extend({
     hide: function () {
         this.onClose();
 
+        this.unschedule(this.updateHeartDisplay);
+
         let efxTime = 0.25;
-        let elements = [this.g, this.gold];
+        let elements = [this.heart, this.gold];
         for (let i = 0; i < elements.length; i++) {
             let element = elements[i];
             element.stopAllActions();
@@ -325,11 +491,12 @@ let GameBoardEndGame = BaseLayer.extend({
         this.showReaction(false);
         // this.showReaction(this.isWin);
         this.btnPlay.setVisible(this.isWin);
-        this.btnReplay.setVisible(!this.isWin);
+        this.btnBuyMove.setVisible(!this.isWin);
         this.lblWin.setVisible(this.isWin);
         this.lblLose.setVisible(!this.isWin);
-        this.g.setVisible(!this.isWin);
+        this.heart.setVisible(!this.isWin);
         this.gold.setVisible(!this.isWin);
+        this.updateHeartDisplay();
         this.char_win.setVisible(this.isWin);
         this.char_lose.setVisible(!this.isWin);
 
@@ -339,7 +506,12 @@ let GameBoardEndGame = BaseLayer.extend({
             this.showReward();
         } else {
             this.showTarget(targets);
-            if (this.btnReplay) this.btnReplay.setVisible(!noMoveShuffle);
+
+            if (this.btnBuyMove && this.btnBuyMove.isVisible()) {
+                this.btnBuyMove.setVisible(!noMoveShuffle);
+            }
+
+            this.btnReplay.setVisible(!this.btnBuyMove.isVisible());
         }
 
 
@@ -407,8 +579,10 @@ let GameBoardEndGame = BaseLayer.extend({
         // listNode.push(star);
     },
 
-    onEarnCoin: function (goldReward) {
-        userMgr.updateGold(goldReward);
+    onEarnCoin: function (goldReward, source) {
+        var lvId = null;
+        try { lvId = this.gameUI.getLevel(); } catch (e) {}
+        userMgr.updateGold(goldReward, source, lvId);
     },
 
     showWinStreak: function () {
@@ -487,6 +661,8 @@ let GameBoardEndGame = BaseLayer.extend({
 
         // buy move
         this.showBuyMove();
+        ccui.Helper.doLayout(this.bgLose);
+        this.char_lose.setPosition(this.lblLevel.getPosition());
 
         // metric
         // if (this.gameUI.boughtMoveTurn == 0 && !this.gameUI.isEditMode && !this.gameUI.isShareMode)
@@ -506,18 +682,24 @@ let GameBoardEndGame = BaseLayer.extend({
         // User Gold
         let userGold = userMgr.getData().gold;
         this.gold.getChildByName('label').setString(userGold.formatAsMoney());
-        this.g.getChildByName('label').setString(userMgr.getData().G.formatAsMoney());
+        this.updateHeartDisplay();
 
         // Price
         var price = this.getMovePrice();
-        var btnReplay = this.btnReplay;
+        var btnBuyMove = this.btnBuyMove;
         var gold = price['gold'];
         var g = price['G'];
         let cost = g || gold;
 
+        if (userGold < cost) {
+            this.bgLose.height = 700;
+            btnBuyMove.setVisible(false);
+            return;
+        }
+
         let margin = 10;
         let totalWidth = 0;
-        let centerNode = btnReplay.getChildByName('centerNode');
+        let centerNode = btnBuyMove.getChildByName('centerNode');
 
         let label = centerNode.getChildByName('lblPlay');
         label.x = totalWidth;
@@ -535,32 +717,12 @@ let GameBoardEndGame = BaseLayer.extend({
 
         centerNode.x = centerNode.rawPos.x - totalWidth * 0.5;
 
-        // this.btnReplay.setVisible(parseInt(userGold) >= parseInt(cost));
-        this.btnReplay.setPosition(this.btnReplay.rawPos);
+        this.btnBuyMove.setPosition(this.btnBuyMove.rawPos);
 
         this.btnExit.setVisible(true);
         this.btnExit.setPosition(this.btnExit.rawPos);
-        // if (!this.btnReplay.isVisible()) {
-        //     this.btnExit.x = this.bgLose.width * 0.5;
-        // }
 
-        // Bonus
-        // if (!this.guiBuyMoveBonus) {
-        //     this.guiBuyMoveBonus = new GUIBuyMoveBonus();
-        //     this.bg.addChild(this.guiBuyMoveBonus);
-        //     this.guiBuyMoveBonus.setPosition(this.bg.width / 2, 100);
-        // }
-        // let bonus = Utility.deepCopyObject(gv.itemPriceCfg.getMovePrice(this.gameUI.boughtMoveTurn)["PUs"]);
-        //
-        // bonus.unshift("move");
-        // this.guiBuyMoveBonus.setBonus(bonus);
-        // this.guiBuyMoveBonus.hide();
-        // this.runAction(cc.sequence(
-        //     cc.delayTime(0.5),
-        //     cc.callFunc(function () {
-        //         this.guiBuyMoveBonus.show();
-        //     }.bind(this))
-        // ))
+        this.bgLose.height = this.bgLose.rawSize.height;
     },
 
     createTarget: function (type, lbl) {
@@ -617,7 +779,7 @@ let GameBoardEndGame = BaseLayer.extend({
             // } else {
             //LogLayer.show("Not enough gold!");
             // }
-            ToastFloat.makeToast(2.0, fr.Localization.text("lang_not_enough_gold"));
+            Dialog.showOKDialog(fr.Localization.text("lang_not_enough_gold"));
         }
     },
 

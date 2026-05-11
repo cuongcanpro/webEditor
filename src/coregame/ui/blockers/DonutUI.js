@@ -9,10 +9,23 @@
 var CoreGame = CoreGame || {};
 
 CoreGame.DonutUI = CoreGame.ElementUI.extend({
-
     ctor: function (element) {
         this._super(element);
         return true;
+    },
+
+    /**
+     * Initialize the visual sprite.
+     * Overwrite in subclasses to provide custom visuals.
+     */
+    initSprite: function () {
+        this._super();
+        //Add Shadow
+        this.shadow = gv.getSprite(this.type + "_shadow.png");
+        this.sprite.addChild(this.shadow, -1);
+        UIUtils.posToCenter(this.shadow);
+
+        this.sprite.setScale(CoreGame.DonutUI.SCALE);
     },
 
     /**
@@ -34,3 +47,4 @@ CoreGame.DonutUI = CoreGame.ElementUI.extend({
         return duration;
     }
 });
+CoreGame.DonutUI.SCALE = 0.5;

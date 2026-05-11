@@ -51,6 +51,16 @@ CoreGame.ScoreMgr = cc.Class.extend({
     eventLog: null,
     eventLogEnabled: false,
 
+    // End-game freeze: when true, every score source EXCEPT addLeftoverMoveBonus
+    // becomes a no-op. Set via setGameEnded() once BoardMgr decides the level
+    // is over so that bonus-PU detonations during the leftover-moves effect
+    // don't drift the final total away from the precomputed setStar value.
+    gameEnded: false,
+
+    // Per-leftover-move score, sourced from mapConfig.scoreConfig.leftoverMoveBonus.
+    // Default 1000 if the level config doesn't override it.
+    leftoverMoveBonusValue: 1000,
+
     ctor: function (boardMgr) {
         this.boardMgr = boardMgr;
         this.eventLog = [];
@@ -70,8 +80,37 @@ CoreGame.ScoreMgr = cc.Class.extend({
         this.puCreationBonus = 0;
         this.puChainBonus = 0;
         this.leftoverBonus = 0;
+        this.gameEnded = false;
         if (this.eventLog) this.eventLog.length = 0;
         this._emitChanged(0, { kind: 'reset', earned: 0 });
+    },
+
+    /**
+     * Freeze (or unfreeze) regular score sources. When frozen, addClearEvent /
+     * addPUCreatedEvent / addPUChainEvent become no-ops; only addLeftoverMoveBonus
+     * is still allowed. Used so the leftover-moves bonus effect doesn't move the
+     * total past what was precomputed for setStar.
+     */
+    setGameEnded: function (ended) {
+        this.gameEnded = !!ended;
+    },
+
+    /**
+     * Set the per-leftover-move bonus value, sourced from the level's
+     * scoreConfig.leftoverMoveBonus. Falls back to 1000 if not provided.
+     */
+    setLeftoverMoveBonusValue: function (value) {
+        this.leftoverMoveBonusValue = (typeof value === 'number' && value > 0) ? value : 1000;
+    },
+
+    /**
+     * Pure preview: how much score would be added if `remainingMoves` leftover
+     * moves all paid out their bonus. Does NOT mutate state. BoardMgr uses this
+     * to compute the FINAL score before calling setEndStar / setLeftoverBonus.
+     */
+    previewLeftoverMoveBonusTotal: function (remainingMoves) {
+        var n = Math.max(0, remainingMoves || 0);
+        return n * this.leftoverMoveBonusValue;
     },
 
     // ─── Event entry points ──────────────────────────────────────────────────
@@ -92,6 +131,7 @@ CoreGame.ScoreMgr = cc.Class.extend({
      * @returns {number} score awarded by this event
      */
     addClearEvent: function (ctx) {
+        if (this.gameEnded) return 0;
         if (!ctx) return 0;
         var type = ctx.elementType;
         if (typeof type !== 'number') return 0;
@@ -160,6 +200,7 @@ CoreGame.ScoreMgr = cc.Class.extend({
      * @returns {number} score awarded
      */
     addPUCreatedEvent: function (puType) {
+        if (this.gameEnded) return 0;
         var T = CoreGame.PowerUPType || {};
         var bonus = 0;
         if (puType === T.MATCH_4_H || puType === T.MATCH_4_V) bonus = 300;
@@ -184,6 +225,7 @@ CoreGame.ScoreMgr = cc.Class.extend({
      * @returns {number} score awarded
      */
     addPUChainEvent: function (chainDepth) {
+        if (this.gameEnded) return 0;
         if (!chainDepth || chainDepth < 2) return 0;
         var bonus = (chainDepth === 2) ? 800 : 1200;
         this.puChainBonus += bonus;
@@ -195,13 +237,15 @@ CoreGame.ScoreMgr = cc.Class.extend({
     },
 
     /**
-     * Flat +500 bonus per leftover move at end of level (§3.5).
-     * Called once per move-converted-to-bonus-PU, regardless of whether the
-     * resulting PU finds anything to clear ("Lucky Shot!" still pays out).
-     * @returns {number} score awarded (always 500)
+     * Flat per-leftover-move bonus at end of level (§3.5).
+     * Value is set from scoreConfig.leftoverMoveBonus via
+     * setLeftoverMoveBonusValue (default 1000). Called once per leftover
+     * move — either when the move is converted into a bonus PU, or in a
+     * skip/no-candidate batch. NOT subject to the gameEnded freeze.
+     * @returns {number} score awarded
      */
     addLeftoverMoveBonus: function () {
-        var bonus = 500;
+        var bonus = this.leftoverMoveBonusValue;
         this.leftoverBonus += bonus;
         this.score += bonus;
         var details = { kind: 'leftover', bonus: bonus, earned: bonus };
@@ -230,8 +274,8 @@ CoreGame.ScoreMgr = cc.Class.extend({
         };
     },
 
-    getStar: function (scoreConfig) {
-        let score = this.score;
+    getStar: function (scoreConfig, overrideScore) {
+        let score = (typeof overrideScore === 'number') ? overrideScore : this.score;
         let star = 0;
 
         for (let i = 0; i < 3; i++) {

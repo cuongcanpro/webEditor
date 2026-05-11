@@ -15,6 +15,10 @@ CoreGame.TimedActionMgr = {
      * @returns {object} Action object (can be used to cancel)
      */
     addAction: function (delay, callback, target) {
+        if (delay == null) {
+            cc.log("Add Action NUll  ============== ");
+        }
+        // cc.log("Time ne ========= " + delay);
         var action = {
             time: delay,
             callback: callback,

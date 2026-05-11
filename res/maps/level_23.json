@@ -468,8 +468,14 @@
         },
         {
             "row": 4,
+            "col": 2,
+            "type": 500,
+            "hp": 1
+        },
+        {
+            "row": 4,
             "col": 3,
-            "type": 1,
+            "type": 1000,
             "hp": 1
         },
         {
@@ -481,7 +487,7 @@
         {
             "row": 4,
             "col": 4,
-            "type": 5000,
+            "type": 1000,
             "hp": 1
         },
         {
@@ -493,7 +499,7 @@
         {
             "row": 4,
             "col": 5,
-            "type": 3,
+            "type": 1000,
             "hp": 1
         },
         {
@@ -506,6 +512,12 @@
             "row": 4,
             "col": 6,
             "type": 700,
+            "hp": 1
+        },
+        {
+            "row": 4,
+            "col": 6,
+            "type": 500,
             "hp": 1
         },
         {
@@ -559,8 +571,8 @@
         {
             "row": 5,
             "col": 2,
-            "type": 1000,
-            "hp": 1
+            "type": 700,
+            "hp": 2
         },
         {
             "row": 5,
@@ -571,7 +583,7 @@
         {
             "row": 5,
             "col": 3,
-            "type": 1000,
+            "type": 700,
             "hp": 1
         },
         {
@@ -583,7 +595,7 @@
         {
             "row": 5,
             "col": 4,
-            "type": 1000,
+            "type": 700,
             "hp": 1
         },
         {
@@ -595,7 +607,7 @@
         {
             "row": 5,
             "col": 5,
-            "type": 1000,
+            "type": 700,
             "hp": 1
         },
         {
@@ -607,8 +619,8 @@
         {
             "row": 5,
             "col": 6,
-            "type": 1000,
-            "hp": 1
+            "type": 700,
+            "hp": 2
         },
         {
             "row": 5,
@@ -667,8 +679,8 @@
         {
             "row": 6,
             "col": 2,
-            "type": 700,
-            "hp": 2
+            "type": 1000,
+            "hp": 1
         },
         {
             "row": 6,
@@ -679,8 +691,8 @@
         {
             "row": 6,
             "col": 3,
-            "type": 700,
-            "hp": 2
+            "type": 2,
+            "hp": 1
         },
         {
             "row": 6,
@@ -691,8 +703,8 @@
         {
             "row": 6,
             "col": 4,
-            "type": 700,
-            "hp": 2
+            "type": 3,
+            "hp": 1
         },
         {
             "row": 6,
@@ -703,8 +715,8 @@
         {
             "row": 6,
             "col": 5,
-            "type": 700,
-            "hp": 2
+            "type": 2,
+            "hp": 1
         },
         {
             "row": 6,
@@ -715,8 +727,8 @@
         {
             "row": 6,
             "col": 6,
-            "type": 700,
-            "hp": 2
+            "type": 1000,
+            "hp": 1
         },
         {
             "row": 6,
@@ -915,7 +927,7 @@
     "targetElements": [
         {
             "id": 500,
-            "count": 61
+            "count": 63
         },
         {
             "id": 700,
@@ -923,7 +935,7 @@
         },
         {
             "id": 5000,
-            "count": 14
+            "count": 13
         },
         {
             "id": 1000,
@@ -932,18 +944,12 @@
     ],
     "difficulty": "Medium",
     "tpp": 1,
-    "targetMove": 20,
+    "targetMove": 17,
     "spawnStrategy": "RandomSpawnStrategy",
     "gemTypes": [
         1,
         2,
         3,
         4
-    ],
-    "scoreConfig": {
-        "star2Threshold": 27356,
-        "star3Threshold": 39080,
-        "overrideMultipliers": false,
-        "notes": "Auto-calculated: BaselineScore=19540 [Grass(61×HPΣ=61)×120=7320 + Box(19×HPΣ=32)×200=6400 + Egg(14×HPΣ=14)×300=4200 + Donut(9×HPΣ=9)×180=1620], tier=L21-L50 (Standard), ×1.4/×2.0"
-    }
+    ]
 }

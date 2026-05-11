@@ -95,6 +95,8 @@ var GUILoadingBoard = BaseLayer.extend({
     },
 
     onEnterFinish: function () {
+        this.imgLoading.setFontName("res/font/BalooPaaji2-Bold.ttf");
+        this.imgLoading.setString(fr.Localization.text("lang_loading_game") + "...");
         this.imgLoadingCircle.stopAllActions();
         this.imgLoadingCircle.runAction(cc.rotateBy(2.5, 360).repeatForever());
     },
