@@ -40,7 +40,7 @@
         "src/data/GameConfig.js",
         "src/data/GameLog.js",
         "src/data/Resource.js",
-        "src/Config/GeneralConfig.js",
+        "src/config/GeneralConfig.js",
         "src/data/ResourceAnimation.js",
         "src/data/ResourceSound.js",
         "src/engine/base/AppleIAP.js",
