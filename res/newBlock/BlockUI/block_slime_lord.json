@@ -1,0 +1,9 @@
+{
+    "_placeholder": true,
+    "_blocker_name": "Slime Chúa (shrink + regenerate + color shift anim)",
+    "_blocker_id": 12002,
+    "_size": "3x3",
+    "_layer": "EXCLUSIVE",
+    "_note": "Replace with actual CocosStudio JSON (exported from Cocos Creator). Format type=2.",
+    "_referenced_by": "res/newBlock/12002.json"
+}

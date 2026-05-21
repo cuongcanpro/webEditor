@@ -10,7 +10,6 @@ CoreGame.GameUI = cc.Layer.extend({
     boardUI: null,
     objectivesPanel: null,
     objectives: null,  // Array of {type, name, target, current}
-    boughtMoveTurn: 0,
     isBossRun: false,
     levelId: 0,
 
@@ -47,6 +46,10 @@ CoreGame.GameUI = cc.Layer.extend({
     initUI: function (levelConfig, isTest = true) {
         cc.log("GAME UI initUI", JSON.stringify(levelConfig), isTest);
         this.levelConfig = levelConfig;
+
+        if (typeof inGameMgr !== "undefined") {
+            inGameMgr.reset();
+        }
 
         var self = this;
 
@@ -746,11 +749,7 @@ CoreGame.GameUI = cc.Layer.extend({
      */
     onUpdateTargetElement: function (element) {
         //cc.log("removedElement", element.type);
-        let node = this.gameBoardInfoUI.getNodeTarget(element.type);
-        if (node) {
-            //cc.log("removedElement collectElement", element.type);
-            node.collectElement(-1);
-        }
+        element.updateTarget(this.gameBoardInfoUI.getNodeTarget(element.type));
     },
 
     /**
@@ -1197,19 +1196,17 @@ CoreGame.GameUI = cc.Layer.extend({
         if (guiEndGame) {
             guiEndGame.onClose();
         }
+        // Update bought move state in InGameMgr
+        if (typeof inGameMgr !== "undefined") {
+            inGameMgr.onBuyMoveSuccess(ConfigResource.EXTRA_MOVE);
+        }
 
-        // Add extra moves to BoardMgr
-        var extraMoves = ConfigResource.EXTRA_MOVE;
-        this.boardUI.boardMgr.addMoves(extraMoves);
+        // Add extra moves to BoardMgr and resume gameplay
+        this.boardUI.boardMgr.addMoves(ConfigResource.EXTRA_MOVE);
+        this.boardUI.boardMgr.state = CoreGame.BoardState.IDLE;
 
         // Update UI move counter
         this.onUpdateMove(this.boardUI.boardMgr.numMove);
-
-        // Increment bought turn for price scaling
-        this.boughtMoveTurn++;
-
-        // Resume board to allow swapping again
-        this.boardUI.boardMgr.state = CoreGame.BoardState.IDLE;
     },
 
     /**

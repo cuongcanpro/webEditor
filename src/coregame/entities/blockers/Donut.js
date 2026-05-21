@@ -42,6 +42,13 @@ CoreGame.Donut = CoreGame.Blocker.extend({
      * allowing CollectAtPortAction to trigger collection.
      */
     setState: function (state) {
+        // Once collection starts (REMOVING), ignore further state changes.
+        // NormalSwap schedules both visualMoveTo's IDLE and an explicit IDLE
+        // at the same tick; without this guard each one re-fires ON_IDLE →
+        // CollectAtBottomAction → doExplode, decrementing the objective twice.
+        if (this.state === CoreGame.ElementState.REMOVING) {
+            return;
+        }
         this._super(state);
         if (state === CoreGame.ElementState.IDLE) {
             this.doActionsType(CoreGame.ElementObject.ACTION_TYPE.ON_IDLE, {});
@@ -54,6 +61,13 @@ CoreGame.Donut = CoreGame.Blocker.extend({
 
     getTypeName: function () {
         return 'donut';
+    },
+
+    //**
+    updateTarget: function (targetNode) {
+        if (targetNode) {
+            targetNode.infoUI.suckElement(this);
+        }
     }
 });
 

@@ -14,6 +14,7 @@ let GameBoardEndGame = BaseLayer.extend({
     lblLose: null,
 
     bgLose: null,
+    lblTarget: null,
     lblTargetLose: null,
     bg_target_lose: null,
     lblLevel: null,
@@ -63,6 +64,8 @@ let GameBoardEndGame = BaseLayer.extend({
             node.star = null;
             BaseLayer._syncInNode(node, node);
         }
+
+        this.lblTarget.setString(fr.Localization.text("level_complete"));
 
         this.enableFog();
     },
@@ -123,6 +126,7 @@ let GameBoardEndGame = BaseLayer.extend({
         this.updateHeartDisplay();
         this.unschedule(this.updateHeartDisplay);
         this.schedule(this.updateHeartDisplay, 1.0);
+        this.btnReplay.setEnabled(true);
     },
 
     onButtonRelease: function (btn, id) {
@@ -195,11 +199,11 @@ let GameBoardEndGame = BaseLayer.extend({
         for (var ti = 0; ti < tes.length; ti++) { if (tes[ti].current > 0) objRemaining += tes[ti].current; }
         var isBoss = 0;
         var bossID = null;
-        try { isBoss = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID = levelMgr.bossID || null; } catch (e) {}
+        try { isBoss = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID = levelMgr.bossID || null; } catch (e) { }
         var isCR = 0, roomId = null;
-        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR = 1; roomId = challengeRoomMgr.getCurrentRoomId(); } } catch (e) {}
+        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR = 1; roomId = challengeRoomMgr.getCurrentRoomId(); } } catch (e) { }
         var tppDev = null;
-        try { var tppM = CoreGame.AdaptiveTPP.getMetrics(); tppDev = tppM && tppM.deviation_distribution ? tppM.deviation_distribution.mean : null; } catch (e) {}
+        try { var tppM = CoreGame.AdaptiveTPP.getMetrics(); tppDev = tppM && tppM.deviation_distribution ? tppM.deviation_distribution.mean : null; } catch (e) { }
         var pw = CoreGame.Metrics._buildPrefix();
         pw.type = "level_attempt_end";
         pw.level_id = levelId;
@@ -251,11 +255,11 @@ let GameBoardEndGame = BaseLayer.extend({
         for (var ti2 = 0; ti2 < tes2.length; ti2++) { if (tes2[ti2].current > 0) objRemaining2 += tes2[ti2].current; }
         var isBoss2 = 0;
         var bossID2 = null;
-        try { isBoss2 = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID2 = levelMgr.bossID || null; } catch (e) {}
+        try { isBoss2 = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID2 = levelMgr.bossID || null; } catch (e) { }
         var isCR2 = 0, roomId2 = null;
-        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR2 = 1; roomId2 = challengeRoomMgr.getCurrentRoomId(); } } catch (e) {}
+        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR2 = 1; roomId2 = challengeRoomMgr.getCurrentRoomId(); } } catch (e) { }
         var tppDev2 = null;
-        try { var tppM2 = CoreGame.AdaptiveTPP.getMetrics(); tppDev2 = tppM2 && tppM2.deviation_distribution ? tppM2.deviation_distribution.mean : null; } catch (e) {}
+        try { var tppM2 = CoreGame.AdaptiveTPP.getMetrics(); tppDev2 = tppM2 && tppM2.deviation_distribution ? tppM2.deviation_distribution.mean : null; } catch (e) { }
         var pl = CoreGame.Metrics._buildPrefix();
         pl.type = "level_attempt_end";
         pl.level_id = levelId;
@@ -353,10 +357,11 @@ let GameBoardEndGame = BaseLayer.extend({
     },
 
     onClickReplay: function () {
+        this.btnReplay.setEnabled(false);
         if (this.blockButton) return;
 
         let hasFreeHeart = false;
-        try { hasFreeHeart = FreeFunction.getInstance().isInFreeResourceDuration(ResourceType.HEART); } catch (e) {}
+        try { hasFreeHeart = FreeFunction.getInstance().isInFreeResourceDuration(ResourceType.HEART); } catch (e) { }
         if (!this.isWin && !hasFreeHeart && userMgr.getHeartWithUpdate() < 1) {
             Dialog.showOkDialogWithAction(fr.Localization.text("ALERT_15").replace("@num", userMgr.getHeartCooldownMinutes()), this, function () {
                 this.onClickClose();
@@ -372,11 +377,11 @@ let GameBoardEndGame = BaseLayer.extend({
         let tes = bm ? (bm.targetElements || []) : [];
         for (let ti = 0; ti < tes.length; ti++) { if (tes[ti].current > 0) objRemaining += tes[ti].current; }
         let isBoss = 0, bossID = null;
-        try { isBoss = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID = levelMgr.bossID || null; } catch (e) {}
+        try { isBoss = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID = levelMgr.bossID || null; } catch (e) { }
         let isCR = 0, roomId = null;
-        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR = 1; roomId = challengeRoomMgr.getCurrentRoomId(); } } catch (e) {}
+        try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR = 1; roomId = challengeRoomMgr.getCurrentRoomId(); } } catch (e) { }
         let tppDev = null;
-        try { let tppM = CoreGame.AdaptiveTPP.getMetrics(); tppDev = tppM && tppM.deviation_distribution ? tppM.deviation_distribution.mean : null; } catch (e) {}
+        try { let tppM = CoreGame.AdaptiveTPP.getMetrics(); tppDev = tppM && tppM.deviation_distribution ? tppM.deviation_distribution.mean : null; } catch (e) { }
 
         let rewardCoin = 0;
         if (this.isWin) {
@@ -581,7 +586,7 @@ let GameBoardEndGame = BaseLayer.extend({
 
     onEarnCoin: function (goldReward, source) {
         var lvId = null;
-        try { lvId = this.gameUI.getLevel(); } catch (e) {}
+        try { lvId = this.gameUI.getLevel(); } catch (e) { }
         userMgr.updateGold(goldReward, source, lvId);
     },
 
@@ -671,7 +676,7 @@ let GameBoardEndGame = BaseLayer.extend({
 
     getMovePrice: function () {
         var price = {
-            gold: CurrencyConfig.getExtraMovePrice(this.gameUI.boughtMoveTurn + 1)
+            gold: inGameMgr.getPlayOnCost()
         };
         return price;
     },
@@ -769,9 +774,9 @@ let GameBoardEndGame = BaseLayer.extend({
 
         let config = this.getMovePrice();
         let costType = config['gold'] ? "gold" : "g"
-        if (this.checkPriceBuyMove(this.gameUI.boughtMoveTurn)) {
+        if (this.checkPriceBuyMove(inGameMgr.getBoughtMoveTurn())) {
             this.onBuyingMove = true;
-            let data = [this.gameUI.boughtMoveTurn, costType, config['gold'] || config['g'], this.gameUI.getLevel(), this.gameUI.isBossRun];
+            let data = [inGameMgr.getBoughtMoveTurn(), costType, config['gold'] || config['g'], this.gameUI.getLevel(), this.gameUI.isBossRun];
             userMgr.processBuyMove(data);
         } else {
             // if (gv.alert && gv.alert.showNotEnoughGoldG) {

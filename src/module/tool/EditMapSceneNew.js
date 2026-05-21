@@ -1,4 +1,4 @@
-﻿/**
+/**
  * EditMapSceneNew - Map editor tool using EditMapUINew.json layout
  *
  * JSON panel structure:

@@ -34,15 +34,15 @@ CoreGame.GemObject = CoreGame.ElementObject.extend({
     /**
      * Override - gems can always be matched when idle
      */
-    canMatch: function () {
-        return this.state === CoreGame.ElementState.IDLE;
+    canMatch: function (noNeedState = false) {
+        return this.state === CoreGame.ElementState.IDLE || noNeedState;
     },
 
     /**
      * Override - gems can be swapped when idle
      */
-    canSwap: function () {
-        return this.state === CoreGame.ElementState.IDLE;
+    canSwap: function (noNeedState = false) {
+        return this.state === CoreGame.ElementState.IDLE || noNeedState;
     },
 
     /**

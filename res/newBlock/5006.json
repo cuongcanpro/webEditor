@@ -1,0 +1,27 @@
+{
+    "description": "Trứng màu (variant 6): biến thể của Trứng (5000), chỉ nhận damage khi match đúng gem màu 6. HP=2.",
+    "baseAction": ["SWAP", "DROP"],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "MatchColorTakeDamageAction",
+                "config": {
+                    "_matchColor": 6
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/img/egg_06.png",
+        "type": 0
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 2,
+        "maxHP": 2
+    }
+}

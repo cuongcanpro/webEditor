@@ -515,6 +515,7 @@ GameBoardInfoUI = BaseLayer.extend({
         newTargetNode.spr = null;
         newTargetNode.label = null;
         newTargetNode.check = null;
+        newTargetNode.infoUI = this;
 
         parent.addChild(newTargetNode);
 
@@ -547,6 +548,7 @@ GameBoardInfoUI = BaseLayer.extend({
                     }
                 }.bind(this);
                 break;
+
             case CoreGame.Config.ElementType.GOLD_BONUS + "":
                 cc.log("anhlmt")
                 node.collectElement = function (amount) {
@@ -554,6 +556,7 @@ GameBoardInfoUI = BaseLayer.extend({
                     node.lbl.addValue(-amount);
                 }.bind(this);
                 break;
+
             default:
                 node.collectElement = function (amount) {
                     node.number += amount;
@@ -584,83 +587,77 @@ GameBoardInfoUI = BaseLayer.extend({
     },
 
     suckElement: function (element) {
-        cc.log("suckElement " + element.id, this.mainScene.mainBoard.listCurTarget[CoreGame.Config.ElementType.GOLD_BONUS]);
-
-        if (element.getCurState() == Element.State.NONE) return;
-        cc.log("element " + element.id + " suck " + element.type + ' ' + element.isCollected)
-        var nodeTarget = this.getNodeTarget(element.getType());
-        if (nodeTarget == null) return;
-        if (!element.isCollectible()) {
-            nodeTarget.collectElement(-1);
+        cc.log("CALLED SUCK ELEMENTS", element);
+        if (!element) {
+            cc.log("CALLED SUCK ELEMENTS NO UI");
             return;
         }
-        element.setCurState(Element.State.NONE);
-        cc.log('isCollectible')
 
-        element.getBoard().removeElement(element);
-        for (let i = 0; i < element.width; i++)
-            for (let j = 0; j < element.height; j++) {
-                this.board.getSlot(element.row - i, element.col - j).removeElement(element);
-            }
+        let nodeTarget = this.getNodeTarget(element.type);
+        if (!nodeTarget || !nodeTarget.spr) {
+            cc.log("CALLED SUCK ELEMENTS NO getNodeTarget", element.type);
+            return;
+        }
 
-        UIUtils.changeParent(element, cc.director.getRunningScene());
-        element.setScale(1.05);
+        let fakeElement = element.createUIInstance();
+        if (!fakeElement) {
+            cc.log("CALLED SUCK ELEMENTS NO fakeElement");
+            return;
+        }
+        if (fakeElement.shadow) {
+            fakeElement.shadow.setVisible(false);
+        }
+        cc.log("CALLED SUCK ELEMENTS CONTINUE");
 
-        var wPosNodeTarget = nodeTarget.getParent().convertToWorldSpace(nodeTarget.getPosition());
-        var posNodeTargetOnBoard = element.getBoard().panelBoard.convertToNodeSpace(wPosNodeTarget);
-        // var posNodeTargetOnBoard = element.getParent().convertToNodeSpace(wPosNodeTarget);
-        // var posNodeTarget = posNodeTargetOnBoard;
+        let boardUI = CoreGame.BoardUI.getInstance();
+        let parent = this;
 
-        var posNodeTarget = wPosNodeTarget;
-        var isRight = posNodeTarget.x > element.x;
+        let wStart = boardUI.convertToWorldSpace(element.boardMgr.gridToPixel(element.position.x, element.position.y));
+        let startPos = parent.convertToNodeSpace(wStart);
 
-        element.stopAllActions();
-        element.spr.stopAllActions();
-        var zOrderInc = element.idxInPattern ? element.idxInPattern : 0;
-        element.setLocalZOrder(CoreGame.Config.zOrder.OBJECTIVE + zOrderInc);
+        let wEnd = nodeTarget.spr.getParent().convertToWorldSpace(nodeTarget.spr.getPosition());
+        let endPos = parent.convertToNodeSpace(wEnd);
 
-        var timeDelay = element.idxInPattern ? (element.idxInPattern * 0.1) : 0;
-        var timeMove = 0.7;
-        var dX = isRight ? 200 : -200;
-        var midPoint = PointUtils.getMiddlePointOfBezierCurve(cc.p(element.x + dX, element.y - 150), cc.p(posNodeTarget.x + 5, posNodeTarget.y + 5), 50, true);
-        var bezier = [cc.p(element.x + dX, element.y - 150), midPoint, cc.p(posNodeTarget.x + 5, posNodeTarget.y + 5)];
-        this.runAction(cc.sequence(
-            cc.delayTime(timeDelay),
+        let startScale = boardUI.getScale();
+        let endScale = nodeTarget.spr.getScale();
+
+        parent.addChild(fakeElement, 9999);
+        fakeElement.setPosition(startPos);
+        fakeElement.setScale(boardUI.getScale());
+
+        let timeMove = 0.75;
+        let isRight = endPos.x > startPos.x;
+        let dX = (isRight ? 1 : -1) * Math.random() * 500;
+        let ctrl = cc.p((startPos.x + endPos.x) * 0.5, startPos.y - 750);
+        let bezier = [startPos, ctrl, endPos];
+
+        fakeElement.runAction(cc.sequence(
+            cc.spawn(
+                cc.bezierTo(timeMove, bezier).easing(cc.easeSineOut(2.5)),
+                cc.sequence(
+                    cc.scaleTo(timeMove * 0.5, startScale * 2),
+                    cc.scaleTo(timeMove * 0.5, endScale)
+                )
+            ),
             cc.callFunc(function () {
-                element.setCurState(Element.State.NONE);
-                if (element.getType() >= CoreGame.Config.ElementType.GREEN && element.getType() <= CoreGame.Config.ElementType.CYAN) {
-                    element.shadow = new GameBoardInfoUI.NodeShadow(element, timeMove, "icon_" + element.getType() + "_shadow.png");
-                } else {
-                    element.shadow = new GameBoardInfoUI.NodeShadow(element, timeMove);
+                if (cc.sys.isObjectValid(nodeTarget) && nodeTarget.collectElement) {
+                    nodeTarget.collectElement(-1);
+                    if (nodeTarget.spr && nodeTarget.spr.numberOfRunningActions() == 0) {
+                        nodeTarget.spr.runAction(cc.spawn(
+                            cc.sequence(
+                                cc.scaleTo(0.15, 1.2, 0.9).easing(cc.easeSineIn()),
+                                cc.scaleTo(0.13, 1, 1)
+                            ),
+                            cc.sequence(
+                                cc.moveBy(0.15, 0, 5),
+                                cc.moveBy(0.15, 0, -5)
+                            )
+                        ));
+                    }
                 }
-                element.shadow.setShadowZOder(CoreGame.Config.zOrder.OBJECTIVE + zOrderInc - 1);
-                element.runAction(cc.bezierTo(timeMove, bezier).easing(cc.easeSineInOut()));
-            }),
-            cc.delayTime(timeMove),
-            cc.callFunc(function () {
-                nodeTarget.collectElement(-1);
-                cc.log('suckElement removeElement', element.id, element.type);
-                element.removeSelf();
-                element.shadow.remove();
-                if (nodeTarget.spr.numberOfRunningActions() == 0) {
-                    nodeTarget.spr.runAction(cc.spawn(
-                        cc.sequence(
-                            cc.scaleTo(0.15, 1.2, 0.9).easing(cc.easeSineIn()),
-                            cc.scaleTo(0.13, 1, 1)
-                        ),
-                        cc.sequence(
-                            cc.moveBy(0.15, 0, 5),
-                            cc.moveBy(0.15, 0, -5)
-                        )
-                    ))
-                }
+                fakeElement.removeFromParent(true);
             })
-        ))
-        element.runAction(cc.sequence(
-            cc.delayTime(timeDelay),
-            cc.scaleTo(timeMove / 2, 1.2),
-            cc.scaleTo(timeMove / 2, 0.8)
-        ))
+        ));
     },
 
     initCoinCollect: function (amount) {
@@ -927,6 +924,17 @@ GameBoardInfoUI = BaseLayer.extend({
                 break;
 
             case this.btnNextIntro:
+                // metrics: tutorial_popup_dismissed
+                try {
+                    var pd = CoreGame.Metrics._buildPrefix();
+                    pd.type = "tutorial_popup_dismissed";
+                    var cfg = this._introBlockConfig || {};
+                    pd.popupId = "intro_block_" + (cfg["blockId"] || 0);
+                    pd.blockId = cfg["blockId"] || 0;
+                    pd.level_id = this.gameUI ? this.gameUI.getLevel() : 0;
+                    pd.secondsVisible = this._introBlockShownAt ? Math.round((Date.now() - this._introBlockShownAt) / 1000 * 100) / 100 : 0;
+                } catch (e) {}
+                try { CoreGame.Metrics.send(pd); } catch (e) {}
                 narrativeMgr.nextStep();
                 this.hideIntroNewBlock();
                 break;
@@ -951,6 +959,12 @@ GameBoardInfoUI.animMonster = {
     },
     10000: {
         name: "Giant\nKong",
+        scale: 1.5,
+        offset: cc.p(0, 0),
+        anim: "anim0_idle"
+    },
+    17000: {
+        name: "Magenta\nKong",
         scale: 1.5,
         offset: cc.p(0, 0),
         anim: "anim0_idle"
@@ -1087,6 +1101,8 @@ GameBoardBg = BaseLayer.extend({
 
         if (level >= 44) {
             texture = "res/modules/game/board/4.jpg"
+        } if (level >= 22 && level <= 26) {
+            texture = "res/modules/game/board/5.jpg"
         }
 
         this.bg.loadTexture(texture);

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * BoardUI - Handle touch/mouse input for the game board
  * Part of Match-3 Core Game
  */
@@ -36,13 +36,7 @@ CoreGame.BoardUI = cc.Layer.extend({
         // Check if mapConfig is provided (from EditMapScene)
         this.boardMgr.init(this, mapConfig, testBoxes);
 
-        this.rawScale = Math.min(1.5, (9 / this.boardMgr.activeCols));
-        this.rawScale = Math.min(this.rawScale, Math.min(1.5, (9 / this.boardMgr.activeRows)));
-        if (this.boardMgr.activeCols === 9 || this.boardMgr.activeRows === 9) {
-            this.rawScale = 1.05;
-        }
-        cc.log("BOARD UI RAW SCALE", this.rawScale, this.boardMgr.activeCols);
-        this.setScale(this.rawScale);
+        this.updateScale();
 
         // if (mapConfig) {
         //     cc.log("Initializing board from mapConfig");
@@ -77,6 +71,16 @@ CoreGame.BoardUI = cc.Layer.extend({
         // this.renderDebugLabels();
 
         return true;
+    },
+
+    updateScale: function () {
+        this.rawScale = Math.min(1.5, (9 / this.boardMgr.activeCols));
+        this.rawScale = Math.min(this.rawScale, Math.min(1.5, (9 / this.boardMgr.activeRows)));
+        if (this.boardMgr.activeCols === 9 || this.boardMgr.activeRows === 9) {
+            this.rawScale = 1.05;
+        }
+        cc.log("BOARD UI RAW SCALE", this.rawScale, this.boardMgr.activeCols);
+        this.setScale(this.rawScale);
     },
 
     /**
@@ -283,8 +287,10 @@ CoreGame.BoardUI = cc.Layer.extend({
         var localPos = this.convertToNodeSpace(pos);
         var gridPos = this.boardMgr.pixelToGrid(localPos.x, localPos.y);
 
-        // Notify board manager
-        this.boardMgr.onTouchBegan(gridPos);
+        // Notify board manager if not in cheat mode
+        if (!CoreGame.CheatElementMode) {
+            this.boardMgr.onTouchBegan(gridPos);
+        }
 
         return true;
     },
@@ -304,7 +310,9 @@ CoreGame.BoardUI = cc.Layer.extend({
 
         if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) {
             var direction = this.getSwipeDirection(dx, dy);
-            this.boardMgr.onInputDirection(direction);
+            if (!CoreGame.CheatElementMode) {
+                this.boardMgr.onInputDirection(direction);
+            }
             this.swipeHandled = true;
         }
     },
@@ -327,13 +335,28 @@ CoreGame.BoardUI = cc.Layer.extend({
                     var direction = this.getSwipeDirection(dx, dy);
                     this.boardMgr.onInputDirection(direction);
                 } else {
-                    this.boardMgr.onSelectLastGrid();
+                    if (CoreGame.CheatElementMode) {
+                        var localPos = this.convertToNodeSpace(pos);
+                        var gridPos = this.boardMgr.pixelToGrid(localPos.x, localPos.y);
+                        this.showCheatElementUI(gridPos);
+                    } else {
+                        this.boardMgr.onSelectLastGrid();
+                    }
                 }
             }
         }
 
         this.isTouching = false;
         this.swipeHandled = false;
+    },
+
+    showCheatElementUI: function(gridPos) {
+        if (!this.guiCheatChooseElement) {
+            this.guiCheatChooseElement = new CoreGame.GUICheatChooseElement(this.boardMgr);
+            // Attach to a higher level node, like the parent of BoardUI or just high zOrder
+            this.addChild(this.guiCheatChooseElement, 100000);
+        }
+        this.guiCheatChooseElement.show(gridPos);
     },
 
     /**

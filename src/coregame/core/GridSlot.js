@@ -74,9 +74,9 @@ CoreGame.GridSlot = cc.Class.extend({
     /**
      * Get first interactable element (gem or power-up that can be swapped)
      */
-    getFirstInteractable: function (type) {
+    getFirstInteractable: function (type, noNeedState = false) {
         for (var i = 0; i < this.listElement.length; i++) {
-            if (this.listElement[i].hasAction(type)) {
+            if (this.listElement[i].hasAction(type, noNeedState)) {
                 if (this.listElement[i].isStopActionByAttachment(type)) {
                     return null;
                 }
@@ -88,25 +88,25 @@ CoreGame.GridSlot = cc.Class.extend({
     },
 
     /**
-     * Get element that can be matched
+     * Get element that can be matcheddrop
      */
-    getMatchableElement: function () {
+    getMatchableElement: function (noNeedState = false) {
         for (var i = 0; i < this.listElement.length; i++) {
             var element = this.listElement[i];
 
             // If an element blocks the match action AND cannot process the match itself, it prevents matching entirely (e.g., Cloud, Box)
             // If it can process the match (e.g. Chain), it absorbs the match but allows the slot to participate.
-            if (element.isStopAction(CoreGame.ElementObject.Action.MATCH) && !element.hasAction(CoreGame.ElementObject.Action.MATCH)) {
+            if (element.isStopAction(CoreGame.ElementObject.Action.MATCH) && !element.hasAction(CoreGame.ElementObject.Action.MATCH, noNeedState)) {
                 return null;
             }
 
-            if (element instanceof CoreGame.GemObject && element.canMatch()) {
+            if (element instanceof CoreGame.GemObject && element.canMatch(noNeedState)) {
                 // If the gem has an attachment that blocks matching but cannot process it
                 var blockedByAttachment = false;
                 if (element.attachments) {
                     for (var a = 0; a < element.attachments.length; a++) {
                         var att = element.attachments[a];
-                        if (att.isStopAction(CoreGame.ElementObject.Action.MATCH) && !att.hasAction(CoreGame.ElementObject.Action.MATCH)) {
+                        if (att.isStopAction(CoreGame.ElementObject.Action.MATCH) && !att.hasAction(CoreGame.ElementObject.Action.MATCH, noNeedState)) {
                             blockedByAttachment = true;
                             break;
                         }

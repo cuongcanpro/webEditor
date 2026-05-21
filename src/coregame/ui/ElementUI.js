@@ -38,12 +38,12 @@ CoreGame.ElementUI = cc.Node.extend({
                 // cc.log("ElementUI: Failed to add grid background:", e);
             }
         }
-
-        this.lbState = ccui.Text.create("", "font/BalooPaaji2-Bold.ttf", 20);
+        let hp = element.hitPoints ? element.hitPoints : 1;
+        this.lbState = ccui.Text.create(hp, "font/BalooPaaji2-Bold.ttf", 20);
         this.lbState.enableOutline(cc.color(50, 50, 50), 2);
-        this.lbState.setPosition(cc.p(0, -30));
+        this.lbState.setPosition(cc.p(0, 0));
         this.addChild(this.lbState, 100);
-        this.lbState.setVisible(false);
+        this.lbState.setVisible(!!CoreGame.CheatElementMode);
 
         return true;
     },
@@ -119,7 +119,8 @@ CoreGame.ElementUI = cc.Node.extend({
 
     updateVisual: function () {
         // cc.log("Type " + this.element.type);
-        // this.lbState.setString(this.element.hitPoints);
+        let hp = this.element.hitPoints ? this.element.hitPoints : 1;
+        this.lbState.setString(hp);
     },
 
     getElementPosition: function () {
@@ -182,6 +183,7 @@ CoreGame.ElementUI = cc.Node.extend({
     },
 
     playTakeDamageEffect: function (hitpoints, row, col) {
+        this.lbState.setString(this.element.hitPoints);
         var scaleUp = cc.scaleTo(0.1, 1.2);
         var scaleDown = cc.scaleTo(0.1, 1.0);
         this.runAction(cc.sequence(scaleUp, scaleDown));
@@ -669,6 +671,7 @@ CoreGame.ElementUI = cc.Node.extend({
      * @returns {number} duration of the animation
      */
     playAnimation: function (actionType) {
+        this.lbState.setString(this.element.hitPoints);
         if (!this.element) return 0;
 
         switch (actionType) {

@@ -1,0 +1,9 @@
+{
+    "_placeholder": true,
+    "_blocker_name": "King Crab - 6 color states + walk anim",
+    "_blocker_id": 11020,
+    "_size": "3x3",
+    "_layer": "EXCLUSIVE",
+    "_note": "Replace with actual CocosStudio JSON (exported from Cocos Creator). Format type=2.",
+    "_referenced_by": "res/newBlock/11020.json"
+}

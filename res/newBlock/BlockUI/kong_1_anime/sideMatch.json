@@ -3,8 +3,8 @@
     "Content": {
       "Animation": {
         "ActivedAnimationName": "sideMatch",
-        "Duration": "41",
-        "Speed": "1.0",
+        "Duration": 41,
+        "Speed": 1.0,
         "Timelines": [
           {
             "ActionTag": 1796301522,
@@ -39,7 +39,7 @@
       },
       "AnimationList": [
         {
-          "EndIndex": "41",
+          "EndIndex": 41,
           "Name": "default",
           "StartIndex": "0",
           "ctype": "AnimationInfoData"

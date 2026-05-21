@@ -1,0 +1,35 @@
+{
+    "description": "Cua Màu (variant 2): biến thể color-match của Khỉ Con Tinh Nghịch (11001). 2x2, di chuyển ngẫu nhiên mỗi turnEnd, chỉ nhận damage khi side-match đúng màu 2. HP=3.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "MatchColorTakeDamageAction",
+                "config": {
+                    "_matchColor": 2
+                }
+            }
+        ],
+        "endTurn": [
+            {
+                "name": "MoveAction",
+                "config": {
+                    "directionType": 0
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_color_crab_2.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 3,
+        "maxHP": 3
+    }
+}

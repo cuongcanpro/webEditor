@@ -1,0 +1,26 @@
+{
+    "description": "Slime ác: DynamicBlocker 2x2 (4 cells). Side-match làm mất 1 cell (TakeDamage), mỗi endTurn dùng SpreadAction để regenerate thêm 1 cell ở cạnh ngẫu nhiên (nếu chưa đầy bounding box). HP khởi tạo=4, maxHP=8 để tránh chết khô khi spread liên tục.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [
+            "SpreadAction"
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_slime_evil.json",
+        "type": 2
+    },
+    "type": "DynamicBlocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 4,
+        "maxHP": 8,
+        "cooldownSpawn": 1
+    }
+}

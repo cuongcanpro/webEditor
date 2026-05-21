@@ -38,7 +38,7 @@ CoreGame.Metrics = {
 
     /** @returns {string} current user ID or empty string */
     _getUserId: function () {
-        try { return userMgr.getData().uId || ""; }
+        try { return String(userMgr.getData().uId || ""); }
         catch (e) { return ""; }
     },
 
@@ -89,7 +89,7 @@ CoreGame.Metrics = {
      * Spec: {userId, deviceId, ts, appVersion, cohortId, currentLevel}
      */
     _buildPrefix: function () {
-        return {
+        var prefix = {
             device_id: this._getDeviceId(),
             user_id: this._getUserId(),
             session_id: this._sessionId,
@@ -100,6 +100,17 @@ CoreGame.Metrics = {
             current_level: this._getMaxLevel(),
             timestamp: Date.now()
         };
+
+        // AB test labels
+        try {
+            if (typeof abTestMgr !== "undefined" && abTestMgr) {
+                prefix.ab_tests = {
+                    cutscene: abTestMgr.getValue("cutscene", "off")
+                };
+            }
+        } catch (e) {}
+
+        return prefix;
     },
 
     /** Start periodic heartbeat (call once after login). */

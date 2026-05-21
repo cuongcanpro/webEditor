@@ -65,7 +65,9 @@ CoreGame.RocketPU = CoreGame.PowerUP.extend({
     _activateSequential: function (listCell, distanceFn) {
         var delayPerCell = this.DELAY_PER_CELL;
         var puType = this.type;
-        var context = { type: "normal", puType: puType };
+        var damage = this.damage;
+        var activationId = CoreGame.PowerUP.nextActivationId();
+        var context = { type: "normal", puType: puType, damage: damage, puActivationId: activationId };
 
         // Sort by distance from rocket origin
         listCell.sort(function (a, b) {
@@ -80,7 +82,7 @@ CoreGame.RocketPU = CoreGame.PowerUP.extend({
                 listCell[i].matchElement(context, true);
             } else {
                 CoreGame.TimedActionMgr.addAction(delay, function (slot) {
-                    slot.matchElement({ type: "normal", puType: puType }, true);
+                    slot.matchElement({ type: "normal", puType: puType, damage: damage, puActivationId: activationId }, true);
                 }.bind(null, listCell[i]));
             }
         }

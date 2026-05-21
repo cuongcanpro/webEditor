@@ -31,8 +31,17 @@ CoreGame.Strategies.TakeDamageAction = CoreGame.Strategies.NormalAction.extend({
     execute: function (element, context) {
         cc.log("Execute TakeDamageAction === " + context.matchColor);
         var dmg = 1;
-        if (context.puType !== undefined && CoreGame.ElementObject.isMonsterType(element.type)) {
-            var configured = CoreGame.Config.PU_DAMAGE[context.puType];
+        if (CoreGame.ElementObject.isMonsterType(element.type)) {
+            // Flat-once-per-activation: a monster/boss takes the PU's damage
+            // exactly once per activation, regardless of how many of its
+            // cells the PU clipped. Non-monster blockers fall through and
+            // keep their per-cell damage model.
+            var actId = context.puActivationId;
+            if (actId !== undefined) {
+                if (element._lastPUActivationId === actId) return;
+                element._lastPUActivationId = actId;
+            }
+            var configured = context.damage;
             if (configured) dmg = configured;
         }
         element.takeDamage(dmg, context.matchColor, context.row, context.col);
@@ -98,9 +107,10 @@ CoreGame.Strategies.CollectTakeDamageAction = CoreGame.Strategies.TakeDamageActi
     },
     _collectedTypeIds: null,
 
-    ctor: function () {
+    ctor: function (requiredTypeIds) {
         this._super();
         this._collectedTypeIds = [];
+        this.configData._requiredTypeIds = requiredTypeIds || [];
     },
 
     updateVisual: function (element) {
@@ -115,6 +125,7 @@ CoreGame.Strategies.CollectTakeDamageAction = CoreGame.Strategies.TakeDamageActi
      */
     checkCondition: function (element, context) {
         var matchColor = context.matchColor;
+        cc.log("Check Condition === " + matchColor + " in " + JSON.stringify(this.configData._requiredTypeIds) + " and not in " + JSON.stringify(this._collectedTypeIds));
 
         // 1. Check if color is required
         if (this.configData._requiredTypeIds.indexOf(matchColor) === -1) return false;

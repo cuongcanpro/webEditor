@@ -3,8 +3,8 @@
     "Content": {
       "Animation": {
         "ActivedAnimationName": "idle_1",
-        "Duration": "161",
-        "Speed": "1.0",
+        "Duration": 161,
+        "Speed": 1.0,
         "Timelines": [
           {
             "ActionTag": 1796301522,
@@ -39,7 +39,7 @@
       },
       "AnimationList": [
         {
-          "EndIndex": "161",
+          "EndIndex": 161,
           "Name": "default",
           "StartIndex": "0",
           "ctype": "AnimationInfoData"

@@ -14,6 +14,7 @@ CoreGame.BoxUI = CoreGame.ElementUI.extend({
      * Update box sprite based on current hit points
      */
     updateVisual: function () {
+        this._super();
         // Base type for Box is 700. Visual frames are 701, 702, ...
         var visualType = this.element.type + this.element.hitPoints;
         var fileName = "res/modules/game/element/" + visualType + ".png";
@@ -42,6 +43,7 @@ CoreGame.BoxUI = CoreGame.ElementUI.extend({
         // eases back to the sprite's original position and angle.
         if (this.sprite && this.element.hitPoints > 0) {
             this.sprite.stopActionByTag(CoreGame.BoxUI.SHAKE_TAG);
+            this.sprite.setRotation(0);
 
             var amp = 2;       // max pixel offset per step
             var rotAmp = 4;    // max degrees per step
@@ -88,6 +90,7 @@ CoreGame.BoxUI = CoreGame.ElementUI.extend({
             // scale beat layer cleanly. Cancel any in-flight pulse first so
             // rapid hits don't leave the sprite stuck scaled up.
             this.sprite.stopActionByTag(CoreGame.BoxUI.PULSE_TAG);
+            this.sprite.setScale(1);
             var baseScale = this.sprite.getScale();
             var pulse = cc.sequence(
                 cc.scaleTo(t, baseScale * 1.08).easing(cc.easeSineOut()),

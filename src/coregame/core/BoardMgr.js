@@ -79,6 +79,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         this.hintElements = []; // Store elements currently showing hint
         this.idleCheckEndGameTime = 0;
         this.doEndGame = false;
+        this.needCheckShuffleBoard = false;
     },
 
     /**
@@ -244,7 +245,9 @@ CoreGame.BoardMgr = cc.Class.extend({
                 this._pendingFixedTypes = {};
                 for (var pi = 0; pi < mapConfig.elements.length; pi++) {
                     var pe = mapConfig.elements[pi];
-                    if (pe.type !== 7) {
+                    // Only track potential gems/matchable types in pending registry
+                    // to avoid blockers overwriting gem information.
+                    if (pe.type !== 7 && pe.type < 10) {
                         this._pendingFixedTypes[pe.row + ',' + pe.col] = pe.type;
                     }
                 }
@@ -255,12 +258,16 @@ CoreGame.BoardMgr = cc.Class.extend({
                     var spawnType = (elem.type === 7)
                         ? this.getValidTypeForPosition(elem.row, elem.col)
                         : elem.type;
-                    // Record the resolved type so subsequent type-7 elements can see it
-                    this._pendingFixedTypes[elem.row + ',' + elem.col] = spawnType;
+
+                    // Record the resolved type if it's a matchable element
+                    if (spawnType < 10) {
+                        this._pendingFixedTypes[elem.row + ',' + elem.col] = spawnType;
+                    }
+
                     this.addNewElement(elem.row, elem.col, spawnType, elem.hp, elem.cells || null);
                 }
 
-                this._pendingFixedTypes = null;
+                this._pendingFixedTypes = null; // Clear registry after use
             }
         } else {
             this.fillBoardNoMatches();
@@ -491,9 +498,10 @@ CoreGame.BoardMgr = cc.Class.extend({
             if (sc[0] >= 0 && sc[0] < this.rows && sc[1] >= 0 && sc[1] < this.cols &&
                 sc[2] >= 0 && sc[2] < this.rows && sc[3] >= 0 && sc[3] < this.cols &&
                 sc[4] >= 0 && sc[4] < this.rows && sc[5] >= 0 && sc[5] < this.cols) {
-                var ta = this.mapGrid[sc[0]][sc[1]].getType();
-                var tb = this.mapGrid[sc[2]][sc[3]].getType();
-                var tc = this.mapGrid[sc[4]][sc[5]].getType();
+                var ta = this._getNeighborType(sc[0], sc[1]);
+                var tb = this._getNeighborType(sc[2], sc[3]);
+                var tc = this._getNeighborType(sc[4], sc[5]);
+
                 if (ta >= 0 && ta === tb && tb === tc) {
                     var idx = pool.indexOf(ta);
                     if (idx !== -1) pool.splice(idx, 1);
@@ -1183,9 +1191,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         this.idleCheckEndGameTime = 0;
         let hasAction = this.dropMgr.refillMap();
         if (!hasAction && !this.playerMoved) {
-            if (!this.gameEnded && this.hasPossibleMoves && !this.hasPossibleMoves()) {
-                this.shuffleBoard();
-            }
+            this.needCheckShuffleBoard = true;
         }
     },
 
@@ -1295,7 +1301,7 @@ CoreGame.BoardMgr = cc.Class.extend({
                 var slot = this.getSlot(r, c);
                 if (slot) {
                     // Include gems even if they are blocked by overlays (like Chain) as long as they are matchable
-                    var gem = slot.getMatchableElement();
+                    var gem = slot.getMatchableElement(true);
                     if (gem && gem instanceof CoreGame.GemObject && gem.type <= CoreGame.Config.NUM_GEN) {
                         // Check if it's actually swappable (not blocked by overlays like Chain)
                         var canSwap = !!slot.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
@@ -1379,6 +1385,7 @@ CoreGame.BoardMgr = cc.Class.extend({
                     targetSlot.addElement(gem);
                 }
             }
+            this.checkEndGame();
         }
 
         // Wait for animation, then resume normal match/turn flow
@@ -1559,10 +1566,12 @@ CoreGame.BoardMgr = cc.Class.extend({
         cc.log("Turn finished - checkEndGame", isEnd);
 
         // Check for available moves — if no possible moves, shuffle the board
-        if (!isEnd && !this.hasPossibleMoves()) {
-            cc.log("No possible moves found! Shuffling board...");
-            this.shuffleBoard();
-        }
+        this.needCheckShuffleBoard = true;
+        // if (!isEnd && !this.hasPossibleMoves()) {
+        //     cc.log("No possible moves found! Shuffling board...");
+        //     cc.log("Shuffle board here 2 === ");
+        //     this.shuffleBoard();
+        // }
     },
 
     checkEndGame: function () {
@@ -1602,9 +1611,11 @@ CoreGame.BoardMgr = cc.Class.extend({
                     ? this.scoreMgr.previewLeftoverMoveBonusTotal(this.numMove)
                     : 0;
                 var finalScore = (this.scoreMgr ? this.scoreMgr.score : 0) + leftoverTotal;
-
-                this.setEndStar(finalScore);
-                this.setLevel();
+                if (!inGameMgr.getIsChallengeRoom()) {
+                    cc.log("Send End Star ===== ");
+                    this.setEndStar(finalScore);
+                    this.setLevel();
+                }
 
                 // Freeze regular score sources — bonus-PU detonations during
                 // the leftover-moves effect must not move the total past
@@ -1626,6 +1637,7 @@ CoreGame.BoardMgr = cc.Class.extend({
                 } else {
                     this.state = CoreGame.BoardState.END_GAME;
                     setTimeout(function () {
+                        cc.log("on End Game 1 ========= ");
                         if (this.gameUI) {
                             this.gameUI.onEndGame(true);
                         }
@@ -1866,6 +1878,7 @@ CoreGame.BoardMgr = cc.Class.extend({
 
         this._bonusPowerUps = null;
         this.state = CoreGame.BoardState.END_GAME;
+        cc.log("on End Game 2 ========= ");
         if (this.gameUI) {
             this.gameUI.gameBoardInfoUI.pSkip.setVisible(false);
             this.gameUI.onEndGame(true);
@@ -1963,6 +1976,21 @@ CoreGame.BoardMgr = cc.Class.extend({
             this.idleTime = 0;
             this._lastHintKey = null;         // Player interacted — clear repeat-avoidance memory
             this.stopHintTarget();
+        }
+
+        if (this.needCheckShuffleBoard) {
+            if (!this.gameEnded) {
+                var hasPendingActions = CoreGame.TimedActionMgr.hasPendingActions();
+                var isIdle = this.areAllElementsIdle();
+                if (!hasPendingActions && isIdle) {
+                    if (!this.gameEnded && !this.hasPossibleMoves())
+                        this.shuffleBoard();
+                    this.needCheckShuffleBoard = false;
+                }
+            }
+            else {
+                this.needCheckShuffleBoard = false;
+            }
         }
 
         // check EndGame khi khong co su kien remove element qua lau
@@ -2541,13 +2569,13 @@ CoreGame.BoardMgr = cc.Class.extend({
     },
 
     _isSwapValid: function (slot1, slot2) {
-        var element1 = slot1.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
-        var element2 = slot2.getFirstInteractable(CoreGame.ElementObject.Action.SWAP);
+        var element1 = slot1.getFirstInteractable(CoreGame.ElementObject.Action.SWAP, true);
+        var element2 = slot2.getFirstInteractable(CoreGame.ElementObject.Action.SWAP, true);
 
         if (!element1 || !element2) return false;
 
         // Delegate validation to the appropriate swap logic
         var swapLogic = this.getSwapLogic(element1, element2);
-        return swapLogic.checkValid(element1, element2);
+        return swapLogic.checkValid(element1, element2, true);
     }
 });

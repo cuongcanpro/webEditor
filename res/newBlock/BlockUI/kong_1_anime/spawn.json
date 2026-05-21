@@ -3,8 +3,8 @@
     "Content": {
       "Animation": {
         "ActivedAnimationName": "spawn",
-        "Duration": "120",
-        "Speed": "1.0",
+        "Duration": 120,
+        "Speed": 1.0,
         "Timelines": [
           {
             "ActionTag": 1796301522,
@@ -39,7 +39,7 @@
       },
       "AnimationList": [
         {
-          "EndIndex": "120",
+          "EndIndex": 120,
           "Name": "default",
           "StartIndex": "0",
           "ctype": "AnimationInfoData"

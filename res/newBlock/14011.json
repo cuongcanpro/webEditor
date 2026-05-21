@@ -1,0 +1,52 @@
+{
+    "description": "Blocker Ẩn (HIDDEN, 1x1): xuống BACKGROUND. Miễn nhiễm side-match. Chỉ damage khi gem trên ô được match trực tiếp. Sau 3 lượt → ReplaceSelfAction về ID 14010. HP=3.",
+    "baseAction": [],
+    "unblockAction": [
+        "MATCH",
+        "DROP",
+        "SWAP"
+    ],
+    "customAction": {
+        "match": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [
+            {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "phaseTurn",
+                    "delta": 1,
+                    "defaultValue": 0
+                }
+            },
+            {
+                "name": "CheckAttributeAction",
+                "config": {
+                    "fieldName": "phaseTurn",
+                    "targetValue": 3,
+                    "actionKey": "action_0"
+                }
+            }
+        ],
+        "action_0": [
+            {
+                "name": "ReplaceSelfAction",
+                "config": {
+                    "type": 14010
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_hidden_invisible.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "BACKGROUND",
+    "configData": {
+        "hitPoints": 3,
+        "maxHP": 3
+    }
+}

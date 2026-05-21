@@ -7,6 +7,7 @@ var CoreGame = CoreGame || {};
 CoreGame.Pinwheel = CoreGame.Blocker.extend({
     ctor: function () {
         this._super();
+        this.size = cc.size(2, 2); // 1x1
         this.layerBehavior = CoreGame.LayerBehavior.EXCLUSIVE; // 1x1 Content
         this.addAction(CoreGame.ElementObject.ACTION_TYPE.SIDE_MATCH, new CoreGame.Strategies.CollectTakeDamageAction([
             CoreGame.Config.ElementType.GREEN, // 1

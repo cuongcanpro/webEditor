@@ -92,8 +92,10 @@ CoreGame.RainbowPU = CoreGame.PowerUP.extend({
         var selfCol = this.position.y;
 
         var puType = this.type;
+        var damage = this.damage;
+        var activationId = CoreGame.PowerUP.nextActivationId();
         CoreGame.TimedActionMgr.addAction(this.activeDuration, function () {
-            let context = { type: "normal", puType: puType };
+            let context = { type: "normal", puType: puType, damage: damage, puActivationId: activationId };
             for (var i = 0; i < targetSlots.length; i++) {
                 targetSlots[i].matchElement(context, true);
                 boardMgr.matchMgr.notifyNearbySlots(targetSlots[i].row, targetSlots[i].col, context);
@@ -223,8 +225,10 @@ CoreGame.RainbowPUPlus = CoreGame.RainbowPU.extend({
         var selfCol = this.position.y;
 
         var puType = this.type;
+        var damage = CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5_PU5];
+        var activationId = CoreGame.PowerUP.nextActivationId();
         CoreGame.TimedActionMgr.addAction(duration, function () {
-            let context = { type: "normal", puType: puType };
+            let context = { type: "normal", puType: puType, damage: damage, puActivationId: activationId };
             // Always matchElement on every slot. The slot's own matchElement
             // pipeline destroys the gem and, as a consequence, any blocker
             // sharing the slot (Grass, Chain, attachments...) runs its own

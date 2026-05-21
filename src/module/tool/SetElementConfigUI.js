@@ -155,7 +155,8 @@ var SetElementConfigUI = cc.Node.extend({
             this.currentElement = null;
             return;
         }
-
+        cc.log("Element max hp: ", element.configData.maxHP);
+        cc.log("Element config  : ", JSON.stringify(element.configData));
         var maxHP = element.configData ? element.configData.maxHP : 1;
 
         // Only show if maxHP > 1
@@ -189,7 +190,7 @@ var SetElementConfigUI = cc.Node.extend({
             hp = 1;
         }
         // if (this.currentElement && hp > this.currentElement.maxHP) {
-            // hp = this.currentElement.maxHP;
+        // hp = this.currentElement.maxHP;
         // }
         return hp;
     },
@@ -199,13 +200,13 @@ var SetElementConfigUI = cc.Node.extend({
      */
     incrementHP: function () {
         if (!this.currentElement) return;
-        
+
         var currentHP = this.getHP();
         // if (currentHP < this.currentElement.maxHP) {
-            currentHP++;
-            cc.log("Increment HP " + currentHP);
-            this.hpInput.setString(currentHP.toString());
-            this.onHPChanged();
+        currentHP++;
+        cc.log("Increment HP " + currentHP);
+        this.hpInput.setString(currentHP.toString());
+        this.onHPChanged();
         // }
     },
 

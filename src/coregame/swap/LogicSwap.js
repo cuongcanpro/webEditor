@@ -40,9 +40,9 @@ CoreGame.LogicSwap = cc.Class.extend({
     /**
      * Check if swap is valid
      */
-    canSwap: function (element1, element2) {
+    canSwap: function (element1, element2, noNeedState = false) {
         if (!element1 || !element2) return false;
-        if (!element1.canSwap() || !element2.canSwap()) return false;
+        if (!element1.canSwap(noNeedState) || !element2.canSwap(noNeedState)) return false;
 
         // Check if adjacent
         var rowDiff = Math.abs(element1.position.x - element2.position.x);

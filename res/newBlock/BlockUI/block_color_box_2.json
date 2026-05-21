@@ -1,0 +1,9 @@
+{
+    "_placeholder": true,
+    "_blocker_name": "Color Box - Blue (gem màu 2)",
+    "_blocker_id": 702,
+    "_size": "1x1",
+    "_layer": "EXCLUSIVE",
+    "_note": "Replace with actual CocosStudio JSON (exported from Cocos Creator). Format type=2.",
+    "_referenced_by": "res/newBlock/702.json"
+}

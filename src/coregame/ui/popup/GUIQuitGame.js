@@ -167,6 +167,12 @@ var GUIQuitGame = BaseLayer.extend({
         var levelId = bm ? bm.getLevelId() : 0;
         var isCR = 0, roomId = null;
         try { if (typeof challengeRoomMgr !== "undefined" && challengeRoomMgr.isInGauntlet()) { isCR = 1; roomId = challengeRoomMgr.getCurrentRoomId(); } } catch (e) {}
+        var oldStars = gameUI ? (gameUI.oldStarBeforePlay || 0) : 0;
+        var objRemaining = 0;
+        var tes = bm ? (bm.targetElements || []) : [];
+        for (var ti = 0; ti < tes.length; ti++) { if (tes[ti].current > 0) objRemaining += tes[ti].current; }
+        var isBoss = 0, bossID = null;
+        try { isBoss = levelMgr.isBossLevel(levelId) ? 1 : 0; bossID = levelMgr.bossID || null; } catch (e) {}
         var pa = CoreGame.Metrics._buildPrefix();
         pa.type = "level_attempt_end";
         pa.level_id = levelId;
@@ -175,7 +181,11 @@ var GUIQuitGame = BaseLayer.extend({
         pa.starsAwarded = 0;
         pa.movesUsed = bm ? (bm.totalMove - bm.numMove) : 0;
         pa.totalMoves = bm ? bm.totalMove : 0;
+        pa.is_replay = (oldStars > 0) ? 1 : 0;
+        pa.objectivesRemaining = objRemaining;
         pa.timeInLevelSec = gameUI && gameUI._levelStartTime ? Math.round((Date.now() - gameUI._levelStartTime) / 1000) : 0;
+        pa.isBoss = isBoss;
+        pa.bossID = bossID;
         pa.isChallengeRoom = isCR;
         pa.roomId = roomId;
         try { pa.match_stats = bm && bm.matchMgr ? bm.matchMgr.getMatchStats() : null; } catch (e) { pa.match_stats = null; }

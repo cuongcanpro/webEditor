@@ -1,0 +1,40 @@
+{
+    "description": "Slime Chúa: DynamicBlocker 3x3 (9 cells). Side-match mất 1 cell, mỗi endTurn vừa SpreadAction regenerate vừa SetAttributeAction đổi visualState (để UI render màu mới). NOTE: 'đổi màu' chỉ là visual swap — không thay đổi điều kiện match. Nếu sau này cần color-match, dùng ReplaceSelfAction với variants riêng.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [
+            "SpreadAction",
+            {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "visualState",
+                    "delta": 1,
+                    "defaultValue": 0
+                }
+            },
+            {
+                "name": "PlayAnimationAction",
+                "config": {
+                    "animation": "color_shift"
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_slime_lord.json",
+        "type": 2
+    },
+    "type": "DynamicBlocker",
+    "width": 3,
+    "height": 3,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 9,
+        "maxHP": 18,
+        "cooldownSpawn": 1
+    }
+}

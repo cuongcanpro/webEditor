@@ -12,6 +12,7 @@ CoreGame.PinwheelUI = CoreGame.ElementUI.extend({
     ctor: function (element) {
         this._super(element);
         this.colorSpines = {};
+        this.setScale(2.0);
         // this.sprite.setScale(0.5);
         this.initSpine();
         return true;
@@ -32,9 +33,9 @@ CoreGame.PinwheelUI = CoreGame.ElementUI.extend({
         // Color Spines (Overlays)
         var colorMap = {
             1: "green",
-            2: "blue",
+            2: "yellow",
             3: "red",
-            4: "yellow"
+            4: "blue"
         };
 
         for (var id in colorMap) {
@@ -62,9 +63,9 @@ CoreGame.PinwheelUI = CoreGame.ElementUI.extend({
         // Find mapping
         var colorMap = {
             1: "green",
-            2: "blue",
+            2: "yellow",
             3: "red",
-            4: "yellow"
+            4: "blue"
         };
         cc.log("ColorId " + typeId);
         cc.log("Color Map " + colorMap);

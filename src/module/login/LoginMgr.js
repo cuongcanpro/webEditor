@@ -105,6 +105,12 @@ LoginMgr.start = function () {
     fr.UserData.setStringFromKey(KeyStorage.USER_ID, gv.socialMgr.getPortalId());
     challengeRoomMgr.load();
 
+    // Sync userId to userMgr + ABTestMgr early so session_start/install
+    // have correct user_id and ab_tests labels
+    var portalId = String(gv.socialMgr.getPortalId() || "");
+    try { var ui = userMgr.getData(); if (ui) ui.uId = portalId; } catch (e) {}
+    if (window.abTestMgr && portalId) abTestMgr.setUserId(portalId);
+
     var isFirstRun = !StorageUtil.getString("game_install_date");
 
     var ps = CoreGame.Metrics._buildPrefix();

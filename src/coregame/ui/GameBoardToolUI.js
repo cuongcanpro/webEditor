@@ -1,4 +1,4 @@
-﻿var CoreGame = CoreGame || {};
+var CoreGame = CoreGame || {};
 
 GameBoardToolUI = BaseLayer.extend({
     isHaveFreeBooster: null,
@@ -101,6 +101,45 @@ GameBoardToolUI = BaseLayer.extend({
             });
         }
 
+        this.btnCheatElement = null;
+        if (Config.ENABLE_CHEAT) {
+            var btnCheatE = new ccui.Button(
+                "game/board/btn_orange.png",
+                "game/board/btn_orange.png"
+            );
+            btnCheatE.setScale9Enabled(true);
+            btnCheatE.setContentSize(90, 90);
+            btnCheatE.setAnchorPoint(cc.p(0.5, 0.5));
+            btnCheatE.setPosition(47, 450);
+            btnCheatE.oriPosition = cc.p(47, 450);
+            btnCheatE.setVisible(false);
+            this.btnPause.addChild(btnCheatE);
+            this.btnCheatElement = btnCheatE;
+
+            var cheatELabel = new cc.LabelTTF("CH\nELM", "font/BalooPaaji2-Bold.ttf", 26);
+            cheatELabel.setColor(cc.color(255, 255, 255));
+            cheatELabel.setAnchorPoint(cc.p(0.5, 0.5));
+            cheatELabel.setPosition(45, 45);
+            btnCheatE.addChild(cheatELabel);
+            this._cheatELabel = cheatELabel;
+
+            btnCheatE.addClickEventListener(function () {
+                CoreGame.CheatElementMode = !CoreGame.CheatElementMode;
+                cheatELabel.setColor(CoreGame.CheatElementMode ? cc.color(80, 255, 80) : cc.color(255, 255, 255));
+
+                var board = CoreGame.BoardUI.instance;
+                if (board && board.root) {
+                    var children = board.root.getChildren();
+                    for (var i = 0; i < children.length; i++) {
+                        var child = children[i];
+                        if (child && child.isElementUI && child.lbState) {
+                            child.lbState.setVisible(CoreGame.CheatElementMode);
+                        }
+                    }
+                }
+            });
+        }
+
         this.showGUIPause(false, false);
     },
 
@@ -160,6 +199,10 @@ GameBoardToolUI = BaseLayer.extend({
 
         if (this.btnAI) {
             listBtn.push(this.btnAI);
+        }
+
+        if (this.btnCheatElement) {
+            listBtn.push(this.btnCheatElement);
         }
 
         listBtn.push(this.btnClose);

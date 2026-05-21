@@ -179,10 +179,10 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
             cc.log("MoveAction completed. Element at (" + newRow + "," + newCol + ")" + " board state updated." + boardMgr.state);
             boardMgr.setMatchingRequired(true);
             // Check for available moves after immediate spawn
-            if (!boardMgr.gameEnded && boardMgr.hasPossibleMoves && !boardMgr.hasPossibleMoves()) {
-                cc.log("No possible moves after spawn! Shuffling board...");
-                boardMgr.shuffleBoard();
-            }
+            // if (!boardMgr.gameEnded && boardMgr.hasPossibleMoves && !boardMgr.hasPossibleMoves()) {
+            //     cc.log("No possible moves after spawn! Shuffling board...");
+            //     boardMgr.shuffleBoard();
+            // }
         });
     },
 

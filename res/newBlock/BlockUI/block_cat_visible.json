@@ -1,0 +1,9 @@
+{
+    "_placeholder": true,
+    "_blocker_name": "Mèo ẩn thân - VISIBLE (đứng trên layer)",
+    "_blocker_id": 13000,
+    "_size": "2x2",
+    "_layer": "EXCLUSIVE",
+    "_note": "Replace with actual CocosStudio JSON (exported from Cocos Creator). Format type=2.",
+    "_referenced_by": "res/newBlock/13000.json"
+}

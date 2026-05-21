@@ -1,0 +1,52 @@
+{
+    "description": "Mèo ẩn thân (state HIDDEN, 2x2): lui xuống BACKGROUND (layer -1). Gem có thể spawn trên ô đó. Khi gem trên ô được match (`match` trigger lan xuống layer dưới qua unblockAction MATCH), mèo nhận damage. HP kế thừa từ visible state. Sau 2 lượt → ReplaceSelfAction về ID 13000.",
+    "baseAction": [],
+    "unblockAction": [
+        "MATCH",
+        "DROP",
+        "SWAP"
+    ],
+    "customAction": {
+        "match": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [
+            {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "turnCount",
+                    "delta": 1,
+                    "defaultValue": 0
+                }
+            },
+            {
+                "name": "CheckAttributeAction",
+                "config": {
+                    "fieldName": "turnCount",
+                    "targetValue": 2,
+                    "actionKey": "action_0"
+                }
+            }
+        ],
+        "action_0": [
+            {
+                "name": "ReplaceSelfAction",
+                "config": {
+                    "type": 13000
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_cat_hidden.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "BACKGROUND",
+    "configData": {
+        "hitPoints": 4,
+        "maxHP": 4
+    }
+}

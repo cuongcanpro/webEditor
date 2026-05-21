@@ -3,8 +3,8 @@
     "Content": {
       "Animation": {
         "ActivedAnimationName": "remove",
-        "Duration": "200",
-        "Speed": "1.0",
+        "Duration": 200,
+        "Speed": 1.0,
         "Timelines": [
           {
             "ActionTag": 1796301522,
@@ -39,7 +39,7 @@
       },
       "AnimationList": [
         {
-          "EndIndex": "200",
+          "EndIndex": 200,
           "Name": "default",
           "StartIndex": "0",
           "ctype": "AnimationInfoData"

@@ -3,8 +3,8 @@
     "Content": {
       "Animation": {
         "ActivedAnimationName": "RESET",
-        "Duration": "1",
-        "Speed": "1.0",
+        "Duration": 1,
+        "Speed": 1.0,
         "Timelines": [
           {
             "ActionTag": 1796301522,
@@ -33,13 +33,45 @@
             ],
             "Property": "VisibleForFrame",
             "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 1231336558,
+            "Frames": [
+              {
+                "Color": {
+                  "B": 255,
+                  "G": 255,
+                  "R": 255
+                },
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1
+              }
+            ],
+            "Property": "CColor",
+            "ctype": "TimelineData"
+          },
+          {
+            "ActionTag": 1231336558,
+            "Frames": [
+              {
+                "EasingData": {
+                  "Type": 0
+                },
+                "FrameIndex": 1,
+                "Value": 255
+              }
+            ],
+            "Property": "Alpha",
+            "ctype": "TimelineData"
           }
         ],
         "ctype": "TimelineActionData"
       },
       "AnimationList": [
         {
-          "EndIndex": "1",
+          "EndIndex": 1,
           "Name": "default",
           "StartIndex": "0",
           "ctype": "AnimationInfoData"

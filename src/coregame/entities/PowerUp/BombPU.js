@@ -22,9 +22,12 @@ CoreGame.BombPU = CoreGame.PowerUP.extend({
         }
 
         var puType = this.type;
+        var damage = this.damage;
+        var activationId = CoreGame.PowerUP.nextActivationId();
         CoreGame.TimedActionMgr.addAction(this.activeDuration, function (listCell) {
+            var context = { type: "normal", puType: puType, damage: damage, puActivationId: activationId };
             for (var i = 0; i < listCell.length; i++)
-                listCell[i].matchElement({type: "normal", puType: puType});
+                listCell[i].matchElement(context);
         }.bind(null, listCell));
 
         this.ui.startActive();

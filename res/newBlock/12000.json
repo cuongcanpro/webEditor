@@ -1,0 +1,22 @@
+{
+    "description": "Slime hiền: DynamicBlocker 2x2 (4 cells). Mỗi side-match làm mất 1 cell. HP=4 (mỗi cell = 1 HP). Không di chuyển, không regenerate. Lưu ý: cells field cấu hình bởi DynamicBlocker engine khi spawn — width/height định nghĩa bounding box ban đầu.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_slime_normal.json",
+        "type": 2
+    },
+    "type": "DynamicBlocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 4,
+        "maxHP": 4
+    }
+}

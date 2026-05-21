@@ -14,8 +14,8 @@ CoreGame.NormalSwap = CoreGame.LogicSwap.extend({
     /**
      * Dry check if swap results in a match
      */
-    checkValid: function (element1, element2) {
-        if (!this.canSwap(element1, element2)) return false;
+    checkValid: function (element1, element2, noNeedState = false) {
+        if (!this.canSwap(element1, element2, noNeedState)) return false;
         return CoreGame.PatternFinder._wouldMatch(
             this.boardMgr.mapGrid,
             element1.position.x,
@@ -28,11 +28,11 @@ CoreGame.NormalSwap = CoreGame.LogicSwap.extend({
     /**
      * Override - perform swap and check for matches
      */
-    swap: function (element1, element2) {
+    swap: function (element1, element2, noNeedState = false) {
         this.element1 = element1;
         this.element2 = element2;
 
-        if (!this.canSwap(element1, element2)) {
+        if (!this.canSwap(element1, element2, noNeedState)) {
 
             return false;
         }

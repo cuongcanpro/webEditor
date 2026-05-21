@@ -1,0 +1,45 @@
+{
+    "description": "Cua màu 5 (gem tím). HP giữ nguyên từ trạng thái trước. Chỉ nhận damage khi có side match đúng màu 5. Mỗi 2 endTurn tự chuyển sang crab_color_5 (ID 21005).",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "MatchColorTakeDamageAction",
+                "config": { "_matchColor": 5 }
+            }
+        ],
+        "endTurn": [
+            {
+                "name": "ChangeAttributeAction",
+                "config": { "fieldName": "turnCounter", "delta": 1, "defaultValue": 0 }
+            },
+            {
+                "name": "CheckAttributeAction",
+                "config": { "fieldName": "turnCounter", "targetValue": 2, "actionKey": "action_0" }
+            }
+        ],
+        "action_0": [
+            {
+                "name": "SetAttributeAction",
+                "config": { "fieldName": "turnCounter", "value": 0 }
+            },
+            {
+                "name": "ReplaceSelfAction",
+                "config": { "type": 21005 }
+            }
+        ]
+    },
+    "visual": {
+        "path": "game/animation/spine/blocker_rock",
+        "type": 1
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 5,
+        "maxHP": 5
+    }
+}

@@ -1,0 +1,55 @@
+{
+    "description": "Mèo bắn PU (2x2, HP=4): nhận side-match damage bình thường. Mỗi 2 endTurn → action_0: AroundSpawnElementAction spawn 1 PU random từ [Rocket H (101), Rocket V (106)] xung quanh mèo. Vai trò curriculum L150: player race đánh mèo hoặc tận dụng PU rơi. KHÔNG có crosshair warn/destroy PU (cần Strategy mới, designer chấp nhận đơn giản hóa).",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [
+            {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "shootCount",
+                    "delta": 1,
+                    "defaultValue": 0
+                }
+            },
+            {
+                "name": "CheckAttributeAction",
+                "config": {
+                    "fieldName": "shootCount",
+                    "targetValue": 2,
+                    "actionKey": "action_0"
+                }
+            }
+        ],
+        "action_0": [
+            {
+                "name": "AroundSpawnElementAction",
+                "config": {
+                    "type": [101, 106]
+                }
+            },
+            {
+                "name": "SetAttributeAction",
+                "config": {
+                    "fieldName": "shootCount",
+                    "value": 0
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_cat_shoot_pu.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 4,
+        "maxHP": 4
+    }
+}

@@ -18,6 +18,9 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
     configData: {
         maxHP: 1
     },
+
+    damage: 1,
+
     ctor: function () {
         this._super();
         this.layerBehavior = CoreGame.LayerBehavior.CONTENT;
@@ -29,6 +32,9 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
     init: function (row, col, type) {
         this._super(row, col, type);
         this.combinedEffect = null;
+
+        this.damage = CoreGame.Config.PU_DAMAGE[this.type];
+        cc.log("init PU", this.type, this.damage);
         return this;
     },
 
@@ -147,6 +153,14 @@ CoreGame.PowerUP = CoreGame.ElementObject.extend({
         return this._super(type);
     },
 });
+
+// Monotonic id stamped on each PU activation context. TakeDamageAction uses
+// it to ensure a monster/boss takes a PU's flat damage only once per
+// activation, no matter how many of its cells the PU clips.
+CoreGame.PowerUP._activationSeq = 0;
+CoreGame.PowerUP.nextActivationId = function () {
+    return ++CoreGame.PowerUP._activationSeq;
+};
 
 CoreGame.PowerUP.mapCombined = {}
 CoreGame.PowerUP.registerCombined = function (type1, type2, cls) {

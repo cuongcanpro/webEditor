@@ -169,8 +169,13 @@ CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU4_PU4] = 4;
 CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_T] = 3;
 CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_L] = 3;
 
+//Bomb+
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5TL_PU5TL] = 3;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU4_PU5TL] = 3;
+
 //Plane
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_SQUARE] = 4;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_SQUARE] = 5;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PUS_PU] = 5;
 
 //Disco
 CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_5] = 1;

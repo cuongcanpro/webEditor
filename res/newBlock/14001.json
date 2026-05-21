@@ -1,0 +1,31 @@
+{
+    "description": "Blocker Theo Thứ Tự 1x1: phải side-match gem theo đúng thứ tự queue [1, 2, 3]. Mỗi match đúng → shift khỏi queue. Hoàn thành queue → blocker vỡ. CAVEAT: QueueTakeDamageAction hiện tại KHÔNG hỗ trợ 'reset on wrong color' — match sai màu chỉ bị bỏ qua. Để có reset, cần extend strategy: thêm logic 'nếu matchColor != queue[0] thì restore queue về ban đầu'.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "QueueTakeDamageAction",
+                "config": {
+                    "_queueTypeIds": [
+                        1,
+                        2,
+                        3
+                    ]
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_queue_lock.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 3,
+        "maxHP": 3
+    }
+}

@@ -14,10 +14,10 @@
             },
             "TakeDamageAction",
             {
-                "name": "ReplaceUIAction",
+                "name": "SetAttributeAction",
                 "config": {
-                    "path": "res/newBlock/BlockUI/kong_1.json",
-                    "defaultAnim": "action_2"
+                    "fieldName": "visualState",
+                    "value": ""
                 }
             }
         ],
@@ -28,6 +28,12 @@
                     "fieldName": "cooldown",
                     "delta": -1,
                     "defaultValue": 2
+                }
+            },
+            {
+                "name": "MoveAction",
+                "config": {
+                    "directionType": 0
                 }
             },
             {
@@ -45,12 +51,6 @@
                     "targetValue": 0,
                     "actionKey": "action_0"
                 }
-            },
-            {
-                "name": "MoveAction",
-                "config": {
-                    "directionType": 0
-                }
             }
         ],
         "match": [
@@ -63,10 +63,10 @@
             },
             "TakeDamageAction",
             {
-                "name": "ReplaceUIAction",
+                "name": "SetAttributeAction",
                 "config": {
-                    "path": "res/newBlock/BlockUI/kong_1.json",
-                    "defaultAnim": "action_2"
+                    "fieldName": "visualState",
+                    "value": ""
                 }
             }
         ],
@@ -87,19 +87,25 @@
                 }
             },
             {
-                "name": "ReplaceUIAction",
+                "name": "SetAttributeAction",
                 "config": {
-                    "path": "res/newBlock/BlockUI/kong_1.json",
-                    "defaultAnim": "idle"
+                    "fieldName": "visualState",
+                    "value": ""
                 }
             }
         ],
         "action_1": [
             {
-                "name": "ReplaceUIAction",
+                "name": "SetAttributeAction",
                 "config": {
-                    "path": "res/newBlock/BlockUI/kong_box_1.json",
-                    "defaultAnim": "action_1"
+                    "fieldName": "visualState",
+                    "value": "pre_atk_"
+                }
+            },
+            {
+                "name": "PlayAnimationAction",
+                "config": {
+                    "animationName": "start"
                 }
             }
         ],
@@ -114,7 +120,7 @@
     "height": 3,
     "layerBehavior": "EXCLUSIVE",
     "configData": {
-        "maxHP": 10,
-        "hitPoints": 10
+        "maxHP": 30,
+        "hitPoints": 30
     }
 }

@@ -1,0 +1,48 @@
+{
+    "description": "Blocker Ẩn (VISIBLE, 1x1): side-match damage bình thường. Mỗi 3 lượt → ReplaceSelfAction sang ID 14011 (hidden). HP=3.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [
+            {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "phaseTurn",
+                    "delta": 1,
+                    "defaultValue": 0
+                }
+            },
+            {
+                "name": "CheckAttributeAction",
+                "config": {
+                    "fieldName": "phaseTurn",
+                    "targetValue": 3,
+                    "actionKey": "action_0"
+                }
+            }
+        ],
+        "action_0": [
+            {
+                "name": "ReplaceSelfAction",
+                "config": {
+                    "type": 14011
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_hidden_visible.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 3,
+        "maxHP": 3
+    }
+}

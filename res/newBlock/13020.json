@@ -1,0 +1,54 @@
+{
+    "description": "Mèo ẩn thân bắn PU (state VISIBLE, 3x3, HP=6): nhận side-match damage bình thường. Mỗi endTurn tăng phaseTurn; khi phaseTurn >= 2 → action_0: AroundSpawnElementAction spawn 1 PU random [101, 106] xung quanh + ReplaceSelfAction sang 13021 (hidden). Finale Saga 2 L170 — combine mechanic Mèo ẩn (L131) + Mèo bắn PU (L150).",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [
+            {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "phaseTurn",
+                    "delta": 1,
+                    "defaultValue": 0
+                }
+            },
+            {
+                "name": "CheckAttributeAction",
+                "config": {
+                    "fieldName": "phaseTurn",
+                    "targetValue": 2,
+                    "actionKey": "action_0"
+                }
+            }
+        ],
+        "action_0": [
+            {
+                "name": "AroundSpawnElementAction",
+                "config": {
+                    "type": [101, 106]
+                }
+            },
+            {
+                "name": "ReplaceSelfAction",
+                "config": {
+                    "type": 13021
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_hidden_cat_shoot_pu_visible.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 3,
+    "height": 3,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 6,
+        "maxHP": 6
+    }
+}

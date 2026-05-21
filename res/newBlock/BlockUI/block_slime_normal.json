@@ -1,0 +1,9 @@
+{
+    "_placeholder": true,
+    "_blocker_name": "Slime hiền (mỗi HP = 1 cell shrink)",
+    "_blocker_id": 12000,
+    "_size": "2x2",
+    "_layer": "EXCLUSIVE",
+    "_note": "Replace with actual CocosStudio JSON (exported from Cocos Creator). Format type=2.",
+    "_referenced_by": "res/newBlock/12000.json"
+}

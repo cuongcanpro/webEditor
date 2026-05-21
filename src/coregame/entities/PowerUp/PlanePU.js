@@ -37,9 +37,15 @@ CoreGame.PlanePU = CoreGame.PowerUP.extend({
         }
 
         var puType = this.type;
+        var damage = this.damage;
+        // Launch burst counts as one activation; the final on-target hit
+        // generates its own id in onFly() so a monster clipped by both
+        // phases can be damaged twice (per design).
+        var launchActivationId = CoreGame.PowerUP.nextActivationId();
         CoreGame.TimedActionMgr.addAction(0.2, function (explodedByLaunch) {
+            var context = { type: "normal", puType: puType, damage: damage, puActivationId: launchActivationId };
             for (var i = 0; i < explodedByLaunch.length; i++)
-                explodedByLaunch[i].matchElement({ type: "normal", puType: puType });
+                explodedByLaunch[i].matchElement(context);
         }.bind(null, explodedByLaunch));
 
         // ── Step 2: Get priority targets (excludes launch-exploded slots) ──
@@ -131,10 +137,12 @@ CoreGame.PlanePU = CoreGame.PowerUP.extend({
             }
 
             var puType = this.type;
+            var damage = this.damage;
+            var flyActivationId = CoreGame.PowerUP.nextActivationId();
             cc.log("Time Fly ======= " + timeFly);
             CoreGame.TimedActionMgr.addAction(timeFly, function () {
                 if (this.isEmpty()) return;
-                this.matchElement({ type: "normal", puType: puType });
+                this.matchElement({ type: "normal", puType: puType, damage: damage, puActivationId: flyActivationId });
             }, this.targetSlot);
         }
     },
@@ -200,6 +208,7 @@ CoreGame.PlaneRocketHPU = CoreGame.PlaneMergePU.extend({
                 subPU.boardMgr = this.boardMgr;
                 var parent = this.boardMgr.boardUI;
                 if (parent) subPU.createUI(parent).setVisible(false);
+                subPU.damage = CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PUS_PU];
                 subPU.active();
             }
         }
@@ -220,6 +229,7 @@ CoreGame.PlaneRocketVPU = CoreGame.PlaneMergePU.extend({
                 subPU.boardMgr = this.boardMgr;
                 var parent = this.boardMgr.boardUI;
                 if (parent) subPU.createUI(parent).setVisible(false);
+                subPU.damage = CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PUS_PU];
                 subPU.active();
             }
         }

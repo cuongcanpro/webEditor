@@ -1,0 +1,9 @@
+{
+    "_placeholder": true,
+    "_blocker_name": "Mèo ẩn thân - HIDDEN (chui xuống dưới gem)",
+    "_blocker_id": 13001,
+    "_size": "2x2",
+    "_layer": "BACKGROUND",
+    "_note": "Replace with actual CocosStudio JSON (exported from Cocos Creator). Format type=2.",
+    "_referenced_by": "res/newBlock/13001.json"
+}

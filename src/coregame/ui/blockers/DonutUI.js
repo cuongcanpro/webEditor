@@ -35,16 +35,18 @@ CoreGame.DonutUI = CoreGame.ElementUI.extend({
     playAnimation: function (animationName) {
         if (animationName !== CoreGame.ElementObject.ACTION_TYPE.REMOVE) return 0;
 
-        var duration = 0.3;
+        var duration = CoreGame.DonutUI.ANIMATION_TIME;
         if (this.sprite) {
-            this.sprite.runAction(cc.sequence(
-                cc.spawn(
-                    cc.scaleTo(duration, 0),
-                    cc.fadeOut(duration)
-                )
-            ));
+            // this.sprite.runAction(cc.sequence(
+            //     cc.spawn(
+            //         cc.scaleTo(duration, 0),
+            //         cc.fadeOut(duration)
+            //     )
+            // ));
+            // this.sprite.setVisible(false);
         }
         return duration;
     }
 });
 CoreGame.DonutUI.SCALE = 0.5;
+CoreGame.DonutUI.ANIMATION_TIME = 0.1;

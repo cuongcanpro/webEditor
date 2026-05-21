@@ -1,0 +1,27 @@
+{
+    "description": "Tủ Nước Màu (2x2): 1 blocker chứa đồng thời 4 màu nước [1, 2, 3, 4]. Player phải side-match đủ cả 4 màu (mỗi màu ít nhất 1 lần) thì tủ mới bể. CollectTakeDamageAction theo dõi tiến độ thu thập màu. Vai trò curriculum L51: INTRODUCE color-collect mechanic, baseline cho ColorEgg/ColorCrab (single-color match) sau đó.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "CollectTakeDamageAction",
+                "config": {
+                    "_requiredTypeIds": [1, 2, 3, 4]
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_color_cabinet.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 4,
+        "maxHP": 4
+    }
+}

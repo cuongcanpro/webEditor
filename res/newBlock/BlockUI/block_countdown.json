@@ -1,0 +1,9 @@
+{
+    "_placeholder": true,
+    "_blocker_name": "Blocker Đếm Ngược (cần hiển thị số 4→0)",
+    "_blocker_id": 14000,
+    "_size": "1x1",
+    "_layer": "EXCLUSIVE",
+    "_note": "Replace with actual CocosStudio JSON (exported from Cocos Creator). Format type=2.",
+    "_referenced_by": "res/newBlock/14000.json"
+}

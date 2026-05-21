@@ -1,0 +1,27 @@
+{
+    "description": "Thùng gỗ màu (variant 2): chỉ vỡ khi side-match đúng gem màu 2. HP=1.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "MatchColorTakeDamageAction",
+                "config": {
+                    "_matchColor": 2
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/img/box_02.png",
+        "type": 0
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 1,
+        "maxHP": 1
+    }
+}

@@ -14,10 +14,10 @@
             },
             "TakeDamageAction",
             {
-                "name": "ReplaceUIAction",
+                "name": "SetAttributeAction",
                 "config": {
-                    "path": "res/newBlock/BlockUI/kong_0.json",
-                    "defaultAnim": "action_2"
+                    "fieldName": "visualState",
+                    "value": ""
                 }
             }
         ],
@@ -57,10 +57,10 @@
             },
             "TakeDamageAction",
             {
-                "name": "ReplaceUIAction",
+                "name": "SetAttributeAction",
                 "config": {
-                    "path": "res/newBlock/BlockUI/kong_0.json",
-                    "defaultAnim": "action_2"
+                    "fieldName": "visualState",
+                    "value": ""
                 }
             }
         ],
@@ -81,19 +81,25 @@
                 }
             },
             {
-                "name": "ReplaceUIAction",
+                "name": "SetAttributeAction",
                 "config": {
-                    "path": "res/newBlock/BlockUI/kong_0.json",
-                    "defaultAnim": "idle"
+                    "fieldName": "visualState",
+                    "value": ""
                 }
             }
         ],
         "action_1": [
             {
-                "name": "ReplaceUIAction",
+                "name": "SetAttributeAction",
                 "config": {
-                    "path": "res/newBlock/BlockUI/kong_box_0.json",
-                    "defaultAnim": "action_1"
+                    "fieldName": "visualState",
+                    "value": "pre_atk_"
+                }
+            },
+            {
+                "name": "PlayAnimationAction",
+                "config": {
+                    "animationName": "start"
                 }
             }
         ],
@@ -108,7 +114,7 @@
     "height": 3,
     "layerBehavior": "EXCLUSIVE",
     "configData": {
-        "maxHP": 10,
-        "hitPoints": 10
+        "maxHP": 30,
+        "hitPoints": 30
     }
 }

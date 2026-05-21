@@ -1,0 +1,48 @@
+{
+    "description": "Mèo ẩn thân (state VISIBLE, 2x2): nhận side-match damage bình thường (HP=4). Đếm turnCount mỗi endTurn; khi turnCount >= 2 → ReplaceSelfAction sang ID 13001 (hidden). Sau ReplaceSelf, customData reset bởi state mới.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [
+            {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "turnCount",
+                    "delta": 1,
+                    "defaultValue": 0
+                }
+            },
+            {
+                "name": "CheckAttributeAction",
+                "config": {
+                    "fieldName": "turnCount",
+                    "targetValue": 2,
+                    "actionKey": "action_0"
+                }
+            }
+        ],
+        "action_0": [
+            {
+                "name": "ReplaceSelfAction",
+                "config": {
+                    "type": 13001
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_cat_visible.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 4,
+        "maxHP": 4
+    }
+}

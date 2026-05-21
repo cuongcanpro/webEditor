@@ -601,7 +601,7 @@ CoreGame.ElementObject = cc.Class.extend({
         }
     },
 
-    hasAction: function (type) {
+    hasAction: function (type, noNeedState = false) {
         // First check if any attachment blocks this action
         // if (this.isStopAction(type)) {
         //     return false;
@@ -609,7 +609,7 @@ CoreGame.ElementObject = cc.Class.extend({
 
         switch (type) {
             case CoreGame.ElementObject.Action.SWAP:
-                return this.state != CoreGame.ElementState.MOVING && this.haveBaseAction[type];
+                return (this.state != CoreGame.ElementState.MOVING || noNeedState) && this.haveBaseAction[type];
             case CoreGame.ElementObject.Action.MATCH:
                 return this.haveBaseAction[type];
             case CoreGame.ElementObject.Action.ACTIVE:
@@ -617,7 +617,7 @@ CoreGame.ElementObject = cc.Class.extend({
             case CoreGame.ElementObject.Action.DROP:
                 // Only IDLE elements can drop — prevent MATCHING/REMOVING gems
                 // from being picked up by DropMgr during intermediate refills
-                return this.state === CoreGame.ElementState.IDLE && this.haveBaseAction[type];
+                return (this.state === CoreGame.ElementState.IDLE || noNeedState) && this.haveBaseAction[type];
             default:
                 return false;
         }
@@ -726,6 +726,13 @@ CoreGame.ElementObject = cc.Class.extend({
         }
 
         return Math.min(scaleX, scaleY) * padding;
+    },
+
+    //**
+    updateTarget: function (targetNode) {
+        if (targetNode) {
+            targetNode.collectElement(-1);
+        }
     }
 });
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * MatchMgr - Handles match detection and processing
  * Part of Match-3 Core Game
  */
@@ -129,10 +129,43 @@ CoreGame.MatchMgr = cc.Class.extend({
         }
 
         if (!targetPos) {
-            targetPos = {};
             var middleIndex = Math.floor(group.length / 2);
-            targetPos.row = group[middleIndex].row;
-            targetPos.col = group[middleIndex].col;
+            var bestPos = null;
+
+            // Prioritize positions closer to the middle of the match group
+            var indices = [middleIndex];
+            for (var i = 1; i <= group.length / 2; i++) {
+                if (middleIndex - i >= 0) indices.push(middleIndex - i);
+                if (middleIndex + i < group.length) indices.push(middleIndex + i);
+            }
+
+            for (var k = 0; k < indices.length; k++) {
+                var idx = indices[k];
+                var pos = group[idx];
+                var slot = this.boardMgr.getSlot(pos.row, pos.col);
+                if (slot) {
+                    var isBlocked = false;
+                    for (var e = 0; e < slot.listElement.length; e++) {
+                        var el = slot.listElement[e];
+                        // If element is above content layer (e.g., Box, Cloud) and blocks matching
+                        if (el.layerBehavior > CoreGame.LayerBehavior.CONTENT && el.isStopAction(CoreGame.ElementObject.Action.MATCH)) {
+                            isBlocked = true;
+                            break;
+                        }
+                        // If gem has an attachment (e.g., Chain) that blocks matching
+                        if (el.layerBehavior === CoreGame.LayerBehavior.CONTENT && el.isStopActionByAttachment(CoreGame.ElementObject.Action.MATCH)) {
+                            isBlocked = true;
+                            break;
+                        }
+                    }
+                    if (!isBlocked) {
+                        bestPos = pos;
+                        break;
+                    }
+                }
+            }
+
+            targetPos = bestPos || group[middleIndex];
         }
 
         if (targetPos) {
@@ -354,6 +387,30 @@ CoreGame.MatchMgr = cc.Class.extend({
             for (var key in colCounts) {
                 if (colCounts.hasOwnProperty(key) && colCounts[key] >= 5)
                     return CoreGame.PowerUPType.MATCH_5;
+            }
+
+            // Check for T or L shape (Bomb) - has at least 3 in both dimensions.
+            // This is prioritized over a 4-in-a-row when the group is merged.
+            var maxRC = 0, maxCC = 0;
+            for (var key in rowCounts) {
+                if (rowCounts.hasOwnProperty(key)) maxRC = Math.max(maxRC, rowCounts[key]);
+            }
+            for (var key in colCounts) {
+                if (colCounts.hasOwnProperty(key)) maxCC = Math.max(maxCC, colCounts[key]);
+            }
+            if (maxRC >= 3 && maxCC >= 3) {
+                return this.detectTLShape(group);
+            }
+
+            // Group may have been merged with a square or another match.
+            // Check if there is a 4-in-a-row inside the 5+ group.
+            for (var key in rowCounts) {
+                if (rowCounts.hasOwnProperty(key) && rowCounts[key] === 4)
+                    return CoreGame.PowerUPType.MATCH_4_V;
+            }
+            for (var key in colCounts) {
+                if (colCounts.hasOwnProperty(key) && colCounts[key] === 4)
+                    return CoreGame.PowerUPType.MATCH_4_H;
             }
 
             // T or L shape

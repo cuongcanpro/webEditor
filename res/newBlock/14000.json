@@ -1,0 +1,52 @@
+{
+    "description": "Blocker Đếm Ngược 1x1: hiển thị bộ đếm bắt đầu từ 4. Mỗi endTurn -1. Khi countdown = 0 → action_0: spawn 4 Thùng Gỗ (700) ngẫu nhiên trên board rồi tự remove. Player có thể match trực tiếp để phá sớm (HP=2). TODO: cần verify SpawnElementAction tự destroy parent sau khi spawn — nếu không, thêm self-destroy trigger.",
+    "baseAction": [
+        "MATCH",
+        "SWAP"
+    ],
+    "unblockAction": [],
+    "customAction": {
+        "match": [
+            "TakeDamageAction"
+        ],
+        "endTurn": [
+            {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "countdown",
+                    "delta": -1,
+                    "defaultValue": 4
+                }
+            },
+            {
+                "name": "CheckAttributeAction",
+                "config": {
+                    "fieldName": "countdown",
+                    "targetValue": 0,
+                    "actionKey": "action_0"
+                }
+            }
+        ],
+        "action_0": [
+            {
+                "name": "RandomSpawnElementAction",
+                "config": {
+                    "type": 700,
+                    "numRandom": 4
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_countdown.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 2,
+        "maxHP": 2
+    }
+}

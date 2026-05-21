@@ -1,0 +1,48 @@
+{
+    "description": "King Crab (Tinkle Match): 3x3, di chuyển ngẫu nhiên mỗi turn, đổi màu yêu cầu (_matchColor) ngẫu nhiên trong 6 màu sau mỗi turn — implement bằng ReplaceSelfAction quay vòng giữa 6 variant ID 11010-11015 (Cua Màu). HP cố định bằng instance khởi tạo = 5.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "MatchColorTakeDamageAction",
+                "config": {
+                    "_matchColor": 1
+                }
+            }
+        ],
+        "endTurn": [
+            {
+                "name": "MoveAction",
+                "config": {
+                    "directionType": 0
+                }
+            },
+            {
+                "name": "ReplaceSelfAction",
+                "config": {
+                    "type": [
+                        11010,
+                        11011,
+                        11012,
+                        11013,
+                        11014,
+                        11015
+                    ]
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/block_king_crab.json",
+        "type": 2
+    },
+    "type": "Blocker",
+    "width": 3,
+    "height": 3,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 5,
+        "maxHP": 5
+    }
+}
