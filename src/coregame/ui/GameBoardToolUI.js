@@ -74,7 +74,7 @@ GameBoardToolUI = BaseLayer.extend({
 
         // ── AI button inside pause menu (gated by GeneralConfig) ──────────
         this.btnAI = null;
-        if (generalConfig.isActiveAI() && Config.ENABLE_CHEAT) {
+        if (Config.ENABLE_AI && Config.ENABLE_CHEAT) {
             var btnAI = new ccui.Button(
                 "game/board/btn_orange.png",
                 "game/board/btn_orange.png"

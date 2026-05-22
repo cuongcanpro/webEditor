@@ -108,9 +108,8 @@ CoreGame.GameUI = cc.Layer.extend({
             this.oldStarBeforePlay = 0;
         }
 
-        // AI agent (gated by GeneralConfig)
         this._aiAgent = null;
-        if (generalConfig.isActiveAI()) {
+        if (Config.ENABLE_AI) {
             CoreGame.EventMgr.on("turnFinished", function () {
                 if (self._aiAgent) self._aiAgent.onTurnReady();
             }, this);

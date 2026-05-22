@@ -3,9 +3,10 @@ var Config = function () {
 
 };
 
-Config.ENABLE_CHEAT = false;
+Config.ENABLE_CHEAT = true;
 Config.ENABLE_DEVICE_CHEAT = true;
 Config.ENABLE_W32_CHEAT = true;
+Config.ENABLE_AI = true;
 
 Config.SERVER = {
     LIVE : {
