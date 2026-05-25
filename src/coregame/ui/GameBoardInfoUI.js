@@ -642,7 +642,7 @@ GameBoardInfoUI = BaseLayer.extend({
             cc.callFunc(function () {
                 if (cc.sys.isObjectValid(nodeTarget) && nodeTarget.collectElement) {
                     nodeTarget.collectElement(-1);
-                    if (nodeTarget.spr && nodeTarget.spr.numberOfRunningActions() == 0) {
+                    if (nodeTarget.spr && nodeTarget.spr.numberOfRunningActions && nodeTarget.spr.numberOfRunningActions() == 0) {
                         nodeTarget.spr.runAction(cc.spawn(
                             cc.sequence(
                                 cc.scaleTo(0.15, 1.2, 0.9).easing(cc.easeSineIn()),
