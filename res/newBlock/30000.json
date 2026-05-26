@@ -1,0 +1,31 @@
+{
+    "description": "Đèn Lồng Hắc Ám — toả vùng 3x3 bo tròn. Mọi blocker trong vùng bị CHẶN 100% side-match (text 'CHẶN'). PU pass through (damage FULL). Lantern itself only dies from PU. Spec: docs/superpowers/specs/2026-05-26-phase1-blockers-design.md §6.1",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "onSpawn": [
+            { "name": "AddShieldAuraAction", "config": { "radius": 1, "shape": "rounded_square" } }
+        ],
+        "onDeath": [
+            "RemoveShieldAuraAction"
+        ],
+        "sideMatch": [
+            { "name": "TakeDamageAction", "config": { "puOnly": true } }
+        ],
+        "match": [
+            { "name": "TakeDamageAction", "config": { "puOnly": true } }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/img/lantern_dark.png",
+        "type": 0
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 3,
+        "maxHP": 3
+    }
+}

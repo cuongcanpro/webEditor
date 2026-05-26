@@ -275,6 +275,16 @@ CoreGame.DropMgr = cc.Class.extend({
 
             for (var i = 0; i < colIndices.length; i++) {
                 var c = colIndices[i];
+                // Phase 1 — Mỏ Neo column lock: suspend gravity within a
+                // locked column. Gems already in it stay put; no fall, no
+                // diagonal flow originating in or terminating in this col.
+                // (Edge case: diagonal pull from an OUTSIDE column into the
+                // locked column is not blocked here — designer guards via
+                // map layout; revisit if observed.)
+                // See docs/superpowers/specs/2026-05-26-phase1-blockers-design.md §5.
+                var bmgr = this.boardMgr.blockerMgr;
+                if (bmgr && bmgr.columnLockMgr && bmgr.columnLockMgr.isColumnLocked(c)) continue;
+
                 if (this.isReverseCol(c)) {
                     // ── Reverse column: elements rise (row rows-1 is the "floor") ──
                     for (var r = rows - 1; r > 0; r--) {
@@ -491,6 +501,11 @@ CoreGame.DropMgr = cc.Class.extend({
         var hasSpawn = false;
 
         for (var c = 0; c < this.boardMgr.cols; c++) {
+            // Phase 1 — Mỏ Neo column lock: no new spawns into locked cols.
+            // See docs/superpowers/specs/2026-05-26-phase1-blockers-design.md §5.
+            var bmgr = this.boardMgr.blockerMgr;
+            if (bmgr && bmgr.columnLockMgr && bmgr.columnLockMgr.isColumnLocked(c)) continue;
+
             if (this.isReverseCol(c)) {
                 hasSpawn = this._spawnReverseCol(c) || hasSpawn;
             } else {

@@ -9,9 +9,18 @@ CoreGame.BlockerMgr = cc.Class.extend({
     boardMgr: null,
     cloudExplodedThisTurn: false,
 
+    // Sub-managers for AOE / column-level blocker effects (Phase 1 spec).
+    shieldMgr: null,
+    columnLockMgr: null,
+
     ctor: function (boardMgr) {
         this.boardMgr = boardMgr;
         this.cloudExplodedThisTurn = false;
+        // Owned by BlockerMgr so TakeDamageAction / DropMgr can reach them
+        // via element.boardMgr.blockerMgr.{shieldMgr,columnLockMgr}.
+        // See docs/superpowers/specs/2026-05-26-phase1-blockers-design.md §1.
+        this.shieldMgr = new CoreGame.ShieldMgr(this);
+        this.columnLockMgr = new CoreGame.ColumnLockMgr(this);
         this.initEventListeners();
     },
 

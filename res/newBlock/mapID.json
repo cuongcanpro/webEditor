@@ -34,5 +34,7 @@
     "CatShootPU": 13010,
     "HiddenCatShootPU_Visible": 13020,
     "HiddenCatShootPU_Hidden": 13021,
-    "ColorCabinet": 18000
+    "ColorCabinet": 18000,
+    "LanternDark": 30000,
+    "AnchorRusty": 30100
 }

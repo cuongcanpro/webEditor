@@ -20,7 +20,7 @@ CoreGame.SpriteElementUI = CoreGame.ElementUI.extend({
     initSprite: function () {
         if (this.spritePath) {
             this.sprite = new cc.Sprite(this.spritePath);
-            // this.sprite.setScale(0.5);
+            this.sprite.setScale(CoreGame.ElementUI.GEM_SCALE);
             this.addChild(this.sprite);
         }
     }

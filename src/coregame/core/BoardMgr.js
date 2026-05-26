@@ -327,6 +327,13 @@ CoreGame.BoardMgr = cc.Class.extend({
             this.boardUI.addElementAvatar(element);
 
             element.updateVisualPosition(); // Position correctly (now handles 2x2 offset)
+
+            // Lifecycle hook: blocker `onSpawn` fires here (not in Blocker.init)
+            // because element.boardMgr is set above — actions like
+            // AddShieldAuraAction / LockColumnAction need to query blockerMgr,
+            // which is only reachable through boardMgr.
+            // See docs/superpowers/specs/2026-05-26-phase1-blockers-design.md §2.
+            if (element._fireCustomHook) element._fireCustomHook('onSpawn');
         }
     },
 

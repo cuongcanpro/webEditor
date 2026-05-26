@@ -17,10 +17,34 @@ CoreGame.Strategies.TakeDamageAction = CoreGame.Strategies.NormalAction.extend({
      * @returns {boolean} true if condition is met
      */
     checkCondition: function (element, context) {
-        if (element.canTakeDamage(context.matchColor)) {
-            return true;
+        if (!element.canTakeDamage(context.matchColor)) return false;
+
+        // Phase 1 guards — Đèn Lồng aura + Mỏ Neo puOnly.
+        // Reuses the existing discriminator: PU damage carries
+        // `context.puActivationId` (set by the PU variable-damage system,
+        // commit c4c5262b0). Non-PU damage has it undefined.
+        // See docs/superpowers/specs/2026-05-26-phase1-blockers-design.md §4.
+        var isPU = context && context.puActivationId !== undefined;
+        if (isPU) return true;
+
+        var bm = element && element.boardMgr && element.boardMgr.blockerMgr;
+        var r = element.position ? element.position.x : -1;
+        var c = element.position ? element.position.y : -1;
+
+        // Guard 1 — Đèn Lồng aura: non-PU damage on a shielded cell is blocked.
+        if (bm && bm.shieldMgr && bm.shieldMgr.isCellShielded(r, c)) {
+            bm.shieldMgr.showBlockedFx(r, c);
+            return false;
         }
-        return false;
+
+        // Guard 2 — Mỏ Neo (puOnly flag on the action config): blocker is
+        // immune to non-PU damage entirely.
+        if (this.configData && this.configData.puOnly) {
+            if (bm && bm.shieldMgr) bm.shieldMgr.showBlockedFx(r, c);
+            return false;
+        }
+
+        return true;
     },
 
     /**
@@ -36,10 +60,18 @@ CoreGame.Strategies.TakeDamageAction = CoreGame.Strategies.NormalAction.extend({
             // exactly once per activation, regardless of how many of its
             // cells the PU clipped. Non-monster blockers fall through and
             // keep their per-cell damage model.
+            cc.log("Execute TakeDamageMonster === ", JSON.stringify(context));
             var actId = context.puActivationId;
             if (actId !== undefined) {
-                if (element._lastPUActivationId === actId) return;
-                element._lastPUActivationId = actId;
+                if (!element._lastPUActivationId) {
+                    element._lastPUActivationId = {};
+                }
+
+                if (element._lastPUActivationId[actId]) {
+                    return;
+                }
+
+                element._lastPUActivationId[actId] = true;
             }
             var configured = context.damage;
             if (configured) dmg = configured;

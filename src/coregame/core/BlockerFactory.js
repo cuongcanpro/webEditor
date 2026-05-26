@@ -53,8 +53,18 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp) {
         blocker.configData = config.configData;
         blocker.rawConfig = config;
 
-        // Initialize with default HP
-        blocker.init.apply(blocker, arguments);
+        // Use config hitPoints as default when the map doesn't specify HP.
+        // config.configData.hitPoints is the designer-declared starting HP.
+        var effectiveHp = hp || (config.configData && (config.configData.hitPoints || config.configData.maxHP));
+        blocker.init(row, col, typeId, effectiveHp);
+
+        // Factory-config blockers must NOT be treated as monsters even if their
+        // typeId falls in the monster range (>= BASE_MONSTER_TYPE = 10000).
+        // Monsters have dedicated sound entries and UI hooks that do not apply
+        // to JSON-driven blockers like Đèn Lồng (30000) or Mỏ Neo (30100).
+        // Without this override, takeDamage() crashes in fr.Sound.playMonsterSound
+        // when it tries to index resSound.monster["30000"] which is undefined.
+        blocker.isMonster = function () { return false; };
 
         // Set Size
         if (config.width !== undefined && config.height !== undefined) {

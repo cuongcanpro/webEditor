@@ -113,6 +113,11 @@ CoreGame.Blocker = CoreGame.ElementObject.extend({
             fr.Sound.playMonsterSound(this.type, this.hitPoints <= 0 ? "defeated" : "hurt");
         }
         if (this.hitPoints <= 0) {
+            // Lifecycle hook: fire `onDeath` BEFORE removal so shield/lock
+            // tear-down (Đèn Lồng aura, Mỏ Neo column lock) happens before
+            // cascade — letting same-turn damage / drop flow through correctly.
+            // See docs/superpowers/specs/2026-05-26-phase1-blockers-design.md §2.
+            this._fireCustomHook('onDeath');
             this.doExplode(row, col);
         } else {
             this.ui.playTakeDamageEffect(amount, row, col);
@@ -150,6 +155,30 @@ CoreGame.Blocker = CoreGame.ElementObject.extend({
      */
     getTypeName: function () {
         return 'blocker';
+    },
+
+    /**
+     * Fire all actions registered under a custom hook key (e.g. 'onSpawn',
+     * 'onDeath'). Mirrors the dispatch pattern used by sideMatch / match /
+     * endTurn — looks up `this.actions[hookName]` (populated by
+     * BlockerFactory from the JSON `customAction` map) and runs each action
+     * whose `checkCondition` passes.
+     *
+     * Backward compatible: blockers that don't declare a hook get an empty
+     * array from getActions() and this is a no-op.
+     *
+     * See docs/superpowers/specs/2026-05-26-phase1-blockers-design.md §2.
+     */
+    _fireCustomHook: function (hookName) {
+        var actions = this.getActions ? this.getActions(hookName) : (this.actions && this.actions[hookName]);
+        if (!actions || !actions.length) return;
+        var ctx = { hook: hookName };
+        for (var i = 0; i < actions.length; i++) {
+            var act = actions[i];
+            if (!act) continue;
+            if (typeof act.checkCondition === 'function' && !act.checkCondition(this, ctx)) continue;
+            if (typeof act.execute === 'function') act.execute(this, ctx);
+        }
     }
 });
 
