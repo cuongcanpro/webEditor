@@ -23,11 +23,14 @@ CoreGame.ShieldMgr = cc.Class.extend({
 
     // Map lantern uid -> cc.DrawNode overlay on the board.
     _overlayNodes: null,
+    // Map lantern uid -> radius (stored so redrawAll can replay without a lantern ref).
+    _overlayParams: null,
 
     ctor: function (blockerMgr) {
         this.blockerMgr = blockerMgr;
         this._shieldedCells = {};
         this._overlayNodes = {};
+        this._overlayParams = {};
     },
 
     /**
@@ -115,6 +118,31 @@ CoreGame.ShieldMgr = cc.Class.extend({
 
         lantern.ui.addChild(node, -1);
         this._overlayNodes[uid] = node;
+        this._overlayParams[uid] = radius;
+    },
+
+    /**
+     * Redraw all active overlays. Call after a scene transition where cc.DrawNode
+     * VBO content may have been invalidated (e.g., returning from PlayTest).
+     */
+    redrawAll: function () {
+        var cellSize = CoreGame.Config.CELL_SIZE;
+        for (var uid in this._overlayNodes) {
+            var node = this._overlayNodes[uid];
+            var radius = this._overlayParams[uid];
+            if (!node || radius === undefined) continue;
+            node.clear();
+            var side = (radius * 2 + 1) * cellSize;
+            var half = side / 2;
+            var inset = cellSize * 0.1;
+            node.drawRect(
+                cc.p(-half + inset, -half + inset),
+                cc.p(half - inset, half - inset),
+                cc.color(120, 80, 200, 60),
+                2,
+                cc.color(160, 100, 255, 220)
+            );
+        }
     },
 
     _removeOverlay: function (uid) {
@@ -122,6 +150,7 @@ CoreGame.ShieldMgr = cc.Class.extend({
         if (node) {
             node.removeFromParent(true);
             delete this._overlayNodes[uid];
+            delete this._overlayParams[uid];
         }
     },
 

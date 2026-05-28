@@ -489,7 +489,7 @@ CoreGame.ElementObject = cc.Class.extend({
         if (this.rawConfig && this.rawConfig.visual.path != "") {
             if (this.rawConfig.visual.type == 0) {
                 cc.log("createUIInstance", JSON.stringify(this.rawConfig));
-                return new CoreGame.SpriteElementUI(this, this.rawConfig.visual.path);
+                return new CoreGame.SpriteElementUI(this, this.rawConfig.visual.path, this._placeholderSpriteScale || 1);
             }
 
             if (this.rawConfig.visual.type == 1)

@@ -22,7 +22,7 @@ CoreGame.BlockerFactory._mapIdData = null; // Store mapID.json contents
  * @param {number} hp - The health of the blocker
  * @param {function} callback - Callback function(err, blocker)
  */
-CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp) {
+CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp, cells) {
     var blocker = null;
     if (CoreGame.ElementObject.map[typeId]) {
         // Use standard creation for registered types
@@ -52,16 +52,29 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp) {
 
         blocker.configData = config.configData;
         blocker.rawConfig = config;
+        blocker._placeholderSpriteScale = 0.5;
+
+        // Use HP-aware UI only for static-sprite blockers (visual.type === 0).
+        // Animation types (1=Spine, 2=Custom) are handled by the base
+        // ElementObject.createUIInstance which selects the right UI class.
+        if (config.visual && config.visual.type === 0 && !(blocker instanceof CoreGame.TentacleBlocker)) {
+            (function (b) {
+                b.createUIInstance = function () {
+                    var path = this.rawConfig && this.rawConfig.visual && this.rawConfig.visual.path;
+                    return new CoreGame.FactoryBlockerUI(this, path, this._placeholderSpriteScale || 1);
+                };
+            })(blocker);
+        }
 
         // Use config hitPoints as default when the map doesn't specify HP.
         // config.configData.hitPoints is the designer-declared starting HP.
         var effectiveHp = hp || (config.configData && (config.configData.hitPoints || config.configData.maxHP));
-        blocker.init(row, col, typeId, effectiveHp);
+        blocker.init(row, col, typeId, effectiveHp, cells || null);
 
         // Factory-config blockers must NOT be treated as monsters even if their
         // typeId falls in the monster range (>= BASE_MONSTER_TYPE = 10000).
         // Monsters have dedicated sound entries and UI hooks that do not apply
-        // to JSON-driven blockers like Đèn Lồng (30000) or Mỏ Neo (30100).
+        // to JSON-driven blockers like Đèn Lồng (30000) or Bạch Tuộc (30200).
         // Without this override, takeDamage() crashes in fr.Sound.playMonsterSound
         // when it tries to index resSound.monster["30000"] which is undefined.
         blocker.isMonster = function () { return false; };

@@ -1,0 +1,25 @@
+{
+    "description": "Xúc Tú Bạch Tuộc — tentacle extends from whirlpool cell (cells[0]) toward tip (cells[last]). Each side-match or PU hit removes the tip cell (shrinks by 1). Cells within Đèn Lồng 3x3 are protected from sideMatch by shieldMgr. Map placement: set cells array to define shape and direction.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            { "name": "TakeDamageAction" }
+        ],
+        "match": [
+            { "name": "TakeDamageAction" }
+        ]
+    },
+    "visual": {
+        "path": "",
+        "type": 0
+    },
+    "type": "TentacleBlocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 5,
+        "maxHP": 5
+    }
+}

@@ -308,6 +308,7 @@ CoreGame.AdaptiveTPP = {
      * @param {Object} [turnInfo]      Optional per-turn stats from BoardMgr
      */
     onTurnEnd: function (movesUsed, targetsCleared, turnInfo) {
+        if (!this._rawDeviationLog) return; // not initialized via startLevel
         this._turnCount++;
 
         // Accumulate per-turn board stats

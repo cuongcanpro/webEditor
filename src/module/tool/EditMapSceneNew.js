@@ -140,6 +140,7 @@ var EditMapSceneNew = cc.Layer.extend({
     onEnter: function () {
         this._super();
         this._applyResolution(true);
+        this._refreshBoardVisuals();
     },
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -913,7 +914,7 @@ var EditMapSceneNew = cc.Layer.extend({
             containerSize,
             function (type, name) {
                 self.selectedType = type;
-                self.selectedHP = 1;
+                self.selectedHP = (type === 30200) ? 5 : 1;
                 self.activeDynamicBlocker = null;
                 self.deleteMode = false;
                 self.spawnMode = false;
@@ -1080,7 +1081,9 @@ var EditMapSceneNew = cc.Layer.extend({
         }
 
         if (this.selectedType !== null && this.selectedType !== undefined) {
-            if (this._isDynamicBlockerType(this.selectedType)) {
+            if (this._isTentacleType(this.selectedType)) {
+                this._handleTentacleClick(row, col);
+            } else if (this._isDynamicBlockerType(this.selectedType)) {
                 this._handleDynamicBlockerClick(row, col);
             } else {
                 if (this._canPlaceElement(row, col, this.selectedType)) {
@@ -1089,6 +1092,45 @@ var EditMapSceneNew = cc.Layer.extend({
             }
             this.updateMetrics();
         }
+    },
+
+    _isTentacleType: function (type) {
+        return type === 30200;
+    },
+
+    _computeTentacleCells: function (anchorRow, anchorCol, length, direction) {
+        var dr = 0, dc = 0;
+        // Row 0 is at the top of the screen; increasing row goes downward.
+        // So visual UP = decreasing row (-1), visual DOWN = increasing row (+1).
+        if (direction === "UP")    { dr = -1; dc =  0; }
+        if (direction === "DOWN")  { dr =  1; dc =  0; }
+        if (direction === "LEFT")  { dr =  0; dc =  1; }
+        if (direction === "RIGHT") { dr =  0; dc = -1; }
+
+        var bm = this.boardUI.boardMgr;
+        var cells = [];
+        for (var i = 0; i < length; i++) {
+            var r = anchorRow + dr * i;
+            var c = anchorCol + dc * i;
+            if (r < 0 || r >= bm.rows || c < 0 || c >= bm.cols) break;
+            cells.push({ r: r, c: c });
+        }
+        return cells;
+    },
+
+    _handleTentacleClick: function (row, col) {
+        var bm = this.boardUI.boardMgr;
+        var slot = bm.mapGrid[row] && bm.mapGrid[row][col];
+        if (slot) {
+            for (var i = 0; i < slot.listElement.length; i++) {
+                if (slot.listElement[i].type === this.selectedType) return;
+            }
+        }
+        var hp = this.selectedHP;
+        var direction = this.setElementConfigUI ? this.setElementConfigUI.getDirection() : "RIGHT";
+        var cells = this._computeTentacleCells(row, col, hp, direction);
+        if (cells.length === 0) return;
+        this.boardUI.addElement(row, col, this.selectedType, hp, cells);
     },
 
 
@@ -1726,6 +1768,31 @@ var EditMapSceneNew = cc.Layer.extend({
     // ─────────────────────────────────────────────────────────────────────────
     // Lifecycle
     // ─────────────────────────────────────────────────────────────────────────
+    _refreshBoardVisuals: function () {
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        if (!bm) return;
+        // Re-render DrawNode-based UIs (TentacleUI, etc.) that may lose VBO content
+        // after a scene transition (PlayTest back).
+        var seen = {};
+        for (var r = 0; r < bm.rows; r++) {
+            for (var c = 0; c < bm.cols; c++) {
+                var slot = bm.mapGrid[r] && bm.mapGrid[r][c];
+                if (!slot || !slot.listElement) continue;
+                for (var i = 0; i < slot.listElement.length; i++) {
+                    var el = slot.listElement[i];
+                    if (!el || seen[el]) continue;
+                    seen[el] = true;
+                    if (el.ui && typeof el.ui.updateVisual === 'function') {
+                        el.ui.updateVisual();
+                    }
+                }
+            }
+        }
+        // Redraw ShieldMgr overlays (Đèn Lồng aura DrawNodes).
+        var sm = bm.blockerMgr && bm.blockerMgr.shieldMgr;
+        if (sm && typeof sm.redrawAll === 'function') sm.redrawAll();
+    },
+
     onExit: function () {
         this._super();
         // EditMapSceneNew.instance.removeFromParent(true);

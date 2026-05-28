@@ -182,10 +182,15 @@ CoreGame.MatchMgr = cc.Class.extend({
             }
         }
 
-        // Context for nearby notification
+        // Context for nearby notification.
+        // matchActivationId is a unique counter used by TakeDamageAction to
+        // deduplicate elements (e.g. TentacleBlocker) that span multiple cells:
+        // one match group can trigger sideMatch on several of their cells, but
+        // they should only take damage once per match group.
         var nearbyContext = {
             matchColor: matchColor,
-            group: group
+            group: group,
+            matchActivationId: ++CoreGame.MatchMgr._matchActivationCounter
         };
 
         // Notify nearby slots
@@ -509,6 +514,8 @@ CoreGame.MatchMgr = cc.Class.extend({
 });
 
 /** Map PU type constant to readable name. */
+CoreGame.MatchMgr._matchActivationCounter = 0;
+
 CoreGame.MatchMgr.puTypeName = function (type) {
     var PU = CoreGame.PowerUPType;
     switch (type) {

@@ -28,8 +28,11 @@ CoreGame.Strategies.TakeDamageAction = CoreGame.Strategies.NormalAction.extend({
         if (isPU) return true;
 
         var bm = element && element.boardMgr && element.boardMgr.blockerMgr;
-        var r = element.position ? element.position.x : -1;
-        var c = element.position ? element.position.y : -1;
+        // Use the slot position from context (set by onMatchNearby/matchElement).
+        // For multi-cell elements (TentacleBlocker) this is the specific cell being
+        // hit, not the anchor/whirlpool position stored in element.position.
+        var r = (context && context.row !== undefined) ? context.row : (element.position ? element.position.x : -1);
+        var c = (context && context.col !== undefined) ? context.col : (element.position ? element.position.y : -1);
 
         // Guard 1 — Đèn Lồng aura: non-PU damage on a shielded cell is blocked.
         if (bm && bm.shieldMgr && bm.shieldMgr.isCellShielded(r, c)) {
@@ -55,27 +58,45 @@ CoreGame.Strategies.TakeDamageAction = CoreGame.Strategies.NormalAction.extend({
     execute: function (element, context) {
         cc.log("Execute TakeDamageAction === " + context.matchColor);
         var dmg = 1;
-        if (CoreGame.ElementObject.isMonsterType(element.type)) {
-            // Flat-once-per-activation: a monster/boss takes the PU's damage
-            // exactly once per activation, regardless of how many of its
-            // cells the PU clipped. Non-monster blockers fall through and
-            // keep their per-cell damage model.
-            cc.log("Execute TakeDamageMonster === ", JSON.stringify(context));
-            var actId = context.puActivationId;
-            if (actId !== undefined) {
-                if (!element._lastPUActivationId) {
-                    element._lastPUActivationId = {};
-                }
+        var actId = context.puActivationId;
 
-                if (element._lastPUActivationId[actId]) {
-                    return;
-                }
-
-                element._lastPUActivationId[actId] = true;
+        if (actId !== undefined) {
+            // Deduplicate: every element takes PU damage exactly once per
+            // activation, no matter how many cells the PU swept past it.
+            // (Monsters previously had this guard; non-monsters need it too
+            // because a rocket's sideMatch events fire on each swept neighbor.)
+            if (!element._lastPUActivationId) {
+                element._lastPUActivationId = {};
             }
-            var configured = context.damage;
-            if (configured) dmg = configured;
+            if (element._lastPUActivationId[actId]) {
+                return;
+            }
+            element._lastPUActivationId[actId] = true;
+
+            // Monsters get the designer-configured damage; all other elements
+            // (factory blockers, standard blockers) take exactly 1 HP.
+            if (element.isMonster()) {
+                cc.log("Execute TakeDamageMonster === ", JSON.stringify(context));
+                var configured = context.damage;
+                if (configured) dmg = configured;
+            }
         }
+
+        // Per-match dedup for elements that opt in via _dedupPerMatch (e.g.
+        // TentacleBlocker): a single match group may touch several of their cells
+        // and should only deal 1 damage total regardless of how many cells it
+        // contacts.  Uses matchActivationId added by MatchMgr.processMatchGroup.
+        var matchActId = context.matchActivationId;
+        if (matchActId !== undefined && element._dedupPerMatch) {
+            if (!element._lastMatchActivationId) {
+                element._lastMatchActivationId = {};
+            }
+            if (element._lastMatchActivationId[matchActId]) {
+                return;
+            }
+            element._lastMatchActivationId[matchActId] = true;
+        }
+
         element.takeDamage(dmg, context.matchColor, context.row, context.col);
     }
 });

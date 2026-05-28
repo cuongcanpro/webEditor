@@ -8,6 +8,12 @@ var SetElementConfigUI = cc.Node.extend({
     hpInput: null,
     currentElement: null,
     onConfigChangeCallback: null,
+    // Direction row (shown only for TentacleBlocker type 30200)
+    directionRow: null,
+    currentDirection: "RIGHT",
+    _dirBtns: null,
+
+    TENTACLE_TYPE: 30200,
 
     /**
      * Constructor
@@ -17,7 +23,7 @@ var SetElementConfigUI = cc.Node.extend({
         this._super();
 
         this.onConfigChangeCallback = onConfigChangeCallback;
-        this.setContentSize(300, 120);
+        this.setContentSize(300, 160);
 
         this.initUI();
         this.setVisible(false); // Hidden by default
@@ -30,16 +36,16 @@ var SetElementConfigUI = cc.Node.extend({
     initUI: function () {
         var self = this;
 
-        // Create container background (larger size)
+        // Create container background
         this.container = new ccui.Layout();
         this.container.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
         this.container.setBackGroundColor(cc.color(50, 50, 60));
-        this.container.setContentSize(300, 120);
+        this.container.setContentSize(300, 160);
         this.addChild(this.container);
 
         // Add title
         var title = new cc.LabelTTF("Element Config", "Arial", 18);
-        title.setPosition(150, 95);
+        title.setPosition(150, 135);
         title.setColor(cc.color(255, 255, 255));
         this.container.addChild(title);
 
@@ -50,13 +56,53 @@ var SetElementConfigUI = cc.Node.extend({
         btnClose.setContentSize(30, 30);
         btnClose.setTitleText("X");
         btnClose.setTitleFontSize(18);
-        btnClose.setPosition(280, 95);
+        btnClose.setPosition(280, 135);
         btnClose.addTouchEventListener(function (sender, type) {
             if (type === ccui.Widget.TOUCH_ENDED) {
                 self.setVisible(false);
             }
         });
         this.container.addChild(btnClose);
+
+        // Direction row for TentacleBlocker (hidden by default)
+        this.directionRow = new ccui.Layout();
+        this.directionRow.setContentSize(300, 40);
+        this.directionRow.setPosition(0, 90);
+        this.directionRow.setVisible(false);
+        this.container.addChild(this.directionRow);
+
+        var dirLabel = new cc.LabelTTF("Dir:", "Arial", 16);
+        dirLabel.setPosition(25, 20);
+        dirLabel.setColor(cc.color(255, 255, 255));
+        dirLabel.setAnchorPoint(0, 0.5);
+        this.directionRow.addChild(dirLabel);
+
+        var DIRS = [
+            { label: "←", key: "LEFT",  x: 75  },
+            { label: "↑", key: "UP",    x: 120 },
+            { label: "↓", key: "DOWN",  x: 165 },
+            { label: "→", key: "RIGHT", x: 210 }
+        ];
+        this._dirBtns = {};
+        for (var di = 0; di < DIRS.length; di++) {
+            (function (d) {
+                var b = new ccui.Button();
+                b.loadTextureNormal("res/tool/res/bgCell.png");
+                b.setScale9Enabled(true);
+                b.setContentSize(36, 32);
+                b.setTitleText(d.label);
+                b.setTitleFontSize(20);
+                b.setPosition(d.x, 20);
+                b.addTouchEventListener(function (sender, type) {
+                    if (type === ccui.Widget.TOUCH_ENDED) {
+                        self._setDirection(d.key);
+                    }
+                });
+                self.directionRow.addChild(b);
+                self._dirBtns[d.key] = b;
+            })(DIRS[di]);
+        }
+        this._setDirection("RIGHT");
 
         // Add HP label
         this.hpLabel = new cc.LabelTTF("HP:", "Arial", 20);
@@ -131,6 +177,19 @@ var SetElementConfigUI = cc.Node.extend({
         this.container.addChild(infoLabel);
     },
 
+    _setDirection: function (key) {
+        this.currentDirection = key;
+        for (var k in this._dirBtns) {
+            if (this._dirBtns[k]) {
+                this._dirBtns[k].setColor(k === key ? cc.color(80, 200, 80) : cc.color(255, 255, 255));
+            }
+        }
+    },
+
+    getDirection: function () {
+        return this.currentDirection;
+    },
+
     /**
      * Set element to configure
      * @param {number} type - Element type ID
@@ -159,17 +218,20 @@ var SetElementConfigUI = cc.Node.extend({
         cc.log("Element config  : ", JSON.stringify(element.configData));
         var maxHP = element.configData ? element.configData.maxHP : 1;
 
-        // Only show if maxHP > 1
-        if (maxHP > 1) {
+        var isTentacle = (type === this.TENTACLE_TYPE);
+
+        // Show for tentacle (always) or any element with maxHP > 1
+        if (maxHP > 1 || isTentacle) {
             this.currentElement = {
                 type: type,
-                maxHP: maxHP
+                maxHP: maxHP || 5
             };
-            this.maxHpLabel.setString("/ " + maxHP);
-            this.hpInput.setString("1");
+            this.maxHpLabel.setString("/ " + (maxHP || 5));
+            this.hpInput.setString(isTentacle ? "5" : "1");
+            // Show/hide direction row
+            if (this.directionRow) this.directionRow.setVisible(isTentacle);
             this.setVisible(true);
-
-            cc.log("SetElementConfigUI: Element type", type, "has maxHP", maxHP);
+            cc.log("SetElementConfigUI: Element type", type, "has maxHP", maxHP, "isTentacle:", isTentacle);
         } else {
             this.setVisible(false);
             this.currentElement = null;

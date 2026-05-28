@@ -299,7 +299,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         } else {
             // Fallback to BlockerFactory for unregistered types (JSON-based blockers)
             cc.log("Type", type, "not registered, using BlockerFactory");
-            var blocker = CoreGame.BlockerFactory.createBlocker(row, col, type, hp);
+            var blocker = CoreGame.BlockerFactory.createBlocker(row, col, type, hp, cells || null);
             this.addElement(blocker, row, col);
             blocker.updateVisualByActions();
             blocker.ui.setVisibleLbState(true);
@@ -808,6 +808,20 @@ CoreGame.BoardMgr = cc.Class.extend({
                                     lowestHP = att.hitPoints;
                                 }
                             }
+                        }
+                    }
+                }
+
+                // Also treat damageable blockers as priority targets even when
+                // they are not explicit level objectives (e.g. Mỏ Neo, Đèn Lồng).
+                if (!isTarget) {
+                    for (var e2 = 0; e2 < slot.listElement.length; e2++) {
+                        var bl = slot.listElement[e2];
+                        var isFactoryBlocker = !!bl.rawConfig;
+                        var isCodeBlocker = CoreGame.Blocker && (bl instanceof CoreGame.Blocker);
+                        if ((isFactoryBlocker || isCodeBlocker) && bl.hitPoints > 0) {
+                            isTarget = true;
+                            if (bl.hitPoints < lowestHP) lowestHP = bl.hitPoints;
                         }
                     }
                 }
