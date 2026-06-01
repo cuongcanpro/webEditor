@@ -160,26 +160,46 @@ CoreGame.Config.BOSS_LIST = [
 // and always take 1 per hit (see TakeDamageAction.execute).
 CoreGame.Config.PU_DAMAGE = {};
 
-//Rocket
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_H] = 4;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_V] = 4;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU4_PU4] = 4;
 
-//Bomb
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_T] = 3;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_L] = 3;
-
-//Bomb+
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5TL_PU5TL] = 3;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU4_PU5TL] = 3;
-
-//Plane
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_SQUARE] = 5;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PUS_PU] = 5;
-
-//Disco
+//Base
+/** Rocket */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_H] = 8;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_4_V] = 8;
+/** Bomb */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_T] = 10;
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_L] = 10;
+/** Plane */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_SQUARE] = 6;
+/** Disco */
 CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.MATCH_5] = 1;
-CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5_PU5] = 5;
+
+//Merge
+/** Rocket + Rocket */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU4_PU4] = 14;
+/** Rocket + Bomb */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU4_PU5TL] = 12;
+/** Rocket + Plane */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PUS_PU4] = 12;
+/** Rocket + Disco */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5_PU4] = 6;
+
+//Merge
+/** Bomb + Bomb (BombPlus) */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5TL_PU5TL] = 16;
+/** Bomb + Plane */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PUS_PU5TL] = 16;
+/** Bomb + Disco */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5_PU5TL] = 6;
+
+//Merge
+/** Plane + Plane */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PUS_PUS] = 6;
+/** Plane + Disco */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5_PUS] = 4;
+
+//Merge
+/** Disco + Disco */
+CoreGame.Config.PU_DAMAGE[CoreGame.Config.ElementType.PU5_PU5] = 20;
 
 // Whitelist of blocker typeIds that count as monster/boss for variable PU
 // damage. Designer-populated. Empty = feature dormant (everything takes 1).
