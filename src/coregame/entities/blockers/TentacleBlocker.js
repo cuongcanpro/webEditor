@@ -5,6 +5,7 @@
  * cells[last] = đuôi (tip, farthest from whirlpool)
  *
  * Each takeDamage(1) removes the tip cell (shrinks from the tail).
+ * Exception: when only 2 cells remain, one hit kills both (skips the 1-cell stub).
  * When cells.length reaches 0 the tentacle disappears.
  *
  * Đèn Lồng protection: handled automatically by shieldMgr inside
@@ -58,6 +59,14 @@ CoreGame.TentacleBlocker = CoreGame.DynamicBlocker.extend({
             this.boardMgr.removeElementAt(this, tipCell.r, tipCell.c);
         }
         this.cells.splice(tipIdx, 1);
+
+        // When only 1 cell remains after the hit (was 2), kill the whole tentacle
+        // in one shot — the player shouldn't need to hit a single-cell stub.
+        if (this.cells.length === 1) {
+            var lastCell = this.cells[0];
+            if (this.boardMgr) this.boardMgr.removeElementAt(this, lastCell.r, lastCell.c);
+            this.cells.splice(0, 1);
+        }
 
         if (this.cells.length === 0) {
             this.doExplode(tipCell.r, tipCell.c);

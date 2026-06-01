@@ -77,7 +77,7 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp, cells) {
         // to JSON-driven blockers like Đèn Lồng (30000) or Bạch Tuộc (30200).
         // Without this override, takeDamage() crashes in fr.Sound.playMonsterSound
         // when it tries to index resSound.monster["30000"] which is undefined.
-        blocker.isMonster = function () { return false; };
+        // blocker.isMonster = function () { return false; };
 
         // Set Size
         if (config.width !== undefined && config.height !== undefined) {

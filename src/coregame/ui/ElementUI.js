@@ -204,6 +204,7 @@ CoreGame.ElementUI = cc.Node.extend({
      * @param {number} amount - damage dealt (positive integer)
      */
     playLoseLifeEffect: function (amount) {
+        cc.log("playLoseLifeEffect === " + amount);
         var parent = this.getParent();
         if (!parent) return;
 
@@ -273,6 +274,7 @@ CoreGame.ElementUI = cc.Node.extend({
         }
 
         var lbl = new cc.LabelBMFont(String(amount), "res/modules/font/gotHit.fnt");
+        lbl = ccui.Text.create(String(amount), "font/BalooPaaji2-Bold.ttf", 100);
 
         // Spawn slightly above element center, in parent space, with a tiny
         // random horizontal jitter so stacked labels across elements don't

@@ -1123,6 +1123,7 @@ var EditMapSceneNew = cc.Layer.extend({
         var slot = bm.mapGrid[row] && bm.mapGrid[row][col];
         if (slot) {
             for (var i = 0; i < slot.listElement.length; i++) {
+                
                 if (slot.listElement[i].type === this.selectedType) return;
             }
         }
