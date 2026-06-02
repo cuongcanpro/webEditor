@@ -147,7 +147,15 @@ CoreGame.Config.ElementType = {
     BOSS_RAT_CANDY: 14000,
     BOSS_BUNNY: 15000,
     BOSS_BUNNY_ELITE: 16000,
-    BOSS_ELITE: 17000
+    BOSS_ELITE: 17000,
+
+    // Saga 3 blockers (L171–L338). 14000/14001 reuse legacy prototype IDs
+    // (CountdownBlocker / QueueColorBlocker / BOSS_RAT_CANDY) — see mapID.json
+    // for the production names.
+    RED_SAND_OVERLAY: 707,
+    HOURGLASS_MONSTER: 14000,
+    HIEROGLYPH_STONE: 14001,
+    ANUBIS_DISCIPLE: 14200
 };
 
 CoreGame.Config.BOSS_LIST = [

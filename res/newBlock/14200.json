@@ -1,0 +1,43 @@
+{
+    "description": "Học Trò Anubis (L215, 2x2, HP=6): monster Saga 3 hấp thụ năng lượng PU. Design B+D inverted — side-match thường → -1 HP (số đỏ cam). PU heal +1 HP (số xanh, clamp ≤ maxHP). NGOẠI LỆ: Disco lẻ (puType=103, pure color destruction = vật lý) → -1 HP. MỌI PU khác (rocket 101/106, bomb 102, plane 104/105, Rainbow 7+ÚP nếu có) + MỌI combo (300-311 bao gồm Disco combos 305/306/309/310/311) → heal +1. Player vẫn bùng PU thoả mãn, chỉ né Disco lẻ. Discipline soft, vẫn ý nghĩa.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "NonPUTakeDamageAction",
+                "config": {
+                    "_damagePUTypes": [103]
+                }
+            },
+            {
+                "name": "InvertedHealOnPUAction",
+                "config": {
+                    "_healAmount": 1,
+                    "_damagePUTypes": [103]
+                }
+            }
+        ],
+        "match": [
+            {
+                "name": "InvertedHealOnPUAction",
+                "config": {
+                    "_healAmount": 1,
+                    "_damagePUTypes": [103]
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/img/saga3_anubis_disciple.png",
+        "type": 0
+    },
+    "type": "Blocker",
+    "width": 2,
+    "height": 2,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 6,
+        "maxHP": 6
+    }
+}

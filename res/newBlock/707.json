@@ -1,0 +1,27 @@
+{
+    "description": "Cát Đỏ Overlay (1x1, HP=1): spawn từ Quái Đồng Hồ Cát (14000) khi timer cát =0. PHỦ LÊN TRÊN blocker/gem sẵn có (layerBehavior=OVERLAY giống Mây) — KHÔNG xoá/replace cái dưới; player phá cát trước rồi mới xử lý blocker dưới. Damage logic = Thùng Gỗ HP=1: chặn ô, KHÔNG tự nhân như Cloud, side-match adjacent hoặc PU hit → phá ngay 1 hit. Không có color restriction (khác 701-706 ColorBox).",
+    "baseAction": [
+        "MATCH"
+    ],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "match": [
+            "TakeDamageAction"
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/img/saga3_red_sand.png",
+        "type": 0
+    },
+    "type": "Blocker",
+    "width": 1,
+    "height": 1,
+    "layerBehavior": "OVERLAY",
+    "configData": {
+        "hitPoints": 1,
+        "maxHP": 1
+    }
+}

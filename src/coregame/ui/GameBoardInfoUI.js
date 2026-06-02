@@ -467,32 +467,49 @@ GameBoardInfoUI = BaseLayer.extend({
                 }
 
                 this.nodeMonster.setVisible(true);
-                // imgMonsterName is an image per monster instead of a label.
-                // TODO: finalize the art path convention; current placeholder
-                // loads a texture keyed by element.id from the monster art folder.
-                this.imgMonsterName.loadTexture(
-                    "res/modules/game/gui/start_game/monsterName_"
-                    + fr.Localization.getLang()
-                    + "/imgMonsterName_" + element.id + ".png"
-                );
-                this.imgSmallAvatar.loadTexture(
-                    "res/modules/game/element/icon/" + element.id + ".png"
-                );
-                this.imgIconExtraInfo.loadTexture(
-                    "res/modules/game/gui/start_game/imgIcon_" + element.id + ".png"
-                );
-                this.lbExtraInfo.setString(fr.Localization.text(
-                    "lang_boss_intro_" + element.id + "_des"
-                ));
+                // Each loadTexture / lang lookup / spine load is wrapped
+                // defensively: new monsters (e.g. Saga 3 L171 14000) may not
+                // have full art / localization / spine assets yet, but the
+                // simulation must still launch with placeholder behaviour
+                // instead of throwing and blocking Play.
+                try {
+                    this.imgMonsterName.loadTexture(
+                        "res/modules/game/gui/start_game/monsterName_"
+                        + fr.Localization.getLang()
+                        + "/imgMonsterName_" + element.id + ".png"
+                    );
+                } catch (e) { cc.log("monsterName asset missing for " + element.id); }
+                try {
+                    this.imgSmallAvatar.loadTexture(
+                        "res/modules/game/element/icon/" + element.id + ".png"
+                    );
+                } catch (e) { cc.log("smallAvatar asset missing for " + element.id); }
+                try {
+                    this.imgIconExtraInfo.loadTexture(
+                        "res/modules/game/gui/start_game/imgIcon_" + element.id + ".png"
+                    );
+                } catch (e) { cc.log("iconExtra asset missing for " + element.id); }
+                try {
+                    var bossDesKey = "lang_boss_intro_" + element.id + "_des";
+                    var bossDes = fr.Localization && fr.Localization.text
+                        ? fr.Localization.text(bossDesKey) : "";
+                    if (!bossDes || bossDes === bossDesKey) bossDes = "";
+                    this.lbExtraInfo.setString(bossDes);
+                } catch (e) { this.lbExtraInfo.setString(""); }
 
                 this.nodeMonsterSprite.removeAllChildren();
-                if (resAni["spine_" + element.id + "_main"]) {
-                    let spine = gv.createSpineAnimation(resAni["spine_" + element.id + "_main"]);
-                    this.nodeMonsterSprite.addChild(spine);
-                    spine.setAnimation(0, config.anim, true);
-                    spine.setScale(config.scale);
-                    spine.setPosition(config.offset);
-                }
+                try {
+                    var spinePath = resAni["spine_" + element.id + "_main"];
+                    if (spinePath && gv && typeof gv.createSpineAnimation === "function") {
+                        let spine = gv.createSpineAnimation(spinePath);
+                        if (spine) {
+                            this.nodeMonsterSprite.addChild(spine);
+                            spine.setAnimation(0, config.anim, true);
+                            spine.setScale(config.scale);
+                            spine.setPosition(config.offset);
+                        }
+                    }
+                } catch (e) { cc.log("spine load failed for " + element.id + ": " + (e && e.message)); }
 
                 //
                 this.nodeObjectives.setVisible(false);

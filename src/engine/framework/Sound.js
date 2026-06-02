@@ -43,11 +43,15 @@ fr.Sound.playGemMatchSound = function (counted = 0) {
 };
 
 fr.Sound.playMonsterSound = function (monsterId, soundId) {
-    let soundPath = resSound.monster[monsterId.toString()][soundId];
+    // Defensive: monsters without sound config (e.g. new Saga 3 blockers
+    // 14000/14001/14200) silently skip rather than crashing on undefined lookup.
+    var monsterSounds = resSound && resSound.monster && resSound.monster[monsterId.toString()];
+    if (!monsterSounds) return;
+    var soundPath = monsterSounds[soundId];
+    if (!soundPath) return;
     if (Array.isArray(soundPath)) {
         soundPath = soundPath[Math.floor(Math.random() * soundPath.length)];
     }
-
     fr.Sound.playSoundEffect(soundPath);
 };
 

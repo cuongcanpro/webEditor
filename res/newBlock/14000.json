@@ -1,52 +1,38 @@
 {
-    "description": "Blocker Đếm Ngược 1x1: hiển thị bộ đếm bắt đầu từ 4. Mỗi endTurn -1. Khi countdown = 0 → action_0: spawn 4 Thùng Gỗ (700) ngẫu nhiên trên board rồi tự remove. Player có thể match trực tiếp để phá sớm (HP=2). TODO: cần verify SpawnElementAction tự destroy parent sau khi spawn — nếu không, thêm self-destroy trigger.",
-    "baseAction": [
-        "MATCH",
-        "SWAP"
-    ],
+    "description": "Quái Đồng Hồ Cát (L171, 2x2, HP=5): monster Saga 3 ONE-SHOT. Timer 4 lượt đếm ngược (hiện qua lbState). Lượt 0: xả Cát Đỏ (707, HP=1) ở ring quanh quái (_skipUnder, không đè quái) MỘT LẦN DUY NHẤT — sau đó timer biến mất, sprite swap sang variant 'empty hourglass' (hết cát, mắt khép, tay rủ). Quái KHÔNG chết sau xả, vẫn cần đập hết HP bằng side-match/PU. Auto HP bar + HPLabel qua SpriteElementUI cho monster type ≥10000.",
+    "baseAction": [],
     "unblockAction": [],
     "customAction": {
+        "sideMatch": [
+            "TakeDamageAction"
+        ],
         "match": [
             "TakeDamageAction"
         ],
         "endTurn": [
             {
-                "name": "ChangeAttributeAction",
+                "name": "PeriodicAroundSpawnAction",
                 "config": {
-                    "fieldName": "countdown",
-                    "delta": -1,
-                    "defaultValue": 4
-                }
-            },
-            {
-                "name": "CheckAttributeAction",
-                "config": {
-                    "fieldName": "countdown",
-                    "targetValue": 0,
-                    "actionKey": "action_0"
-                }
-            }
-        ],
-        "action_0": [
-            {
-                "name": "RandomSpawnElementAction",
-                "config": {
-                    "type": 700,
-                    "numRandom": 4
+                    "period": 4,
+                    "type": 707,
+                    "_skipUnder": true,
+                    "_oneShot": true,
+                    "_spentVisualPath": "res/newBlock/BlockUI/img/saga3_hourglass_monster_empty.png",
+                    "displayLabel": true
                 }
             }
         ]
     },
     "visual": {
-        "path": "res/newBlock/BlockUI/block_countdown.json",
-        "type": 2
+        "path": "res/newBlock/BlockUI/img/saga3_hourglass_monster.png",
+        "type": 0
     },
     "type": "Blocker",
-    "width": 1,
-    "height": 1,
+    "width": 2,
+    "height": 2,
     "layerBehavior": "EXCLUSIVE",
     "configData": {
-        "hitPoints": 2,
-        "maxHP": 2
+        "hitPoints": 5,
+        "maxHP": 5
     }
 }

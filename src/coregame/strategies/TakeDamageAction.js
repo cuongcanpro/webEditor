@@ -214,6 +214,198 @@ CoreGame.Strategies.CollectTakeDamageAction = CoreGame.Strategies.TakeDamageActi
     }
 });
 
+/**
+ * QueueResetableTakeDamageAction
+ * Queue match-in-order with RESET on wrong color. Used by L193 Đá Tượng Hình.
+ */
+CoreGame.Strategies.QueueResetableTakeDamageAction = CoreGame.Strategies.TakeDamageAction.extend({
+    configData: {
+        _queueTypeIds: []
+    },
+    _initialQueue: null,
+
+    ctor: function () {
+        this._super();
+    },
+
+    setConfigData: function (config) {
+        this._super(config);
+        if (this.configData && this.configData._queueTypeIds) {
+            this._initialQueue = this.configData._queueTypeIds.slice();
+        }
+    },
+
+    updateVisual: function (element) {
+        if (element && element.ui && element.ui.updateLabelState) {
+            element.ui.updateLabelState(JSON.stringify(this.configData._queueTypeIds));
+        }
+    },
+
+    checkCondition: function (element, context) {
+        if (context && context.puActivationId !== undefined) return false;
+        if (!context || context.matchColor === undefined) return false;
+        if (!this.configData._queueTypeIds || this.configData._queueTypeIds.length === 0) return false;
+        return true;
+    },
+
+    execute: function (element, context) {
+        var queue = this.configData._queueTypeIds;
+        var head = queue[0];
+        if (context.matchColor === head) {
+            // Correct color: consume one layer (HP -1) + advance queue.
+            // Going through takeDamage routes Box-style damage frames /
+            // updateVisual through the engine, so the sprite tier matches HP.
+            queue.shift();
+            element.takeDamage(1, context.matchColor, context.row, context.col);
+            if (element.ui && element.ui.playStepProgressEffect) {
+                element.ui.playStepProgressEffect(this._initialQueue.length - queue.length);
+            }
+            this.updateVisual(element);
+        } else {
+            // Wrong color: reset the color sequence but keep HP (the
+            // player's PROGRESS on layers is preserved — only the colour
+            // memory restarts).
+            if (this._initialQueue) {
+                this.configData._queueTypeIds = this._initialQueue.slice();
+            }
+            if (element.ui && element.ui.playResetEffect) {
+                element.ui.playResetEffect();
+            }
+            this.updateVisual(element);
+        }
+    },
+
+    getQueueTypeIds: function () {
+        return this.configData._queueTypeIds;
+    }
+});
+
+/**
+ * QueuePUShiftAction - PU bypass for L193: shift queue regardless of color.
+ */
+CoreGame.Strategies.QueuePUShiftAction = CoreGame.Strategies.NormalAction.extend({
+    configData: {
+        _shiftSteps: 1
+    },
+
+    ctor: function () {
+        this._super();
+    },
+
+    checkCondition: function (element, context) {
+        if (!context) return false;
+        // Only fire on PU activations. Match context carries type='powerup'
+        // when the source is a PU (set by MatchMgr.processMatchGroup).
+        // puActivationId is dead code in this codebase — never assigned.
+        if (context.type !== 'powerup') return false;
+        if (context.group && element._lastMatchPUGroup === context.group) return false;
+        return true;
+    },
+
+    execute: function (element, context) {
+        if (context.group) element._lastMatchPUGroup = context.group;
+        var queueAction = null;
+        var sideMatchActions = element.getActions(CoreGame.ElementObject.ACTION_TYPE.SIDE_MATCH) || [];
+        for (var i = 0; i < sideMatchActions.length; i++) {
+            if (sideMatchActions[i] instanceof CoreGame.Strategies.QueueResetableTakeDamageAction
+                || sideMatchActions[i] instanceof CoreGame.Strategies.QueueTakeDamageAction) {
+                queueAction = sideMatchActions[i];
+                break;
+            }
+        }
+        var hpBefore = element.hitPoints;
+        var steps = this.configData._shiftSteps || 1;
+        for (var s = 0; s < steps; s++) {
+            if (element.hitPoints <= 0) break;
+            if (queueAction && queueAction.configData._queueTypeIds.length > 0) {
+                queueAction.configData._queueTypeIds.shift();
+            }
+            element.takeDamage(1, context.matchColor, context.row, context.col);
+        }
+        cc.log("[QueuePU] act=" + context.puActivationId + " elem=" + element.type
+            + " hpBefore=" + hpBefore + " hpAfter=" + element.hitPoints
+            + " queueLen=" + (queueAction ? queueAction.configData._queueTypeIds.length : "n/a"));
+        if (queueAction && queueAction.updateVisual) queueAction.updateVisual(element);
+    }
+});
+
+/**
+ * NonPUTakeDamageAction
+ * Standard sideMatch damage with two safeguards for inversion blockers
+ * (L215 Anubis): dedup per match group (so a multi-cell adjacent match
+ * doesn't multi-damage) AND deferred apply via a microtask so a sibling
+ * heal action firing later in the same tick can mark the group as PU and
+ * cancel the damage.
+ */
+CoreGame.Strategies.NonPUTakeDamageAction = CoreGame.Strategies.TakeDamageAction.extend({
+    configData: {
+        // Whitelist of PU types that STILL damage this blocker (Anubis:
+        // [103] = pure Disco alone — strips magic, deals damage). All
+        // other puTypes (rocket/bomb/plane + Disco combos like 306/309/
+        // 310/311/305) are absorbed by the InvertedHealOnPUAction sibling.
+        _damagePUTypes: []
+    },
+
+    ctor: function () {
+        this._super();
+    },
+
+    /**
+     * Fires for normal gem matches (no puType) and for puTypes explicitly
+     * listed in _damagePUTypes. All other PU sources are skipped — they
+     * route through InvertedHealOnPUAction (heal).
+     * `context.puType` is the true PU marker (set by every PU class).
+     */
+    checkCondition: function (element, context) {
+        if (!context || context.matchColor === undefined) return false;
+        if (context.puType !== undefined) {
+            // PU source — only damage if in whitelist.
+            var dmgList = this.configData._damagePUTypes || [];
+            if (dmgList.indexOf(context.puType) === -1) return false;
+        }
+        if (!element.canTakeDamage(context.matchColor)) return false;
+        return true;
+    }
+});
+
+/**
+ * InvertedHealOnPUAction
+ * PU activation HEALS the blocker. Used by L215 Anubis. Detects PU via
+ * context.type==='powerup' (set by MatchMgr for direct PU hits) — works
+ * because puActivationId is dead code in this codebase. Dedup per match
+ * group ref to avoid multi-heal from multi-cell PU clips.
+ */
+CoreGame.Strategies.InvertedHealOnPUAction = CoreGame.Strategies.NormalAction.extend({
+    configData: {
+        _healAmount: 1,
+        // Blacklist of PU types that DON'T heal (instead damage via the
+        // NonPU sibling). Anubis design: lone Disco (103) is pure color
+        // destruction → damages. Every other PU (rocket/bomb/plane) +
+        // every COMBO involving Disco (306/309/310/311/305) is elemental
+        // magic and heals.
+        _damagePUTypes: []
+    },
+
+    ctor: function () {
+        this._super();
+    },
+
+    checkCondition: function (element, context) {
+        if (!context) return false;
+        if (context.puType === undefined) return false;
+        var dmgList = this.configData._damagePUTypes || [];
+        if (dmgList.indexOf(context.puType) !== -1) return false;
+        if (typeof element.heal !== 'function') return false;
+        return true;
+    },
+
+    execute: function (element, context) {
+        var amount = this.configData._healAmount || 1;
+        element.heal(amount, context.matchColor, context.row, context.col);
+        cc.log("[Anubis] HEAL +" + amount + " from puType=" + context.puType + " hp=" + element.hitPoints);
+    }
+});
+
 CoreGame.Strategies.MatchColorTakeDamageAction = CoreGame.Strategies.TakeDamageAction.extend({
     configData: {
         _matchColor: -1,

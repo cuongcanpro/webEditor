@@ -1,11 +1,11 @@
 {
-    "description": "Blocker Theo Thứ Tự 1x1: phải side-match gem theo đúng thứ tự queue [1, 2, 3]. Mỗi match đúng → shift khỏi queue. Hoàn thành queue → blocker vỡ. CAVEAT: QueueTakeDamageAction hiện tại KHÔNG hỗ trợ 'reset on wrong color' — match sai màu chỉ bị bỏ qua. Để có reset, cần extend strategy: thêm logic 'nếu matchColor != queue[0] thì restore queue về ban đầu'.",
+    "description": "Khối Đá Tượng Hình (L193, 2x2, HP=3 = 3 layers GIỐNG THÙNG GỖ — KHÔNG phải monster). Sprite có 3 vòng tròn xếp tam giác; vòng tròn ứng với màu queue head hiện tại sáng lên màu đó (gem 1=Green, 2=Blue, 3=Red), các vòng đã match chuyển sang xám tối. Side-match đúng màu queue → -1 HP + advance queue + sprite swap. Side-match sai màu → reset queue về [1,2,3] (HP giữ). PU = -1 HP + advance 1 step (dedup per activation). HP=0 → vỡ. noHPPrompt=true (đặt là HP=3 ngay), noMonsterHPBar=true (skip thanh máu monster).",
     "baseAction": [],
     "unblockAction": [],
     "customAction": {
         "sideMatch": [
             {
-                "name": "QueueTakeDamageAction",
+                "name": "QueueResetableTakeDamageAction",
                 "config": {
                     "_queueTypeIds": [
                         1,
@@ -13,19 +13,40 @@
                         3
                     ]
                 }
+            },
+            {
+                "name": "QueuePUShiftAction",
+                "config": {
+                    "_shiftSteps": 1
+                }
+            }
+        ],
+        "match": [
+            {
+                "name": "QueuePUShiftAction",
+                "config": {
+                    "_shiftSteps": 1
+                }
             }
         ]
     },
     "visual": {
-        "path": "res/newBlock/BlockUI/block_queue_lock.json",
-        "type": 2
+        "path": "res/newBlock/BlockUI/img/saga3_hieroglyph_stone.png",
+        "type": 0
     },
     "type": "Blocker",
-    "width": 1,
-    "height": 1,
+    "width": 2,
+    "height": 2,
     "layerBehavior": "EXCLUSIVE",
     "configData": {
         "hitPoints": 3,
-        "maxHP": 3
+        "maxHP": 3,
+        "noMonsterHPBar": true,
+        "noHPPrompt": true,
+        "_hpVisualPaths": {
+            "3": "res/newBlock/BlockUI/img/saga3_hieroglyph_stone.png",
+            "2": "res/newBlock/BlockUI/img/saga3_hieroglyph_stone_hp2.png",
+            "1": "res/newBlock/BlockUI/img/saga3_hieroglyph_stone_hp1.png"
+        }
     }
 }

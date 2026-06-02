@@ -1,0 +1,43 @@
+{
+    "description": "Học Trò Anubis 3x3 (L215+, biến thể 3x3 của 14200): dùng cho ô từng là Kong/KongElite 3x3. Logic y hệt Anubis 2x2 — side-match thường → -1 HP (số đỏ cam); PU heal +1 HP (clamp ≤ maxHP); NGOẠI LỆ Disco lẻ (puType=103) → -1 HP; mọi PU/combo khác → heal +1. Khác 14200 duy nhất ở footprint 3x3 + HP cao hơn (boss lớn). Auto HP bar cho monster.",
+    "baseAction": [],
+    "unblockAction": [],
+    "customAction": {
+        "sideMatch": [
+            {
+                "name": "NonPUTakeDamageAction",
+                "config": {
+                    "_damagePUTypes": [103]
+                }
+            },
+            {
+                "name": "InvertedHealOnPUAction",
+                "config": {
+                    "_healAmount": 1,
+                    "_damagePUTypes": [103]
+                }
+            }
+        ],
+        "match": [
+            {
+                "name": "InvertedHealOnPUAction",
+                "config": {
+                    "_healAmount": 1,
+                    "_damagePUTypes": [103]
+                }
+            }
+        ]
+    },
+    "visual": {
+        "path": "res/newBlock/BlockUI/img/saga3_anubis_disciple.png",
+        "type": 0
+    },
+    "type": "Blocker",
+    "width": 3,
+    "height": 3,
+    "layerBehavior": "EXCLUSIVE",
+    "configData": {
+        "hitPoints": 10,
+        "maxHP": 10
+    }
+}

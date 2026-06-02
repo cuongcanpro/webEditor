@@ -203,7 +203,85 @@ var EditMapSceneNew = cc.Layer.extend({
 
             self.setupElementSelector();
             self.setupLevelSelector();
+
+            // Default starting layout: 4 gem colors (1-4) + top row marked
+            // as spawn source (seeds drop from there).
+            self._applyDefaultLevelLayout();
         });
+    },
+
+    /**
+     * Apply the "default first level" baseline a designer expects when they
+     * open the editor or hit New:
+     *   - gem colors 1-4 active (5,6 disabled)
+     *   - top row of slots marked canSpawn (blue tint)
+     * Idempotent — called from onEnter init and btnNew handler.
+     */
+    _applyDefaultLevelLayout: function () {
+        cc.log("[default-layout] applying: 4 colors + top spawn row + fill 1-4");
+        if (this.boardUI && typeof this.boardUI.removeAllElements === "function") {
+            this.boardUI.removeAllElements();
+        }
+        // Gem colors 1-4 only.
+        if (this._gemColorActive && this._colorButtons) {
+            for (var i = 0; i < this._gemColorActive.length; i++) {
+                var want = i < 4;
+                this._gemColorActive[i] = want;
+                if (this._colorButtons[i]) {
+                    this._updateGemColorBtn(this._colorButtons[i], want);
+                }
+            }
+        }
+        if (!this.boardUI || !this.boardUI.boardMgr) {
+            cc.log("[default-layout] WARN: boardUI/boardMgr not ready");
+            return;
+        }
+        var bm = this.boardUI.boardMgr;
+        var topRow = bm.rows - 1;
+
+        // Top row → spawn source (blue tint).
+        var marked = 0;
+        for (var c = 0; c < bm.cols; c++) {
+            var slot = bm.mapGrid && bm.mapGrid[topRow] ? bm.mapGrid[topRow][c] : null;
+            if (!slot) continue;
+            if (typeof this.boardUI.enableSlot === "function") {
+                this.boardUI.enableSlot(topRow, c, true);
+            }
+            slot.canSpawn = true;
+            if (slot.bg) slot.bg.setColor(cc.color(100, 220, 255));
+            marked++;
+        }
+        cc.log("[default-layout] topRow=" + topRow + " spawn slots marked=" + marked);
+
+        // Fill every enabled cell with a random gem from colors 1-4.
+        // Avoid match-3 at spawn by rejecting colors that would create a
+        // horizontal or vertical triple with already-placed neighbours.
+        var placed = 0;
+        var typedGrid = [];
+        for (var r = 0; r < bm.rows; r++) {
+            typedGrid[r] = [];
+            for (var cc2 = 0; cc2 < bm.cols; cc2++) {
+                var s = bm.mapGrid && bm.mapGrid[r] ? bm.mapGrid[r][cc2] : null;
+                if (!s) continue;
+                var palette = [1, 2, 3, 4];
+                // Forbid matching the two cells immediately below / left to
+                // prevent an instant 3-in-a-row.
+                var below1 = r >= 1 ? typedGrid[r - 1][cc2] : null;
+                var below2 = r >= 2 ? typedGrid[r - 2][cc2] : null;
+                var left1 = cc2 >= 1 ? typedGrid[r][cc2 - 1] : null;
+                var left2 = cc2 >= 2 ? typedGrid[r][cc2 - 2] : null;
+                var forbidden = {};
+                if (below1 && below1 === below2) forbidden[below1] = true;
+                if (left1 && left1 === left2) forbidden[left1] = true;
+                var pick = palette.filter(function (t) { return !forbidden[t]; });
+                if (pick.length === 0) pick = palette;
+                var t = pick[Math.floor(Math.random() * pick.length)];
+                this.boardUI.addElement(r, cc2, t, 1);
+                typedGrid[r][cc2] = t;
+                placed++;
+            }
+        }
+        cc.log("[default-layout] filled gems placed=" + placed);
     },
 
     /**
@@ -321,6 +399,8 @@ var EditMapSceneNew = cc.Layer.extend({
                             self._btnDifficulty.setTitleText("Easy");
                         }
                         self.updateMetrics();
+                        // Re-apply default starting layout (4 colors + top spawn row).
+                        self._applyDefaultLevelLayout();
                     }
                 });
             }

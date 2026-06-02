@@ -135,6 +135,34 @@ CoreGame.Blocker = CoreGame.ElementObject.extend({
     },
 
     /**
+     * Heal the blocker. Used by inversion mechanics (e.g. Anubis L215
+     * where PU hits restore HP instead of dealing damage). Clamped to maxHP
+     * so heals can't push past the spawn-time bar size.
+     */
+    heal: function (amount, sourceTypeId, row, col) {
+        if (this.hitPoints <= 0) return;
+        if (amount <= 0) return;
+        var cap = this.maxHP || (this.configData && this.configData.maxHP) || this.hitPoints;
+        var actual = Math.min(amount, cap - this.hitPoints);
+        if (actual <= 0) return;
+        this.hitPoints += actual;
+        this.updateHPBar();
+        if (this.isMonster()) {
+            dispatcherMgr.dispatchEvent(
+                'updateHpMonster',
+                { element: this, hp: this.hitPoints, maxHp: this.maxHP || this.configData.maxHP }
+            );
+            if (this.ui && typeof this.ui.playHealEffect === 'function') {
+                this.ui.playHealEffect(actual);
+            } else if (this.ui && typeof this.ui.playLoseLifeEffect === 'function') {
+                this.ui.playLoseLifeEffect(-actual);
+            }
+            if (typeof fr !== 'undefined' && fr.Sound) fr.Sound.playMonsterSound(this.type, "heal");
+        }
+        this.updateVisual();
+    },
+
+    /**
      * Update visual based on remaining hit points
      */
     updateVisual: function () {

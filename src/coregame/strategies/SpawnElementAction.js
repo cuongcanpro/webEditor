@@ -36,7 +36,11 @@ CoreGame.Strategies.SpawnElementAction = CoreGame.Strategies.NormalAction.extend
 
 CoreGame.Strategies.AroundSpawnElementAction = CoreGame.Strategies.NormalAction.extend({
     configData: {
-        type: 0
+        type: 0,
+        // When true, do NOT spawn on cells UNDER the parent — only the ring
+        // around it. Needed for monsters like L171 Đồng Hồ Cát where the
+        // monster must survive after spawning overlay tiles around itself.
+        _skipUnder: false
     },
 
     ctor: function () {
@@ -81,9 +85,13 @@ CoreGame.Strategies.AroundSpawnElementAction = CoreGame.Strategies.NormalAction.
 
         // Spawn elements UNDER the parent element (level 2)
         // Cover area from (r, c) to (r + height - 1, c + width - 1)
-        for (var i = 0; i < height; i++) {
-            for (var j = 0; j < width; j++) {
-                this.createElementAtSlot(r + i, c + j, 2);
+        // Skipped when _skipUnder=true so the parent (e.g. a multi-cell
+        // monster) is not overwritten by the spawn.
+        if (!this.configData._skipUnder) {
+            for (var i = 0; i < height; i++) {
+                for (var j = 0; j < width; j++) {
+                    this.createElementAtSlot(r + i, c + j, 2);
+                }
             }
         }
 
@@ -138,6 +146,83 @@ CoreGame.Strategies.AroundSpawnElementAction = CoreGame.Strategies.NormalAction.
         // Create new element at this slot
         var newElement = this.boardMgr.addNewElement(row, col, this.configData.type, level);
         cc.log("  Created new element at level", level);
+    }
+});
+
+/**
+ * PeriodicAroundSpawnAction
+ * Timer + AroundSpawn. Used by L171 Đồng Hồ Cát.
+ * - Counts down `period` endTurns, then spawns once around (ring only when
+ *   _skipUnder).
+ * - If `_oneShot=true` (default): after spawning, becomes spent — timer
+ *   hidden, sprite swapped to `_spentVisualPath`, no more spawns.
+ * - If `_oneShot=false`: timer resets, cycles forever.
+ */
+CoreGame.Strategies.PeriodicAroundSpawnAction = CoreGame.Strategies.AroundSpawnElementAction.extend({
+    configData: {
+        period: 4,
+        type: 0,
+        _skipUnder: true,
+        _oneShot: true,
+        _spentVisualPath: "",
+        displayLabel: true
+    },
+
+    ctor: function () {
+        this._super();
+    },
+
+    _readTimer: function (element) {
+        if (!element.customData) element.customData = {};
+        if (element.customData._periodicTimer === undefined) {
+            element.customData._periodicTimer = this.configData.period;
+        }
+        return element.customData._periodicTimer;
+    },
+
+    _writeTimer: function (element, v) {
+        if (!element.customData) element.customData = {};
+        element.customData._periodicTimer = v;
+        if (this.configData.displayLabel && element.ui && element.ui.updateLabelState) {
+            element.ui.updateLabelState(String(v));
+            if (element.ui.lbState && element.ui.lbState.setVisible) {
+                element.ui.lbState.setVisible(true);
+            }
+        }
+    },
+
+    _markSpent: function (element) {
+        if (!element.customData) element.customData = {};
+        element.customData._spent = true;
+        if (element.ui && element.ui.lbState && element.ui.lbState.setVisible) {
+            element.ui.lbState.setVisible(false);
+        }
+        if (this.configData._spentVisualPath && element.ui && element.ui.sprite) {
+            try {
+                var tex = cc.textureCache.addImage(this.configData._spentVisualPath);
+                if (tex) element.ui.sprite.setTexture(tex);
+            } catch (e) {
+                cc.log("PeriodicAroundSpawnAction: sprite swap failed", e && e.message);
+            }
+        }
+    },
+
+    checkCondition: function (element) {
+        return !(element.customData && element.customData._spent);
+    },
+
+    execute: function (element, context) {
+        var t = this._readTimer(element) - 1;
+        if (t <= 0) {
+            this._super(element, context);
+            if (this.configData._oneShot) {
+                this._markSpent(element);
+            } else {
+                this._writeTimer(element, this.configData.period);
+            }
+        } else {
+            this._writeTimer(element, t);
+        }
     }
 });
 

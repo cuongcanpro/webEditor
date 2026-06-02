@@ -217,6 +217,7 @@ var SetElementConfigUI = cc.Node.extend({
         cc.log("Element max hp: ", element.configData.maxHP);
         cc.log("Element config  : ", JSON.stringify(element.configData));
         var maxHP = element.configData ? element.configData.maxHP : 1;
+        var noPrompt = element.configData && element.configData.noHPPrompt;
 
         var isTentacle = (type === this.TENTACLE_TYPE);
 
