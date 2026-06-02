@@ -30,17 +30,63 @@ var ElementSelectorUI = cc.Node.extend({
         this.ITEMS_PER_ROW = Math.max(1, Math.floor((size.width - this.ITEM_PADDING) / (this.ITEM_WIDTH + this.ITEM_PADDING)));
 
         this.initScrollView(size);
+        this.setupMouseWheel();
         this.loadElements();
+    },
+
+    /**
+     * Enable mouse wheel scrolling for the scroll view (web/desktop).
+     * ccui.ScrollView only handles touch drag, so we manually move the inner
+     * container on wheel events — but only while the cursor is over the list,
+     * so we don't hijack scrolling elsewhere on screen.
+     */
+    setupMouseWheel: function () {
+        var self = this;
+        // Pixels scrolled per wheel notch. Browser wheelDelta is usually ±120,
+        // so 0.5 ≈ one item row per notch. Flip the sign of SPEED if it feels reversed.
+        var SPEED = -0.5;
+
+        var listener = cc.EventListener.create({
+            event: cc.EventListener.MOUSE,
+            onMouseScroll: function (event) {
+                if (!self.scrollView) return;
+
+                // Is the cursor over the scroll view? (work in scrollView node space)
+                var loc = event.getLocation();
+                var p = self.scrollView.convertToNodeSpace(loc);
+                var s = self.scrollView.getContentSize();
+                if (p.x < 0 || p.x > s.width || p.y < 0 || p.y > s.height) return;
+
+                var inner = self.scrollView.getInnerContainer();
+                var innerH = inner.getContentSize().height;
+                var viewH = s.height;
+                if (innerH <= viewH) return; // nothing to scroll
+
+                // Inner container (anchor bottom-left): y ranges from (viewH-innerH)
+                // [top of content visible] to 0 [bottom of content visible].
+                var minY = viewH - innerH;
+                var maxY = 0;
+                var newY = inner.getPositionY() + event.getScrollY() * SPEED;
+                if (newY < minY) newY = minY;
+                if (newY > maxY) newY = maxY;
+                inner.setPositionY(newY);
+            }
+        });
+        // Scene-graph priority: auto-removed when this node is cleaned up.
+        cc.eventManager.addListener(listener, this);
+        this._mouseListener = listener;
     },
 
     /**
      * Initialize scroll view container
      */
     initScrollView: function (size) {
-        // Create scroll view
+        // Create scroll view filling the full panel.
         this.scrollView = new ccui.ScrollView();
         this.scrollView.setDirection(ccui.ScrollView.DIR_VERTICAL);
-        this.scrollView.setContentSize(size);
+        this.scrollView.setContentSize(cc.size(size.width, size.height));
+        this.scrollView.setAnchorPoint(cc.p(0, 0));
+        this.scrollView.setPosition(0, 0);
         this.scrollView.setBounceEnabled(true);
         this.addChild(this.scrollView);
 
@@ -65,6 +111,22 @@ var ElementSelectorUI = cc.Node.extend({
         var powerIds = [];
         var blockerIds = [];
 
+        // Readable per-type names for power-ups (PowerUP.getTypeName() returns a
+        // generic 'powerup' for all of them, so every entry looked identical).
+        var PU_NAMES = {};
+        // Power-up type ids to hide from the palette: MATCH_L is the SAME class
+        // (BombPU) and produces the exact same bomb as MATCH_T — a pure
+        // duplicate when placing a pre-made power-up, so we only list one.
+        var PU_HIDE = {};
+        if (CoreGame.PowerUPType) {
+            PU_NAMES[CoreGame.PowerUPType.MATCH_4_H]   = "Rocket H"; // horizontal rocket
+            PU_NAMES[CoreGame.PowerUPType.MATCH_4_V]   = "Rocket V"; // vertical rocket
+            PU_NAMES[CoreGame.PowerUPType.MATCH_SQUARE] = "Plane";
+            PU_NAMES[CoreGame.PowerUPType.MATCH_5]     = "Rainbow";
+            PU_NAMES[CoreGame.PowerUPType.MATCH_T]     = "Bomb";
+            PU_HIDE[CoreGame.PowerUPType.MATCH_L]      = true;
+        }
+
         for (var typeId in CoreGame.ElementObject.map) {
             if (!CoreGame.ElementObject.map.hasOwnProperty(typeId)) continue;
             var id = parseInt(typeId, 10);
@@ -73,7 +135,7 @@ var ElementSelectorUI = cc.Node.extend({
             if (id >= 1 && id <= GEM_MAX) {
                 gemIds.push(id);
             } else if (CoreGame.PowerUP && Cls.prototype instanceof CoreGame.PowerUP) {
-                powerIds.push(id);
+                if (!PU_HIDE[id]) powerIds.push(id);
             } else {
                 blockerIds.push(id);
             }
@@ -102,11 +164,11 @@ var ElementSelectorUI = cc.Node.extend({
                 isGem: true
             });
         }
-        // Add power-ups
+        // Add power-ups (readable names; falls back to generic if unmapped)
         for (var p = 0; p < powerIds.length; p++) {
             this.elements.push({
                 type: powerIds[p],
-                name: getDisplayName(powerIds[p]),
+                name: PU_NAMES[powerIds[p]] || getDisplayName(powerIds[p]),
                 isPowerUp: true
             });
         }
@@ -150,15 +212,17 @@ var ElementSelectorUI = cc.Node.extend({
     populateGrid: function () {
         this.container.removeAllChildren();
 
-        var numRows = Math.ceil(this.elements.length / this.ITEMS_PER_ROW);
+        var visible = this.elements;
+
+        var numRows = Math.ceil(visible.length / this.ITEMS_PER_ROW);
         var containerHeight = numRows * (this.ITEM_HEIGHT + this.ITEM_PADDING) + this.ITEM_PADDING;
 
         this.container.setContentSize(this.scrollView.getContentSize().width, containerHeight);
         this.scrollView.setInnerContainerSize(cc.size(this.scrollView.getContentSize().width, containerHeight));
 
         // Create buttons in grid layout
-        for (var i = 0; i < this.elements.length; i++) {
-            var element = this.elements[i];
+        for (var i = 0; i < visible.length; i++) {
+            var element = visible[i];
             var row = Math.floor(i / this.ITEMS_PER_ROW);
             var col = i % this.ITEMS_PER_ROW;
 
@@ -183,21 +247,19 @@ var ElementSelectorUI = cc.Node.extend({
         var y = this.container.getContentSize().height - (row * (this.ITEM_HEIGHT + this.ITEM_PADDING) + this.ITEM_PADDING + this.ITEM_HEIGHT / 2);
         btn.setPosition(x, y);
 
-        // Set label
+        // Compute display name (the label node itself is created below, on top of the item)
         var displayName = element.name;
         if (displayName.length > 8) {
             displayName = displayName.substring(0, 7) + "..";
         }
-        btn.setTitleText(displayName);
-        btn.setTitleFontSize(14);
 
-        // Visual indicator for gem vs blocker
-        if (element.isGem) {
-            btn.setColor(cc.color(200, 255, 200)); // Light green for gems
-        } else {
-            btn.setColor(cc.color(255, 220, 200)); // Light orange for blockers
-        }
-        
+        // Visual indicator for gem vs blocker. Remember the base color so the
+        // selection highlight can be reverted on deselect.
+        btn._baseColor = element.isGem
+            ? cc.color(200, 255, 200)   // Light green for gems
+            : cc.color(255, 220, 200);  // Light orange for blockers
+        btn.setColor(btn._baseColor);
+
 
         // Store element data
         btn.elementType = element.type;
@@ -227,6 +289,16 @@ var ElementSelectorUI = cc.Node.extend({
         // Scale elementObject.ui to fit with btn
         var scale = elementObject.getScaleToFit(btn.getContentSize().width, btn.getContentSize().height);
         elementObject.ui.setScale(scale);
+
+        // Name label: rendered ON TOP of the item (high z-order) and anchored to the
+        // bottom edge of the cell instead of being vertically centered.
+        var nameLabel = new ccui.Text(displayName, "font/BalooPaaji2-Regular.ttf", 14);
+        nameLabel.enableOutline(cc.color(0, 0, 0, 255), 2);
+        nameLabel.setAnchorPoint(0.5, 0);
+        nameLabel.setPosition(btn.getContentSize().width / 2, 2);
+        // z-order above any item layer (LayerBehavior tops out at ATTACHMENT=30)
+        btn.addChild(nameLabel, 1000);
+
         return btn;
     },
 
@@ -241,11 +313,9 @@ var ElementSelectorUI = cc.Node.extend({
         for (var i = 0; i < buttons.length; i++) {
             var btn = buttons[i];
             if (btn.elementType === type) {
-                btn.setBright(true);
-                btn.setScale(1.1);
+                btn.setColor(ElementSelectorUI.SELECTED_COLOR); // highlight selected
             } else {
-                btn.setBright(false);
-                btn.setScale(1.0);
+                btn.setColor(btn._baseColor); // revert to base tint
             }
         }
 
@@ -266,8 +336,7 @@ var ElementSelectorUI = cc.Node.extend({
         // Reset all buttons to normal state
         var buttons = this.container.getChildren();
         for (var i = 0; i < buttons.length; i++) {
-            buttons[i].setBright(false);
-            buttons[i].setScale(1.0);
+            buttons[i].setColor(buttons[i]._baseColor);
         }
 
         cc.log("Cleared element selection");
@@ -292,3 +361,6 @@ var ElementSelectorUI = cc.Node.extend({
         return this.selectedType;
     }
 });
+
+// Highlight tint applied to the currently selected element cell.
+ElementSelectorUI.SELECTED_COLOR = cc.color(100, 255, 100); // bright green

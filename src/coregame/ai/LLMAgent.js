@@ -22,26 +22,44 @@ var _LLM_PU_LABEL = {
 };
 
 var _LLM_POWER_UPS = {101: true, 102: true, 103: true, 104: true, 105: true, 106: true};
-var _LLM_BLOCKERS  = {700: true, 10000: true};
+
+var _LLM_BLOCKER_CHAR = {
+    600:   "#",   // Chain (overlay, locks gem)
+    700:   "W",   // Wood / Box
+    900:   "@",   // Cloud (overlay, spreads)
+    1000:  "O",   // Donut (indestructible, drop to bottom)
+    5000:  "E",   // Egg (swappable blocker)
+    10000: "K",   // Kong (3×3 boss)
+    11001: "M",   // Monkey (2×2, moves each turn)
+    15000: "F",   // Khỉ Nâu (1×1 boss)
+    17000: "Q",   // Kong Mũ (3×3, moves each turn)
+};
+var _LLM_BLOCKERS = {
+    600: true, 700: true, 900: true, 1000: true,
+    5000: true, 10000: true, 11001: true, 15000: true, 17000: true,
+};
 
 function _llmCellChar(t) {
     if (t < 0)  return ".";               // · disabled
     if (t === 0) return " ";                   // empty
-    if (_LLM_GEM_LABEL[t])  return _LLM_GEM_LABEL[t];
-    if (_LLM_PU_LABEL[t])   return _LLM_PU_LABEL[t];
+    if (_LLM_GEM_LABEL[t])    return _LLM_GEM_LABEL[t];
+    if (_LLM_PU_LABEL[t])     return _LLM_PU_LABEL[t];
+    if (_LLM_BLOCKER_CHAR[t]) return _LLM_BLOCKER_CHAR[t];
     if (t <= 20) return String(t);
-    return "X";                                // blocker
+    return "?";                                // unknown
 }
 
 function _llmTargetLabel(tid) {
     var t = parseInt(tid, 10);
     if (isNaN(t)) return String(tid);
-    if (_LLM_GEM_LABEL[t])  return _LLM_GEM_LABEL[t];
-    if (_LLM_PU_LABEL[t])   return _LLM_PU_LABEL[t];
-    if (_LLM_BLOCKERS[t])   return "X";
-    if (t === 500)           return "~";   // grass
+    if (_LLM_GEM_LABEL[t])    return _LLM_GEM_LABEL[t];
+    if (_LLM_PU_LABEL[t])     return _LLM_PU_LABEL[t];
+    if (_LLM_BLOCKER_CHAR[t]) return _LLM_BLOCKER_CHAR[t];
+    if (t === 500)             return "~";   // grass
     return "type" + t;
 }
+
+var _llmInstanceCounter = 0;   // for deduplicating multi-cell blockers
 
 // ── LLM tool schema ────────────────────────────────────────────────────────────
 
@@ -61,7 +79,7 @@ var _LLM_SELECT_MOVE_TOOL_ANTHROPIC = {
                     "REQUIRED when Active Strategy is empty — write a concise multi-turn plan. " +
                     "OPTIONAL otherwise — write only if the board state has changed significantly " +
                     "(e.g. a blocker was destroyed, a new Power-Up appeared, targets nearly done). " +
-                    "Example: 'Board has X at (1,2). Match R gems at (1,3)/(2,2) to hit it. " +
+                    "Example: 'K(3x3) at (1,3) hp=60. Match R gems at (1,3)/(2,2) to hit it. " +
                     "Then clear remaining B×5 via the h-rocket at (4,3).' " +
                     "Leave empty string '' if current strategy is still valid."
                 ),
@@ -70,7 +88,7 @@ var _LLM_SELECT_MOVE_TOOL_ANTHROPIC = {
                 type: "string",
                 description: (
                     "How this specific move advances the strategy. " +
-                    "Reference objective labels (R, G, X, h…) explicitly."
+                    "Reference objective labels (R, G, W, K, M, E, h…) explicitly."
                 ),
             },
             index: {
@@ -79,11 +97,11 @@ var _LLM_SELECT_MOVE_TOOL_ANTHROPIC = {
             },
             elem1: {
                 type: "string",
-                description: "Board label of the FIRST cell (e.g. 'G', 'R', 'h'). Copy exactly from the board.",
+                description: "Board label of the FIRST cell (e.g. 'G', 'R', 'W', 'K', 'h'). Copy exactly from the board.",
             },
             elem2: {
                 type: "string",
-                description: "Board label of the SECOND cell (e.g. 'B', 'Y', '*'). Copy exactly from the board.",
+                description: "Board label of the SECOND cell (e.g. 'B', 'Y', 'E', '*'). Copy exactly from the board.",
             },
             min_target_cleared: {
                 type: "integer",
@@ -110,24 +128,36 @@ var _LLM_SYSTEM_PROMPT = [
     "You are an expert Match-3 puzzle solver.",
     "Goal: clear ALL remaining target elements within the move budget.",
     "",
-    "Board legend:",
-    "  G B R Y P C = colored gems (G=Green B=Blue R=Red Y=Yellow P=Pink C=Cyan)",
-    "  Power-ups (activate immediately when swapped with any gem):",
-    "    h = Rocket horizontal  v = Rocket vertical",
-    "    n = Paper plane        * = Rainbow (clears all of one color)",
-    "    + = Bomb T-shape       L = Bomb L-shape",
-    "  X           = blocker (Box/Kong - cannot be swapped; damaged by matching gems",
-    "                in adjacent cells; destroyed after enough hits; counts as objective)",
-    "  Kong (large X blocker) special mechanic:",
-    "    Kong has a COOLDOWN timer. Every turn without being hit, cooldown decreases by 1.",
-    "    When cooldown reaches 0, Kong SPAWNS 3 wooden boxes (X) on random cells, then resets.",
-    "    Hitting Kong resets cooldown to 3 (buying extra time).",
-    "    → You MUST hit Kong regularly (every 2-3 turns) to prevent box spam.",
-    "    → Ignoring Kong lets it flood the board with boxes, blocking moves and wasting turns.",
-    "  .           = disabled cell",
-    "  ~ (Grass layer) = listed separately below the board; grass covers a cell from BELOW.",
-    "    To destroy grass: make a match IN that cell (the gem on top participates in a match).",
-    "    Grass does NOT block swapping — the gem above can be swapped normally.",
+    "=== BOARD LEGEND ===",
+    "Gems:  G=Green  B=Blue  R=Red  Y=Yellow  P=Pink  C=Cyan",
+    "Power-ups (activate by swapping with any gem):",
+    "  h = Rocket horizontal  v = Rocket vertical",
+    "  n = Paper plane        * = Rainbow (clears all of one color)",
+    "  + = Bomb T-shape       L = Bomb L-shape",
+    "",
+    "Blockers (HP shown in 'Blocker Status' section):",
+    "  W = Wood — match adjacent gems to damage (-1 HP per adjacent match).",
+    "  # = Chain — overlay LOCKING a gem. Match THAT gem's color to break the chain.",
+    "      The gem underneath cannot be swapped while chained.",
+    "      See 'Chain overlay' section for the gem color under each chain.",
+    "  @ = Cloud — overlay that SPREADS +1 cell each turn if not cleared!",
+    "      Clear by matching adjacent gems. Destroying cloud also destroys the gem below.",
+    "      PRIORITY: clear clouds early before they flood the board.",
+    "  O = Donut — INDESTRUCTIBLE. Swap with adjacent gems to move it.",
+    "      Goal: drop it to the bottom row (row 0) using gravity.",
+    "  E = Egg — swappable blocker. Swap with adjacent gems to reposition.",
+    "      Damage by matching adjacent gems or PU (-1 HP per hit).",
+    "  K = Kong — 3x3 boss. Match adjacent to damage.",
+    "      Has COOLDOWN: if not hit, cooldown ticks down. At 0 spawns 3 Wood on board!",
+    "      Hitting Kong resets cooldown. See 'Blocker Status' for countdown.",
+    "  M = Monkey — 2x2 boss. Match adjacent to damage.",
+    "      MOVES randomly after each turn — position is unpredictable.",
+    "  Q = Kong Mu — 3x3 boss like Kong, but MOVES randomly each turn.",
+    "      Match adjacent to damage. No box-spawning, but very mobile.",
+    "  F = Brown Monkey — 1x1 boss. Match adjacent to damage.",
+    "  ~ = Grass — background layer under gems. Match the gem ON TOP to clear grass.",
+    "      Grass does NOT block swapping.",
+    "  . = disabled cell",
     "",
     "Row 0 is at the BOTTOM of the visual board.",
     "",
@@ -135,87 +165,59 @@ var _LLM_SYSTEM_PROMPT = [
     "",
     "=== POWER-UP MECHANICS ===",
     "Creation rules:",
-    "  4 gems in a row (H)     -> h  (Rocket horizontal) — fires along its row",
-    "  4 gems in a column (V)  -> v  (Rocket vertical)   — fires along its column",
-    "  T or L shape (H=>3 + V=>3) -> +  (Bomb)              — clears 3x3 area",
-    "  5 in a line             -> *  (Rainbow)           — clears ALL gems of one color",
+    "  4 in a row (H)     -> h (Rocket horizontal) — fires along its row",
+    "  4 in a column (V)  -> v (Rocket vertical)   — fires along its column",
+    "  T or L shape       -> + (Bomb)              — clears 3x3 area",
+    "  5 in a line        -> * (Rainbow)           — clears ALL gems of one color",
     "",
-    "Rocket targeting (IMPORTANT — by game design):",
-    "  h and v rockets PRIORITIZE hitting blockers (X) in their path.",
-    "  If a blocker X exists in the same row (h) or same column (v),",
-    "  the rocket will fly toward it and deal damage — even from a distance.",
-    "  CRITICAL — rockets fire from their DESTINATION (post-swap cell, NOT origin):",
-    "    Move annotations show 'fires row N' or 'fires col N'.",
-    "    [X!] means a blocker exists in that row/col — the rocket WILL hit it.",
-    "    Example: h rocket at row 3, X at row 2 — swap h DOWN -> fires row 2 [X!].",
-    "  -> When X is a target: look for an h rocket you can swap INTO X's row,",
-    "    or a v rocket you can swap INTO X's col. Check [X!] in annotations.",
-    "  -> Creating h in X's row or v in X's col (via ->PU:h/->PU:v) is also",
-    "    highly effective (new PU appears at the swapped position).",
+    "Rocket targeting (IMPORTANT):",
+    "  h/v rockets PRIORITIZE blockers in their path.",
+    "  Rockets fire from their DESTINATION (post-swap cell, NOT origin).",
+    "  Move annotations: 'fires row N' or 'fires col N'.",
+    "  [W!] [K!] [M!] etc. = a blocker exists in that row/col — rocket WILL hit it.",
+    "  Strategy: swap h INTO a blocker's row, or v INTO a blocker's col.",
     "",
-    "PU + PU combos (swap two adjacent PUs — extremely powerful):",
-    "  h + v  -> cross: clears full row AND column simultaneously",
-    "  h + h  -> clears 3 rows;  v + v -> clears 3 columns",
-    "  + + h/v -> clears ~5 rows AND columns",
-    "  + + +  -> massive ~5x5 explosion",
-    "  * + gem -> clears ALL gems matching that gem's color",
-    "  * + PU  -> converts ALL gems of one color into that PU, then activates all",
+    "PU + PU combos (swap two adjacent PUs):",
+    "  h + v  -> cross: full row + column     h + h -> 3 rows    v + v -> 3 columns",
+    "  + + h/v -> ~5 rows AND columns         + + + -> massive ~5x5 explosion",
+    "  * + gem -> clears ALL of that gem's color",
+    "  * + PU  -> ALL gems of one color become that PU, then ALL fire (SUPER COMBO)",
     "",
     "PU strategy tips:",
-    "  • Creating a PU is often worth more than a direct 3-match — prioritise it.",
-    "  • If two PUs are adjacent, swapping them for a combo is almost always best.",
-    "  • Save * (Rainbow) to combine with another PU for maximum board clear.",
-    "  • h/v rockets seek blockers — activate one sharing a row/col with X.",
-    "  • Plan 'setup' moves: accept a weak move now to align 4 gems of a target color",
-    "    next turn, creating a PU that will be more efficient than three 3-matches.",
-    "  • Saving PUs for future advantage:",
-    "    - Check 'Power-Up pairs' section each turn for distances between PUs.",
-    "    - dist=1 (ADJACENT): swap them NOW for a combo — do not waste by activating alone.",
-    "    - dist=2 (near-combo): consider a non-PU setup move (gem match) that may",
-    "      cascade and close the gap, then combo next turn.",
-    "    - dist≥3: don't wait — activate each PU when it's useful (hitting X / targets).",
-    "    - URGENCY (<=25% moves left): activate ALL PUs immediately, no saving.",
+    "  - Creating PU often beats a direct 3-match — prioritize creation when PUs are scarce.",
+    "  - Adjacent PUs (dist=1): swap for combo immediately.",
+    "  - Save * (Rainbow) to combine with another PU for maximum clear.",
+    "  - dist=2: consider a setup move to close the gap, then combo next turn.",
+    "  - dist>=3 or <=25% moves left: activate PUs immediately, no saving.",
     "",
     "=== STRATEGIC PLANNING ===",
     "Each turn you receive an 'Active Strategy' — your multi-turn plan.",
-    "  * If Active Strategy is EMPTY: you MUST write a full strategy in revised_strategy.",
-    "  * If Active Strategy is set: check if it's still valid before picking a move.",
-    "    Revise it (revised_strategy) ONLY if the board changed significantly:",
-    "    - A blocker (X) was destroyed",
-    "    - A Power-Up appeared that changes the plan",
-    "    - Remaining targets dropped to a new phase (e.g. only 1 type left)",
-    "    Otherwise leave revised_strategy as '' and follow the existing plan.",
+    "  * If EMPTY: you MUST write a full strategy in revised_strategy.",
+    "  * If set: follow it unless the board changed significantly — then revise.",
     "",
     "A good strategy answers:",
     "  1. Which targets are hardest to reach and why?",
-    "  2. Which blockers (X) are blocking progress, and what gems are adjacent?",
-    "  3. What sequence of moves (2-4 steps) will unlock the critical path?",
-    "  4. Are there Power-Ups on board that should be saved or used now?",
-    "  5. Is there a 'setup' opportunity — a move that doesn't score now but will",
-    "     create a PU or strong chain next turn?",
+    "  2. Which blockers block progress? What are their HP and special states?",
+    "  3. Are there urgent threats? (cloud spreading, Kong cooldown near 0)",
+    "  4. What 2-4 move sequence unlocks the critical path?",
+    "  5. Are there PUs to save, combine, or activate now?",
     "",
-    "=== MOVE PRIORITIES (within the strategy) ===",
-    "0. (!) RAINBOW SUPER COMBO — absolute top priority, no exceptions:",
-    "   If any candidate annotation says '(!) SUPER COMBO: *+' — pick it IMMEDIATELY.",
-    "   * + PU converts ALL gems of one color into that PU type, then fires ALL of them at once.",
-    "   This beats every other rule: blockers, endgame, urgency, everything.",
-    "   If a candidate says '[(!): *d1 -> SUPER COMBO avail]' — swap that rainbow first instead.",
-    "1. Swap two other adjacent PUs for a combo (h+v, ++h, etc.).",
-    "   Check 'Power-Up pairs' — if dist=1 (ADJACENT label), this is your move.",
-    "   If dist=2 (near-combo), consider a non-PU gem match that may close the gap.",
-    "2. If Kong is on board: hit Kong every 2-3 turns to prevent box spawns.",
-    "   Use h/v rockets in Kong's row/col, or match gems adjacent to Kong.",
-    "3. If X is a target: match or activate PU in cells ADJACENT to X.",
-    "4. If ~ (grass) is a target: match gems IN grass cells (the gem on top).",
-    "5. Create a PU via 4/5-match (->PU: annotations). When the board has FEW existing",
-    "   PUs, creation OUTRANKS single PU activation — build your arsenal first.",
-    "   Exception: still activate if it forms a PU+PU combo (rule 1), or the PU",
-    "   shares its row/col with an X target (rocket targeting bonus).",
-    "6. Activate an existing PU (h/v/+/L/n/*) near targets, X, or ~ cells. Prefer",
-    "   activation when PUs are already plentiful (=>3 on board) or moves are scarce.",
-    "7. Directly match target gem types (labels in Objectives).",
-    "8. Setup move: sacrifice direct score to align gems for a PU or chain next turn.",
-    "9. All other moves (last resort only).",
+    "=== MOVE PRIORITIES ===",
+    "0. (!) RAINBOW SUPER COMBO — absolute top, no exceptions.",
+    "   If annotation says '(!) SUPER COMBO: *+' — pick it IMMEDIATELY.",
+    "1. Swap two adjacent PUs for a combo (check 'Power-Up pairs' dist=1).",
+    "2. URGENT: clear @ (cloud) before it spreads. One unchecked cloud floods the board.",
+    "3. Hit K (Kong) if cooldown <= 1 — prevent box spawn. Hit Q regularly too.",
+    "   M (Monkey) moves randomly — use area PUs (bombs, rockets) to hit it.",
+    "4. If O (Donut) is objective: swap toward row 0. Clear obstacles below it.",
+    "5. If # (Chain) covers important cells: match chained gem color to break it.",
+    "6. Match adjacent to W/E/F/K/M/Q targets to deal damage.",
+    "7. If ~ (Grass) is target: match gems IN grass cells.",
+    "8. Create PU via 4/5-match. When PUs are scarce, creation > activation.",
+    "9. Activate an existing PU near targets or blockers.",
+    "10. Match target gem types directly.",
+    "11. Setup move: align gems for a PU or chain next turn.",
+    "12. Any other move (last resort).",
     "",
     "Every listed candidate is pre-validated as legal.",
     "Call select_move with: revised_strategy (or ''), reasoning, index, elem1, elem2, min_target_cleared.",
@@ -342,7 +344,8 @@ CoreGame.LLMAgent = cc.Class.extend({
 
         // ── Build candidates ──────────────────────────────────────────────────
         var candidates = this._filterCandidates(
-            state.valid_moves, state.board, state.targets, state.grass_map
+            state.valid_moves, state.board, state.targets, state.grass_map,
+            state.cloud_cells
         );
 
         if (candidates.length === 0) {
@@ -516,28 +519,89 @@ CoreGame.LLMAgent = cc.Class.extend({
             }
         }
 
-        // Grass map — separate from board because grass is BACKGROUND (under gems)
+        // Overlay + background layer scan: grass, chain, cloud
+        // Also save original gem types BEFORE cloud override (needed for chain display)
         var grassMap = [];
+        var chainMap = [];
+        var cloudCells = [];
+        var gemUnder = [];   // gemUnder[r][c] = gem type beneath overlay (for chain display)
         for (var gr = 0; gr < rows; gr++) {
-            var grassRow = [];
+            var grassRow = [], chainRow = [], gemRow = [];
             for (var gc = 0; gc < cols; gc++) {
+                grassRow.push(0);
+                chainRow.push(0);
+                gemRow.push(board[gr][gc]);   // snapshot before cloud override
                 var gslot = bm.getSlot(gr, gc);
-                var hasGrass = false;
                 if (gslot && gslot.listElement) {
                     for (var gl = 0; gl < gslot.listElement.length; gl++) {
-                        if (gslot.listElement[gl] && gslot.listElement[gl].type === 500) {
-                            hasGrass = true; break;
+                        var gel = gslot.listElement[gl];
+                        if (!gel) continue;
+                        if (gel.type === 500) grassRow[gc] = gel.hitPoints || 1;
+                        if (gel.type === 600) chainRow[gc] = gel.hitPoints || 1;
+                        if (gel.type === 900) {
+                            board[gr][gc] = 900;  // override to show @ on board
+                            cloudCells.push({r: gr, c: gc});
                         }
                     }
                 }
-                grassRow.push(hasGrass ? 1 : 0);
             }
             grassMap.push(grassRow);
+            chainMap.push(chainRow);
+            gemUnder.push(gemRow);
+        }
+
+        // Blocker details — enumerate all blocker instances with HP + state
+        var BLOCKER_TYPES = [700, 900, 1000, 5000, 10000, 11001, 15000, 17000];
+        var blockerDetails = [];
+        var seenElements = {};
+        for (var bi = 0; bi < BLOCKER_TYPES.length; bi++) {
+            var btype = BLOCKER_TYPES[bi];
+            var belems = bm.getElementsByType(btype);
+            for (var ei = 0; ei < belems.length; ei++) {
+                var bel = belems[ei];
+                // Dedup multi-cell blockers (they appear in multiple slots)
+                var uid = bel.__llmUid || (bel.__llmUid = ++_llmInstanceCounter);
+                if (seenElements[uid]) continue;
+                seenElements[uid] = true;
+                var detail = {
+                    type: btype,
+                    char: _LLM_BLOCKER_CHAR[btype] || "?",
+                    hp: bel.hitPoints || 0,
+                    maxHP: bel.maxHP || (bel.configData && bel.configData.maxHP) || bel.hitPoints || 1,
+                    row: bel.position ? bel.position.x : -1,
+                    col: bel.position ? bel.position.y : -1,
+                };
+                if (btype === 10000 || btype === 17000) detail.size = "3x3";
+                else if (btype === 11001) detail.size = "2x2";
+                else detail.size = "1x1";
+                if (typeof bel.cooldownSpawn === "number") detail.cooldown = bel.cooldownSpawn;
+                blockerDetails.push(detail);
+            }
+        }
+
+        // Stamp multi-cell blockers into ALL their occupied cells on the board grid
+        for (var di = 0; di < blockerDetails.length; di++) {
+            var bd = blockerDetails[di];
+            if (bd.size !== "1x1") {
+                var sizeN = bd.size === "3x3" ? 3 : 2;
+                for (var dr = 0; dr < sizeN; dr++) {
+                    for (var dc = 0; dc < sizeN; dc++) {
+                        var sr = bd.row + dr, sc = bd.col + dc;
+                        if (sr >= 0 && sr < rows && sc >= 0 && sc < cols) {
+                            board[sr][sc] = bd.type;
+                        }
+                    }
+                }
+            }
         }
 
         return {
             board:           board,
+            gem_under:       gemUnder,
             grass_map:       grassMap,
+            chain_map:       chainMap,
+            cloud_cells:     cloudCells,
+            blocker_details: blockerDetails,
             rows:            rows,
             cols:            cols,
             targets:         targets,
@@ -550,11 +614,11 @@ CoreGame.LLMAgent = cc.Class.extend({
 
     // ── Candidate filtering (PU > target gems > others, top-K) ───────────────
 
-    _filterCandidates: function (moves, board, targets, grassMap) {
+    _filterCandidates: function (moves, board, targets, grassMap, cloudCells) {
         var topK = LLMConfig.topK || 0;
         if (topK <= 0 || moves.length <= topK) return moves.slice();
 
-        // Collect target type IDs; also check if X blocker or grass is a target
+        // Collect target type IDs; also check if blocker or grass is a target
         var targetSet = {};
         var blockerIsTarget = false;
         var grassIsTarget   = false;
@@ -597,6 +661,20 @@ CoreGame.LLMAgent = cc.Class.extend({
             }
         }
 
+        // Cloud adjacency — urgent when cloud count >= 3
+        var adjToCloud = {};
+        var cloudUrgent = cloudCells && cloudCells.length >= 3;
+        if (cloudCells && cloudCells.length > 0) {
+            for (var ci = 0; ci < cloudCells.length; ci++) {
+                for (var cdi = 0; cdi < dirs.length; cdi++) {
+                    var cnr = cloudCells[ci].r + dirs[cdi][0];
+                    var cnc = cloudCells[ci].c + dirs[cdi][1];
+                    if (cnr >= 0 && cnr < rows && cnc >= 0 && cnc < cols)
+                        adjToCloud[cnr + "," + cnc] = true;
+                }
+            }
+        }
+
         // Count existing PUs on board to decide creation vs activation preference
         var existingPUCount = 0;
         var boardCells = rows * cols;
@@ -612,11 +690,12 @@ CoreGame.LLMAgent = cc.Class.extend({
         var preferCreation = existingPUCount < puCreationThreshold;
 
         // tierCombo    = PU + PU combo swaps (always highest priority)
+        // tierUrgent   = cloud-adjacent moves (when cloud >= 3, urgent)
         // tierActivate = activate a single existing PU
         // tierCreate   = move creates a new PU via 4/5-match
-        // tier1        = adjacent to X / on grass / target gem type
+        // tier1        = adjacent to blocker / on grass / target gem type / donut swap
         // tier2        = everything else
-        var tierCombo = [], tierActivate = [], tierCreate = [], tier1 = [], tier2 = [];
+        var tierCombo = [], tierUrgent = [], tierActivate = [], tierCreate = [], tier1 = [], tier2 = [];
         for (var i = 0; i < moves.length; i++) {
             var m  = moves[i];
             var t1 = board[m[0]][m[1]];
@@ -625,25 +704,34 @@ CoreGame.LLMAgent = cc.Class.extend({
             var isPUActivate = !isPUCombo && (_LLM_POWER_UPS[t1] || _LLM_POWER_UPS[t2]);
             var isPUCreate   = !isPUCombo && !isPUActivate &&
                                _llmCreatesNewPU(board, rows, cols, m[0], m[1], m[2], m[3]);
+            // Donut swap: swapping Donut with a gem is always a productive move
+            var isDonutSwap  = (t1 === 1000 || t2 === 1000);
             if (isPUCombo) {
                 tierCombo.push(m);
+            } else if (cloudUrgent && !isPUActivate && !isPUCreate &&
+                       (adjToCloud[m[0]+","+m[1]] || adjToCloud[m[2]+","+m[3]])) {
+                tierUrgent.push(m);
             } else if (isPUActivate) {
                 tierActivate.push(m);
             } else if (isPUCreate) {
                 tierCreate.push(m);
             } else if (targetSet[t1] || targetSet[t2] ||
                        adjToBlocker[m[0]+","+m[1]] || adjToBlocker[m[2]+","+m[3]] ||
-                       grassCell[m[0]+","+m[1]]    || grassCell[m[2]+","+m[3]]) {
+                       grassCell[m[0]+","+m[1]]    || grassCell[m[2]+","+m[3]] ||
+                       isDonutSwap) {
                 tier1.push(m);
             } else {
                 tier2.push(m);
             }
         }
 
-        // Build candidate list: combos always first, then balance create/activate
-        // by PU density — scarce PUs → show creation moves before activation moves.
+        // Build candidate list: combos first, then urgent (cloud), then PU create/activate
         var selected = tierCombo.slice();
         var rem = topK - selected.length;
+        if (rem > 0 && tierUrgent.length > 0) {
+            selected = selected.concat(_llmSample(tierUrgent, rem));
+            rem = topK - selected.length;
+        }
         if (rem > 0) {
             var firstPU  = preferCreation ? tierCreate   : tierActivate;
             var secondPU = preferCreation ? tierActivate : tierCreate;
@@ -738,20 +826,84 @@ CoreGame.LLMAgent = cc.Class.extend({
             reviewNote  = criticalPrefix + "Review the Active Strategy. If it needs updating, set revised_strategy.\nThen choose the move that best advances it and call select_move.";
         }
 
-        // Grass section (only if any grass exists)
+        // Chain overlay section (only if any chains exist)
+        var chainStr = "";
+        var cm = state.chain_map;
+        var gu = state.gem_under;
+        if (cm) {
+            var chainEntries = [];
+            for (var cr = 0; cr < rows; cr++) {
+                for (var cc2 = 0; cc2 < cols; cc2++) {
+                    if (cm[cr] && cm[cr][cc2] > 0) {
+                        var gemLabel = (gu && gu[cr]) ? _llmCellChar(gu[cr][cc2]) : "?";
+                        chainEntries.push("#(" + cr + "," + cc2 + ")hp=" + cm[cr][cc2] + " gem=" + gemLabel);
+                    }
+                }
+            }
+            if (chainEntries.length > 0) {
+                chainStr = "## Chain # overlay (match the gem underneath to break; -1 HP per match)\n" +
+                           "  " + chainEntries.join("  ") + "\n\n";
+            }
+        }
+
+        // Cloud section (only if any clouds exist)
+        var cloudStr = "";
+        var cloudCells = state.cloud_cells;
+        if (cloudCells && cloudCells.length > 0) {
+            var cloudEntries = [];
+            for (var cli = 0; cli < cloudCells.length; cli++) {
+                cloudEntries.push("@(" + cloudCells[cli].r + "," + cloudCells[cli].c + ")");
+            }
+            cloudStr = "## Cloud @ (match adjacent to destroy; SPREADS +1 cell each turn!)\n" +
+                       "  " + cloudEntries.join("  ") + "\n";
+            if (cloudCells.length >= 3) {
+                cloudStr += "  !! " + cloudCells.length + " cloud cells — clear ASAP to prevent board flood!\n";
+            }
+            cloudStr += "\n";
+        }
+
+        // Grass section (only if any grass exists) — now with HP
         var grassStr = "";
         var gm = state.grass_map;
         if (gm) {
-            var grassCells = [];
+            var grassEntries = [];
             for (var gr = 0; gr < rows; gr++) {
                 for (var gc = 0; gc < cols; gc++) {
-                    if (gm[gr] && gm[gr][gc]) grassCells.push("(" + gr + "," + gc + ")");
+                    if (gm[gr] && gm[gr][gc] > 0) {
+                        grassEntries.push("~(" + gr + "," + gc + ")hp=" + gm[gr][gc]);
+                    }
                 }
             }
-            if (grassCells.length > 0) {
+            if (grassEntries.length > 0) {
                 grassStr = "## Grass ~ cells (match gems IN these cells to destroy grass)\n" +
-                           grassCells.join("  ") + "\n\n";
+                           "  " + grassEntries.join("  ") + "\n\n";
             }
+        }
+
+        // Blocker Status section — compact summary of all blocker instances
+        var blockerStatusStr = "";
+        var bd = state.blocker_details;
+        if (bd && bd.length > 0) {
+            var bLines = [];
+            for (var bsi = 0; bsi < bd.length; bsi++) {
+                var b = bd[bsi];
+                var line = "  " + b.char;
+                if (b.size !== "1x1") line += "(" + b.size + ")";
+                line += " at (" + b.row + "," + b.col + ")";
+                if (b.type !== 1000) {  // Donut has no HP
+                    line += " hp=" + b.hp + "/" + b.maxHP;
+                }
+                if (typeof b.cooldown === "number" && (b.type === 10000 || b.type === 17000)) {
+                    line += " cd=" + b.cooldown;
+                    if (b.cooldown <= 1) line += " !! SPAWNS SOON";
+                }
+                // Mechanic hints
+                if (b.type === 1000) line += " (indestructible — drop to row 0)";
+                else if (b.type === 5000) line += " (swappable)";
+                else if (b.type === 11001 || b.type === 17000) line += " (moves each turn)";
+                bLines.push(line);
+            }
+            blockerStatusStr = "## Blocker Status\n" + bLines.join("\n") + "\n\n";
         }
 
         // PU pairs section: show distances between all PUs on board (≥2 PUs only)
@@ -793,7 +945,10 @@ CoreGame.LLMAgent = cc.Class.extend({
         return (
             "## Current board  (row 0 = bottom)\n\n" +
             boardStr + "\n\n" +
+            chainStr +
+            cloudStr +
             grassStr +
+            blockerStatusStr +
             "## Objectives\n" + objStr + "\n\n" +
             "## Resources\nMoves remaining: " +
             state.moves_remaining + " / " + state.total_moves + "\n\n" +
@@ -1089,18 +1244,22 @@ function _llmMatchStr(board, rows, cols, r1, c1, r2, c2) {
             }
         }
         if (puType === 101) {  // h rocket: fires along destination ROW
-            var xInRow = false;
+            var hitRowChars = [];
             for (var ci = 0; ci < cols; ci++) {
-                if (_LLM_BLOCKERS[board[destR][ci]]) { xInRow = true; break; }
+                var bch = _LLM_BLOCKER_CHAR[board[destR][ci]];
+                if (bch) hitRowChars.push(bch);
             }
-            return "activates h -> fires row " + destR + (xInRow ? " [X!]" : "") + nearPUNote;
+            var hitRowTag = hitRowChars.length > 0 ? " [" + hitRowChars.join(",") + "!]" : "";
+            return "activates h -> fires row " + destR + hitRowTag + nearPUNote;
         }
         if (puType === 106) {  // v rocket: fires along destination COL
-            var xInCol = false;
+            var hitColChars = [];
             for (var ri = 0; ri < rows; ri++) {
-                if (_LLM_BLOCKERS[board[ri][destC]]) { xInCol = true; break; }
+                var bchv = _LLM_BLOCKER_CHAR[board[ri][destC]];
+                if (bchv) hitColChars.push(bchv);
             }
-            return "activates v -> fires col " + destC + (xInCol ? " [X!]" : "") + nearPUNote;
+            var hitColTag = hitColChars.length > 0 ? " [" + hitColChars.join(",") + "!]" : "";
+            return "activates v -> fires col " + destC + hitColTag + nearPUNote;
         }
         return "activates " + _llmCellChar(puType) + " at (" + destR + "," + destC + ")" + nearPUNote;
     }
@@ -1133,7 +1292,7 @@ function _llmMatchStr(board, rows, cols, r1, c1, r2, c2) {
     }
     function matchAt(r, c) {
         var typ = tmp[r][c];
-        if (typ <= 0 || _LLM_POWER_UPS[typ]) return null;
+        if (typ <= 0 || _LLM_POWER_UPS[typ] || _LLM_BLOCKERS[typ]) return null;
         var lbl = _llmCellChar(typ);
         var hLen = runLen(r, c, 0, 1);
         var vLen = runLen(r, c, 1, 0);
@@ -1182,7 +1341,7 @@ function _llmCreatesNewPU(board, rows, cols, r1, c1, r2, c2) {
     tmp[r2][c2] = t1;
     function runLen(r, c, dr, dc) {
         var typ = tmp[r][c];
-        if (typ <= 0 || _LLM_POWER_UPS[typ]) return 0;
+        if (typ <= 0 || _LLM_POWER_UPS[typ] || _LLM_BLOCKERS[typ]) return 0;
         var len = 1;
         var nr = r + dr, nc = c + dc;
         while (nr >= 0 && nr < rows && nc >= 0 && nc < cols && tmp[nr][nc] === typ) { len++; nr += dr; nc += dc; }

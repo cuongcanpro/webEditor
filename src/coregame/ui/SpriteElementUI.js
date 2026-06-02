@@ -27,6 +27,8 @@ CoreGame.SpriteElementUI = CoreGame.ElementUI.extend({
         this.sprite = new cc.Sprite(this.spritePath);
         this.sprite.setAnchorPoint(0.5, 0.5);
         this.addChild(this.sprite);
+        // ColorCrab et al. ship a white sprite tinted per color.
+        this.applyMatchColorTint(this.sprite);
 
         var self = this;
         var attempts = 0;

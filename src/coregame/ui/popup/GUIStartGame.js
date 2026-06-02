@@ -49,7 +49,7 @@ var GUIStartGame = cc.Node.extend({
     createTarget: function (type, number) {
         var bg = new cc.Node();
 
-        var spr = new cc.Sprite("game/element/icon/" + type + ".png");
+        var spr = new cc.Sprite("game/element/" + CoreGame.Config.getTargetIconName(type) + ".png");
         bg.addChild(spr);
 
         if (type != CoreGame.Config.ElementType.GOLD_BONUS) {

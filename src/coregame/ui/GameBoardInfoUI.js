@@ -543,7 +543,7 @@ GameBoardInfoUI = BaseLayer.extend({
 
     setInfoTarget: function (node, type, number) {
         node.spr.ignoreContentAdaptWithSize(true);
-        node.spr.loadTexture("game/element/icon/" + type + ".png");
+        node.spr.loadTexture("game/element/" + CoreGame.Config.getTargetIconName(type) + ".png");
 
         node.lbl = new NumberLabelClass(node.label, number);
         node.check.setVisible(false);

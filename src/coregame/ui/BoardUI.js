@@ -97,11 +97,15 @@ CoreGame.BoardUI = cc.Layer.extend({
                 if (!slot) continue;
 
                 var pixelPos = this.boardMgr.gridToPixel(r, c);
-                var label = new cc.LabelTTF(r + "," + c, "Arial", 14);
-                label.setColor(cc.color(255, 255, 0));  // Yellow
-                label.enableStroke(cc.color(0, 0, 0), 2); // Black outline for readability
-                label.setPosition(pixelPos);
-                // label.setVisible(false);
+                var cellSize = CoreGame.Config.CELL_SIZE;
+                var pad = 3;
+                var label = new ccui.Text(r + "," + c, "font/BalooPaaji2-Regular.ttf", 12);
+                label.setTextColor(cc.color(70, 70, 70));      // dark gray
+                label.enableOutline(cc.color(255, 255, 255), 1); // white outline for readability
+                label.setAnchorPoint(cc.p(0, 0));              // anchor at the label's bottom-left
+                label.setOpacity(210);                             // semi-transparent
+                // Place at the cell's bottom-left corner (cell center minus half cell + padding)
+                label.setPosition(pixelPos.x - cellSize / 2 + pad, pixelPos.y - cellSize / 2 + pad);
                 this.root.addChild(label, 9999);  // High zOrder to always be on top
             }
         }

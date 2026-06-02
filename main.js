@@ -57,7 +57,7 @@ cc.game.onStart = function () {
         //     setEncryptKeys(0xc06fe26e, 0x67649e66, 0x19317a3d, 0xe2ad9f85);
         // }
     }
-   // cc.game.setTimeReload(10000);
+    cc.game.setTimeReload(Number.MAX_VALUE);   // tắt hẳn reload-on-show khi quay lại tab
     cc.view.enableRetina(true);
     cc.view.adjustViewPort(true);
     // cc.director.setDisplayStats(true);
@@ -79,48 +79,45 @@ cc.game.onStart = function () {
     cc.view.resizeWithBrowserSize(true);
 
     if(!cc.sys.isNative) {
-        // for (key in cc.content) {
-        //     cc.loader.loadImgLocal(key, cc.content[key], {isCrossOrigin: false}, function (err, img) {
-        //         // cc.LoadingScene.preload(Game_resource, function () {
-        //         //
-        //         //     cc.spriteFrameCache.addSpriteFrames("res/Particles/Coin/coin.plist");
-        //         //     cc.spriteFrameCache.addSpriteFrames("res/Image/game.plist");
-        //         //     //LocalizedString.preload(function (result) {
-        //         //     // Load content plist
-        //         //     // cc.director.runScene(makeScene(new LoginSceneWeb()));
-        //         //     var scene = new MainScene();
-        //         //     gameController.mainScene = scene;
-        //         //     cc.director.runScene(scene);
-        //         //     // });
-        //         //     cc.log("ghi log test version 2");
-        //         // }, this);
-        //
-        //         cc.log("LOAD SUCCESS ");
-        //     });
-        // }
-        // cc.loader.loadImgLocal("res/Image/game.png", cc.game_png, {isCrossOrigin: false}, function (err, img) {
-            cc.LoadingScene.preload(Game_resource, function () {
-                jsb.fileUtils.init();
-                jsb.fileUtils.analysticFrom(Game_resource);
-                jsb.fileUtils.addSearchPath("/");
-                jsb.fileUtils.addSearchPath("res/");
-                jsb.fileUtils.addSearchPath("res/modules/");
-                CoreGame.BlockerFactory.preloadAllConfigs();
-                cc.spriteFrameCache.addSpriteFrames("res/modules/game/board/art.plist", "res/modules/game/board/art.png");
-                cc.spriteFrameCache.addSpriteFrames("res/Particles/Coin/coin.plist");
-                //LocalizedString.preload(function (result) {
-                // Load content plist
-                // cc.director.runScene(makeScene(new LoginSceneWeb()));
-                var scene = new CoreGame.TestScene();
-                cc.director.runScene(scene);
-                // });
-                cc.log("ghi log test version 2");
-            // }, this);
+        // --- Lazy-load: only preload what the first screen needs. ---
+        // These categories are all fetched on demand later (level/map/block
+        // configs via cc.loader.loadJson in LevelSelectorUI/BlockerFactory;
+        // newBlock/ is also re-fetched by BlockerFactory.preloadAllConfigs),
+        // so keeping them in the boot critical path just blocks startup with
+        // ~900 needless requests. We still hand the FULL manifest to
+        // analysticFrom so path resolution/search works unchanged.
+        var DEFER_PREFIXES = [
+            "res/common/config/levels/",
+            "res/common/config/bossRunLevels/",
+            "res/common/config/M3W-Level1-50/",
+            "res/common/config/newLevel/",
+            "res/common/config/stories/",
+            "res/maps/",
+            "res/newBlock/"
+        ];
+        var BOOT_resource = Game_resource.filter(function (p) {
+            for (var i = 0; i < DEFER_PREFIXES.length; i++) {
+                if (p.indexOf(DEFER_PREFIXES[i]) === 0) return false;
+            }
+            return true;
         });
-
-
-
-
+        cc.log("Boot preload: " + BOOT_resource.length + " / " + Game_resource.length + " resources (rest lazy-loaded on demand)");
+        cc.LoadingScene.preload(BOOT_resource, function () {
+            jsb.fileUtils.init();
+            jsb.fileUtils.analysticFrom(Game_resource);
+            jsb.fileUtils.addSearchPath("/");
+            jsb.fileUtils.addSearchPath("res/");
+            jsb.fileUtils.addSearchPath("res/modules/");
+            CoreGame.BlockerFactory.preloadAllConfigs();
+            cc.spriteFrameCache.addSpriteFrames("res/modules/game/board/art.plist", "res/modules/game/board/art.png");
+            cc.spriteFrameCache.addSpriteFrames("res/Particles/Coin/coin.plist");
+            //LocalizedString.preload(function (result) {
+            // Load content plist
+            // cc.director.runScene(makeScene(new LoginSceneWeb()));
+            var scene = new CoreGame.TestScene();
+            cc.director.runScene(scene);
+            // });
+        });
     }
     else {
         // Init Map GUI, in advance mode
@@ -135,20 +132,6 @@ cc.game.onStart = function () {
             GameData.getInstance().startGame();
         });
     }
-    // if (window["safari"]) {
-    //     history.pushState(null, null, location.href);
-    //     window["onpopstate"] = function(event) {
-    //         history.go(1);
-    //     };
-    // }
-    // setTimeout(function () {
-    //     window.location.href = '?changeThePath';
-    // }, 100);
 };
 
 cc.game.run();
-/** @expose */
-FbPlayableAd.onCTAClick;
-
-/** @expose */
-ExitApi.exit;

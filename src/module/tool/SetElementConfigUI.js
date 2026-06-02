@@ -8,12 +8,19 @@ var SetElementConfigUI = cc.Node.extend({
     hpInput: null,
     currentElement: null,
     onConfigChangeCallback: null,
+    // Callback riêng cho chế độ "chỉnh HP block đã đặt" (Update HP từ menu chuột phải).
+    // Khi set, onHPChanged route qua đây thay vì onConfigChangeCallback (paint flow).
+    _editCallback: null,
     // Direction row (shown only for TentacleBlocker type 30200)
     directionRow: null,
     currentDirection: "RIGHT",
     _dirBtns: null,
 
     TENTACLE_TYPE: 30200,
+    // Tủ nước màu: máu cố định 4 (4 chai), không cho chỉnh -> ẩn panel HP.
+    COLOR_CABINET_TYPE: 18000,
+    // Trần HP khi chỉnh trong editor — bỏ giới hạn maxHP của config, cho chỉnh tự do tới đây.
+    MAX_HP: 100,
 
     /**
      * Constructor
@@ -23,7 +30,7 @@ var SetElementConfigUI = cc.Node.extend({
         this._super();
 
         this.onConfigChangeCallback = onConfigChangeCallback;
-        this.setContentSize(300, 160);
+        this.setContentSize(340, 160);
 
         this.initUI();
         this.setVisible(false); // Hidden by default
@@ -40,12 +47,12 @@ var SetElementConfigUI = cc.Node.extend({
         this.container = new ccui.Layout();
         this.container.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
         this.container.setBackGroundColor(cc.color(50, 50, 60));
-        this.container.setContentSize(300, 160);
+        this.container.setContentSize(340, 160);
         this.addChild(this.container);
 
         // Add title
         var title = new cc.LabelTTF("Element Config", "Arial", 18);
-        title.setPosition(150, 135);
+        title.setPosition(170, 135);
         title.setColor(cc.color(255, 255, 255));
         this.container.addChild(title);
 
@@ -56,9 +63,10 @@ var SetElementConfigUI = cc.Node.extend({
         btnClose.setContentSize(30, 30);
         btnClose.setTitleText("X");
         btnClose.setTitleFontSize(18);
-        btnClose.setPosition(280, 135);
+        btnClose.setPosition(320, 135);
         btnClose.addTouchEventListener(function (sender, type) {
             if (type === ccui.Widget.TOUCH_ENDED) {
+                self._editCallback = null; // thoát chế độ Update HP
                 self.setVisible(false);
             }
         });
@@ -66,7 +74,7 @@ var SetElementConfigUI = cc.Node.extend({
 
         // Direction row for TentacleBlocker (hidden by default)
         this.directionRow = new ccui.Layout();
-        this.directionRow.setContentSize(300, 40);
+        this.directionRow.setContentSize(340, 40);
         this.directionRow.setPosition(0, 90);
         this.directionRow.setVisible(false);
         this.container.addChild(this.directionRow);
@@ -111,20 +119,25 @@ var SetElementConfigUI = cc.Node.extend({
         this.hpLabel.setAnchorPoint(0, 0.5);
         this.container.addChild(this.hpLabel);
 
-        // Add increment/decrement buttons
-        var btnMinus = new ccui.Button();
-        btnMinus.loadTextureNormal("res/tool/res/bgCell.png");
-        btnMinus.setScale9Enabled(true);
-        btnMinus.setContentSize(40, 40);
-        btnMinus.setTitleText("-");
-        btnMinus.setTitleFontSize(24);
-        btnMinus.setPosition(100, 55);
-        btnMinus.addTouchEventListener(function (sender, type) {
-            if (type === ccui.Widget.TOUCH_ENDED) {
-                self.decrementHP();
-            }
-        });
-        this.container.addChild(btnMinus);
+        // HP stepper row:  [-10] [-] [input] [+] [+10]  / MAX
+        // Shared factory keeps the five stepper buttons consistent.
+        var mkStepBtn = function (x, w, title, fs, handler) {
+            var b = new ccui.Button();
+            b.loadTextureNormal("res/tool/res/bgCell.png");
+            b.setScale9Enabled(true);
+            b.setContentSize(w, 38);
+            b.setTitleText(title);
+            b.setTitleFontSize(fs);
+            b.setPosition(x, 55);
+            b.addTouchEventListener(function (sender, type) {
+                if (type === ccui.Widget.TOUCH_ENDED) handler();
+            });
+            self.container.addChild(b);
+            return b;
+        };
+
+        var btnMinus10 = mkStepBtn(82, 38, "-10", 16, function () { self.decrementHP10(); });
+        var btnMinus = mkStepBtn(122, 30, "-", 24, function () { self.decrementHP(); });
 
         // Create HP input field
         this.hpInput = new ccui.TextField();
@@ -133,11 +146,11 @@ var SetElementConfigUI = cc.Node.extend({
         this.hpInput.setPlaceHolderColor(cc.color(150, 150, 150));
         this.hpInput.setTextColor(cc.color(255, 255, 255));
         this.hpInput.setFontSize(24);
-        this.hpInput.setMaxLength(2);
+        this.hpInput.setMaxLength(3);   // tới 3 chữ số để gõ được 100
         this.hpInput.setMaxLengthEnabled(true);
         this.hpInput.setTouchEnabled(true);
         this.hpInput.setString("1");
-        this.hpInput.setPosition(155, 55);
+        this.hpInput.setPosition(172, 55);
         // this.hpInput.setContentSize(50, 40);
         this.container.addChild(this.hpInput);
 
@@ -149,23 +162,16 @@ var SetElementConfigUI = cc.Node.extend({
             }
         });
 
-        var btnPlus = new ccui.Button();
-        btnPlus.loadTextureNormal("res/tool/res/bgCell.png");
-        btnPlus.setScale9Enabled(true);
-        btnPlus.setContentSize(40, 40);
-        btnPlus.setTitleText("+");
-        btnPlus.setTitleFontSize(24);
-        btnPlus.setPosition(210, 55);
-        btnPlus.addTouchEventListener(function (sender, type) {
-            if (type === ccui.Widget.TOUCH_ENDED) {
-                self.incrementHP();
-            }
-        });
-        this.container.addChild(btnPlus);
+        var btnPlus = mkStepBtn(222, 30, "+", 24, function () { self.incrementHP(); });
+        var btnPlus10 = mkStepBtn(262, 38, "+10", 16, function () { self.incrementHP10(); });
+        this.btnPlus = btnPlus;
+        this.btnMinus = btnMinus;
+        this.btnPlus10 = btnPlus10;
+        this.btnMinus10 = btnMinus10;
 
         // Add max HP display
-        this.maxHpLabel = new cc.LabelTTF("/ 1", "font/BalooPaaji2-Regular.ttf", 18);
-        this.maxHpLabel.setPosition(260, 55);
+        this.maxHpLabel = new cc.LabelTTF("/ " + this.MAX_HP, "font/BalooPaaji2-Regular.ttf", 18);
+        this.maxHpLabel.setPosition(289, 55);
         this.maxHpLabel.setColor(cc.color(180, 180, 180));
         this.maxHpLabel.setAnchorPoint(0, 0.5);
         this.container.addChild(this.maxHpLabel);
@@ -175,6 +181,22 @@ var SetElementConfigUI = cc.Node.extend({
         infoLabel.setPosition(150, 20);
         infoLabel.setColor(cc.color(150, 150, 150));
         this.container.addChild(infoLabel);
+
+        // Swallow touches on the popup background so a click on the gray area
+        // doesn't fall through to the board/map below. Child widgets (buttons,
+        // text field) sit in front and consume their own touches first; this
+        // only catches presses on empty popup space. Only active while visible.
+        var bgSwallow = cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function (touch, event) {
+                if (!self.isVisible()) return false;
+                var loc = self.convertToNodeSpace(touch.getLocation());
+                var sz = self.getContentSize();
+                return cc.rectContainsPoint(cc.rect(0, 0, sz.width, sz.height), loc);
+            }
+        });
+        cc.eventManager.addListener(bgSwallow, this);
     },
 
     _setDirection: function (key) {
@@ -195,6 +217,7 @@ var SetElementConfigUI = cc.Node.extend({
      * @param {number} type - Element type ID
      */
     setElement: function (type) {
+        this._editCallback = null; // setElement = paint flow; rời chế độ Update HP
         if (type === null || type === undefined) {
             this.setVisible(false);
             this.currentElement = null;
@@ -221,16 +244,26 @@ var SetElementConfigUI = cc.Node.extend({
 
         var isTentacle = (type === this.TENTACLE_TYPE);
 
+        // Tủ nước màu khoá cứng 4 máu (bỏ qua config) -> không cần panel Element Config.
+        if (type === this.COLOR_CABINET_TYPE) {
+            this.setVisible(false);
+            this.currentElement = null;
+            if (element && element.ui) element.ui.removeFromParent();
+            return;
+        }
+
         // Show for tentacle (always) or any element with maxHP > 1
         if (maxHP > 1 || isTentacle) {
             this.currentElement = {
                 type: type,
-                maxHP: maxHP || 5
+                // Bỏ trần theo config — cho chỉnh HP tự do tới MAX_HP (100).
+                maxHP: this.MAX_HP
             };
-            this.maxHpLabel.setString("/ " + (maxHP || 5));
+            this.maxHpLabel.setString("/ " + this.MAX_HP);
             this.hpInput.setString(isTentacle ? "5" : "1");
             // Show/hide direction row
             if (this.directionRow) this.directionRow.setVisible(isTentacle);
+            this.updateButtonState();
             this.setVisible(true);
             cc.log("SetElementConfigUI: Element type", type, "has maxHP", maxHP, "isTentacle:", isTentacle);
         } else {
@@ -245,6 +278,34 @@ var SetElementConfigUI = cc.Node.extend({
     },
 
     /**
+     * Mở popup để chỉnh HP cho 1 block ĐÃ đặt sẵn trên bàn (menu chuột phải → Update HP).
+     * Khác setElement() (dùng khi vẽ): pre-fill HP hiện tại và route thay đổi qua
+     * callback riêng, KHÔNG đụng tới selectedHP của paint flow.
+     * @param {number}   type    element type của block
+     * @param {number}   curHP   HP hiện tại để pre-fill
+     * @param {Function} onApply gọi mỗi lần HP đổi: onApply(newHP)
+     * @returns {boolean} true nếu block này chỉnh HP được (maxHP > 1); false nếu không
+     */
+    editExistingHP: function (type, curHP, onApply) {
+        this._editCallback = null;      // tránh trigger callback trong lúc setElement
+        this.setElement(type);          // cấu hình maxHP / hiển thị theo type
+        if (!this.isVisible() || !this.currentElement) {
+            return false;               // maxHP <= 1 hoặc type không hợp lệ -> không chỉnh được
+        }
+        var hp = parseInt(curHP, 10);
+        if (isNaN(hp) || hp < 1) hp = 1;
+        // Block có thể đã đặt HP cao hơn config max -> nới trần popup theo HP hiện tại.
+        if (hp > this.currentElement.maxHP) {
+            this.currentElement.maxHP = hp;
+            this.maxHpLabel.setString("/ " + hp);
+        }
+        this.hpInput.setString(String(hp));
+        this.updateButtonState();
+        this._editCallback = onApply;
+        return true;
+    },
+
+    /**
      * Get current HP value
      */
     getHP: function () {
@@ -252,10 +313,43 @@ var SetElementConfigUI = cc.Node.extend({
         if (isNaN(hp) || hp < 1) {
             hp = 1;
         }
-        // if (this.currentElement && hp > this.currentElement.maxHP) {
-        // hp = this.currentElement.maxHP;
-        // }
+        if (this.currentElement && hp > this.currentElement.maxHP) {
+            hp = this.currentElement.maxHP;
+        }
         return hp;
+    },
+
+    /**
+     * Enable/disable +/- buttons based on current HP vs min/max bounds
+     */
+    updateButtonState: function () {
+        var currentHP = this.getHP();
+        var maxHP = this.currentElement ? this.currentElement.maxHP : 1;
+
+        // NOTE: Keep touch ENABLED even when at bounds so the button still
+        // swallows the touch. Disabling touch lets the press fall through to
+        // the map below, causing an accidental click there. The increment/
+        // decrement handlers already no-op at the bounds, so this is safe.
+        var atMax = currentHP >= maxHP;
+        var atMin = currentHP <= 1;
+        var dim = cc.color(120, 120, 120);
+        var bright = cc.color(255, 255, 255);
+        if (this.btnPlus) {
+            this.btnPlus.setBright(!atMax);
+            this.btnPlus.setColor(atMax ? dim : bright);
+        }
+        if (this.btnPlus10) {
+            this.btnPlus10.setBright(!atMax);
+            this.btnPlus10.setColor(atMax ? dim : bright);
+        }
+        if (this.btnMinus) {
+            this.btnMinus.setBright(!atMin);
+            this.btnMinus.setColor(atMin ? dim : bright);
+        }
+        if (this.btnMinus10) {
+            this.btnMinus10.setBright(!atMin);
+            this.btnMinus10.setColor(atMin ? dim : bright);
+        }
     },
 
     /**
@@ -265,12 +359,12 @@ var SetElementConfigUI = cc.Node.extend({
         if (!this.currentElement) return;
 
         var currentHP = this.getHP();
-        // if (currentHP < this.currentElement.maxHP) {
-        currentHP++;
-        cc.log("Increment HP " + currentHP);
-        this.hpInput.setString(currentHP.toString());
-        this.onHPChanged();
-        // }
+        if (currentHP < this.currentElement.maxHP) {
+            currentHP++;
+            cc.log("Increment HP " + currentHP);
+            this.hpInput.setString(currentHP.toString());
+            this.onHPChanged();
+        }
     },
 
     /**
@@ -286,6 +380,29 @@ var SetElementConfigUI = cc.Node.extend({
     },
 
     /**
+     * Increment HP by 10 (clamped to MAX_HP)
+     */
+    incrementHP10: function () {
+        if (!this.currentElement) return;
+        var hp = this.getHP();
+        if (hp >= this.currentElement.maxHP) return;
+        hp = Math.min(hp + 10, this.currentElement.maxHP);
+        this.hpInput.setString(hp.toString());
+        this.onHPChanged();
+    },
+
+    /**
+     * Decrement HP by 10 (clamped to 1)
+     */
+    decrementHP10: function () {
+        var hp = this.getHP();
+        if (hp <= 1) return;
+        hp = Math.max(hp - 10, 1);
+        this.hpInput.setString(hp.toString());
+        this.onHPChanged();
+    },
+
+    /**
      * Handle HP value change
      */
     onHPChanged: function () {
@@ -294,8 +411,14 @@ var SetElementConfigUI = cc.Node.extend({
         // Validate and update input
         this.hpInput.setString(hp.toString());
 
-        // Trigger callback
-        if (this.onConfigChangeCallback) {
+        // Refresh +/- enabled state
+        this.updateButtonState();
+
+        // Trigger callback — ưu tiên chế độ Update HP (chỉnh block đã đặt);
+        // nếu không thì về paint flow (đặt selectedHP).
+        if (this._editCallback) {
+            this._editCallback(hp);
+        } else if (this.onConfigChangeCallback) {
             this.onConfigChangeCallback(hp);
         }
 

@@ -107,6 +107,7 @@ var resAni = {
     spine_2300: "game/animation/spine/pinwheel",
     spine_2700: "game/animation/spine/hot_air_balloon",
     spine_2900: "game/animation/spine/fridge",
+    spine_11010: "game/animation/spine/color_crab/creep_snail_01", // ColorCrab 11010-11015 (shared skeleton, per-color skin)
     spine_4600: "game/animation/spine/banana",
 
     efk_500: "game/animation/effekseer/grass_blocker_@.efk",

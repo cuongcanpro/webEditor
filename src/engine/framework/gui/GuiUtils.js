@@ -34,13 +34,13 @@ fr.createCommonButton = function(imgNormal, imgSelected, imgDisabled, texType) /
 };
 
 fr.createSprite = function (name, path) {
-    cc.log("fr.createSprite getSpriteFrame", name);
+    // cc.log("fr.createSprite getSpriteFrame", name);
     path = path || name;
     if (cc.spriteFrameCache.getSpriteFrame(name)) {
-        cc.log("fr.createSprite getSpriteFrame", name);
+        // cc.log("fr.createSprite getSpriteFrame", name);
         return new cc.Sprite("#" + name);
     } else {
-        cc.log("fr.createSprite Path", path);
+        cc.log("fr.createSprite Path not found", path);
         return new cc.Sprite(path);
     }
 };

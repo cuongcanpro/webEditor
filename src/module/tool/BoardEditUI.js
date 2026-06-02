@@ -15,7 +15,6 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
      * @param {Object} mapConfig - Map configuration from EditMapScene
      */
     ctor: function (editMapUI) {
-        // Call parent constructor with mapConfig
         // Pass null for testBoxes since we don't need test data
         this._super(null, null, true);
         this.editMapUI = editMapUI;
@@ -24,6 +23,16 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
         cc.log("BoardEditUI initialized with mapConfig");
         this.drawGrid();
         this.initializeHeatmap();
+
+        // Apply the default map for a fresh editor (web first-open) through the
+        // same path used when loading a real level, so spawn markers (cyan) and
+        // borders render correctly:
+        //   - top row entirely spawn points (slot value 2 = enabled + canSpawn)
+        //   - all other rows normal enabled cells (1)
+        //   - 4 gem colors by default (1..4) instead of the full 6
+        var defaultMap = CoreGame.BoardEditUI.buildDefaultMapConfig();
+        this.loadMapConfig(defaultMap);
+        if (this.boardMgr) this.boardMgr.gemTypes = defaultMap.gemTypes.slice();
         return true;
     },
 
@@ -80,6 +89,23 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
 
         this.addChild(draw, 1);
         this._gridDrawNode = draw;
+    },
+
+    /**
+     * Re-render the map outline + grid overlay to match the current slot layout.
+     * Needed after enabling/disabling slots in the editor: otherwise the border is
+     * only built on load (loadMapConfig) and goes stale as the shape is edited.
+     * renderBoardBorder() APPENDS sprites, so the old ones must be cleared first.
+     */
+    refreshGrid: function () {
+        if (this.listBorder) {
+            for (var i = 0; i < this.listBorder.length; i++) {
+                if (this.listBorder[i]) this.listBorder[i].removeFromParent(true);
+            }
+            this.listBorder = [];
+        }
+        this.renderBoardBorder();
+        this.drawGrid();
     },
 
     /**
@@ -290,7 +316,7 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
         var localPos = this.convertToNodeSpace(pos);
         var gridPos = this.boardMgr.pixelToGrid(localPos.x, localPos.y);
         // Check gridPos is valid  (gridPos.x = row, gridPos.y = col)
-        cc.log("on Touch Began ", gridPos.x, gridPos.y, this.boardMgr.rows, this.boardMgr.cols);
+        // cc.log("on Touch Began ", gridPos.x, gridPos.y, this.boardMgr.rows, this.boardMgr.cols);
         if (gridPos.x < 0 || gridPos.x >= this.boardMgr.rows || gridPos.y < 0 || gridPos.y >= this.boardMgr.cols) {
             return false;
         }
@@ -377,7 +403,11 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
                     var rawSlot = this.boardMgr.mapGrid[r][c];
                     if (rawSlot) {
                         rawSlot.canSpawn = spawnPoint;
-                        if (rawSlot.bg) rawSlot.bg.setColor(spawnPoint ? cc.color(100, 220, 255) : cc.color(255, 255, 255));
+                        // Tint BOTH bg and bg2 — bg2 (nen_hat overlay) sits on top of
+                        // bg, so tinting only bg leaves the cyan hidden underneath.
+                        var spawnTint = spawnPoint ? cc.color(100, 220, 255) : cc.color(255, 255, 255);
+                        if (rawSlot.bg) rawSlot.bg.setColor(spawnTint);
+                        if (rawSlot.bg2) rawSlot.bg2.setColor(spawnTint);
                     }
                 }
             }
@@ -611,3 +641,57 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
         cc.Layer.prototype.onExit.call(this);
     }
 });
+
+/**
+ * Build the default map config used when the editor opens with no level loaded.
+ * Top row = spawn points (2), every other cell = normal enabled (1), 4 gem colors.
+ * @returns {Object} mapConfig with slotMap + gemTypes
+ */
+CoreGame.BoardEditUI.buildDefaultMapConfig = function (gemTypes) {
+    var rows = CoreGame.Config.BOARD_ROWS;
+    var cols = CoreGame.Config.BOARD_COLS;
+    // Visual top row = highest row index (gridToPixel maps higher row → higher y).
+    var topRow = rows - 1;
+    // Dùng số màu được truyền vào (panel GEM COLORS); mặc định 4 màu nếu không có.
+    if (!gemTypes || !gemTypes.length) gemTypes = [1, 2, 3, 4];
+    else gemTypes = gemTypes.slice();
+
+    var slotMap = [];
+    var typeGrid = []; // remembers chosen gem per cell so we can avoid pre-made matches
+    var elements = [];
+
+    for (var r = 0; r < rows; r++) {
+        slotMap[r] = [];
+        typeGrid[r] = [];
+        for (var c = 0; c < cols; c++) {
+            // Top row → 2 = enabled + canSpawn; other rows → 1 = enabled
+            slotMap[r][c] = (r === topRow) ? 2 : 1;
+
+            // Pick a random gem, excluding any color that would immediately form a
+            // 3-in-a-row (left/below) OR a 2x2 same-color square (left + up + up-left).
+            var candidates = gemTypes.slice();
+            var banLeft = (c >= 2 && typeGrid[r][c - 1] === typeGrid[r][c - 2]) ? typeGrid[r][c - 1] : 0;
+            var banDown = (r >= 2 && typeGrid[r - 1][c] === typeGrid[r - 2][c]) ? typeGrid[r - 1][c] : 0;
+            var banSq = (r >= 1 && c >= 1 &&
+                typeGrid[r][c - 1] === typeGrid[r - 1][c] &&
+                typeGrid[r][c - 1] === typeGrid[r - 1][c - 1]) ? typeGrid[r][c - 1] : 0;
+            var filtered = [];
+            for (var k = 0; k < candidates.length; k++) {
+                if (candidates[k] !== banLeft && candidates[k] !== banDown && candidates[k] !== banSq) {
+                    filtered.push(candidates[k]);
+                }
+            }
+            if (filtered.length === 0) filtered = candidates; // safety fallback
+
+            var t = filtered[Math.floor(Math.random() * filtered.length)];
+            typeGrid[r][c] = t;
+            elements.push({ row: r, col: c, type: t, hp: 1 });
+        }
+    }
+
+    return {
+        slotMap: slotMap,
+        gemTypes: gemTypes,
+        elements: elements
+    };
+};

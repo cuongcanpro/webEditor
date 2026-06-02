@@ -90,10 +90,55 @@ cc.LoadingScene = cc.Scene.extend({
         var self = this;
         self.unschedule(self._startLoading);
         var res = self.resources;
-        var BATCH_SIZE = 100;
+        var BATCH_SIZE = 500;
+        var MAX_RETRY = 5;
         var totalCount = res.length;
         var loadedCount = 0;
         var batchIndex = 0;
+
+        // Load (or retry) a set of resources. originalSize keeps progress
+        // accounting correct even when a retry only carries the failed subset.
+        function loadBatch(batch, originalSize, retryCount) {
+            cc.loader.load(batch,
+                function (result, count, batchLoaded) {
+                    var percent = ((loadedCount + batchLoaded) / totalCount * 100) | 0;
+                    percent = Math.min(percent, 100);
+                    self._label.setString("Đang tải... " + percent + "%");
+                },
+                function (errors) {
+                    // errors is null when everything loaded, otherwise a sparse
+                    // array indexed by the resource's position in `batch`.
+                    var failed = [];
+                    if (errors) {
+                        for (var i = 0; i < batch.length; i++) {
+                            if (errors[i] != null)
+                                failed.push(batch[i]);
+                        }
+                    }
+
+                    if (failed.length > 0 && retryCount < MAX_RETRY) {
+                        cc.log("LoadingScene: " + failed.length + " resource(s) failed, re-downloading (retry " + (retryCount + 1) + "/" + MAX_RETRY + ")");
+                        self._label.setString("Đang tải lại... (" + (retryCount + 1) + "/" + MAX_RETRY + ")");
+                        // The loader deletes the cache entry on failure, so
+                        // re-issuing load() truly re-downloads the failed items.
+                        // Small backoff before each retry.
+                        setTimeout(function () {
+                            loadBatch(failed, originalSize, retryCount + 1);
+                        }, 500 * (retryCount + 1));
+                        return;
+                    }
+
+                    if (failed.length > 0) {
+                        cc.error("LoadingScene: gave up on " + failed.length + " resource(s) after " + MAX_RETRY + " retries:");
+                        for (var j = 0; j < failed.length; j++)
+                            cc.error("  - " + failed[j]);
+                    }
+
+                    loadedCount += originalSize;
+                    loadNextBatch();
+                }
+            );
+        }
 
         function loadNextBatch() {
             var batch = res.slice(batchIndex, batchIndex + BATCH_SIZE);
@@ -103,17 +148,7 @@ cc.LoadingScene = cc.Scene.extend({
                     self.cb.call(self.target);
                 return;
             }
-            cc.loader.load(batch,
-                function (result, count, batchLoaded) {
-                    var percent = ((loadedCount + batchLoaded) / totalCount * 100) | 0;
-                    percent = Math.min(percent, 100);
-                    self._label.setString("Đang tải... " + percent + "%");
-                },
-                function () {
-                    loadedCount += batch.length;
-                    loadNextBatch();
-                }
-            );
+            loadBatch(batch, batch.length, 0);
         }
 
         loadNextBatch();

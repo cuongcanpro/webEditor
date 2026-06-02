@@ -17,6 +17,10 @@ CoreGame.MilkCabinetUI = CoreGame.ElementUI.extend({
         this.initSpine();
         this.updateVisual(true); // initial update
 
+        // Show the HP number on the cabinet (như các cua). lbState was created
+        // hidden by ElementUI.ctor; updateVisual() keeps its text in sync with HP.
+        if (this.lbState) this.lbState.setVisible(true);
+
         return true;
     },
 
@@ -57,6 +61,7 @@ CoreGame.MilkCabinetUI = CoreGame.ElementUI.extend({
      */
     updateVisual: function (isInit) {
         var hitPoints = this.element.hitPoints;
+        if (this.lbState) this.lbState.setString(String(hitPoints)); // keep HP text in sync
         if (hitPoints === 7) {
             if (this.door) this.door.setAnimation(0, "door0", false);
             // Reset bottles if needed

@@ -1,6 +1,6 @@
 {
   "ID": "316016c6-f63a-4981-b2c4-4e666e1cbf85",
-  "Version": "2.3.4",
+  "Version": "3.10.0.0",
   "Name": "EditMapUINew",
   "Content": {
     "Content": {
@@ -294,11 +294,11 @@
                 "Tag": 30,
                 "Children": [
                   {
-                    "FontSize": 14,
+                    "FontSize": 17,
                     "ButtonText": "New",
                     "FontResource": {
                       "Type": "Normal",
-                      "Path": "font/BalooPaaji2-Regular.ttf",
+                      "Path": "font/BalooPaaji2-Medium.ttf",
                       "Plist": ""
                     },
                     "TextColor": {
@@ -359,11 +359,11 @@
                     "ctype": "ButtonObjectData"
                   },
                   {
-                    "FontSize": 14,
+                    "FontSize": 17,
                     "ButtonText": "Import",
                     "FontResource": {
                       "Type": "Normal",
-                      "Path": "font/BalooPaaji2-Regular.ttf",
+                      "Path": "font/BalooPaaji2-Medium.ttf",
                       "Plist": ""
                     },
                     "TextColor": {
@@ -424,11 +424,11 @@
                     "ctype": "ButtonObjectData"
                   },
                   {
-                    "FontSize": 14,
+                    "FontSize": 17,
                     "ButtonText": "Export",
                     "FontResource": {
                       "Type": "Normal",
-                      "Path": "font/BalooPaaji2-Regular.ttf",
+                      "Path": "font/BalooPaaji2-Medium.ttf",
                       "Plist": ""
                     },
                     "TextColor": {
@@ -489,11 +489,11 @@
                     "ctype": "ButtonObjectData"
                   },
                   {
-                    "FontSize": 14,
+                    "FontSize": 17,
                     "ButtonText": "Play",
                     "FontResource": {
                       "Type": "Normal",
-                      "Path": "font/BalooPaaji2-Regular.ttf",
+                      "Path": "font/BalooPaaji2-Medium.ttf",
                       "Plist": ""
                     },
                     "TextColor": {
@@ -554,11 +554,11 @@
                     "ctype": "ButtonObjectData"
                   },
                   {
-                    "FontSize": 14,
+                    "FontSize": 17,
                     "ButtonText": "HeatMap",
                     "FontResource": {
                       "Type": "Normal",
-                      "Path": "font/BalooPaaji2-Regular.ttf",
+                      "Path": "font/BalooPaaji2-Medium.ttf",
                       "Plist": ""
                     },
                     "TextColor": {
@@ -619,11 +619,11 @@
                     "ctype": "ButtonObjectData"
                   },
                   {
-                    "FontSize": 14,
+                    "FontSize": 17,
                     "ButtonText": "Undo",
                     "FontResource": {
                       "Type": "Normal",
-                      "Path": "font/BalooPaaji2-Regular.ttf",
+                      "Path": "font/BalooPaaji2-Medium.ttf",
                       "Plist": ""
                     },
                     "TextColor": {
@@ -684,11 +684,11 @@
                     "ctype": "ButtonObjectData"
                   },
                   {
-                    "FontSize": 14,
+                    "FontSize": 17,
                     "ButtonText": "Redo",
                     "FontResource": {
                       "Type": "Normal",
-                      "Path": "font/BalooPaaji2-Regular.ttf",
+                      "Path": "font/BalooPaaji2-Medium.ttf",
                       "Plist": ""
                     },
                     "TextColor": {
@@ -870,11 +870,11 @@
             "Tag": 36,
             "Children": [
               {
-                "FontSize": 14,
+                "FontSize": 17,
                 "ButtonText": "Delete",
                 "FontResource": {
                   "Type": "Normal",
-                  "Path": "font/BalooPaaji2-Regular.ttf",
+                  "Path": "font/BalooPaaji2-Medium.ttf",
                   "Plist": ""
                 },
                 "TextColor": {},
@@ -946,11 +946,11 @@
                 "ctype": "ButtonObjectData"
               },
               {
-                "FontSize": 14,
+                "FontSize": 17,
                 "ButtonText": "Slot",
                 "FontResource": {
                   "Type": "Normal",
-                  "Path": "font/BalooPaaji2-Regular.ttf",
+                  "Path": "font/BalooPaaji2-Medium.ttf",
                   "Plist": ""
                 },
                 "TextColor": {},
@@ -1022,11 +1022,11 @@
                 "ctype": "ButtonObjectData"
               },
               {
-                "FontSize": 14,
+                "FontSize": 17,
                 "ButtonText": "Spawn",
                 "FontResource": {
                   "Type": "Normal",
-                  "Path": "font/BalooPaaji2-Regular.ttf",
+                  "Path": "font/BalooPaaji2-Medium.ttf",
                   "Plist": ""
                 },
                 "TextColor": {},
@@ -1116,7 +1116,7 @@
       },
       "UsedResources": [
         "Default/Button_Disable.png",
-        "font/BalooPaaji2-Regular.ttf",
+        "font/BalooPaaji2-Medium.ttf",
         "res/bg1.png",
         "res/btnGrey.png"
       ],

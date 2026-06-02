@@ -5,9 +5,10 @@ Cocot.load_animations_from_meta = function (gui, path, delegate) {
         var meta = Cocot.nodeGetCustomProperty(gui);
         var animations = {};
         for (var name in meta.animations) {
-            animations[name] = gui.runAction(ccs._load(path + meta.animations[name], "action", ""));
+            let action = ccs._load(path + meta.animations[name], "action", "");
+            if (action) animations[name] = gui.runAction(action);
             animations[name].setFrameEventCallFunc(Cocot.frameCallFunc.bind(delegate));
-            Cocot.log("load_animations_from_meta", name, meta.animations[name]);
+            // Cocot.log("load_animations_from_meta", name, meta.animations[name]);
         }
         return animations;
     } catch (error) {

@@ -159,8 +159,8 @@ var LevelSelectorUI = cc.LayerColor.extend({
                     filename: mapList[i]
                 });
             }
-            cc.log("mapList: ", JSON.stringify(mapList));
-            cc.log("Loaded " + self.levelList.length + " levels from ListMap.json");
+            // cc.log("mapList: ", JSON.stringify(mapList));
+            // cc.log("Loaded " + self.levelList.length + " levels from ListMap.json");
 
             // Populate the list
             self.populateList();

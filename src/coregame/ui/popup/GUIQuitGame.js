@@ -129,7 +129,7 @@ var GUIQuitGame = BaseLayer.extend({
 
         var node = new cc.Node();
 
-        var spr = new ccui.ImageView("res/modules/game/element/icon/" + type + ".png");
+        var spr = new ccui.ImageView("res/modules/game/element/" + CoreGame.Config.getTargetIconName(type) + ".png");
         spr.setPosition(0, 20);
         node.addChild(spr);
         node.spr = spr;

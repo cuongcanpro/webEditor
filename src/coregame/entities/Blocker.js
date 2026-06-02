@@ -28,7 +28,16 @@ CoreGame.Blocker = CoreGame.ElementObject.extend({
         if (hitPoints) {
             this.hitPoints = hitPoints;
             if (hitPoints > this.configData.maxHP) {
-                this.configData.maxHP = hitPoints;
+                // `configData` may be a shared prototype object (blockers that
+                // don't declare their own literal — MilkCabinet, Soap, etc. all
+                // share Blocker.prototype.configData). Mutating it here would
+                // leak this instance's HP into every other type's maxHP (the
+                // editor "/4" bug). Shallow-clone to an instance-own object so
+                // the cap stays per-instance.
+                var clonedConfig = {};
+                for (var k in this.configData) clonedConfig[k] = this.configData[k];
+                clonedConfig.maxHP = hitPoints;
+                this.configData = clonedConfig;
             }
         } else if (this.configData && this.configData.maxHP) {
             // Map did not specify hp — spawn at full HP from config.

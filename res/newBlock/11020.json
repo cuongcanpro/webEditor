@@ -1,11 +1,20 @@
 {
-    "description": "King Crab (Tinkle Match): 3x3, di chuyển ngẫu nhiên mỗi turn, đổi màu yêu cầu (_matchColor) ngẫu nhiên trong 6 màu sau mỗi turn — implement bằng ReplaceSelfAction quay vòng giữa 6 variant ID 11010-11015 (Cua Màu). HP cố định bằng instance khởi tạo = 5.",
+    "description": "King Crab (Tinkle Match) — boss 3x3. Cadence 3 turn xen kẽ: turn 3 đổi màu yêu cầu (_matchColor) ngẫu nhiên trong {1,2,3,4} + 0.5s color-shift; turn 6 dời 1 ô random 4-way; turn 9 đổi màu... (move và rotate KHÔNG cùng turn). 1 turn trước mỗi lần đổi màu có warning (crown blink). Side-match đúng màu = -1 HP; sai màu = 'CHẶN', sai 3 lần liên tiếp hiện hint aura (1 lần/level). PU bypass color check. Multi-King tự desync rotate theo parity per-instance. Màu hiện hành lưu per-instance ở element._matchColor (không ghi vào config shared). Toàn bộ cadence/warning/rotate/move do KingCrabTurnAction điều phối; visual qua KingCrabUI. HP 20-25 (mặc định 25).",
+    "tintByMatchColor": true,
     "baseAction": [],
     "unblockAction": [],
     "customAction": {
         "sideMatch": [
             {
-                "name": "MatchColorTakeDamageAction",
+                "name": "KingCrabSideMatchAction",
+                "config": {
+                    "_matchColor": 1
+                }
+            }
+        ],
+        "match": [
+            {
+                "name": "KingCrabSideMatchAction",
                 "config": {
                     "_matchColor": 1
                 }
@@ -13,36 +22,31 @@
         ],
         "endTurn": [
             {
-                "name": "MoveAction",
+                "name": "KingCrabTurnAction",
                 "config": {
+                    "period": 3,
+                    "colors": [
+                        1,
+                        2,
+                        3,
+                        4
+                    ],
                     "directionType": 0
-                }
-            },
-            {
-                "name": "ReplaceSelfAction",
-                "config": {
-                    "type": [
-                        11010,
-                        11011,
-                        11012,
-                        11013,
-                        11014,
-                        11015
-                    ]
                 }
             }
         ]
     },
     "visual": {
-        "path": "res/newBlock/BlockUI/block_king_crab.json",
-        "type": 2
+        "path": "res/modules/game/element/king_crab_placeholder.png",
+        "type": 0,
+        "uiClass": "KingCrabUI"
     },
     "type": "Blocker",
     "width": 3,
     "height": 3,
     "layerBehavior": "EXCLUSIVE",
     "configData": {
-        "hitPoints": 5,
-        "maxHP": 5
+        "hitPoints": 25,
+        "maxHP": 25
     }
 }

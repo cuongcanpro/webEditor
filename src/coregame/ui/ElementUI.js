@@ -49,6 +49,57 @@ CoreGame.ElementUI = cc.Node.extend({
     },
 
     /**
+     * Tint a visual node by the blocker's required match color.
+     * Only runs when rawConfig.tintByMatchColor is true (e.g. ColorCrab uses a
+     * white crab sprite tinted per color). The color id is read from the
+     * sideMatch/match MatchColorTakeDamageAction config so one greyscale asset
+     * renders all 6 color variants. Safe no-op for non-color blockers / null node.
+     * @param {cc.Node} node - the sprite/anim node to tint (this.sprite, jsonNode, ...)
+     */
+    applyMatchColorTint: function (node) {
+        if (!node || !this.element || !this.element.rawConfig) return;
+        var cfg = this.element.rawConfig;
+        if (!cfg.tintByMatchColor) return;
+        var color = this._findMatchColor(cfg);
+        var rgb = CoreGame.ElementUI.MATCH_COLOR_TINT[color];
+        if (!rgb) return;
+        if (node.setCascadeColorEnabled) node.setCascadeColorEnabled(true);
+        node.setColor(cc.color(rgb[0], rgb[1], rgb[2]));
+    },
+
+    /**
+     * Re-apply the match-color tint to the owned visual node at runtime.
+     * Used by CycleMatchColorAction (King Crab) after it rotates the live
+     * element._matchColor — _findMatchColor reads that per-instance value so the
+     * setColor tint always matches the current required color.
+     */
+    refreshMatchColorTint: function () {
+        var node = this.sprite || this.jsonNode || null;
+        if (node) this.applyMatchColorTint(node);
+    },
+
+    _findMatchColor: function (cfg) {
+        // Prefer the live per-instance color (King Crab rotates it at runtime).
+        if (this.element && typeof this.element._matchColor === 'number') {
+            return this.element._matchColor;
+        }
+        var ca = cfg.customAction;
+        if (!ca) return -1;
+        var lists = [ca.sideMatch, ca.match];
+        for (var li = 0; li < lists.length; li++) {
+            var list = lists[li];
+            if (!Array.isArray(list)) continue;
+            for (var i = 0; i < list.length; i++) {
+                var a = list[i];
+                if (a && a.config && typeof a.config._matchColor === 'number') {
+                    return a.config._matchColor;
+                }
+            }
+        }
+        return -1;
+    },
+
+    /**
      * Initialize the visual sprite.
      * Overwrite in subclasses to provide custom visuals.
      */
@@ -701,6 +752,19 @@ CoreGame.ElementUI = cc.Node.extend({
 });
 
 CoreGame.ElementUI.GEM_SCALE = 0.5;
+
+// Tint palette for tintByMatchColor blockers (e.g. ColorCrab), keyed by gem
+// color id. Order matches the in-game gem colors:
+// 1=Xanh lá 2=Vàng 3=Đỏ 4=Xanh dương 5=Hồng 6=Cam.
+// [r,g,b] arrays so it is safe to define at load time.
+CoreGame.ElementUI.MATCH_COLOR_TINT = {
+    1: [80, 200, 80],    // Xanh lá (green)
+    2: [245, 210, 60],   // Vàng (yellow)
+    3: [235, 70, 70],    // Đỏ (red)
+    4: [70, 140, 255],   // Xanh dương (blue)
+    5: [240, 110, 200],  // Hồng (pink)
+    6: [255, 150, 40]    // Cam (orange)
+};
 
 CoreGame.ElementUI.HINT_TIME_EFX = 0.333;
 CoreGame.ElementUI.HINT_TIME_HOLD = 0.15;

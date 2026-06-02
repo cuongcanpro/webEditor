@@ -110,7 +110,7 @@
      * activeLogic pick and actual flight start 0.2s later), play a small
      * "confused" effect and remove self rather than flying to an empty slot.
      */
-    startFlyTo: function (targetGrid) {
+    startFlyTo: function (targetGrid, destOverride) {
         if (!targetGrid) return 0.2;
 
         // [IMPROVEMENT] Check if target became empty between pick and flight start.
@@ -126,8 +126,9 @@
         this.stepEnd = false;
         this.prePos = this.getPosition();
 
-        // Get pixel position from slot
-        var targetPos = targetGrid.getPosition();
+        // Get pixel position from slot. destOverride cho phép bay tới một điểm cụ
+        // thể bên trong slot (vd: đúng ô chai của tủ nước màu) thay vì tâm slot.
+        var targetPos = destOverride || targetGrid.getPosition();
         this.desPos = cc.p(targetPos.x, targetPos.y);
 
         if (!this.trail) {

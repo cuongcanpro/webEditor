@@ -1,9 +1,20 @@
 {
-    "description": "Trứng màu (variant 3): biến thể của Trứng (5000), chỉ nhận damage khi match đúng gem màu 3. HP=2.",
-    "baseAction": ["SWAP", "DROP"],
+    "description": "Trứng màu (variant 3): biến thể của Trứng (5000), chỉ nhận damage khi match đúng gem màu 3. HP=1.",
+    "baseAction": [
+        "SWAP",
+        "DROP"
+    ],
     "unblockAction": [],
     "customAction": {
         "sideMatch": [
+            {
+                "name": "MatchColorTakeDamageAction",
+                "config": {
+                    "_matchColor": 3
+                }
+            }
+        ],
+        "match": [
             {
                 "name": "MatchColorTakeDamageAction",
                 "config": {
@@ -21,7 +32,7 @@
     "height": 1,
     "layerBehavior": "EXCLUSIVE",
     "configData": {
-        "hitPoints": 2,
-        "maxHP": 2
+        "hitPoints": 1,
+        "maxHP": 1
     }
 }

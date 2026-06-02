@@ -35,6 +35,10 @@ CoreGame.CustomElementUI = CoreGame.ElementUI.extend({
 
                 if (this.jsonNode) {
                     this.addChild(this.jsonNode);
+                    // Color-coded blockers reuse ONE greyscale art asset and
+                    // tint it per color (shared helper on ElementUI; gated by
+                    // rawConfig.tintByMatchColor so other type-2 blockers are untouched).
+                    this.applyMatchColorTint(this.jsonNode);
                     // Standard scale for elements is 0.5
 
                     //Elements name?

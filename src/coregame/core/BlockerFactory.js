@@ -58,12 +58,18 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp, cells) {
         // Animation types (1=Spine, 2=Custom) are handled by the base
         // ElementObject.createUIInstance which selects the right UI class.
         if (config.visual && config.visual.type === 0 && !(blocker instanceof CoreGame.TentacleBlocker)) {
-            (function (b) {
+            // Optional per-blocker UI override (e.g. King Crab uses KingCrabUI for
+            // color-shift / warning / CHẶN FX). Falls back to FactoryBlockerUI.
+            var uiClassName = config.visual.uiClass;
+            (function (b, uiClassName) {
                 b.createUIInstance = function () {
                     var path = this.rawConfig && this.rawConfig.visual && this.rawConfig.visual.path;
-                    return new CoreGame.FactoryBlockerUI(this, path, this._placeholderSpriteScale || 1);
+                    var UIClass = (uiClassName && CoreGame[uiClassName])
+                        ? CoreGame[uiClassName]
+                        : CoreGame.FactoryBlockerUI;
+                    return new UIClass(this, path, this._placeholderSpriteScale || 1);
                 };
-            })(blocker);
+            })(blocker, uiClassName);
         }
 
         // Use config hitPoints as default when the map doesn't specify HP.
@@ -78,6 +84,13 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp, cells) {
         // Without this override, takeDamage() crashes in fr.Sound.playMonsterSound
         // when it tries to index resSound.monster["30000"] which is undefined.
         // blocker.isMonster = function () { return false; };
+
+        // Multi-cell blocker (vd Cua Màu 2x2): một match group chạm nhiều ô chỉ trừ
+        // 1 máu (dedup theo matchActivationId trong TakeDamageAction.execute), thay
+        // vì mỗi ô bị chạm trừ 1 máu.
+        if (config.dedupPerMatch) {
+            blocker._dedupPerMatch = true;
+        }
 
         // Set Size
         if (config.width !== undefined && config.height !== undefined) {
@@ -170,7 +183,7 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp, cells) {
                             }
 
                             blocker.addAction(actionType, actionInstance);
-                            cc.log("BlockerFactory: Added action", actionName, "to", actionType);
+                            // cc.log("BlockerFactory: Added action", actionName, "to", actionType);
                         } else {
                             cc.log("BlockerFactory: Action class not found: " + actionName);
                         }
@@ -188,16 +201,16 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp, cells) {
                 if (mapData[key] == typeId) {
                     blocker.configData = blocker.configData || {};
                     blocker.configData.grid_path = "res/modules/game/board/nen/tile_BG.png";
-                    cc.log("BlockerFactory: Injected tile_BG for", typeId);
+                    // cc.log("BlockerFactory: Injected tile_BG for", typeId);
                     break;
                 }
             }
         }
     }
 
-    cc.log("BlockerFactory created blocker:", typeId,
-        "haveBaseAction:", blocker.haveBaseAction,
-        "blockBaseAction:", blocker.blockBaseAction);
+    // cc.log("BlockerFactory created blocker:", typeId,
+    //     "haveBaseAction:", blocker.haveBaseAction,
+    //     "blockBaseAction:", blocker.blockBaseAction);
     return blocker;
 };
 
@@ -250,7 +263,7 @@ CoreGame.BlockerFactory.preloadConfig = function (typeId, callback) {
                 if (mapData[key] == typeId) {
                     config.configData = config.configData || {};
                     config.configData.grid_path = "res/modules/game/board/nen/tile_BG.png";
-                    cc.log("BlockerFactory: Applied tile_BG to", typeId);
+                    // cc.log("BlockerFactory: Applied tile_BG to", typeId);
                     break;
                 }
             }
@@ -258,7 +271,7 @@ CoreGame.BlockerFactory.preloadConfig = function (typeId, callback) {
 
         // Cache the config
         CoreGame.BlockerFactory._configCache[typeId] = config;
-        cc.log("BlockerFactory: Preloaded config for", typeId);
+        // cc.log("BlockerFactory: Preloaded config for", typeId);
 
         if (callback) callback(null, config);
     });
@@ -310,7 +323,7 @@ CoreGame.BlockerFactory.preloadAllConfigs = function (onProgress, onComplete) {
         var loaded = 0;
         var failed = [];
 
-        cc.log("BlockerFactory: Found", total, "blockers in mapID.json, preloading configs...");
+        // cc.log("BlockerFactory: Found", total, "blockers in mapID.json, preloading configs...");
 
         var loadNext = function (index) {
             if (index >= total) {
@@ -318,7 +331,7 @@ CoreGame.BlockerFactory.preloadAllConfigs = function (onProgress, onComplete) {
                 if (failed.length > 0) {
                     cc.log("BlockerFactory: Preload complete. Failed:", failed);
                 } else {
-                    cc.log("BlockerFactory: All", total, "configs preloaded successfully!");
+                    // cc.log("BlockerFactory: All", total, "configs preloaded successfully!");
                 }
                 CoreGame.BlockerFactory._isPreloading = false;
                 CoreGame.BlockerFactory._isPreloaded = true;

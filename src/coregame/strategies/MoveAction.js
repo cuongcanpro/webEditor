@@ -11,8 +11,13 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
      */
     configData:
     {
-        directionType: 0 // 0: random, 1: UP, 2: DOWN, 3: LEFT, 4: RIGHT
+        directionType: 0, // 0: random, 1: UP, 2: DOWN, 3: LEFT, 4: RIGHT
+        moveInterval: 1   // move once every N turns (1 = every turn). e.g. ColorCrab uses 2.
     },
+
+    // Per-instance turn counter for moveInterval gating. Declared here (not in
+    // configData) so it never aliases the shared-prototype config object.
+    _turnsSinceMove: 0,
 
     ctor: function () {
         this._super();
@@ -29,6 +34,24 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
         if (!boardMgr) return;
 
         var config = this.configData || {};
+
+        // Cadence gate: only actually move every `moveInterval` turns. A turn
+        // where the gate blocks counts as "đứng yên" — matches the ColorCrab
+        // "1 ô / 2 turn" spec while leaving every-turn movers (interval 1)
+        // untouched.
+        // The counter only resets on a SUCCESSFUL move (see _performMove). A turn
+        // where the destination is blocked does NOT reset it, so the crab keeps
+        // retrying the next turn instead of waiting another full interval —
+        // matches "invalid → skip turn này, retry turn sau".
+        var interval = parseInt(config.moveInterval) || 1;
+        if (interval > 1) {
+            this._turnsSinceMove = (this._turnsSinceMove || 0) + 1;
+            if (this._turnsSinceMove < interval) {
+                cc.log("MoveAction: skip move (" + this._turnsSinceMove + "/" + interval + ")");
+                return;
+            }
+        }
+
         var dirType = parseInt(config.directionType); // 0: random, 1-4: specific
 
         var allDirs = [
@@ -99,6 +122,7 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
 
             if (canMove) {
                 // Perform movement
+                this._turnsSinceMove = 0; // moved this turn — restart the cadence
                 this._performMove(boardMgr, element, dirInfo.dr, dirInfo.dc, potentialTargetsToRemove);
                 return; // Stop after successful move
             }

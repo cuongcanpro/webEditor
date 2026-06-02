@@ -26,6 +26,17 @@ CoreGame.FactoryBlockerUI = CoreGame.SpriteElementUI.extend({
     _applyHPVisual: function () {
         if (!this.sprite || !this.element) return;
         var hp = Math.max(0, this.element.hitPoints);
+
+        // Blocker tint theo màu (Cua Màu, King Crab): LUÔN giữ màu đậm + opacity
+        // đầy đủ ở mọi mức máu để màu yêu cầu dễ nhìn — không làm mờ/đổi theo HP.
+        var cfg = this.element.rawConfig;
+        if (cfg && cfg.tintByMatchColor) {
+            if (this.sprite.getOpacity && this.sprite.getOpacity() !== 255) {
+                this.sprite.setOpacity(255);
+            }
+            return;
+        }
+
         var maxHP = (this.element.configData && this.element.configData.maxHP) ||
                     this.element.maxHP || 1;
 

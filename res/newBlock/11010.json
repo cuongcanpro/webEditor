@@ -1,5 +1,7 @@
 {
-    "description": "Cua Màu (variant 1): biến thể color-match của Khỉ Con Tinh Nghịch (11001). 2x2, di chuyển ngẫu nhiên mỗi turnEnd, chỉ nhận damage khi side-match đúng màu 1. HP=3.",
+    "description": "Cua Màu (variant 1): biến thể color-match của Khỉ Con Tinh Nghịch (11001). 2x2, di chuyển ngẫu nhiên mỗi 2 turn (moveInterval=2), chỉ nhận damage khi side-match đúng màu 1. Tint theo _matchColor. HP do level set (default 3).",
+    "tintByMatchColor": true,
+    "dedupPerMatch": true,
     "baseAction": [],
     "unblockAction": [],
     "customAction": {
@@ -11,18 +13,28 @@
                 }
             }
         ],
+        "match": [
+            {
+                "name": "MatchColorTakeDamageAction",
+                "config": {
+                    "_matchColor": 1
+                }
+            }
+        ],
         "endTurn": [
             {
                 "name": "MoveAction",
                 "config": {
-                    "directionType": 0
+                    "directionType": 0,
+                    "moveInterval": 2
                 }
             }
         ]
     },
     "visual": {
-        "path": "res/newBlock/BlockUI/block_color_crab_1.json",
-        "type": 2
+        "path": "res/modules/game/element/color_crab_placholder.png",
+        "type": 0,
+        "uiClass": "ColorCrabUI"
     },
     "type": "Blocker",
     "width": 2,

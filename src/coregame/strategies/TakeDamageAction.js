@@ -422,9 +422,70 @@ CoreGame.Strategies.MatchColorTakeDamageAction = CoreGame.Strategies.TakeDamageA
      * @returns {boolean} true if condition is met
      */
     checkCondition: function (element, context) {
-        if (context && context.matchColor === this.configData._matchColor) {
+        // PU damage (Bom/Rocket/Rainbow) carries no gem color — it bypasses the
+        // color check entirely. puActivationId is set by the PU damage system.
+        // Delegating to _super keeps the base PU short-circuit + shield/puOnly
+        // guards consistent with every other blocker.
+        var isPU = context && context.puActivationId !== undefined;
+        if (isPU) {
+            return this._super(element, context);
+        }
+        // Normal match: only the gem color matching this blocker's required
+        // color collects it. King Crab rotates its color at runtime via
+        // CycleMatchColorAction, which stores the live value on element._matchColor
+        // (the shared configData._matchColor stays the authored starting color).
+        var required = (element && typeof element._matchColor === 'number')
+            ? element._matchColor
+            : this.configData._matchColor;
+        if (context && context.matchColor === required) {
             return element.canTakeDamage(context.matchColor);
         }
         return false;
+    }
+});
+
+/**
+ * ColorBottleTakeDamageAction — strategy for the 2×2 ColorCabinet (18000).
+ *
+ * Side-match: if matchColor is a still-alive bottle -> break that bottle.
+ *             else -> ui.shakeWrong() feedback, no HP loss.
+ * PU hit (context.puActivationId set): break exactly one bottle (smallest
+ *             remaining color), deduped per activation.
+ * Bottle state lives on the element (ColorCabinet); see entity.breakBottle().
+ */
+CoreGame.Strategies.ColorBottleTakeDamageAction = CoreGame.Strategies.TakeDamageAction.extend({
+    checkCondition: function (element, context) {
+        // Must be a ColorCabinet (owns bottle state).
+        if (!element || typeof element.getRemainingColors !== 'function') return false;
+        // Respect base guards (Đèn Lồng aura shield, puOnly) so a shielded
+        // cabinet cell is not breakable; otherwise behave normally.
+        return this._super(element, context);
+    },
+
+    execute: function (element, context) {
+        var remaining = element.getRemainingColors();
+        if (!remaining || remaining.length === 0) return;
+
+        var isPU = context && context.puActivationId !== undefined;
+        if (isPU) {
+            var actId = context.puActivationId;
+            if (!element._lastPUActivationId) element._lastPUActivationId = {};
+            if (element._lastPUActivationId[actId]) return;
+            element._lastPUActivationId[actId] = true;
+            // PU Plane truyền context.bottleColor = đúng chai nó bay tới; phá chai
+            // đó để chai vỡ khớp với anim. Các PU khác (bom/rocket) không truyền ->
+            // phá chai màu nhỏ nhất còn lại như cũ.
+            var puColor = (context.bottleColor && remaining.indexOf(context.bottleColor) !== -1)
+                ? context.bottleColor : remaining[0];
+            element.breakBottle(puColor, context.row, context.col);
+            return;
+        }
+
+        var color = context.matchColor;
+        if (remaining.indexOf(color) !== -1) {
+            element.breakBottle(color, context.row, context.col);
+        } else if (element.ui && typeof element.ui.shakeWrong === 'function') {
+            element.ui.shakeWrong();
+        }
     }
 });

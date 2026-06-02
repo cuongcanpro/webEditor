@@ -131,9 +131,22 @@ CoreGame.PlanePU = CoreGame.PowerUP.extend({
 
     onFly: function () {
         if (this.targetSlot) {
+            // Nếu target là Tủ nước màu (ColorCabinet): đặt chỗ đúng chai mà cú bay
+            // này sẽ phá, bay thẳng vào ô chai đó (thay vì luôn vào góc tủ) và truyền
+            // bottleColor xuống để chai vỡ khớp với điểm plane đáp.
+            var cabinet = this._findColorCabinet(this.targetSlot);
+            var bottleColor = 0;
+            var destOverride = null;
+            if (cabinet) {
+                bottleColor = cabinet.reserveBottleColor();
+                if (bottleColor && cabinet.ui && typeof cabinet.ui.getBottlePosition === 'function') {
+                    destOverride = cabinet.ui.getBottlePosition(bottleColor);
+                }
+            }
+
             let timeFly = 0;
             if (this.preserveUI) {
-                timeFly = this.preserveUI.startFlyTo(this.targetSlot);
+                timeFly = this.preserveUI.startFlyTo(this.targetSlot, destOverride);
             }
 
             var puType = this.type;
@@ -142,9 +155,21 @@ CoreGame.PlanePU = CoreGame.PowerUP.extend({
             cc.log("Time Fly ======= " + timeFly);
             CoreGame.TimedActionMgr.addAction(timeFly, function () {
                 if (this.isEmpty()) return;
-                this.matchElement({ type: "normal", puType: puType, damage: damage, puActivationId: flyActivationId });
+                this.matchElement({ type: "normal", puType: puType, damage: damage, puActivationId: flyActivationId, bottleColor: bottleColor });
             }, this.targetSlot);
         }
+    },
+
+    /** Tìm ColorCabinet trong một slot (nếu có). */
+    _findColorCabinet: function (slot) {
+        if (!slot || !slot.listElement) return null;
+        for (var i = 0; i < slot.listElement.length; i++) {
+            var el = slot.listElement[i];
+            if (el && typeof el.reserveBottleColor === 'function' && typeof el.getRemainingColors === 'function') {
+                return el;
+            }
+        }
+        return null;
     },
 
     onTargetReached: function () {

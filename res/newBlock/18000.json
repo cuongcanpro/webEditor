@@ -1,22 +1,6 @@
 {
-    "description": "Tủ Nước Màu (2x2): 1 blocker chứa đồng thời 4 màu nước [1, 2, 3, 4]. Player phải side-match đủ cả 4 màu (mỗi màu ít nhất 1 lần) thì tủ mới bể. CollectTakeDamageAction theo dõi tiến độ thu thập màu. Vai trò curriculum L51: INTRODUCE color-collect mechanic, baseline cho ColorEgg/ColorCrab (single-color match) sau đó.",
-    "baseAction": [],
-    "unblockAction": [],
-    "customAction": {
-        "sideMatch": [
-            {
-                "name": "CollectTakeDamageAction",
-                "config": {
-                    "_requiredTypeIds": [1, 2, 3, 4]
-                }
-            }
-        ]
-    },
-    "visual": {
-        "path": "res/newBlock/BlockUI/block_color_cabinet.json",
-        "type": 2
-    },
-    "type": "Blocker",
+    "description": "Tủ Nước Màu (2x2, ID 18000). Logic ở class src/coregame/entities/blockers/ColorCabinet.js (registered via ElementType.COLOR_CABINET). 4 chai màu cố định 1/2/3/4, mỗi chai HP1, side-match đúng màu để vỡ; PU vỡ 1 chai; anti-stuck refill cuối lượt. Spec: docs/superpowers/specs/2026-05-31-color-cabinet-design.md",
+    "type": "ColorCabinet",
     "width": 2,
     "height": 2,
     "layerBehavior": "EXCLUSIVE",

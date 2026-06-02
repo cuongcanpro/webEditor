@@ -121,6 +121,7 @@ CoreGame.Config.ElementType = {
     PROTECT_BALLOON: 2700,
     CLOUD_BOMB_MGR: 2800,
     MILK_CABINET: 2900,
+    COLOR_CABINET: 18000,
     VALI: 3000,
     SCALLOP: 3100,
     SAFE: 3200,
@@ -215,6 +216,16 @@ CoreGame.Config.MONSTER_BLOCKER_TYPES = [];
 
 CoreGame.Config.isMonsterType = function (typeId) {
     return CoreGame.Config.MONSTER_BLOCKER_TYPES.indexOf(typeId) !== -1;
+};
+
+// Tên file icon cho 1 target/objective theo element type.
+// Bình thường là "icon/<type>"; riêng ColorCrab (11010-11015) chưa có icon
+// riêng nên dùng chung "creep_snail". Trả về phần đuôi sau "game/element/"
+// (không kèm ".png") để mọi nơi tự ghép prefix ("game/..." hoặc "res/modules/game/...").
+CoreGame.Config.getTargetIconName = function (type) {
+    var n = parseInt(type, 10);
+    if (n >= 11010 && n <= 11015) return "creep_snail";
+    return "icon/" + type;
 };
 
 CoreGame.Config.DIFFICULTY = {
@@ -357,6 +368,7 @@ CoreGame.Config.zOrder = {
     RAT: 32,
     PROTECT_BALLOON: 11,
     MILK_CABINET: 11,
+    COLOR_CABINET: 11,
     BANANA_BUNCH: 11,
     VALI: 9,
     SCALLOP: 9,

@@ -161,7 +161,7 @@ var NodeSagaPoint = cc.Node.extend({
 
     _setSpecialTargetTexture: function (specialTarget) {
         let miniSagaPath = "game/gui/minisaga/special_item/"+ specialTarget +".png";
-        let origPath = "game/element/icon/" + specialTarget + ".png";
+        let origPath = "game/element/" + CoreGame.Config.getTargetIconName(specialTarget) + ".png";
         if (jsb.fileUtils.isFileExist(miniSagaPath)) this.icon.setTexture(miniSagaPath);
         else if (jsb.fileUtils.isFileExist(origPath)) this.icon.setTexture(origPath);
     },
