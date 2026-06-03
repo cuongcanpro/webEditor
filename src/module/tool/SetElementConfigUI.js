@@ -140,24 +140,22 @@ var SetElementConfigUI = cc.Node.extend({
         var btnMinus = mkStepBtn(122, 30, "-", 24, function () { self.decrementHP(); });
 
         // Create HP input field
-        this.hpInput = new ccui.TextField();
+        this.hpInput = new cc.EditBox(cc.size(50, 40), new cc.Scale9Sprite());
         this.hpInput.setFontName("font/BalooPaaji2-Regular.ttf");
         this.hpInput.setPlaceHolder("1");
-        this.hpInput.setPlaceHolderColor(cc.color(150, 150, 150));
-        this.hpInput.setTextColor(cc.color(255, 255, 255));
+        this.hpInput.setPlaceholderFontColor(cc.color(150, 150, 150));
+        this.hpInput.setFontColor(cc.color(255, 255, 255));
         this.hpInput.setFontSize(24);
         this.hpInput.setMaxLength(3);   // tới 3 chữ số để gõ được 100
-        this.hpInput.setMaxLengthEnabled(true);
-        this.hpInput.setTouchEnabled(true);
+        this.hpInput.setInputMode(cc.EDITBOX_INPUT_MODE_NUMERIC);
+        this.hpInput.setReturnType(cc.KEYBOARD_RETURNTYPE_DONE);
         this.hpInput.setString("1");
         this.hpInput.setPosition(172, 55);
-        // this.hpInput.setContentSize(50, 40);
         this.container.addChild(this.hpInput);
 
-        // Add input event listener
-        this.hpInput.addEventListener(function (sender, type) {
-            if (type === ccui.TextField.EVENT_DETACH_WITH_IME) {
-                // When user finishes editing
+        // Add input event listener — fire when the user finishes editing.
+        this.hpInput.setDelegate({
+            editBoxEditingDidEnd: function (sender) {
                 self.onHPChanged();
             }
         });

@@ -159,14 +159,18 @@ var GistMapSelectDialog = cc.LayerColor.extend({
         this.popupBg.addChild(tfBg);
 
         var self = this;
-        this._tf = new ccui.TextField("Filter...", "font/BalooPaaji2-Regular.ttf", 14);
-        this._tf.setContentSize(W - PAD * 2, TF_H);
+        this._tf = new cc.EditBox(cc.size(W - PAD * 2, TF_H), new cc.Scale9Sprite());
+        this._tf.setPlaceHolder("Filter...");
+        this._tf.setFontName("font/BalooPaaji2-Regular.ttf");
+        this._tf.setFontSize(14);
+        this._tf.setFontColor(cc.color(255, 255, 255));
         this._tf.setAnchorPoint(cc.p(0, 0.5));
         this._tf.setPosition(PAD, tfY);
-        this._tf.addEventListenerTextField(function (sender, type) {
-            if (type === ccui.TextField.EVENT_INSERT_TEXT ||
-                type === ccui.TextField.EVENT_DELETE_BACKWARD) {
-                self._applyFilter(sender.getString());
+        this._tf.setInputMode(cc.EDITBOX_INPUT_MODE_SINGLELINE);
+        this._tf.setReturnType(cc.KEYBOARD_RETURNTYPE_DONE);
+        this._tf.setDelegate({
+            editBoxTextChanged: function (sender, text) {
+                self._applyFilter(text);
             }
         });
         this.popupBg.addChild(this._tf, 1);

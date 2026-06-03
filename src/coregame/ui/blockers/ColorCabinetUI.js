@@ -1,25 +1,31 @@
 /**
  * ColorCabinetUI — visual for the 2x2 ColorCabinet (18000).
  * Frame sprite (18000.png) is loaded by the base ElementUI.initSprite.
- * On top we lay out the four bottles using a single bottle sprite
- * (cabinet_color_bottle.png) tinted via setColor so each bottle matches the
- * gem color that breaks it. Gem color map (see PinwheelUI): 1=green, 2=yellow,
- * 3=red, 4=blue. Quadrants: TL=1, TR=2, BL=3, BR=4.
+ * On top we lay out the four bottles using one of four pre-colored bottle
+ * PNGs (carbinet_color_<color>.png) chosen by the gem color that breaks each
+ * bottle — no more setColor tint on a single white sprite. Gem color map
+ * (see PinwheelUI): 1=green, 2=yellow, 3=red, 4=blue. Any color outside those
+ * four (5=pink, 6=orange) falls back to carbinet_color_na.png.
+ * Quadrants: TL=1, TR=2, BL=3, BR=4.
  */
 var CoreGame = CoreGame || {};
 
 CoreGame.ColorCabinetUI = CoreGame.ElementUI.extend({
     _cells: null, // slot index (0..3) -> bottle sprite node
 
-    // Tint per gem color, applied to the (near-white) bottle art via setColor.
-    // All 6 colors so the cabinet can show whatever the level's palette uses.
-    BOTTLE_COLORS: {
-        1: cc.color(90, 205, 90),   // green
-        2: cc.color(245, 215, 60),  // yellow
-        3: cc.color(232, 72, 72),   // red
-        4: cc.color(80, 150, 235),  // blue
-        5: cc.color(240, 110, 200), // pink
-        6: cc.color(255, 150, 40)   // orange
+    // Pre-colored bottle art per gem color. Colors without a dedicated PNG
+    // (5=pink, 6=orange, or anything unexpected) use the NA fallback below.
+    BOTTLE_TEXTURES: {
+        1: "carbinet_color_green.png",
+        2: "carbinet_color_yellow.png",
+        3: "carbinet_color_red.png",
+        4: "carbinet_color_blue.png"
+    },
+    BOTTLE_TEXTURE_NA: "carbinet_color_na.png",
+
+    /** Filename of the bottle art for a gem color (NA fallback off-palette). */
+    _bottleTextureName: function (color) {
+        return this.BOTTLE_TEXTURES[color] || this.BOTTLE_TEXTURE_NA;
     },
 
     ctor: function (element) {
@@ -41,17 +47,16 @@ CoreGame.ColorCabinetUI = CoreGame.ElementUI.extend({
         ];
         // Each slot's color comes from the level palette (may repeat across slots).
         var slotColors = this.element.getSlotColors();
-        var fileName = "cabinet_color_bottle.png";
-        var filePath = "res/modules/game/element/" + fileName;
         for (var i = 0; i < 4; i++) {
             // fr.createSprite (not gv.getSprite) so each quadrant is its OWN
-            // sprite instance: the four bottles share one texture but need
-            // independent setColor tints. gv.getSprite pools by path and resets
-            // color to white on fetch, which would collide here.
+            // sprite instance. The four bottles can use different pre-colored
+            // textures depending on the slot color, so they can't share a pooled
+            // instance. Pick the per-color art (NA fallback for off-palette).
+            var fileName = this._bottleTextureName(slotColors[i]);
+            var filePath = "res/modules/game/element/" + fileName;
             var spr = fr.createSprite(fileName, filePath);
             spr.setAnchorPoint(0.5, 0.5);
             spr.setPosition(layout[i].x, layout[i].y);
-            spr.setColor(this.BOTTLE_COLORS[slotColors[i]] || cc.color(255, 255, 255));
             this.addChild(spr, 1);
             this._cells[i] = spr;
             // Each bottle occupies one quadrant of the 2x2 (~one cell). Fit the
@@ -117,11 +122,17 @@ CoreGame.ColorCabinetUI = CoreGame.ElementUI.extend({
         }
     },
 
-    /** Re-tint every (alive) bottle to match a new slot-color array. Editor use. */
+    /** Swap every (alive) bottle to the art for a new slot-color array. Editor use. */
     applyBottleColors: function (colors) {
+        var cell = CoreGame.Config.CELL_SIZE;
         for (var i = 0; i < 4; i++) {
             var spr = this._cells[i];
-            if (spr) spr.setColor(this.BOTTLE_COLORS[colors[i]] || cc.color(255, 255, 255));
+            if (!spr) continue;
+            var fileName = this._bottleTextureName(colors[i]);
+            var filePath = "res/modules/game/element/" + fileName;
+            fr.changeSprite(spr, fileName, filePath);
+            // Texture (and thus contentSize) changed — re-fit to the quadrant.
+            this._fitToQuadrant(spr, cell * 0.7);
         }
     },
 

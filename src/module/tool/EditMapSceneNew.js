@@ -782,10 +782,15 @@ var EditMapSceneNew = cc.Layer.extend({
         bg.setPosition(x, y);
         parent.addChild(bg, 0);
 
-        var tf = new ccui.TextField(placeholder, "font/BalooPaaji2-Regular.ttf", 12);
-        tf.setContentSize(w, h);
+        var tf = new cc.EditBox(cc.size(w, h), new cc.Scale9Sprite());
+        tf.setPlaceHolder(placeholder);
+        tf.setFontName("font/BalooPaaji2-Regular.ttf");
+        tf.setFontSize(12);
+        tf.setFontColor(cc.color(255, 255, 255));
         tf.setAnchorPoint(cc.p(0, 0.5));
         tf.setPosition(x, y);
+        tf.setInputMode(cc.EDITBOX_INPUT_MODE_SINGLELINE);
+        tf.setReturnType(cc.KEYBOARD_RETURNTYPE_DONE);
         parent.addChild(tf, 1);
         return tf;
     },

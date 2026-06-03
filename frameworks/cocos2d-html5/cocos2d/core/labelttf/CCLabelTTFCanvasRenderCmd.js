@@ -71,9 +71,16 @@ cc.LabelTTF._firsrEnglish = /^[a-zA-Z0-9\-¿¡«À-ÖØ-öø-ʯ\u0300-\u034e\u03
             this._fontStyleStr = fontNameOrFontDef._getCanvasFontStr();
             this._fontClientHeight = cc.LabelTTF.__getFontHeightByDiv(fontNameOrFontDef);
         } else {
+            // A ttf font is registered (in @font-face) under its base file name without
+            // extension (see cc._fontLoader). If a path / .ttf is passed as the font name
+            // (e.g. "font/BalooPaaji2-Regular.ttf"), normalize it to that family name so the
+            // canvas font string actually matches the registered family instead of falling back.
+            var fontName = fontNameOrFontDef;
+            if (typeof fontName === "string" && /\.(ttf|otf|woff2?|eot|svg|ttc)$/i.test(fontName))
+                fontName = fontName.replace(/^.*[\/\\]/, "").replace(/\.[^.]+$/, "");
             var deviceFontSize = fontSize * cc.view.getDevicePixelRatio();
-            this._fontStyleStr = fontStyle + " " + fontWeight + " " + deviceFontSize + "px '" + fontNameOrFontDef + "'";
-            this._fontClientHeight = cc.LabelTTF.__getFontHeightByDiv(fontNameOrFontDef, fontSize);
+            this._fontStyleStr = fontStyle + " " + fontWeight + " " + deviceFontSize + "px '" + fontName + "'";
+            this._fontClientHeight = cc.LabelTTF.__getFontHeightByDiv(fontName, fontSize);
         }
     };
 

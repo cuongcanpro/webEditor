@@ -542,11 +542,12 @@ GameBoardInfoUI = BaseLayer.extend({
     },
 
     setInfoTarget: function (node, type, number) {
-        node.spr.ignoreContentAdaptWithSize(true);
-        node.spr.loadTexture("game/element/" + CoreGame.Config.getTargetIconName(type) + ".png");
+        this._applyTargetIcon(node, type);
 
         node.lbl = new NumberLabelClass(node.label, number);
-        node.check.setVisible(false);
+        node.lbl.setVisible(true);
+        node.label.setFontSize(45);   // reset: a reused slot may have shown "Done"
+        node.check.setVisible(false); // not used anymore — "Done" text replaces it
 
         node.type = type;
         node.target = number;
@@ -560,8 +561,7 @@ GameBoardInfoUI = BaseLayer.extend({
                     //cc.log("collectElement number=" + node.number);
                     node.lbl.addValue(amount);
                     if (node.lbl.value <= 0) {
-                        node.lbl.setVisible(false);
-                        node.check.setVisible(true);
+                        this._showDone(node);
                     }
                 }.bind(this);
                 break;
@@ -584,8 +584,7 @@ GameBoardInfoUI = BaseLayer.extend({
                     node.lastRemain = remain;
                     node.lbl.addValue(remain - node.lbl.value);
                     if (node.lbl.value <= 0) {
-                        node.lbl.setVisible(false);
-                        node.check.setVisible(true);
+                        this._showDone(node);
                     }
                 }.bind(this);
                 break;
@@ -596,6 +595,119 @@ GameBoardInfoUI = BaseLayer.extend({
             //cc.log("unCollect number=" + node.number);
             node.addValue(amount)
         };
+    },
+
+    /**
+     * Show the icon for a target slot.
+     * Primary: the curated PNG at game/element/icon/<type>.png (used by shipped
+     * levels). Fallback: when that PNG doesn't exist — common for editor
+     * playtests of blockers that have no objective icon yet — render the
+     * element's own board art so the slot is never blank.
+     */
+    _applyTargetIcon: function (node, type) {
+        // Slots are reused across setListTarget calls — drop any previous art.
+        if (node._fallbackArt) {
+            node._fallbackArt.removeFromParent();
+            node._fallbackArt = null;
+        }
+
+        // Per-color blockers (color crabs/eggs) have no curated icon PNG — render
+        // each block's own colored art so every color reads as a distinct goal.
+        // This runs on web too, where the missing-PNG probe below can't fire.
+        if (CoreGame.Config.targetRendersOwnArt && CoreGame.Config.targetRendersOwnArt(type)) {
+            if (this._attachTargetArt(node, type)) return;
+            // Art build failed (asset not preloaded?) — fall through to the PNG.
+        }
+
+        var iconName = CoreGame.Config.getTargetIconName(type);
+        var iconPath = "game/element/" + iconName + ".png";
+
+        // Only native (the editor simulator) can probe the filesystem; on web the
+        // shipped icons always exist, so keep the original PNG path there.
+        var iconExists = true;
+        if (cc.sys.isNative && typeof jsb !== "undefined" && jsb.fileUtils) {
+            var fullPath = jsb.fileUtils.fullPathForFilename(iconPath);
+            iconExists = !!(fullPath && jsb.fileUtils.isFileExist(fullPath));
+        }
+
+        if (!iconExists && this._attachTargetArt(node, type)) return;
+
+        node.spr.setVisible(true);
+        node.spr.ignoreContentAdaptWithSize(true);
+        node.spr.loadTexture(iconPath);
+    },
+
+    /**
+     * Replace the slot's PNG sprite with the element/blocker's own rendered art
+     * (colored egg sprite, crab spine + per-color skin). Returns true on success.
+     */
+    _attachTargetArt: function (node, type) {
+        var art = this._createTargetArt(type, GameBoardInfoUI.TARGET_SIZE * 0.9);
+        if (!art) return false;
+        node.spr.setVisible(false);
+        node.spr.getParent().addChild(art);
+        art.setPosition(node.spr.getPosition());
+        // Keep the count label and the Done check drawn above the art.
+        art.setLocalZOrder(0);
+        if (node.label) node.label.setLocalZOrder(1);
+        if (node.check) node.check.setLocalZOrder(2);
+        node._fallbackArt = art;
+        return true;
+    },
+
+    /**
+     * Build a node holding the element/blocker's own UI art, scaled to fit a
+     * `fit`×`fit` box. Returns null for non-element targets (coin, gold...) so
+     * the caller falls back to the PNG. Mirrors TargetListUI's icon rendering.
+     */
+    _createTargetArt: function (type, fit) {
+        var elemObj = null;
+        try {
+            if (CoreGame.ElementObject.map[type]) {
+                elemObj = CoreGame.ElementObject.create(0, 0, type, 1);
+            } else if (CoreGame.BlockerFactory) {
+                elemObj = CoreGame.BlockerFactory.createBlocker(0, 0, type, 1);
+            }
+        } catch (e) { /* unknown / non-numeric target type */ }
+
+        if (!elemObj || !elemObj.createUI) return null;
+
+        var holder = new cc.Node();
+        try {
+            elemObj.createUI(holder);
+        } catch (e) {
+            return null;
+        }
+        if (elemObj.ui) {
+            // Objective slot shows ONLY the block's own art — drop the grid/tile
+            // background (injected from mapID.json) and the HP state label.
+            if (elemObj.ui.sprBg) {
+                elemObj.ui.sprBg.removeFromParent();
+                elemObj.ui.sprBg = null;
+            }
+            if (elemObj.ui.lbState) elemObj.ui.lbState.setVisible(false);
+
+            var sc = elemObj.getScaleToFit ? elemObj.getScaleToFit(fit, fit) : 0.5;
+            elemObj.ui.setScale(sc);
+            elemObj.ui.setPosition(0, 0);
+        }
+        return holder;
+    },
+
+    /**
+     * Target completed: swap the remaining-count number for the word "Done".
+     * Queued after the count-down tween (which runs ~0.25s) so "Done" wins.
+     */
+    _showDone: function (node) {
+        if (!node.label) return;
+        var label = node.label;
+        label.runAction(cc.sequence(
+            cc.delayTime(0.28),
+            cc.callFunc(function () {
+                label.setFontSize(32);      // "Done" is wider than a number
+                label.setString("Done");
+            })
+        ));
     },
 
     getNodeTarget: function (type) {

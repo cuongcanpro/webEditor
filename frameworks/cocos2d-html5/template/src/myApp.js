@@ -19,7 +19,7 @@ var MyLayer = cc.Layer.extend({
             s_CloseNormal,
             s_CloseSelected,
             function () {
-                cc.log("close");
+                // cc.log("close");
             },this);
         closeItem.setAnchorPoint(0.5, 0.5);
 

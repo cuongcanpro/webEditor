@@ -112,18 +112,22 @@ var ConfigEditor = cc.Layer.extend({
 
         if (nameLabel) nameLabel.setString(key);
         if (valueField) {
-            valueField.setString(value.toString());
-            valueField.addEventListener(function (sender, type) {
-                if (type === ccui.TextField.EVENT_DETACH_WITH_IME || type === ccui.TextField.EVENT_INSERT_TEXT || type === ccui.TextField.EVENT_DELETE_BACKWARD) {
-                    var newVal = sender.getString();
-                    // Basic type inference
-                    if (!isNaN(newVal) && newVal.trim() !== "") {
-                        self.configData[key] = Number(newVal);
-                    } else {
-                        self.configData[key] = newVal;
+            // Replace the CocosStudio TextField with a cc.EditBox (real DOM input
+            // on web). _convertToEditBox hides the original and returns the box.
+            var editBox = this._convertToEditBox(valueField);
+            if (editBox) {
+                editBox.setString(value.toString());
+                editBox.setDelegate({
+                    editBoxTextChanged: function (sender, newVal) {
+                        // Basic type inference
+                        if (!isNaN(newVal) && newVal.trim() !== "") {
+                            self.configData[key] = Number(newVal);
+                        } else {
+                            self.configData[key] = newVal;
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         return node;

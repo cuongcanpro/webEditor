@@ -214,14 +214,14 @@ var TargetListUI = cc.Node.extend({
         btnMinus.setPosition(W - 74, ITEM_H / 2);
         bg.addChild(btnMinus);
 
-        var cntField = new ccui.TextField();
+        var cntField = new cc.EditBox(cc.size(48, ITEM_H - 8), new cc.Scale9Sprite());
         cntField.setPlaceHolder("1");
-        cntField.setPlaceHolderColor(cc.color(100, 100, 110));
-        cntField.setTextColor(cc.color(255, 255, 255));
+        cntField.setPlaceholderFontColor(cc.color(100, 100, 110));
+        cntField.setFontColor(cc.color(255, 255, 255));
         cntField.setFontSize(14);
-        cntField.setMaxLengthEnabled(true);
         cntField.setMaxLength(5);
-        cntField.setTouchEnabled(true);
+        cntField.setInputMode(cc.EDITBOX_INPUT_MODE_NUMERIC);
+        cntField.setReturnType(cc.KEYBOARD_RETURNTYPE_DONE);
         cntField.setString(String(entry.count || 1));
         cntField.setPosition(W - 48, ITEM_H / 2);
         bg.addChild(cntField);

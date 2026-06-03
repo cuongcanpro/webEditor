@@ -79,25 +79,29 @@ cc.game.onStart = function () {
     cc.view.resizeWithBrowserSize(true);
 
     if(!cc.sys.isNative) {
-        // --- Lazy-load: only preload what the first screen needs. ---
-        // These categories are all fetched on demand later (level/map/block
-        // configs via cc.loader.loadJson in LevelSelectorUI/BlockerFactory;
-        // newBlock/ is also re-fetched by BlockerFactory.preloadAllConfigs),
-        // so keeping them in the boot critical path just blocks startup with
-        // ~900 needless requests. We still hand the FULL manifest to
-        // analysticFrom so path resolution/search works unchanged.
-        var DEFER_PREFIXES = [
+        // --- Lazy-load: defer ONLY level json. ---
+        // Level data (level/map/story configs) is fetched on demand later via
+        // cc.loader.loadJson in LevelSelectorUI/BlockerFactory, so keeping it in
+        // the boot critical path just blocks startup with hundreds of needless
+        // requests. We must NOT defer anything else: newBlock/ in particular
+        // holds spine skeletons (BlockUI/spine/*.json), block-art png and block
+        // configs the editor palette needs at boot — deferring those blanks the
+        // palette. So we only defer files that are BOTH under a level dir AND a
+        // .json. We still hand the FULL manifest to analysticFrom so path
+        // resolution/search works unchanged.
+        var LEVEL_JSON_PREFIXES = [
             "res/common/config/levels/",
             "res/common/config/bossRunLevels/",
             "res/common/config/M3W-Level1-50/",
             "res/common/config/newLevel/",
             "res/common/config/stories/",
-            "res/maps/",
-            "res/newBlock/"
+            "res/maps/"
         ];
         var BOOT_resource = Game_resource.filter(function (p) {
-            for (var i = 0; i < DEFER_PREFIXES.length; i++) {
-                if (p.indexOf(DEFER_PREFIXES[i]) === 0) return false;
+            // Never defer non-json (spine atlas/png, effects, fonts, etc.).
+            if (p.length < 5 || p.substr(p.length - 5) !== ".json") return true;
+            for (var i = 0; i < LEVEL_JSON_PREFIXES.length; i++) {
+                if (p.indexOf(LEVEL_JSON_PREFIXES[i]) === 0) return false;
             }
             return true;
         });

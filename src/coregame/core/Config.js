@@ -228,6 +228,20 @@ CoreGame.Config.getTargetIconName = function (type) {
     return "icon/" + type;
 };
 
+// Per-color blockers have no curated objective PNG of their own:
+//   Color Crab  11010-11015  (one shared spine skeleton, a skin per color)
+//   Color Egg   5001-5006    (egg_01..egg_06 sprite per color)
+// getTargetIconName would collapse the crabs onto the single "creep_snail"
+// icon and leave the eggs pointing at a missing "icon/<type>" file. Instead the
+// HUD renders each block's OWN art so every color reads as a distinct goal —
+// the crab's per-color spine skin, the egg's colored sprite. Returns true for
+// those types so GameBoardInfoUI takes the rendered-art path on web (where it
+// cannot probe the filesystem for a missing PNG).
+CoreGame.Config.targetRendersOwnArt = function (type) {
+    var n = parseInt(type, 10);
+    return (n >= 11010 && n <= 11015) || (n >= 5001 && n <= 5006);
+};
+
 CoreGame.Config.DIFFICULTY = {
     'easy': 0,
     'medium': 1,

@@ -325,47 +325,51 @@ CoreGame.BlockerFactory.preloadAllConfigs = function (onProgress, onComplete) {
 
         // cc.log("BlockerFactory: Found", total, "blockers in mapID.json, preloading configs...");
 
-        var loadNext = function (index) {
-            if (index >= total) {
-                // All done
-                if (failed.length > 0) {
-                    cc.log("BlockerFactory: Preload complete. Failed:", failed);
-                } else {
-                    // cc.log("BlockerFactory: All", total, "configs preloaded successfully!");
-                }
-                CoreGame.BlockerFactory._isPreloading = false;
-                CoreGame.BlockerFactory._isPreloaded = true;
-                // Call any queued ensurePreloaded callbacks
-                if (CoreGame.BlockerFactory._preloadCallbacks) {
-                    for (var i = 0; i < CoreGame.BlockerFactory._preloadCallbacks.length; i++) {
-                        try { CoreGame.BlockerFactory._preloadCallbacks[i](failed.length > 0 ? failed : null); } catch (e) { }
-                    }
-                    CoreGame.BlockerFactory._preloadCallbacks = [];
-                }
-                if (onComplete) onComplete(failed);
-                return;
+        var finish = function () {
+            if (failed.length > 0) {
+                cc.log("BlockerFactory: Preload complete. Failed:", failed);
+            } else {
+                // cc.log("BlockerFactory: All", total, "configs preloaded successfully!");
             }
-
-            var typeId = typeIds[index];
-
-            CoreGame.BlockerFactory.preloadConfig(typeId, function (err, config) {
-                loaded++;
-
-                if (err) {
-                    failed.push(typeId);
+            CoreGame.BlockerFactory._isPreloading = false;
+            CoreGame.BlockerFactory._isPreloaded = true;
+            // Call any queued ensurePreloaded callbacks
+            if (CoreGame.BlockerFactory._preloadCallbacks) {
+                for (var i = 0; i < CoreGame.BlockerFactory._preloadCallbacks.length; i++) {
+                    try { CoreGame.BlockerFactory._preloadCallbacks[i](failed.length > 0 ? failed : null); } catch (e) { }
                 }
-
-                // Progress callback
-                if (onProgress) {
-                    onProgress(loaded, total, typeId, err ? false : true);
-                }
-
-                // Load next (sequential to avoid resource loading issues)
-                loadNext(index + 1);
-            });
+                CoreGame.BlockerFactory._preloadCallbacks = [];
+            }
+            if (onComplete) onComplete(failed);
         };
 
-        // Start loading
-        loadNext(0);
+        var onOneDone = function (typeId, err) {
+            loaded++;
+
+            if (err) {
+                failed.push(typeId);
+            }
+
+            // Progress callback
+            if (onProgress) {
+                onProgress(loaded, total, typeId, err ? false : true);
+            }
+
+            // Finish once every config has resolved (parallel — order not guaranteed)
+            if (loaded >= total) {
+                finish();
+            }
+        };
+
+        // Fire all config loads in parallel. cc.loader / the browser cap concurrency
+        // (≈6 connections) on their own, so a level's ~30 configs finish in a few
+        // hundred ms instead of N sequential round-trips.
+        for (var i = 0; i < total; i++) {
+            (function (typeId) {
+                CoreGame.BlockerFactory.preloadConfig(typeId, function (err, config) {
+                    onOneDone(typeId, err);
+                });
+            })(typeIds[i]);
+        }
     });
 };

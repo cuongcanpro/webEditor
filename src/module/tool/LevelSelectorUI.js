@@ -106,19 +106,22 @@ var LevelSelectorUI = cc.LayerColor.extend({
         filterBg.setPosition(20, this.POPUP_HEIGHT - 100);
         this.popupBg.addChild(filterBg);
 
-        this.filterField = new ccui.TextField();
+        this.filterField = new cc.EditBox(cc.size(this.POPUP_WIDTH - 40, 36), new cc.Scale9Sprite());
         this.filterField.setPlaceHolder("Filter levels...");
         this.filterField.setFontSize(18);
         this.filterField.setFontName("font/BalooPaaji2-Regular.ttf");
-        this.filterField.setContentSize(this.POPUP_WIDTH - 40, 36);
+        this.filterField.setFontColor(cc.color(255, 255, 255));
         this.filterField.setPosition(5, 5);
         this.filterField.setAnchorPoint(cc.p(0, 0));
         this.filterField.setMaxLength(50);
-        this.filterField.setMaxLengthEnabled(true);
+        this.filterField.setInputMode(cc.EDITBOX_INPUT_MODE_SINGLELINE);
+        this.filterField.setReturnType(cc.KEYBOARD_RETURNTYPE_DONE);
         var self2 = this;
-        this.filterField.addEventListener(function (sender, eventType) {
-            self2.filterText = sender.getString();
-            self2.applyFilter();
+        this.filterField.setDelegate({
+            editBoxTextChanged: function (sender, text) {
+                self2.filterText = text;
+                self2.applyFilter();
+            }
         });
         filterBg.addChild(this.filterField);
 

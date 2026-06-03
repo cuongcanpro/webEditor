@@ -140,15 +140,12 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
     _performMove: function (boardMgr, element, dr, dc, targetsToRemove) {
         var duration = CoreGame.Config.SWAP_DURATION || 0.2;
 
-        // 1. Identify slots that will be left behind
-        var oldCells = element.getGridCells();
-
-        // 2. Remove targets
+        // 1. Remove targets (gems/PUs the monster is stepping onto — it eats them)
         for (var i = 0; i < targetsToRemove.length; i++) {
             targetsToRemove[i].doExplode();
         }
 
-        // 3. Move current element
+        // 2. Move current element
         var oldRow = element.position.x;
         var oldCol = element.position.y;
         var newRow = oldRow + dr;
@@ -159,29 +156,18 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
 
         boardMgr.updateGridForElement(element, oldRow, oldCol, true);
 
-        // 4. Identify slots truly left behind (not occupied by the new position)
-        var newCells = element.getGridCells();
-        var leftBehind = oldCells.filter(function (oc) {
-            return !newCells.some(function (nc) {
-                return nc.x === oc.x && nc.y === oc.y;
-            });
-        });
+        // 3. Leave the vacated cells EMPTY on purpose. The monster "eats" whatever
+        // it steps onto (destination gems were exploded in step 2) and leaves a
+        // hole behind it. We deliberately do NOT spawn a placeholder gem in the
+        // left-behind slots: leaving them empty lets the drop/refill pipeline
+        // pull gems down from above by gravity — same as a normal match clear —
+        // instead of the monster appearing to hide a block and reveal it on exit.
+        // updateGridForElement already removed the mover from the old slots, so
+        // they read empty; flag a refill to fill them (and any destination hole
+        // when the move ate no gem to trigger one itself).
+        boardMgr.setRefillRequired(true);
 
-        // 5. Fill left behind slots with new elements (no immediate matches).
-        // Use hasContentElement() instead of isEmpty(): a slot may still hold
-        // background-layer elements (e.g. Grass) after the mover vacates, and
-        // we still want a playable gem on top. isEmpty() would skip those and
-        // leave the slot without a swappable gem until the next refill wave.
-        for (var i = 0; i < leftBehind.length; i++) {
-            var cell = leftBehind[i];
-            var slot = boardMgr.getSlot(cell.x, cell.y);
-            if (slot && !slot.hasContentElement()) {
-                var type = this._getNoMatchColor(boardMgr, cell.x, cell.y);
-                boardMgr.addNewElement(cell.x, cell.y, type);
-            }
-        }
-
-        // 6. Animate Visuals
+        // 4. Animate Visuals
         var targetPixelPos = boardMgr.gridToPixel(newRow, newCol);
 
         // Handle size offset for visual position if multi-cell
@@ -197,7 +183,7 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
         }
 
         cc.log("Perform Move =============== ");
-        // 7. Cleanup/State management
+        // 5. Cleanup/State management
         CoreGame.TimedActionMgr.addAction(duration, function () {
             if (element.setState) element.setState(CoreGame.ElementState.IDLE);
             cc.log("MoveAction completed. Element at (" + newRow + "," + newCol + ")" + " board state updated." + boardMgr.state);
@@ -208,43 +194,5 @@ CoreGame.Strategies.MoveAction = CoreGame.Strategies.NormalAction.extend({
             //     boardMgr.shuffleBoard();
             // }
         });
-    },
-
-    /**
-     * Get a color that is different from immediate neighbors
-     * @private
-     */
-    _getNoMatchColor: function (boardMgr, row, col) {
-        if (boardMgr.getValidTypeForPosition) {
-            return boardMgr.getValidTypeForPosition(row, col);
-        }
-
-        // Fallback: pick from gemTypes or 1..NUM_GEN avoiding nearby matches
-        var pool = (boardMgr.gemTypes && boardMgr.gemTypes.length > 0)
-            ? boardMgr.gemTypes.slice()
-            : (function () {
-                var a = [];
-                for (var i = 1; i <= CoreGame.Config.NUM_GEN; i++) a.push(i);
-                return a;
-            }());
-
-        var nearbyTypes = [];
-        var dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-        for (var i = 0; i < dirs.length; i++) {
-            var r = row + dirs[i][0];
-            var c = col + dirs[i][1];
-            var slot = boardMgr.getSlot(r, c);
-            if (slot) {
-                var type = slot.getType();
-                if (nearbyTypes.indexOf(type) === -1) nearbyTypes.push(type);
-            }
-        }
-
-        var availableTypes = pool.filter(function (t) {
-            return nearbyTypes.indexOf(t) === -1;
-        });
-
-        if (availableTypes.length === 0) return pool[boardMgr.random.nextInt32Bound(pool.length)];
-        return availableTypes[boardMgr.random.nextInt32Bound(availableTypes.length)];
     }
 });

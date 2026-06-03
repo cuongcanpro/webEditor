@@ -182,16 +182,15 @@ var BoardInfoUI = cc.LayerColor.extend({
         btnMin.setPosition(W - PAD - BTN * 2 - 60, midY);
 
         // Input field
-        var field = new ccui.TextField();
+        var field = new cc.EditBox(cc.size(70, BTN), new cc.Scale9Sprite());
         field.setPlaceHolder(String(defaultVal));
-        field.setPlaceHolderColor(cc.color(120, 120, 120));
-        field.setTextColor(cc.color(255, 255, 255));
+        field.setPlaceholderFontColor(cc.color(120, 120, 120));
+        field.setFontColor(cc.color(255, 255, 255));
         field.setFontSize(20);
-        field.setMaxLengthEnabled(true);
         field.setMaxLength(4);
-        field.setTouchEnabled(true);
+        field.setInputMode(cc.EDITBOX_INPUT_MODE_NUMERIC);
+        field.setReturnType(cc.KEYBOARD_RETURNTYPE_DONE);
         field.setString(String(defaultVal));
-        // field.setContentSize(70, BTN);
         field.setPosition(W - PAD - BTN - 30, midY);
         this.popupBg.addChild(field);
 
@@ -342,16 +341,15 @@ var BoardInfoUI = cc.LayerColor.extend({
         btnMinus.setPosition(200, ITEM_H / 2);
         bg.addChild(btnMinus);
 
-        var cntField = new ccui.TextField();
+        var cntField = new cc.EditBox(cc.size(55, ITEM_H - 10), new cc.Scale9Sprite());
         cntField.setPlaceHolder("1");
-        cntField.setPlaceHolderColor(cc.color(100, 100, 100));
-        cntField.setTextColor(cc.color(255, 255, 255));
+        cntField.setPlaceholderFontColor(cc.color(100, 100, 100));
+        cntField.setFontColor(cc.color(255, 255, 255));
         cntField.setFontSize(16);
-        cntField.setMaxLengthEnabled(true);
         cntField.setMaxLength(4);
-        cntField.setTouchEnabled(true);
+        cntField.setInputMode(cc.EDITBOX_INPUT_MODE_NUMERIC);
+        cntField.setReturnType(cc.KEYBOARD_RETURNTYPE_DONE);
         cntField.setString(String(entry.count));
-        // cntField.setContentSize(55, ITEM_H - 10);
         cntField.setPosition(240, ITEM_H / 2);
         bg.addChild(cntField);
 
