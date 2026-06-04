@@ -1,5 +1,6 @@
 {
-    "description": "Mèo ẩn thân bắn PU (state HIDDEN, 3x3, HP=6): lui xuống BACKGROUND, gem có thể spawn trên ô đó. Chỉ damage qua match gem trên ô (unblockAction MATCH cho phép match xuyên xuống). Mỗi endTurn tăng phaseTurn; khi phaseTurn >= 2 → action_0: AroundSpawnElementAction spawn 1 PU random [101, 106] xung quanh + ReplaceSelfAction về 13020 (visible). HP kế thừa từ visible state.",
+    "description": "Mèo ẩn thân bắn PU — state ẨN (3x3, HP kế thừa): BACKGROUND (gem spawn đè lên), KHÔNG bắn PU. Ăn damage qua match gem TRÊN ô (unblockAction MATCH cho match xuyên xuống) + PU đập trực tiếp (bypass ẩn). Sau 2 turn ẨN → action_0 swap về LỘ (13020), không delay. phaseTurn reset bắt buộc.",
+    "dedupPerMatch": true,
     "baseAction": [],
     "unblockAction": [
         "MATCH",
@@ -30,29 +31,32 @@
         ],
         "action_0": [
             {
-                "name": "AroundSpawnElementAction",
+                "name": "ChangeAttributeAction",
                 "config": {
-                    "type": [101, 106]
+                    "fieldName": "phaseTurn",
+                    "setValue": 0
                 }
             },
             {
                 "name": "ReplaceSelfAction",
                 "config": {
-                    "type": 13020
+                    "type": 13020,
+                    "refillAfterSwap": true
                 }
             }
         ]
     },
     "visual": {
-        "path": "res/newBlock/BlockUI/block_hidden_cat_shoot_pu_hidden.json",
-        "type": 2
+        "path": "res/newBlock/BlockUI/img/cat_hidden_shoot_pu.png",
+        "type": 0,
+        "uiClass": "CatHiddenShootPuUI"
     },
     "type": "Blocker",
     "width": 3,
     "height": 3,
     "layerBehavior": "BACKGROUND",
     "configData": {
-        "hitPoints": 6,
-        "maxHP": 6
+        "hitPoints": 16,
+        "maxHP": 16
     }
 }

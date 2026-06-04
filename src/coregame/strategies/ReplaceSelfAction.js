@@ -26,8 +26,25 @@ CoreGame.Strategies.ReplaceSelfAction = CoreGame.Strategies.NormalAction.extend(
 
         var boardMgr = element.boardMgr;
         var typeConfig = this.configData.type;
+        // Opt-in: after the swap frees cells (e.g. a 2x2 cat sinking from EXCLUSIVE to
+        // BACKGROUND leaves its footprint empty on the CONTENT layer), drop + spawn
+        // gems to fill them. Only blockers that set the flag pay for the refill.
+        var refillAfterSwap = !!(this.configData && this.configData.refillAfterSwap);
 
-        var delayTime = Math.max(0, time);
+        // Optional explicit delay before the swap. Lets a boss finish a same-turn cue
+        // before changing state — e.g. the hidden shoot-pu cat shoots a PU, THEN swaps
+        // to HIDDEN, so the swap's UI rebuild doesn't cut the attack anim. Precedence:
+        //   delayFromCue (read the live cue length another action just published on
+        //                 customData._abilityCueDur — robust to the real clip length)
+        //   > delay      (a fixed number of seconds)
+        //   > time       (the action's playAnimation duration, original behaviour).
+        var delayFromCue = !!(this.configData && this.configData.delayFromCue);
+        var cueDelay = (delayFromCue && element.customData)
+            ? parseFloat(element.customData._abilityCueDur) : NaN;
+        var delayCfg = (this.configData && this.configData.delay != null)
+            ? parseFloat(this.configData.delay) : NaN;
+        var delayTime = Math.max(0,
+            !isNaN(cueDelay) ? cueDelay : (!isNaN(delayCfg) ? delayCfg : time));
 
         CoreGame.TimedActionMgr.addAction(delayTime, function () {
             var targetType = 0;
@@ -112,6 +129,13 @@ CoreGame.Strategies.ReplaceSelfAction = CoreGame.Strategies.NormalAction.extend(
                 }
 
                 element.updateVisual();
+
+                // Fill the cells the swap just freed (gems drop in from above and
+                // auto-resolve any new matches). Runs after the layer change so the
+                // vacated CONTENT slots are seen as empty/fillable.
+                if (refillAfterSwap && boardMgr.refillMap) {
+                    boardMgr.refillMap();
+                }
             }
         }, this);
     }

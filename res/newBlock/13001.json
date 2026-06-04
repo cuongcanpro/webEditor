@@ -1,5 +1,6 @@
 {
-    "description": "Mèo ẩn thân (state HIDDEN, 2x2): lui xuống BACKGROUND (layer -1). Gem có thể spawn trên ô đó. Khi gem trên ô được match (`match` trigger lan xuống layer dưới qua unblockAction MATCH), mèo nhận damage. HP kế thừa từ visible state. Sau 2 lượt → ReplaceSelfAction về ID 13000.",
+    "description": "Mèo ẩn thân (state HIDDEN, 2x2): lui xuống BACKGROUND (layer -1). Gem có thể spawn trên ô đó. Khi gem trên ô được match (`match` trigger lan xuống layer dưới qua unblockAction MATCH), mèo nhận damage. HP kế thừa từ visible state. Khi turnCount == 2 → action_0 reset turnCount=0 rồi ReplaceSelfAction về ID 13000.",
+    "dedupPerMatch": true,
     "baseAction": [],
     "unblockAction": [
         "MATCH",
@@ -30,6 +31,13 @@
         ],
         "action_0": [
             {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "turnCount",
+                    "setValue": 0
+                }
+            },
+            {
                 "name": "ReplaceSelfAction",
                 "config": {
                     "type": 13000
@@ -38,8 +46,9 @@
         ]
     },
     "visual": {
-        "path": "res/newBlock/BlockUI/block_cat_hidden.json",
-        "type": 2
+        "path": "res/newBlock/BlockUI/spine/cat/hidden_cat.png",
+        "type": 0,
+        "uiClass": "CatHiddenUI"
     },
     "type": "Blocker",
     "width": 2,

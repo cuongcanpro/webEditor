@@ -1,0 +1,160 @@
+
+tileset_11.png
+size: 332,330
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+attack_tex
+  rotate: false
+  xy: 200, 218
+  size: 80, 68
+  orig: 80, 87
+  offset: 0, 17
+  index: -1
+fx_mud_1
+  rotate: true
+  xy: 278, 210
+  size: 6, 2
+  orig: 150, 150
+  offset: 65, 135
+  index: -1
+fx_mud_10
+  rotate: false
+  xy: 194, 83
+  size: 72, 71
+  orig: 150, 150
+  offset: 43, 67
+  index: -1
+fx_mud_11
+  rotate: false
+  xy: 189, 10
+  size: 72, 71
+  orig: 150, 150
+  offset: 42, 67
+  index: -1
+fx_mud_12
+  rotate: false
+  xy: 122, 84
+  size: 70, 72
+  orig: 150, 150
+  offset: 43, 65
+  index: -1
+fx_mud_13
+  rotate: false
+  xy: 122, 158
+  size: 70, 75
+  orig: 150, 150
+  offset: 44, 62
+  index: -1
+fx_mud_14
+  rotate: false
+  xy: 0, 19
+  size: 73, 83
+  orig: 150, 150
+  offset: 44, 54
+  index: -1
+fx_mud_15
+  rotate: false
+  xy: 122, 235
+  size: 76, 95
+  orig: 150, 150
+  offset: 44, 41
+  index: -1
+fx_mud_16
+  rotate: false
+  xy: 0, 104
+  size: 78, 104
+  orig: 150, 150
+  offset: 44, 31
+  index: -1
+fx_mud_17
+  rotate: true
+  xy: 200, 288
+  size: 42, 115
+  orig: 150, 150
+  offset: 45, 20
+  index: -1
+fx_mud_18
+  rotate: false
+  xy: 80, 119
+  size: 40, 89
+  orig: 150, 150
+  offset: 46, 16
+  index: -1
+fx_mud_19
+  rotate: true
+  xy: 282, 248
+  size: 38, 50
+  orig: 150, 150
+  offset: 46, 50
+  index: -1
+fx_mud_2
+  rotate: true
+  xy: 269, 170
+  size: 46, 7
+  orig: 150, 150
+  offset: 46, 132
+  index: -1
+fx_mud_20
+  rotate: false
+  xy: 317, 293
+  size: 6, 37
+  orig: 150, 150
+  offset: 72, 38
+  index: -1
+fx_mud_3
+  rotate: false
+  xy: 69, 2
+  size: 64, 12
+  orig: 150, 150
+  offset: 45, 127
+  index: -1
+fx_mud_4
+  rotate: false
+  xy: 0, 0
+  size: 67, 17
+  orig: 150, 150
+  offset: 43, 122
+  index: -1
+fx_mud_5
+  rotate: true
+  xy: 263, 13
+  size: 68, 27
+  orig: 150, 150
+  offset: 43, 111
+  index: -1
+fx_mud_6
+  rotate: true
+  xy: 149, 10
+  size: 72, 38
+  orig: 150, 150
+  offset: 42, 100
+  index: -1
+fx_mud_7
+  rotate: true
+  xy: 282, 174
+  size: 72, 48
+  orig: 150, 150
+  offset: 42, 90
+  index: -1
+fx_mud_8
+  rotate: false
+  xy: 194, 156
+  size: 73, 60
+  orig: 150, 150
+  offset: 42, 78
+  index: -1
+fx_mud_9
+  rotate: false
+  xy: 75, 16
+  size: 72, 66
+  orig: 150, 150
+  offset: 43, 72
+  index: -1
+tileset_11
+  rotate: false
+  xy: 0, 210
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1

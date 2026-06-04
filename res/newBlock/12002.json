@@ -1,32 +1,46 @@
 {
-    "description": "Slime Chúa: DynamicBlocker 3x3 (9 cells). Side-match mất 1 cell, mỗi endTurn vừa SpreadAction regenerate vừa SetAttributeAction đổi visualState (để UI render màu mới). NOTE: 'đổi màu' chỉ là visual swap — không thay đổi điều kiện match. Nếu sau này cần color-match, dùng ReplaceSelfAction với variants riêng.",
+    "description": "Slime Chúa (BOSS 3x3, 9 cells): ColorMatch thật. Side-match CHỈ trừ 1 cell khi gemtype == activeGemtype hiện tại (MatchColorTakeDamageAction đọc element._matchColor). Match sai màu = 0 damage. PU (Bom/Rocket/Búa) bypass màu. Mỗi endTurn: RegenCellAction passive +1 cell vào ô EMPTY trong vùng 3x3 (tới maxCells=9) + CycleMatchColorAction xoay màu tuần tự 1->2->3->4->1. Vì regen +1/turn nên player phải gây >=2 damage/turn mới tiến triển. tintByMatchColor=true để UI re-tint khi đổi màu. NOTE: visual asset block_slime_lord.json hiện là placeholder; Phase 2 thay bằng SlimeKingUI + asset tint + color-tag + 4 mắt đỏ + warning 0.3s.",
     "baseAction": [],
     "unblockAction": [],
+    "tintByMatchColor": true,
     "customAction": {
         "sideMatch": [
-            "TakeDamageAction"
+            {
+                "name": "SlimeKingSideMatchAction",
+                "config": {
+                    "_matchColor": 1
+                }
+            }
+        ],
+        "match": [
+            {
+                "name": "TakeDamageAction",
+                "config": {
+                    "puDedupPerCell": true
+                }
+            }
         ],
         "endTurn": [
-            "SpreadAction",
             {
-                "name": "ChangeAttributeAction",
+                "name": "RegenCellAction",
                 "config": {
-                    "fieldName": "visualState",
-                    "delta": 1,
-                    "defaultValue": 0
+                    "maxCells": 9,
+                    "requireLossThisTurn": false
                 }
             },
             {
-                "name": "PlayAnimationAction",
+                "name": "CycleMatchColorAction",
                 "config": {
-                    "animation": "color_shift"
+                    "colors": [1, 2, 3, 4],
+                    "sequential": true
                 }
             }
         ]
     },
     "visual": {
         "path": "res/newBlock/BlockUI/block_slime_lord.json",
-        "type": 2
+        "type": 2,
+        "uiClass": "SlimeKingUI"
     },
     "type": "DynamicBlocker",
     "width": 3,
@@ -34,7 +48,6 @@
     "layerBehavior": "EXCLUSIVE",
     "configData": {
         "hitPoints": 9,
-        "maxHP": 18,
-        "cooldownSpawn": 1
+        "maxHP": 9
     }
 }

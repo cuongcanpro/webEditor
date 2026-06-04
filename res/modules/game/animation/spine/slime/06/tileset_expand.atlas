@@ -1,0 +1,13 @@
+
+tileset_expand.png
+size: 128,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+tileset_expand
+  rotate: false
+  xy: 0, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

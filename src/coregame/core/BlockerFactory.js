@@ -70,12 +70,44 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp, cells) {
                     return new UIClass(this, path, this._placeholderSpriteScale || 1);
                 };
             })(blocker, uiClassName);
+        } else if (config.visual && config.visual.type === 2 && config.visual.uiClass && CoreGame[config.visual.uiClass]) {
+            // Type-2 (CocosStudio JSON) blockers can also opt into a custom UI
+            // subclass of CustomElementUI — e.g. SlimeUI / SlimeKingUI / CatUI for
+            // the cell-loss slimes and the hidden cat. Same (element, jsonPath)
+            // ctor as CustomElementUI. Without a uiClass they fall through to the
+            // default CustomElementUI in ElementObject.createUIInstance.
+            (function (b, uiClassName) {
+                b.createUIInstance = function () {
+                    var path = this.rawConfig && this.rawConfig.visual && this.rawConfig.visual.path;
+                    return new CoreGame[uiClassName](this, path);
+                };
+            })(blocker, config.visual.uiClass);
         }
 
         // Use config hitPoints as default when the map doesn't specify HP.
         // config.configData.hitPoints is the designer-declared starting HP.
         var effectiveHp = hp || (config.configData && (config.configData.hitPoints || config.configData.maxHP));
-        blocker.init(row, col, typeId, effectiveHp, cells || null);
+
+        // DynamicBlocker auto-footprint: when the caller didn't pass an explicit
+        // `cells` list, expand the config's width×height into a rectangular
+        // footprint anchored at (row,col). Without this DynamicBlocker.init
+        // defaults to a single cell, so a 2×2 Slime placed by row/col alone would
+        // spawn as 1 cell. An explicit `cells` list (irregular footprints) is
+        // still honored as-is.
+        var initCells = cells;
+        if (!initCells && (blocker instanceof CoreGame.DynamicBlocker)) {
+            var w = config.width || 1;
+            var h = config.height || 1;
+            if (w > 1 || h > 1) {
+                initCells = [];
+                for (var dr = 0; dr < h; dr++) {
+                    for (var dc = 0; dc < w; dc++) {
+                        initCells.push({ r: row + dr, c: col + dc });
+                    }
+                }
+            }
+        }
+        blocker.init(row, col, typeId, effectiveHp, initCells || null);
 
         // Factory-config blockers must NOT be treated as monsters even if their
         // typeId falls in the monster range (>= BASE_MONSTER_TYPE = 10000).

@@ -29,8 +29,11 @@ var ElementSelectorUI = cc.Node.extend({
         // Dynamically calculate items per row based on container width
         this.ITEMS_PER_ROW = Math.max(1, Math.floor((size.width - this.ITEM_PADDING) / (this.ITEM_WIDTH + this.ITEM_PADDING)));
 
+        this._cells = [];          // {node, name} per visible cell, for hover hit-test
         this.initScrollView(size);
         this.setupMouseWheel();
+        this._buildTooltip();
+        this._setupHoverTooltip();
         this.loadElements();
     },
 
@@ -75,6 +78,94 @@ var ElementSelectorUI = cc.Node.extend({
         // Scene-graph priority: auto-removed when this node is cleaned up.
         cc.eventManager.addListener(listener, this);
         this._mouseListener = listener;
+    },
+
+    /**
+     * Build the hover tooltip node (a dark pill with the full blocker name).
+     * Hidden until the cursor sits over a cell. High z-order so it floats above
+     * the grid and filter bar.
+     */
+    _buildTooltip: function () {
+        var tip = new ccui.Layout();
+        tip.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        tip.setBackGroundColor(cc.color(20, 20, 28));
+        tip.setBackGroundColorOpacity(235);
+        tip.setAnchorPoint(cc.p(0, 0));
+        tip.setVisible(false);
+
+        var txt = new ccui.Text("", "font/BalooPaaji2-Regular.ttf", 13);
+        txt.setColor(cc.color(255, 255, 255));
+        txt.setAnchorPoint(cc.p(0, 0));
+        txt.setPosition(6, 4);
+        tip.addChild(txt);
+
+        this.addChild(tip, 100000);
+        this._tooltip = tip;
+        this._tooltipText = txt;
+    },
+
+    /**
+     * Mouse-move listener: highlight the hovered cell with a name tooltip. Hit-test
+     * every visible cell against the cursor in world space; show the full name on a
+     * match, hide otherwise.
+     */
+    _setupHoverTooltip: function () {
+        var self = this;
+        var listener = cc.EventListener.create({
+            event: cc.EventListener.MOUSE,
+            onMouseMove: function (event) {
+                var loc = event.getLocation();
+                if (!self.scrollView || !self.container) { self._hideTooltip(); return; }
+
+                // Must be over the scroll viewport (mirror setupMouseWheel). This
+                // also keeps scrolled-out cells from matching.
+                var sp = self.scrollView.convertToNodeSpace(loc);
+                var ss = self.scrollView.getContentSize();
+                if (sp.x < 0 || sp.x > ss.width || sp.y < 0 || sp.y > ss.height) {
+                    self._hideTooltip();
+                    return;
+                }
+
+                // Hit-test each cell in the inner-container space (the cells are
+                // children of `container`, so their getBoundingBox() is in that
+                // space). Converting the cursor the same way fixes the earlier
+                // world-space mismatch that made every hover resolve to one cell.
+                var pc = self.container.convertToNodeSpace(loc);
+                var cells = self._cells || [];
+                for (var i = 0; i < cells.length; i++) {
+                    var node = cells[i].node;
+                    if (!node || !cc.sys.isObjectValid(node)) continue;
+                    if (cc.rectContainsPoint(node.getBoundingBox(), pc)) {
+                        self._showTooltip(cells[i].name, loc);
+                        return;
+                    }
+                }
+                self._hideTooltip();
+            }
+        });
+        cc.eventManager.addListener(listener, this);
+        this._hoverListener = listener;
+    },
+
+    /** Show the tooltip with `name`, anchored just above-right of the cursor. */
+    _showTooltip: function (name, worldLoc) {
+        if (!this._tooltip) return;
+        this._tooltipText.setString(name);
+
+        var ts = this._tooltipText.getContentSize();
+        this._tooltip.setContentSize(ts.width + 12, ts.height + 8);
+
+        var p = this.convertToNodeSpace(worldLoc);
+        var w = this._tooltip.getContentSize().width;
+        var selfW = this.getContentSize().width;
+        var x = p.x + 14;
+        if (x + w > selfW) x = p.x - 14 - w; // flip left if it would overflow the panel
+        this._tooltip.setPosition(x, p.y + 14);
+        this._tooltip.setVisible(true);
+    },
+
+    _hideTooltip: function () {
+        if (this._tooltip) this._tooltip.setVisible(false);
     },
 
     /**
@@ -192,8 +283,16 @@ var ElementSelectorUI = cc.Node.extend({
 
             // Add all blockers
             for (var name in data) {
+                var tid = data[name];
+                // Skip non-canonical state aliases (e.g. cat HIDDEN 13001 -> VISIBLE
+                // 13000). They are runtime-only states — never placed or targeted
+                // directly — so listing them duplicates the boss in the palette and
+                // the objective picker. OBJECTIVE_CANONICAL keys are exactly these
+                // aliases.
+                if (CoreGame.Config.OBJECTIVE_CANONICAL &&
+                    CoreGame.Config.OBJECTIVE_CANONICAL[tid] !== undefined) continue;
                 self.elements.push({
-                    type: data[name],
+                    type: tid,
                     name: name,
                     isGem: false
                 });
@@ -211,6 +310,8 @@ var ElementSelectorUI = cc.Node.extend({
      */
     populateGrid: function () {
         this.container.removeAllChildren();
+        this._cells = [];          // rebuilt below; stale cell nodes are now gone
+        this._hideTooltip();
 
         var visible = this.elements;
 
@@ -265,6 +366,9 @@ var ElementSelectorUI = cc.Node.extend({
         btn.elementType = element.type;
         btn.elementName = element.name;
 
+        // Register for hover tooltip (full, untruncated name).
+        this._cells.push({ node: btn, name: element.name });
+
         // Add click handler
         btn.addTouchEventListener(function (sender, type) {
             if (type === ccui.Widget.TOUCH_ENDED) {
@@ -272,23 +376,32 @@ var ElementSelectorUI = cc.Node.extend({
             }
         });
 
-        // add blocker
-        var elementObject;
-        if (CoreGame.ElementObject.map[element.type]) {
-            // Use standard creation for registered types
-            elementObject = CoreGame.ElementObject.create(row, col, element.type, 1);
+        // Selector icon: some blockers are spine-driven and don't render well as a
+        // tiny live preview (e.g. the 2x2 boss cat), so show a flat sprite icon here
+        // instead of building the full game UI. This override applies to the editor
+        // palette ONLY — the in-game visual (spine) is unaffected. Data-driven: add a
+        // {type: pngPath} entry to ICON_OVERRIDES to give any block a static icon.
+        var iconDef = ElementSelectorUI.ICON_OVERRIDES[element.type];
+        if (iconDef) {
+            this._addStaticIcon(btn, iconDef);
         } else {
-            // Fallback to BlockerFactory for unregistered types (JSON-based blockers)
-            elementObject = CoreGame.BlockerFactory.createBlocker(row, col, element.type, 1);
+            // add blocker
+            var elementObject;
+            if (CoreGame.ElementObject.map[element.type]) {
+                // Use standard creation for registered types
+                elementObject = CoreGame.ElementObject.create(row, col, element.type, 1);
+            } else {
+                // Fallback to BlockerFactory for unregistered types (JSON-based blockers)
+                elementObject = CoreGame.BlockerFactory.createBlocker(row, col, element.type, 1);
+            }
+
+            elementObject.createUI(btn);
+            elementObject.ui.setPosition(btn.getContentSize().width / 2, btn.getContentSize().height / 2);
+
+            // Scale elementObject.ui to fit with btn
+            var scale = elementObject.getScaleToFit(btn.getContentSize().width, btn.getContentSize().height);
+            elementObject.ui.setScale(scale);
         }
-        
-        elementObject.createUI(btn);
-        elementObject.ui.setPosition(btn.getContentSize().width / 2, btn.getContentSize().height / 2);
-
-
-        // Scale elementObject.ui to fit with btn
-        var scale = elementObject.getScaleToFit(btn.getContentSize().width, btn.getContentSize().height);
-        elementObject.ui.setScale(scale);
 
         // Name label: rendered ON TOP of the item (high z-order) and anchored to the
         // bottom edge of the cell instead of being vertically centered.
@@ -300,6 +413,37 @@ var ElementSelectorUI = cc.Node.extend({
         btn.addChild(nameLabel, 1000);
 
         return btn;
+    },
+
+    /**
+     * Render a flat sprite icon inside a palette cell, scaled to fit. Used by the
+     * ICON_OVERRIDES path for spine-driven blockers that preview poorly when built
+     * as a live game UI in the small selector cell.
+     */
+    _addStaticIcon: function (btn, iconDef) {
+        // iconDef may be a path string or { path, opacity } (see ICON_OVERRIDES).
+        var iconPath = (typeof iconDef === 'string') ? iconDef : iconDef.path;
+        var opacity = (iconDef && typeof iconDef === 'object' && iconDef.opacity != null)
+            ? iconDef.opacity : 255;
+
+        var icon = (typeof gv !== 'undefined' && gv.getSprite)
+            ? gv.getSprite(iconPath, iconPath)
+            : new cc.Sprite(iconPath);
+        if (!icon) return;
+
+        icon.setAnchorPoint(0.5, 0.5);
+        icon.setPosition(btn.getContentSize().width / 2, btn.getContentSize().height / 2);
+        icon.setOpacity(opacity);
+
+        // Fit inside the cell with a small margin. If the texture isn't cached yet
+        // its size reads 0 — skip scaling in that case; once the (preloaded) png is
+        // in cache the size resolves correctly on the next build.
+        var sz = icon.getContentSize();
+        if (sz.width > 0 && sz.height > 0) {
+            var s = Math.min(this.ITEM_WIDTH / sz.width, this.ITEM_HEIGHT / sz.height) * 0.85;
+            icon.setScale(s);
+        }
+        btn.addChild(icon);
     },
 
     /**
@@ -364,3 +508,18 @@ var ElementSelectorUI = cc.Node.extend({
 
 // Highlight tint applied to the currently selected element cell.
 ElementSelectorUI.SELECTED_COLOR = cc.color(100, 255, 100); // bright green
+
+// Static sprite icons for the palette ONLY (in-game visuals are unaffected).
+// Some blockers are spine-driven and render poorly as a tiny live preview, so
+// the selector shows a flat png here instead.
+// Value = png path (string) OR { path, opacity } when the same art should be
+// reused at a different opacity. The boss cat's VISIBLE/HIDDEN states are one
+// character, so both share a single cat.png — HIDDEN is just dimmed to mirror
+// its "sits under the gems" look in game.
+// Drop the png into res/newBlock/BlockUI/img/ and preload it in WebResource.js
+// (Game_resource) so the icon resolves in the editor.
+ElementSelectorUI.ICON_OVERRIDES = {
+    13000: "res/newBlock/BlockUI/img/cat_hidden.png",                  // Mèo ẩn thân (HIDDEN 13001 là alias runtime, không liệt kê)
+    13010: "res/newBlock/BlockUI/img/cat_shoot_pu.png",                // Mèo bắn PU (spine shoot_pu_cat preview kém ở cell nhỏ -> dùng icon tĩnh)
+    13020: "res/newBlock/BlockUI/img/cat_hidden_shoot_pu.png"          // Mèo ẩn thân bắn PU (ẨN 13021 là alias runtime, không liệt kê)
+};

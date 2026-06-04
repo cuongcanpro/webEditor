@@ -1,0 +1,41 @@
+
+tileset_eye.png
+size: 173,171
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+eye_1
+  rotate: false
+  xy: 0, 10
+  size: 68, 91
+  orig: 68, 92
+  offset: 0, 0
+  index: -1
+eye_2
+  rotate: true
+  xy: 70, 34
+  size: 67, 55
+  orig: 68, 57
+  offset: 0, 1
+  index: -1
+eye_close
+  rotate: false
+  xy: 0, 103
+  size: 124, 68
+  orig: 124, 70
+  offset: 0, 2
+  index: -1
+eye_light
+  rotate: false
+  xy: 126, 136
+  size: 47, 35
+  orig: 51, 39
+  offset: 2, 2
+  index: -1
+eye_ris
+  rotate: false
+  xy: 70, 13
+  size: 13, 19
+  orig: 20, 24
+  offset: 4, 3
+  index: -1

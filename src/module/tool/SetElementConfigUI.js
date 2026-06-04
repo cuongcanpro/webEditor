@@ -19,6 +19,8 @@ var SetElementConfigUI = cc.Node.extend({
     TENTACLE_TYPE: 30200,
     // Tủ nước màu: máu cố định 4 (4 chai), không cho chỉnh -> ẩn panel HP.
     COLOR_CABINET_TYPE: 18000,
+    // Slime (Hiền/Ác/Chúa): blocker mất-ô nhiều cell, không có HP -> ẩn panel HP.
+    SLIME_TYPES: [12000, 12001, 12002],
     // Trần HP khi chỉnh trong editor — bỏ giới hạn maxHP của config, cho chỉnh tự do tới đây.
     MAX_HP: 100,
 
@@ -140,22 +142,23 @@ var SetElementConfigUI = cc.Node.extend({
         var btnMinus = mkStepBtn(122, 30, "-", 24, function () { self.decrementHP(); });
 
         // Create HP input field
-        this.hpInput = new cc.EditBox(cc.size(50, 40), new cc.Scale9Sprite());
+        this.hpInput = new ccui.TextField();
         this.hpInput.setFontName("font/BalooPaaji2-Regular.ttf");
         this.hpInput.setPlaceHolder("1");
-        this.hpInput.setPlaceholderFontColor(cc.color(150, 150, 150));
-        this.hpInput.setFontColor(cc.color(255, 255, 255));
+        this.hpInput.setPlaceHolderColor(cc.color(150, 150, 150));
+        this.hpInput.setTextColor(cc.color(255, 255, 255));
         this.hpInput.setFontSize(24);
         this.hpInput.setMaxLength(3);   // tới 3 chữ số để gõ được 100
-        this.hpInput.setInputMode(cc.EDITBOX_INPUT_MODE_NUMERIC);
-        this.hpInput.setReturnType(cc.KEYBOARD_RETURNTYPE_DONE);
+        this.hpInput.setMaxLengthEnabled(true);
+        this.hpInput.setTouchEnabled(true);
         this.hpInput.setString("1");
         this.hpInput.setPosition(172, 55);
         this.container.addChild(this.hpInput);
 
-        // Add input event listener — fire when the user finishes editing.
-        this.hpInput.setDelegate({
-            editBoxEditingDidEnd: function (sender) {
+        // Add input event listener
+        this.hpInput.addEventListener(function (sender, type) {
+            if (type === ccui.TextField.EVENT_DETACH_WITH_IME) {
+                // When user finishes editing
                 self.onHPChanged();
             }
         });
@@ -243,7 +246,8 @@ var SetElementConfigUI = cc.Node.extend({
         var isTentacle = (type === this.TENTACLE_TYPE);
 
         // Tủ nước màu khoá cứng 4 máu (bỏ qua config) -> không cần panel Element Config.
-        if (type === this.COLOR_CABINET_TYPE) {
+        // Slime cũng không có HP (mất theo ô) -> ẩn luôn.
+        if (type === this.COLOR_CABINET_TYPE || this.SLIME_TYPES.indexOf(type) !== -1) {
             this.setVisible(false);
             this.currentElement = null;
             if (element && element.ui) element.ui.removeFromParent();

@@ -4,12 +4,21 @@
     "unblockAction": [],
     "customAction": {
         "sideMatch": [
-            "TakeDamageAction"
+            "SlimeSideMatchAction"
+        ],
+        "match": [
+            {
+                "name": "TakeDamageAction",
+                "config": {
+                    "puDedupPerCell": true
+                }
+            }
         ]
     },
     "visual": {
         "path": "res/newBlock/BlockUI/block_slime_normal.json",
-        "type": 2
+        "type": 2,
+        "uiClass": "SlimeUI"
     },
     "type": "DynamicBlocker",
     "width": 2,

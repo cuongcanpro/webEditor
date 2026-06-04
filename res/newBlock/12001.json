@@ -1,18 +1,33 @@
 {
-    "description": "Slime ác: DynamicBlocker 2x2 (4 cells). Side-match làm mất 1 cell (TakeDamage), mỗi endTurn dùng SpreadAction để regenerate thêm 1 cell ở cạnh ngẫu nhiên (nếu chưa đầy bounding box). HP khởi tạo=4, maxHP=8 để tránh chết khô khi spread liên tục.",
+    "description": "Slime ác: DynamicBlocker 2x2 (4 cells, maxCells=4). Side-match bất kỳ màu làm mất 1 cell (TakeDamage). Mỗi endTurn, NẾU vừa mất cell trong turn này, RegenCellAction hồi +1 cell vào 1 ô EMPTY adjacent (ưu tiên ô kề cell vừa mất) → net 0. Không có ô trống adjacent → regen FAIL, damage giữ nguyên (cách 'vây để giết'). Regen không bao giờ vượt maxCells nên slime đầy 4/4 sẽ không phình.",
     "baseAction": [],
     "unblockAction": [],
     "customAction": {
         "sideMatch": [
-            "TakeDamageAction"
+            "SlimeSideMatchAction"
+        ],
+        "match": [
+            {
+                "name": "TakeDamageAction",
+                "config": {
+                    "puDedupPerCell": true
+                }
+            }
         ],
         "endTurn": [
-            "SpreadAction"
+            {
+                "name": "RegenCellAction",
+                "config": {
+                    "maxCells": 4,
+                    "requireLossThisTurn": true
+                }
+            }
         ]
     },
     "visual": {
         "path": "res/newBlock/BlockUI/block_slime_evil.json",
-        "type": 2
+        "type": 2,
+        "uiClass": "SlimeUI"
     },
     "type": "DynamicBlocker",
     "width": 2,

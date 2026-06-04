@@ -1,55 +1,39 @@
 {
-    "description": "Mèo bắn PU (2x2, HP=4): nhận side-match damage bình thường. Mỗi 2 endTurn → action_0: AroundSpawnElementAction spawn 1 PU random từ [Rocket H (101), Rocket V (106)] xung quanh mèo. Vai trò curriculum L150: player race đánh mèo hoặc tận dụng PU rơi. KHÔNG có crosshair warn/destroy PU (cần Strategy mới, designer chấp nhận đơn giản hóa).",
+    "description": "Mèo bắn PU (2x2, HP=10): nhận side-match damage không color-check + PU đập trực tiếp. Mỗi 2 endTurn FindAndDestroyPowerUpAction quét board, destroy random 1 PU (Bomb/Rocket/Color Bomb) KHÔNG nổ. 0 PU lúc trigger → mèo idle, retry-armed (không tiêu hao ability, counter giữ lên đạn tới khi có PU). Counter sống trong customData._fdpuTimer, reset có điều kiện trong action (không qua config).",
+    "dedupPerMatch": true,
     "baseAction": [],
     "unblockAction": [],
     "customAction": {
         "sideMatch": [
             "TakeDamageAction"
         ],
+        "match": [
+            "TakeDamageAction"
+        ],
         "endTurn": [
             {
-                "name": "ChangeAttributeAction",
+                "name": "FindAndDestroyPowerUpAction",
                 "config": {
-                    "fieldName": "shootCount",
-                    "delta": 1,
-                    "defaultValue": 0
-                }
-            },
-            {
-                "name": "CheckAttributeAction",
-                "config": {
-                    "fieldName": "shootCount",
-                    "targetValue": 2,
-                    "actionKey": "action_0"
-                }
-            }
-        ],
-        "action_0": [
-            {
-                "name": "AroundSpawnElementAction",
-                "config": {
-                    "type": [101, 106]
-                }
-            },
-            {
-                "name": "SetAttributeAction",
-                "config": {
-                    "fieldName": "shootCount",
-                    "value": 0
+                    "period": 2,
+                    "numDestroy": 1,
+                    "timerField": "_fdpuTimer",
+                    "animKey": "attack",
+                    "shootTime": 4.0
                 }
             }
         ]
     },
     "visual": {
-        "path": "res/newBlock/BlockUI/block_cat_shoot_pu.json",
-        "type": 2
+        "path": "res/newBlock/BlockUI/img/cat_shoot_pu.png",
+        "type": 0,
+        "uiClass": "CatShootPuUI"
     },
     "type": "Blocker",
     "width": 2,
     "height": 2,
     "layerBehavior": "EXCLUSIVE",
     "configData": {
-        "hitPoints": 4,
-        "maxHP": 4
+        "hitPoints": 10,
+        "maxHP": 10
     }
 }

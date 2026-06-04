@@ -110,8 +110,11 @@ CoreGame.BoardMgr = cc.Class.extend({
      */
     isObjectiveType: function (type) {
         if (!this.targetElements) return false;
+        // Canonicalise so a HIDDEN-state kill (cat 13001) matches its objective
+        // entry (13000) for scoring, same as the count in removedElement.
+        var objType = CoreGame.Config.getObjectiveType(type);
         for (var i = 0; i < this.targetElements.length; i++) {
-            if (this.targetElements[i].id === type) return true;
+            if (this.targetElements[i].id === objType) return true;
         }
         return false;
     },
@@ -199,6 +202,9 @@ CoreGame.BoardMgr = cc.Class.extend({
 
             this.targetElements = mapConfig["targetElements"] || [];
             for (let element of this.targetElements) {
+                // Collapse state-swap bosses (e.g. cat 13001 -> 13000) to one
+                // canonical objective id so either state counts, like King Crab.
+                element.id = CoreGame.Config.getObjectiveType(element.id);
                 element.current = element.count;
             }
             cc.log("BoardMgr targetElements", JSON.stringify(this.targetElements));
@@ -339,8 +345,11 @@ CoreGame.BoardMgr = cc.Class.extend({
 
     removedElement: function (element) {
         this.idleCheckEndGameTime = 0;
+        // Normalise the removed type so a HIDDEN-state kill (e.g. cat 13001)
+        // still credits its canonical objective entry (13000).
+        var objType = CoreGame.Config.getObjectiveType(element.type);
         for (let targetElement of this.targetElements) {
-            if (targetElement.id === element.type) {
+            if (targetElement.id === objType) {
                 targetElement.current--;
             }
         }
@@ -869,6 +878,29 @@ CoreGame.BoardMgr = cc.Class.extend({
             }
         }
 
+        // [PLANE-DEBUG] Temporary diagnostic — remove once root cause confirmed.
+        // Reveals whether the plane found objective targets or fell back to gems.
+        cc.log("[PLANE-DEBUG] remainingTargetTypes=" + JSON.stringify(remainingTargetTypes)
+            + " priorityTargets=" + priorityTargets.length
+            + " fallbackGems=" + fallbackTargets.length);
+        if (priorityTargets.length === 0 && remainingTargetTypes.length > 0) {
+            // Objectives still exist but NONE were matched on the board — dump what
+            // is actually sitting in every non-empty slot so we can see the type
+            // mismatch (objective id vs on-board element.type / storage layer).
+            for (var dr = 0; dr < this.rows; dr++) {
+                for (var dc = 0; dc < this.cols; dc++) {
+                    var dslot = this.getSlot(dr, dc);
+                    if (!dslot || dslot.isEmpty()) continue;
+                    var types = [];
+                    for (var de = 0; de < dslot.listElement.length; de++) {
+                        var del = dslot.listElement[de];
+                        types.push(del.type + "(hp:" + del.hitPoints + ",layer:" + del.layerBehavior + ")");
+                    }
+                    cc.log("[PLANE-DEBUG]   slot(" + dr + "," + dc + ") = " + types.join(", "));
+                }
+            }
+        }
+
         // Sort priority targets by score descending (highest priority first)
         if (priorityTargets.length > 0) {
             priorityTargets.sort(function (a, b) { return b.score - a.score; });
@@ -917,6 +949,10 @@ CoreGame.BoardMgr = cc.Class.extend({
         return this.state !== CoreGame.BoardState.END_GAME &&
             this.state !== CoreGame.BoardState.REMAINING_MOVES_BONUS &&
             !this.gameEnded &&
+            // Bosses can hold a transient input lock while a timed ability cue plays
+            // (e.g. CatShootPU's aim+shoot: no swap/move until the PU is destroyed).
+            // Default undefined -> falsy, so this is a no-op for every other path.
+            !this._abilityInputLock &&
             this.numMove > 0;
     },
 
@@ -1496,6 +1532,34 @@ CoreGame.BoardMgr = cc.Class.extend({
     },
 
     /**
+     * Settle the board back to IDLE for activity that started AFTER the turn was
+     * already closed (playerMoved cleared). A colored-crab end-of-turn move runs
+     * inside onFinishTurn and flags requiredRefill — kicking off a drop only after
+     * checkFinishTurn already set playerMoved = false. Without this, refillMap puts
+     * the board in DROPPING and nothing ever brings it back: checkFinishTurn (the
+     * only path to IDLE) is gated on playerMoved and never runs again, so the board
+     * stays non-IDLE forever (auto-play then waits on it indefinitely).
+     *
+     * Unlike checkFinishTurn this deliberately does NOT call onFinishTurn — that
+     * would re-fire END_TURN actions and make the crab move on every cascade.
+     */
+    checkPostTurnSettle: function () {
+        // Already idle, or in a terminal/bonus state we must not clobber.
+        if (this.state === CoreGame.BoardState.IDLE
+            || this.state === CoreGame.BoardState.END_GAME
+            || this.state === CoreGame.BoardState.REMAINING_MOVES_BONUS
+            || this.gameEnded) {
+            return;
+        }
+        // Only settle once everything has truly come to rest.
+        if (this.requiredMatching || this.requiredRefill) return;
+        if (CoreGame.TimedActionMgr.hasPendingActions()) return;
+        if (!this.areAllElementsIdle()) return;
+
+        this.state = CoreGame.BoardState.IDLE;
+    },
+
+    /**
      * Called when turn finishes (all animations complete, board is idle)
      * Override this or set as callback
      */
@@ -1985,6 +2049,8 @@ CoreGame.BoardMgr = cc.Class.extend({
         // Check if turn is finished (all element animations complete)
         if (this.playerMoved)
             this.checkFinishTurn();
+        else
+            this.checkPostTurnSettle();
 
         // Handle Idle Hint logic — re-cycles a fresh hint every `hintThreshold` seconds while idle.
         if (this.canInteract() && allIdle && !this.requiredRefill && !this.requiredMatching && !hasPendingActions) {

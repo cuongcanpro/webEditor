@@ -187,10 +187,16 @@ CoreGame.MatchMgr = cc.Class.extend({
         // deduplicate elements (e.g. TentacleBlocker) that span multiple cells:
         // one match group can trigger sideMatch on several of their cells, but
         // they should only take damage once per match group.
+        // One id per match group, shared by BOTH the sideMatch (nearby) and the
+        // on-cell (matchElement) dispatches below. TakeDamageAction uses it to
+        // dedup multi-cell blockers so a single match group costs 1 HP even when it
+        // spans several of their cells — needed for the on-cell path too (e.g. the
+        // hidden 2x2 cat takes damage via `match`, not `sideMatch`).
+        var matchActivationId = ++CoreGame.MatchMgr._matchActivationCounter;
         var nearbyContext = {
             matchColor: matchColor,
             group: group,
-            matchActivationId: ++CoreGame.MatchMgr._matchActivationCounter
+            matchActivationId: matchActivationId
         };
 
         // Notify nearby slots
@@ -215,14 +221,16 @@ CoreGame.MatchMgr = cc.Class.extend({
                         type: 'powerup',
                         targetPos: targetPos,
                         group: group,
-                        matchColor: matchColor
+                        matchColor: matchColor,
+                        matchActivationId: matchActivationId
                     };
                     cc.log("Element State when create PowerUp === " + element.state);
                 } else {
                     // Normal match - explode animation
                     matchContext = {
                         type: 'normal',
-                        matchColor: matchColor
+                        matchColor: matchColor,
+                        matchActivationId: matchActivationId
                     };
                 }
 

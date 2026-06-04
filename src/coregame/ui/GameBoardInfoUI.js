@@ -450,21 +450,16 @@ GameBoardInfoUI = BaseLayer.extend({
             }
         }
 
-        let baseMonster = 10000;
-
         this.nodeMonster.setVisible(false);
         for (let element of targetElements) {
-            if (element.id >= baseMonster) {
+            // Only REAL bosses (declared in animMonster) get the monster banner.
+            // A raw `id >= 10000` test wrongly captured factory blockers like the
+            // hidden cat (13001) — BlockerFactory marks those isMonster=false — which
+            // then hid the normal objective panel and tried to load non-existent boss
+            // art (imgMonsterName_<id>, lang_boss_intro_<id>_des, spine_<id>_main).
+            if (GameBoardInfoUI.hasBossBanner(element.id)) {
                 //Set Info
                 let config = GameBoardInfoUI.animMonster[element.id];
-                if (!config) {
-                    config = {
-                        name: "Dangerous\nBeast",
-                        scale: 1,
-                        offset: cc.p(0, 0),
-                        anim: "idle"
-                    }
-                }
 
                 this.nodeMonster.setVisible(true);
                 // Each loadTexture / lang lookup / spine load is wrapped
@@ -542,6 +537,11 @@ GameBoardInfoUI = BaseLayer.extend({
     },
 
     setInfoTarget: function (node, type, number) {
+        // Canonicalise state-swap bosses (cat 13001 -> 13000) so the objective
+        // shows the VISIBLE icon and node.type matches the id used by
+        // onUpdateTargetElement when the boss is killed in either state.
+        type = CoreGame.Config.getObjectiveType(type);
+
         this._applyTargetIcon(node, type);
 
         node.lbl = new NumberLabelClass(node.label, number);
@@ -1073,6 +1073,15 @@ GameBoardInfoUI = BaseLayer.extend({
 GameBoardInfoUI.JSON = "game/csd/GameBoardInfoUI.json";
 // GameBoardInfoUI.JSON = "zcsd/game/GameBoardInfoUI.json";
 GameBoardInfoUI.TARGET_SIZE = 90;
+// animMonster IS the boss-banner registry: only ids declared here have banner art
+// (monsterName image, boss-intro text, spine_<id>_main). A blocker being a "monster"
+// (id >= 10000) is NOT enough — factory blockers like the hidden cat (13000/13001),
+// crab, slime are also >= 10000 but have no banner art and must use the normal
+// objective panel. So gate the banner on registration, not on the id range.
+GameBoardInfoUI.hasBossBanner = function (id) {
+    return !!GameBoardInfoUI.animMonster[id];
+};
+
 GameBoardInfoUI.animMonster = {
     15000: {
         name: "Mischievous\nMonkeys",

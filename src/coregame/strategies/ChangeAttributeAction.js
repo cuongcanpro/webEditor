@@ -9,7 +9,8 @@ CoreGame.Strategies.ChangeAttributeAction = CoreGame.Strategies.NormalAction.ext
     configData: {
         fieldName: "",
         delta: 1,
-        defaultValue: 0
+        defaultValue: 0,
+        setValue: undefined // when set, assigns this value outright instead of += delta
     },
 
     ctor: function () {
@@ -24,6 +25,17 @@ CoreGame.Strategies.ChangeAttributeAction = CoreGame.Strategies.NormalAction.ext
     execute: function (element, context) {
         if (this.configData && this.configData.fieldName) {
             var fieldName = this.configData.fieldName;
+
+            // setValue: assign outright (e.g. reset a counter to 0). Used by the cat
+            // blocker to reset turnCount on every state swap so the 2-turn timer
+            // restarts — without this it only ever fires once (customData survives
+            // ReplaceSelfAction, so the += delta path can never hit the target again).
+            if (this.configData.setValue !== undefined) {
+                element.customData[fieldName] = this.configData.setValue;
+                cc.log("ChangeAttributeAction: Set element.customData." + fieldName + " = " + element.customData[fieldName]);
+                return;
+            }
+
             var delta = this.configData.delta || 0;
 
             if (element.customData[fieldName] === undefined) {

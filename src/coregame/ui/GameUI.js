@@ -201,6 +201,7 @@ CoreGame.GameUI = cc.Layer.extend({
      * Create Back button
      */
     createBackButton: function () {
+        var self = this;
         var backBtn = new ccui.Button("res/tool/res/btn_green_2.png", "res/tool/res/btn_green_2.png");
         backBtn.setTitleText("Back");
         backBtn.setTitleFontSize(24);
@@ -238,6 +239,212 @@ CoreGame.GameUI = cc.Layer.extend({
             }
         }, this);
         this.addChild(difficultyBtn, 999);
+
+        // Auto Play toggle — drives the board from the bot server's /suggest.
+        var autoBtn = new ccui.Button("res/tool/res/btn_green_2.png", "res/tool/res/btn_green_2.png");
+        autoBtn.setTitleText("AUTO: OFF");
+        autoBtn.setTitleFontSize(20);
+        autoBtn.setTitleColor(cc.color(255, 80, 80));
+        autoBtn.setScale9Enabled(true);
+        autoBtn.setContentSize(120, 44);
+        autoBtn.setPosition(90, cc.winSize.height - 105);
+        autoBtn.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) self._toggleServerAutoPlay();
+        });
+        this.addChild(autoBtn, 1000);
+        this._autoPlayBtn = autoBtn;
+    },
+
+    // ── Auto Play via bot server (/suggest) ──────────────────────────────────
+    // Hard-coded endpoint + key (internal tool). See tool/bot for the server.
+    _BOT_API_BASE: "https://m3-bot-api.zingplay.dev",
+    _BOT_API_KEY: "8f6abd5c2bfd06531d8b9ac360359646d21c26291e17a67d",
+
+    /** POST JSON to the bot server with the api key header; cb(ok, dataObj). */
+    _botApiPost: function (path, body, cb) {
+        var xhr = cc.loader.getXMLHttpRequest();
+        xhr.open("POST", this._BOT_API_BASE + path);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.setRequestHeader("x-api-key", this._BOT_API_KEY);
+        xhr.timeout = 30000;
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4) return;
+            var data = null;
+            try { data = JSON.parse(xhr.responseText); } catch (e) { data = null; }
+            cb(xhr.status >= 200 && xhr.status < 300, data, xhr.status);
+        };
+        xhr.ontimeout = function () { cb(false, { error: "timed out" }, 0); };
+        xhr.send(JSON.stringify(body));
+    },
+
+    _toggleServerAutoPlay: function () {
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        if (!bm) return;
+        if (this._autoPlaying) { this._stopAutoPlay("Auto Play: dừng"); return; }
+        if (!bm.targetElements || bm.targetElements.length === 0) {
+            Toast.makeToast(Toast.SHORT, "chưa có target nha");
+            return;
+        }
+        if (!bm.canInteract()) { Toast.makeToast(Toast.SHORT, "Ván đã kết thúc"); return; }
+        this._autoPlaying = true;
+        this._autoBusy = false;
+        this._autoStuck = 0;   // consecutive rejected/no-progress suggestions
+        if (this._autoPlayBtn) {
+            this._autoPlayBtn.setTitleText("AUTO: ON");
+            this._autoPlayBtn.setTitleColor(cc.color(80, 255, 80));
+        }
+        this._autoStep();
+    },
+
+    _stopAutoPlay: function (msg) {
+        this._autoPlaying = false;
+        this._autoBusy = false;
+        if (this._autoPlayBtn) {
+            this._autoPlayBtn.setTitleText("AUTO: OFF");
+            this._autoPlayBtn.setTitleColor(cc.color(255, 80, 80));
+        }
+        if (msg) Toast.makeToast(Toast.SHORT, msg);
+    },
+
+    /** True when every target has been cleared (current <= 0). */
+    _allTargetsCleared: function (bm) {
+        if (!bm.targetElements || bm.targetElements.length === 0) return false;
+        for (var i = 0; i < bm.targetElements.length; i++) {
+            if (bm.targetElements[i].current > 0) return false;
+        }
+        return true;
+    },
+
+    /**
+     * True when the board has FULLY settled and can safely accept the next auto
+     * move. `state === IDLE` alone is not enough: an end-of-turn monster move
+     * (e.g. the colored crab) runs inside onFinishTurn AFTER state was reset to
+     * IDLE — it only flags requiredRefill/requiredMatching and starts a visual
+     * move, so for a frame the board reads IDLE while the crab is still mid-step.
+     */
+    _boardSettled: function (bm) {
+        return bm.state === CoreGame.BoardState.IDLE
+            && !bm.requiredRefill
+            && !bm.requiredMatching
+            && !CoreGame.TimedActionMgr.hasPendingActions()
+            && bm.areAllElementsIdle();
+    },
+
+    _finishAutoPlay: function (bm) {
+        var won = this._allTargetsCleared(bm);
+        this._stopAutoPlay(null);
+        Toast.makeToast(Toast.LONG, won ? "Done! Thắng 🎉" : "Done! Hết lượt");
+    },
+
+    /** One auto-play tick: wait for idle, ask /suggest, apply the move, repeat. */
+    _autoStep: function () {
+        var self = this;
+        if (!this._autoPlaying) return;
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        if (!bm) { this._stopAutoPlay(); return; }
+
+        // Win reached → stop. Game ended (out of moves) → stop.
+        if (this._allTargetsCleared(bm)) { this._finishAutoPlay(bm); return; }
+        if (!bm.canInteract() || bm.gameEnded) { this._finishAutoPlay(bm); return; }
+
+        // Not settled yet, or a request is in flight → poll again shortly. The
+        // colored crab (and other end-of-turn movers) leaves the board reading
+        // IDLE for a frame while it's still mid-step with a refill pending; firing
+        // a swap then gets eaten by the in-flux board and trips the stuck detector.
+        // Require the board to be FULLY settled before issuing the next move.
+        if (this._autoBusy || !this._boardSettled(bm)) {
+            this.scheduleOnce(function () { self._autoStep(); }, 0.2);
+            return;
+        }
+
+        this._autoBusy = true;
+        var level = this._serializeBoardForSim(bm);
+        // Random seed each call so a rejected suggestion isn't repeated verbatim
+        // (the server's tie-break is seeded) — gives the bot a different pick and
+        // breaks any spin on a move the live board won't accept.
+        var seed = Math.floor(Math.random() * 1000000000);
+        this._botApiPost("/suggest", { level: level, depth: 2, seed: seed }, function (ok, data) {
+            if (!self._autoPlaying) { self._autoBusy = false; return; }
+            if (!ok || !data) { self._stopAutoPlay("Auto Play lỗi: server không phản hồi"); return; }
+            if (!data.move) { self._stopAutoPlay("Hết nước đi"); return; }
+
+            var from = data.move.from, to = data.move.to;
+            var slot1 = bm.mapGrid[from[0]] && bm.mapGrid[from[0]][from[1]];
+            var slot2 = bm.mapGrid[to[0]] && bm.mapGrid[to[0]][to[1]];
+            if (!slot1 || !slot2) { self._stopAutoPlay("Nước đi không hợp lệ"); return; }
+
+            // A swap only consumes a move when it produced a match. If numMove
+            // didn't drop, the suggestion was rejected by the live board — count
+            // it and bail out after a few so we never spin on a bad move.
+            var prevMoves = bm.numMove;
+            bm.trySwapSlots(slot1, slot2);
+            self._autoBusy = false;
+            if (bm.numMove < prevMoves) {
+                self._autoStuck = 0;
+            } else {
+                self._autoStuck = (self._autoStuck || 0) + 1;
+                if (self._autoStuck >= 6) {
+                    self._stopAutoPlay("Auto Play kẹt: server đề xuất nước bàn không nhận (" + self._autoStuck + " lần)");
+                    return;
+                }
+            }
+            // Let the swap + cascade animate, then loop (next tick waits for IDLE).
+            self.scheduleOnce(function () { self._autoStep(); }, 0.6);
+        });
+    },
+
+    /**
+     * Serialize the live board into the bot server's level format. Mirrors the
+     * editor's BoardEditUI.getMapConfig but reads the playing BoardMgr and adds
+     * the remaining moves / targets so /suggest reasons about the current state.
+     */
+    _serializeBoardForSim: function (bm) {
+        var config = { slotMap: [], elements: [] };
+        var r, c;
+        for (r = 0; r < bm.rows; r++) {
+            config.slotMap[r] = [];
+            for (c = 0; c < bm.cols; c++) {
+                var slot = bm.mapGrid[r][c];
+                config.slotMap[r][c] = (!slot || !slot.enable) ? 0 : (slot.canSpawn ? 2 : 1);
+            }
+        }
+        var processed = [];
+        for (r = 0; r < bm.rows; r++) {
+            for (c = 0; c < bm.cols; c++) {
+                var s = bm.mapGrid[r][c];
+                if (!s) continue;
+                for (var i = 0; i < s.listElement.length; i++) {
+                    var el = s.listElement[i];
+                    if (processed.indexOf(el) !== -1) continue;
+                    processed.push(el);
+                    var ed = { row: el.position.x, col: el.position.y, type: el.type, hp: el.hitPoints || 1 };
+                    if (el instanceof CoreGame.DynamicBlocker && el.cells) {
+                        ed.cells = el.cells.map(function (cell) { return { r: cell.r, c: cell.c }; });
+                    }
+                    config.elements.push(ed);
+                    if (el.attachments && el.attachments.length > 0) {
+                        for (var j = 0; j < el.attachments.length; j++) {
+                            var at = el.attachments[j];
+                            if (processed.indexOf(at) !== -1) continue;
+                            processed.push(at);
+                            config.elements.push({ row: at.position.x, col: at.position.y, type: at.type, hp: at.hitPoints || 1 });
+                        }
+                    }
+                }
+            }
+        }
+        config.numMove = bm.numMove;
+        config.gemTypes = (bm.gemTypes && bm.gemTypes.length) ? bm.gemTypes.slice() : [1, 2, 3, 4, 5, 6];
+        config.spawnStrategy = (bm.mapConfig && bm.mapConfig.spawnStrategy) || "RandomSpawnStrategy";
+        var tgts = [];
+        if (bm.targetElements) {
+            for (var t = 0; t < bm.targetElements.length; t++) {
+                var te = bm.targetElements[t];
+                if (te.current > 0) tgts.push({ id: te.id, count: te.current });
+            }
+        }
+        config.targetElements = tgts;
+        return config;
     },
 
     _createAIButton: function () {
@@ -748,7 +955,10 @@ CoreGame.GameUI = cc.Layer.extend({
      */
     onUpdateTargetElement: function (element) {
         //cc.log("removedElement", element.type);
-        element.updateTarget(this.gameBoardInfoUI.getNodeTarget(element.type));
+        // Use the canonical objective id so a HIDDEN-state kill (cat 13001)
+        // still finds + updates its VISIBLE objective node (13000).
+        var objType = CoreGame.Config.getObjectiveType(element.type);
+        element.updateTarget(this.gameBoardInfoUI.getNodeTarget(objType));
     },
 
     /**

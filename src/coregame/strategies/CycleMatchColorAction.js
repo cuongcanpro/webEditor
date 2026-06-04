@@ -20,7 +20,11 @@ CoreGame.Strategies.CycleMatchColorAction = CoreGame.Strategies.NormalAction.ext
     configData: {
         // Pool of gem color ids to rotate through. Default {1,2,3,4} per the
         // King Crab spec (initial colorId ∈ {1,2,3,4}).
-        colors: [1, 2, 3, 4]
+        colors: [1, 2, 3, 4],
+        // sequential=true rotates the pool in order (1→2→3→4→1) so the player
+        // can learn the boss cadence (Slime Chúa L110). false = random-next
+        // (King Crab feel).
+        sequential: false
     },
 
     ctor: function () {
@@ -40,7 +44,10 @@ CoreGame.Strategies.CycleMatchColorAction = CoreGame.Strategies.NormalAction.ext
         if (!element || !element.boardMgr) return;
 
         var boardMgr = element.boardMgr;
-        var pool = (this.configData && this.configData.colors) || [];
+        // Cycle through the LEVEL's gem palette (boardMgr.gemTypes), not a hardcoded
+        // set, so the boss never demands a colour the board can't produce. config
+        // `colors` is only a fallback when the palette isn't available.
+        var pool = this._levelPool(element);
         if (!Array.isArray(pool) || pool.length === 0) return;
 
         // Current required color: prefer the live per-instance value, else fall
@@ -53,6 +60,11 @@ CoreGame.Strategies.CycleMatchColorAction = CoreGame.Strategies.NormalAction.ext
         var next = current;
         if (pool.length === 1) {
             next = pool[0];
+        } else if (this.configData && this.configData.sequential) {
+            // Step to the next color in pool order, wrapping around. If current
+            // isn't in the pool (first rotation off the asset tint), start at index 0.
+            var idx = pool.indexOf(current);
+            next = pool[(idx + 1) % pool.length];
         } else {
             // Draw from the pool excluding the current color so we always rotate.
             var candidates = [];
@@ -72,6 +84,28 @@ CoreGame.Strategies.CycleMatchColorAction = CoreGame.Strategies.NormalAction.ext
         }
 
         cc.log("CycleMatchColorAction: color " + current + " -> " + next);
+    },
+
+    /**
+     * The colour pool to rotate through = the level's gem palette
+     * (boardMgr.gemTypes, clamped to gem ids 1..6, sorted ascending). Falls back to
+     * the authored config `colors` (then {1,2,3,4}) only when no palette is known
+     * (e.g. editor / sim with no board).
+     * @private
+     */
+    _levelPool: function (element) {
+        var bm = element && element.boardMgr;
+        var gt = bm && bm.gemTypes;
+        var pool = [];
+        if (Array.isArray(gt)) {
+            for (var i = 0; i < gt.length; i++) {
+                var t = gt[i];
+                if (t >= 1 && t <= 6 && pool.indexOf(t) < 0) pool.push(t);
+            }
+        }
+        if (pool.length > 0) { pool.sort(function (a, b) { return a - b; }); return pool; }
+        var cfg = this.configData && this.configData.colors;
+        return (Array.isArray(cfg) && cfg.length > 0) ? cfg.slice() : [1, 2, 3, 4];
     },
 
     /**

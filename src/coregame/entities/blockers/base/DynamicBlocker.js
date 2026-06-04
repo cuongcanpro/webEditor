@@ -156,6 +156,11 @@ CoreGame.DynamicBlocker = CoreGame.Blocker.extend({
                     }
                     cc.log("DynamicBlocker takeDamage === remove cell");
                     this.cells.splice(i, 1);
+                    // Bookkeeping for RegenCellAction (Slime Ác/Chúa): remember the
+                    // cell just lost so regen prefers refilling next to it, and flag
+                    // that a loss happened this turn for requireLossThisTurn gating.
+                    this._lastLostCell = { r: row, c: col };
+                    this._lostThisTurn = true;
                     break;
                 }
             }
@@ -173,8 +178,11 @@ CoreGame.DynamicBlocker = CoreGame.Blocker.extend({
             boardUI.refreshBorders();
     },
 
+    // No-op by design: a DynamicBlocker's UI draws each cell at its own absolute
+    // gridToPixel position (CloudUI / TentacleUI / SlimeUI keep the UI node at the
+    // board origin and position per-cell children themselves). Centroid-positioning
+    // the node here would double-offset every cell.
     updateVisualPosition: function () {
-
     },
 
     updateVisual: function () {

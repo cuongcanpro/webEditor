@@ -161,6 +161,11 @@ var EditMapSceneNew = cc.Layer.extend({
         this._applyResolution(true);
         this._refreshBoardVisuals();
         this._setupKeyboardShortcuts();
+
+        // Auto-save the editor state to localStorage every 2s (de-duped),
+        // so there's no need to press Save — the map restores on next entry.
+        this.unschedule(this._autoSave);
+        this.schedule(this._autoSave, 2.0);
     },
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -272,9 +277,12 @@ var EditMapSceneNew = cc.Layer.extend({
             self.setupElementSelector();
             self.setupLevelSelector();
 
-            // Default starting layout: 4 gem colors (1-4) + top row marked
-            // as spawn source (seeds drop from there).
-            self._applyDefaultLevelLayout();
+            // Restore the last edited map from localStorage if present;
+            // otherwise fall back to the default starting layout
+            // (4 gem colors 1-4 + top row marked as spawn source).
+            if (!self._loadFromLocalStorage()) {
+                self._applyDefaultLevelLayout();
+            }
         });
     },
 
@@ -461,6 +469,7 @@ var EditMapSceneNew = cc.Layer.extend({
                         self.boardUI.removeAllElements();
                         self._targetEntries = [];
                         if (self.targetListUI) self.targetListUI.setEntries([]);
+                        self._lastObjMapCounts = null;
                         if (self._tfSaveName) {
                             cc.log("Clearing save name field");
                             self._tfSaveName.setString("");
@@ -723,7 +732,7 @@ var EditMapSceneNew = cc.Layer.extend({
         this._buildDifficultySection(pDiff);
 
         // ── 6. SAVE LEVEL ─────────────────────────────────────────────────
-        var saveH = 76;
+        var saveH = 116;   // tall enough for Save + Simulation buttons
         curY -= saveH;
         var pSave = this._makeRightPanel(W, saveH, curY, cc.color(25, 32, 58));
         this.pRight.addChild(pSave);
@@ -1049,7 +1058,7 @@ var EditMapSceneNew = cc.Layer.extend({
         lbJson.setPosition(5 + tfW + 3, y1);
         panel.addChild(lbJson, 1);
 
-        // Save button
+        // Save button (raised to leave room for the Simulation button below it)
         var btnSave = new ccui.Button("res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png");
         btnSave.setScale9Enabled(true);
         btnSave.setContentSize(W - 12, BTN_H);
@@ -1058,11 +1067,161 @@ var EditMapSceneNew = cc.Layer.extend({
         btnSave.setTitleFontName("font/BalooPaaji2-Regular.ttf");
         // btnSave.setColor(cc.color(40, 100, 210));
         btnSave.setAnchorPoint(cc.p(0, 0.5));
-        btnSave.setPosition(6, BTN_H / 2 + 3);
+        btnSave.setPosition(6, BTN_H + 12 + BTN_H / 2);
         btnSave.addTouchEventListener(function (sender, type) {
             if (type === ccui.Widget.TOUCH_ENDED) self.saveMap();
         });
         panel.addChild(btnSave, 1);
+
+        // Simulation x200 button — runs the current level on the headless bot
+        // server (200 games, depth-2 heuristic) and shows the returned stats.
+        var btnSim = new ccui.Button("res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png");
+        btnSim.setScale9Enabled(true);
+        btnSim.setContentSize(W - 12, BTN_H);
+        btnSim.setTitleText("Simulation x200");
+        btnSim.setTitleFontSize(13);
+        btnSim.setTitleFontName("font/BalooPaaji2-Regular.ttf");
+        btnSim.setColor(cc.color(80, 140, 230));
+        btnSim.setAnchorPoint(cc.p(0, 0.5));
+        btnSim.setPosition(6, BTN_H / 2 + 3);
+        btnSim.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) self.runSimulationX200(btnSim);
+        });
+        panel.addChild(btnSim, 1);
+    },
+
+    // ── Bot server (headless match-3 sim) ────────────────────────────────────
+    // Hard-coded endpoint + key (internal tool). See tool/bot for the server.
+    _BOT_API_BASE: "https://m3-bot-api.zingplay.dev",
+    _BOT_API_KEY: "8f6abd5c2bfd06531d8b9ac360359646d21c26291e17a67d",
+
+    /** POST JSON to the bot server with the api key header; cb(ok, dataObj). */
+    _botApiPost: function (path, body, cb) {
+        var xhr = cc.loader.getXMLHttpRequest();
+        xhr.open("POST", this._BOT_API_BASE + path);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.setRequestHeader("x-api-key", this._BOT_API_KEY);
+        xhr.timeout = 90000;
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4) return;
+            var data = null;
+            try { data = JSON.parse(xhr.responseText); } catch (e) { data = null; }
+            cb(xhr.status >= 200 && xhr.status < 300, data, xhr.status);
+        };
+        xhr.ontimeout = function () { cb(false, { error: "request timed out" }, 0); };
+        xhr.send(JSON.stringify(body));
+    },
+
+    /** Simulation x200: send current level to the bot server, show stats popup. */
+    runSimulationX200: function (btn) {
+        var self = this;
+        var mapData = this._buildMapData();
+        if (!mapData.targetElements || mapData.targetElements.length === 0) {
+            Toast.makeToast(Toast.SHORT, "chưa có target nha");
+            return;
+        }
+
+        if (btn) { btn.setTitleText("Simulating..."); btn.setEnabled(false); }
+        this._botApiPost("/simulate", {
+            level: mapData,
+            seeds: 200,
+            bot: "heuristic",
+            depth: 1   // 1-ply lookahead: good win-rate proxy, ~4x faster than depth 2
+        }, function (ok, data) {
+            if (btn) { btn.setTitleText("Simulation x200"); btn.setEnabled(true); }
+            if (!ok || !data) {
+                var msg = (data && data.error) ? data.error : "server không phản hồi";
+                Toast.makeToast(Toast.LONG, "Sim lỗi: " + msg);
+                return;
+            }
+            self._showSimResult(data);
+        });
+    },
+
+    /** Format the /simulate response and show it in a self-built popup overlay. */
+    _showSimResult: function (d) {
+        function pct(x) { return (x * 100).toFixed(1) + "%"; }
+        function num(x) { return (Math.round(x * 100) / 100).toString(); }
+        var lines = [
+            "SIMULATION x" + d.runs + "   (bot " + d.bot + ", depth " + d.depth + ")",
+            "spawn: " + d.spawnStrategy,
+            "",
+            "Win rate:         " + pct(d.winRate),
+            "Moves avg/median: " + num(d.avgMoves) + " / " + num(d.medianMoves),
+            "Moves min/max:    " + d.minMoves + " / " + d.maxMoves,
+            "PU matched / ván: " + num(d.avgPuMatched),
+            "Ô clear / ván:    " + num(d.avgCellsCleared),
+            "Cascade sâu nhất: " + num(d.avgCascadeMax),
+        ];
+        var fails = d.failBreakdown || {};
+        var failKeys = Object.keys(fails);
+        if (failKeys.length > 0) {
+            lines.push("");
+            lines.push("Thua bởi:");
+            for (var i = 0; i < failKeys.length; i++) {
+                lines.push("  " + failKeys[i] + ": " + fails[failKeys[i]]);
+            }
+        }
+        cc.log("[Simulation] " + JSON.stringify(d));
+        this._showInfoPopup("SIMULATION RESULT", lines.join("\n"));
+    },
+
+    /** Lightweight modal popup (dark overlay + panel + Close), added to the scene. */
+    _showInfoPopup: function (title, body) {
+        var self = this;
+        if (this._infoPopup) { this._infoPopup.removeFromParent(); this._infoPopup = null; }
+
+        var W = cc.winSize.width, H = cc.winSize.height;
+        var PW = Math.min(520, W - 40), PH = Math.min(420, H - 40);
+
+        // Dark full-screen overlay that swallows clicks behind it.
+        var overlay = new ccui.Layout();
+        overlay.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        overlay.setBackGroundColor(cc.color(0, 0, 0));
+        overlay.setBackGroundColorOpacity(170);
+        overlay.setContentSize(W, H);
+        overlay.setTouchEnabled(true);   // absorb touches so the board behind ignores them
+        overlay.setPosition(0, 0);
+        this.addChild(overlay, 20000);
+        this._infoPopup = overlay;
+
+        // Panel
+        var panel = new ccui.Layout();
+        panel.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        panel.setBackGroundColor(cc.color(28, 34, 60));
+        panel.setContentSize(PW, PH);
+        panel.setAnchorPoint(cc.p(0.5, 0.5));
+        panel.setPosition(W / 2, H / 2);
+        overlay.addChild(panel, 1);
+
+        var lbTitle = new ccui.Text(title, "font/BalooPaaji2-Regular.ttf", 18);
+        lbTitle.setColor(cc.color(120, 200, 255));
+        lbTitle.setAnchorPoint(cc.p(0.5, 1));
+        lbTitle.setPosition(PW / 2, PH - 12);
+        panel.addChild(lbTitle, 1);
+
+        var lbBody = new ccui.Text(body, "font/BalooPaaji2-Regular.ttf", 15);
+        lbBody.setColor(cc.color(225, 228, 240));
+        lbBody.ignoreContentAdaptWithSize(false);          // honour the fixed area below
+        lbBody.setTextAreaSize(cc.size(PW - 40, PH - 90));
+        lbBody.setTextHorizontalAlignment(cc.TEXT_ALIGNMENT_LEFT);
+        lbBody.setAnchorPoint(cc.p(0, 1));
+        lbBody.setPosition(20, PH - 44);
+        panel.addChild(lbBody, 1);
+
+        var btnClose = new ccui.Button("res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png", "res/tool/res/btnGreen.png");
+        btnClose.setScale9Enabled(true);
+        btnClose.setContentSize(120, 30);
+        btnClose.setTitleText("Close");
+        btnClose.setTitleFontSize(14);
+        btnClose.setTitleFontName("font/BalooPaaji2-Regular.ttf");
+        btnClose.setPosition(PW / 2, 22);
+        btnClose.addTouchEventListener(function (sender, type) {
+            if (type === ccui.Widget.TOUCH_ENDED) {
+                if (self._infoPopup) { self._infoPopup.removeFromParent(); self._infoPopup = null; }
+            }
+        });
+        panel.addChild(btnClose, 2);
     },
 
     // pBottom removed — all sections now live in pRight (see setupRightPanel)
@@ -1651,7 +1810,7 @@ var EditMapSceneNew = cc.Layer.extend({
         var self = this;
         this._closeCellContextMenu();
 
-        var ITEM_W = 120;
+        var ITEM_W = 150;
         var ITEM_H = 30;
 
         // Menu adapts to the cell's state: hide actions that don't apply and label
@@ -1665,6 +1824,7 @@ var EditMapSceneNew = cc.Layer.extend({
         var items = [];
         if (hasBlock) {
             items.push({ label: "Xóa block", action: "delete", color: cc.color(200, 70, 70) });
+            items.push({ label: "Add to Objective", action: "addToObjective", color: cc.color(120, 180, 90) });
         }
         items.push({ label: hasSlot ? "Xóa Slot" : "Thêm Slot", action: "slot", color: cc.color(70, 150, 220) });
         if (hasSlot) {
@@ -1814,6 +1974,19 @@ var EditMapSceneNew = cc.Layer.extend({
         // không snapshot ở đây.
         if (action === "updateHP") {
             this._openHPEditor(row, col);
+            return;
+        }
+
+        // Add the clicked block to the Objective list (does not change the board).
+        if (action === "addToObjective") {
+            if (this.targetListUI) {
+                var objType = this._topObjectiveTypeAt(row, col);
+                if (objType !== null && objType !== undefined) {
+                    // Default the target count to how many of this block are on the map.
+                    var cnt = this._countTypeOnMap(objType);
+                    this.targetListUI.addTarget(objType, cnt > 0 ? cnt : 1);
+                }
+            }
             return;
         }
 
@@ -2073,17 +2246,124 @@ var EditMapSceneNew = cc.Layer.extend({
             var density = active > 0 ? (totalHP / active).toFixed(1) : "0";
             this._lblDensity.setString(totalHP + " (" + density + "/cell)");
         }
+
+        // Keep the Objective list consistent with the board after every edit.
+        this._syncObjectivesToMap();
+    },
+
+    /**
+     * Reconcile the Objective list against the live board. Entries are NEVER
+     * removed here (so nothing is silently dropped / lost from localStorage) —
+     * targets whose block isn't on the map are caught by the Play warning
+     * (_validatePlayObjectives) instead. The only thing synced is the COUNT of a
+     * blocker/boss that is present on the map, so the target tracks the number of
+     * blocks as they're added/removed.
+     *
+     * To avoid clobbering a designer's manually-typed target, a blocker count is
+     * only overwritten when the map quantity for that type actually changed since
+     * the previous sync (tracked in `_lastObjMapCounts`).
+     */
+    _syncObjectivesToMap: function () {
+        if (!this.targetListUI || !this.boardUI || !this.boardUI.boardMgr) return;
+        var bm = this.boardUI.boardMgr;
+
+        // Count unique elements per objective-canonical type currently on the map.
+        var countMap = {};
+        var seen = [];
+        for (var r = 0; r < bm.rows; r++) {
+            for (var c = 0; c < bm.cols; c++) {
+                var slot = bm.mapGrid[r] && bm.mapGrid[r][c];
+                if (!slot || !slot.enable || !slot.listElement) continue;
+                for (var i = 0; i < slot.listElement.length; i++) {
+                    var el = slot.listElement[i];
+                    if (!el) continue;
+                    if (seen.indexOf(el) !== -1) continue; // multi-cell element counted once
+                    seen.push(el);
+                    var ot = CoreGame.Config.getObjectiveType(el.type);
+                    countMap[ot] = (countMap[ot] || 0) + 1;
+                }
+            }
+        }
+
+        var prev = this._lastObjMapCounts || {};
+        var self = this;
+
+        this.targetListUI.applySync(function (e) {
+            var id = e.id;
+            if (id >= 1 && id <= 6) return true;      // gem color — kept (Play warns if off)
+            if (self._isPowerUpType(id)) return true; // runtime-created, not on the map
+            var ot = CoreGame.Config.getObjectiveType(id);
+            var now = countMap[ot] || 0;
+            if (now <= 0) return true;                // not on map — kept (Play warns)
+            var was = prev[ot];
+            // Only override the count when the map quantity actually changed,
+            // preserving a hand-edited target across unrelated board edits.
+            if (was !== undefined && was !== now) return now;
+            return true;
+        });
+
+        this._lastObjMapCounts = countMap;
+    },
+
+    /** True if `id` is a power-up type (produced at runtime, never placed on the map). */
+    _isPowerUpType: function (id) {
+        var T = CoreGame.PowerUPType;
+        if (!T) return false;
+        for (var k in T) {
+            if (T.hasOwnProperty(k) && T[k] === id) return true;
+        }
+        return false;
+    },
+
+    /** Number of (unique) elements of `type` currently on the map (objective-normalised). */
+    _countTypeOnMap: function (type) {
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        if (!bm) return 0;
+        var want = CoreGame.Config.getObjectiveType(type);
+        var n = 0;
+        var seen = [];
+        for (var r = 0; r < bm.rows; r++) {
+            for (var c = 0; c < bm.cols; c++) {
+                var slot = bm.mapGrid[r] && bm.mapGrid[r][c];
+                if (!slot || !slot.enable || !slot.listElement) continue;
+                for (var i = 0; i < slot.listElement.length; i++) {
+                    var el = slot.listElement[i];
+                    if (!el || seen.indexOf(el) !== -1) continue;
+                    seen.push(el);
+                    if (CoreGame.Config.getObjectiveType(el.type) === want) n++;
+                }
+            }
+        }
+        return n;
+    },
+
+    /**
+     * Pick the most relevant element type to turn into an objective at (row,col):
+     * prefer a blocker/boss (type > 7) on top, else fall back to the top element
+     * (e.g. a plain gem). Returns the objective-canonical type, or null if empty.
+     */
+    _topObjectiveTypeAt: function (row, col) {
+        var bm = this.boardUI && this.boardUI.boardMgr;
+        var slot = bm && bm.mapGrid[row] && bm.mapGrid[row][col];
+        if (!slot || !slot.listElement || slot.listElement.length === 0) return null;
+        var chosen = null;
+        for (var i = slot.listElement.length - 1; i >= 0; i--) {
+            var el = slot.listElement[i];
+            if (el && el.type > 7) { chosen = el; break; }
+        }
+        if (!chosen) chosen = slot.listElement[slot.listElement.length - 1];
+        return chosen ? CoreGame.Config.getObjectiveType(chosen.type) : null;
     },
 
     // ─────────────────────────────────────────────────────────────────────────
     // Save / Load / Test
     // ─────────────────────────────────────────────────────────────────────────
-    saveMap: function () {
-        var mapName = this._tfSaveName ? this._tfSaveName.getString().trim() : "";
-        if (!mapName || mapName === "level_xxx") {
-            mapName = "map_" + Date.now();
-        }
-
+    /**
+     * Build the full map data object from the current editor state.
+     * Same structure produced by saveMap / consumed by _applyMapContent,
+     * so it can be reused for JSON export and localStorage persistence.
+     */
+    _buildMapData: function () {
         var mapData = this.boardUI.getMapConfig();
 
         var moves = parseInt(this.tfMoves ? this.tfMoves.getString() : "30") || 30;
@@ -2095,9 +2375,23 @@ var EditMapSceneNew = cc.Layer.extend({
         mapData.spawnStrategy = this._spawnStrategyKey || "";
         mapData.gemTypes = this._getActiveGemTypes();
 
+        return mapData;
+    },
+
+    saveMap: function () {
+        var mapName = this._tfSaveName ? this._tfSaveName.getString().trim() : "";
+        if (!mapName || mapName === "level_xxx") {
+            mapName = "map_" + Date.now();
+        }
+
+        var mapData = this._buildMapData();
+
         var jsonStr = JSON.stringify(mapData, null, 4);
         var filePath = "res/maps/" + mapName + ".json";
         cc.log("SAVE_MAP_DATA: " + filePath + "\n" + jsonStr);
+
+        // Persist to localStorage so the editor restores this map on next entry.
+        this._saveToLocalStorage(mapName, jsonStr);
 
         if (!cc.sys.isNative) {
             // Web: Trigger file download
@@ -2120,6 +2414,64 @@ var EditMapSceneNew = cc.Layer.extend({
             } else {
                 cc.log("ERROR: Failed to save -> " + filePath);
             }
+        }
+    },
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // localStorage persistence — auto-restore the last edited map on entry.
+    // Stores the exact same JSON as the save/load-file flow.
+    // ─────────────────────────────────────────────────────────────────────────
+    LS_MAP_KEY: "edit_map_last_data",
+    LS_NAME_KEY: "edit_map_last_name",
+
+    _saveToLocalStorage: function (mapName, jsonStr) {
+        try {
+            StorageUtil.setString(this.LS_MAP_KEY, jsonStr);
+            StorageUtil.setString(this.LS_NAME_KEY, mapName || "");
+            cc.log("localStorage: saved current map -> " + mapName);
+        } catch (e) {
+            cc.log("localStorage: save failed -> " + e);
+        }
+    },
+
+    /**
+     * Auto-save the full editor state to localStorage. Runs on a timer
+     * (scheduled in onEnter); de-duped against the last saved snapshot so
+     * idle ticks don't write. Covers both the board and side config
+     * (moves, targets, difficulty, tpp, spawn strategy, gem colors).
+     */
+    _autoSave: function () {
+        if (!this.boardUI || !this.boardUI.boardMgr) return;
+        try {
+            var jsonStr = JSON.stringify(this._buildMapData());
+            if (jsonStr === this._lastAutoSaved) return; // nothing changed since last tick
+            this._lastAutoSaved = jsonStr;
+
+            var mapName = this._tfSaveName ? this._tfSaveName.getString().trim() : "";
+            if (!mapName || mapName === "level_xxx") mapName = "level_xxx";
+            this._saveToLocalStorage(mapName, jsonStr);
+        } catch (e) {
+            cc.log("autoSave error: " + e);
+        }
+    },
+
+    /**
+     * Restore the last edited map from localStorage.
+     * @return {boolean} true if a map was found and applied.
+     */
+    _loadFromLocalStorage: function () {
+        try {
+            var jsonStr = StorageUtil.getString(this.LS_MAP_KEY, "");
+            if (!jsonStr) return false;
+            var data = JSON.parse(jsonStr);
+            if (!data || !data.slotMap) return false;
+            var mapName = StorageUtil.getString(this.LS_NAME_KEY, "") || "level_xxx";
+            this._applyMapContent(data, mapName);
+            cc.log("localStorage: restored map -> " + mapName);
+            return true;
+        } catch (e) {
+            cc.log("localStorage: load failed -> " + e);
+            return false;
         }
     },
 
@@ -2197,7 +2549,11 @@ var EditMapSceneNew = cc.Layer.extend({
     _loadFromGist: function () {
         var self = this;
         self._fetchIndexGist(function (index) {
-            if (!index || Object.keys(index).length === 0) {
+            if (index === null) {
+                window.alert("Không tải được Index Gist (lỗi mạng/HTTP). Xem log để biết chi tiết.");
+                return;
+            }
+            if (Object.keys(index).length === 0) {
                 cc.log("Gist index: no maps found");
                 window.alert("Index Gist trống — chưa có map nào được upload.");
                 return;
@@ -2216,13 +2572,19 @@ var EditMapSceneNew = cc.Layer.extend({
      * Fetch nội dung Index Gist (map_index.json) → callback({ mapName: gistId, ... }).
      */
     _fetchIndexGist: function (callback) {
-        var token = this.TOKEN;
         var indexId = this._GIST_INDEX_ID;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "https://api.github.com/gists/" + indexId);
-        xhr.setRequestHeader("Authorization", "token " + token);
+        // Public gist → read anonymously. Sending an expired/revoked token makes
+        // GitHub answer 401 even for public resources, so we deliberately omit
+        // the Authorization header here.
         xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
         xhr.onload = function () {
+            if (xhr.status < 200 || xhr.status >= 300) {
+                cc.log("Gist: index fetch failed (HTTP " + xhr.status + "): " + xhr.responseText);
+                callback(null);
+                return;
+            }
             var res;
             try { res = JSON.parse(xhr.responseText || "{}"); } catch (e) { res = {}; }
             if (res.files && res.files["map_index.json"]) {
@@ -2261,9 +2623,13 @@ var EditMapSceneNew = cc.Layer.extend({
         var self = this;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "https://api.github.com/gists/" + gistId);
-        xhr.setRequestHeader("Authorization", "token " + self.TOKEN);
+        // Public gist → read anonymously (avoid 401 from an expired token).
         xhr.setRequestHeader("Accept", "application/vnd.github.v3+json");
         xhr.onload = function () {
+            if (xhr.status < 200 || xhr.status >= 300) {
+                cc.log("Gist map: fetch failed (HTTP " + xhr.status + "): " + xhr.responseText);
+                return;
+            }
             var res;
             try { res = JSON.parse(xhr.responseText || "{}"); } catch (e) { res = {}; }
             if (!res.files) { cc.log("Gist map: not found — " + gistId); return; }
@@ -2353,6 +2719,9 @@ var EditMapSceneNew = cc.Layer.extend({
             this.tfMoves.setString("" + data.numMove);
         }
         if (this.targetListUI) this.targetListUI.setEntries(data.targetElements || []);
+        // Loaded targets are authoritative — seed the sync so the first reconcile
+        // doesn't clobber their authored counts.
+        this._lastObjMapCounts = null;
 
         this._mapDifficulty = data.difficulty || "Easy";
         if (this._btnDifficulty) this._btnDifficulty.setTitleText(this._mapDifficulty);
@@ -2406,6 +2775,128 @@ var EditMapSceneNew = cc.Layer.extend({
     },
 
     testMap: function () {
+        // Block Play when the Objective references blocks that aren't on the map.
+        // Power-ups are exempt (they're produced at runtime); gem colors are checked
+        // against the active palette rather than the board.
+        var problems = this._validatePlayObjectives();
+        if (problems.length > 0) {
+            var self = this;
+            this._showObjectiveWarning(problems, function () { self._runTestMap(); });
+            return;
+        }
+        this._runTestMap();
+    },
+
+    /**
+     * Return the list of Objective entries that cannot be satisfied by the current
+     * map: { id, reason } where reason is "color" (gem color turned off) or
+     * "block" (blocker/boss absent from the board). Power-ups are never flagged.
+     */
+    _validatePlayObjectives: function () {
+        var problems = [];
+        if (!this.targetListUI) return problems;
+        var entries = this.targetListUI.getEntries();
+
+        var activeGems = {};
+        if (this._gemColorActive) {
+            for (var i = 0; i < this._gemColorActive.length; i++) {
+                if (this._gemColorActive[i]) activeGems[i + 1] = true;
+            }
+        }
+        for (var k = 0; k < entries.length; k++) {
+            var id = entries[k].id;
+            if (id >= 1 && id <= 6) {
+                if (!activeGems[id]) problems.push({ id: id, reason: "color" });
+            } else if (this._isPowerUpType(id)) {
+                // creatable at runtime — always valid
+            } else if (this._countTypeOnMap(id) <= 0) {
+                problems.push({ id: id, reason: "block" });
+            }
+        }
+        return problems;
+    },
+
+    /** Modal warning listing unsatisfiable objectives; `onProceed` runs on "Vẫn chơi". */
+    _showObjectiveWarning: function (problems, onProceed) {
+        var sz = cc.winSize;
+        var panelW = Math.min(sz.width * 0.8, 460);
+        var lineH = 22;
+        var headerH = 84;
+        var footerH = 64;
+        var panelH = Math.min(sz.height * 0.85, headerH + footerH + problems.length * lineH);
+
+        var layer = new cc.LayerColor(cc.color(0, 0, 0, 190));
+        layer.setContentSize(sz);
+        // Swallow every touch so the board behind the modal is inert.
+        cc.eventManager.addListener(cc.EventListener.create({
+            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+            swallowTouches: true,
+            onTouchBegan: function () { return true; }
+        }), layer);
+
+        var panel = new ccui.Layout();
+        panel.setBackGroundColorType(ccui.Layout.BG_COLOR_SOLID);
+        panel.setBackGroundColor(cc.color(35, 37, 50));
+        panel.setContentSize(panelW, panelH);
+        panel.setPosition(sz.width / 2 - panelW / 2, sz.height / 2 - panelH / 2);
+        layer.addChild(panel);
+
+        var lbTitle = new cc.LabelTTF("Objective không hợp lệ", "font/BalooPaaji2-Bold.ttf", 18);
+        lbTitle.setColor(cc.color(255, 210, 90));
+        lbTitle.setPosition(panelW / 2, panelH - 24);
+        panel.addChild(lbTitle);
+
+        var lbSub = new cc.LabelTTF("Các mục tiêu sau không có trên map:", "font/BalooPaaji2-Regular.ttf", 12,
+            cc.size(panelW - 24, 0), cc.TEXT_ALIGNMENT_CENTER);
+        lbSub.setColor(cc.color(210, 210, 220));
+        lbSub.setPosition(panelW / 2, panelH - 50);
+        panel.addChild(lbSub);
+
+        var topY = panelH - headerH;
+        for (var i = 0; i < problems.length; i++) {
+            var p = problems[i];
+            var txt = (p.reason === "color")
+                ? ("•  Gem màu " + p.id + " — màu này đang tắt")
+                : ("•  Block " + p.id + " — không còn trên map");
+            var lb = new cc.LabelTTF(txt, "font/BalooPaaji2-Regular.ttf", 13);
+            lb.setAnchorPoint(cc.p(0, 0.5));
+            lb.setColor(cc.color(255, 150, 150));
+            lb.setPosition(20, topY - i * lineH);
+            panel.addChild(lb);
+        }
+
+        var btnCancel = this._makeWarnBtn("Quay lại", cc.color(90, 100, 120));
+        btnCancel.setPosition(panelW / 2 - 70, 30);
+        btnCancel.addTouchEventListener(function (s, t) {
+            if (t === ccui.Widget.TOUCH_ENDED) layer.removeFromParent(true);
+        });
+        panel.addChild(btnCancel);
+
+        var btnPlay = this._makeWarnBtn("Vẫn chơi", cc.color(200, 120, 40));
+        btnPlay.setPosition(panelW / 2 + 70, 30);
+        btnPlay.addTouchEventListener(function (s, t) {
+            if (t === ccui.Widget.TOUCH_ENDED) {
+                layer.removeFromParent(true);
+                if (onProceed) onProceed();
+            }
+        });
+        panel.addChild(btnPlay);
+
+        this.addChild(layer, 20000);
+    },
+
+    _makeWarnBtn: function (text, color) {
+        var btn = new ccui.Button("res/tool/res/btnGrey.png", "res/tool/res/btnGrey.png", "res/tool/res/btnGrey.png");
+        btn.setScale9Enabled(true);
+        btn.setContentSize(124, 40);
+        btn.setTitleText(text);
+        btn.setTitleFontSize(15);
+        btn.setTitleFontName("font/BalooPaaji2-Medium.ttf");
+        btn.setColor(color || cc.color(90, 100, 120));
+        return btn;
+    },
+
+    _runTestMap: function () {
         var mapData = this.boardUI.getMapConfig();
         var moves = parseInt(this.tfMoves ? this.tfMoves.getString() : "30") || 30;
         mapData.numMove = moves;
@@ -2430,6 +2921,17 @@ var EditMapSceneNew = cc.Layer.extend({
         let gui = new CoreGame.GameUI({ mapConfig: mapData });
         scene.addChild(gui);
         gui.startNow();
+
+        // Detach this retained editor singleton from its TestScene parent WITHOUT
+        // cleanup before the scene swap. runScene() cleans up the outgoing scene
+        // tree; cleaning up a cc.EditBox destroys its DOM input (_edTxt = null) but
+        // — by engine design (CCNode.cleanup keeps listeners) — leaves its touch
+        // listener registered. On Back the same singleton is re-shown, the listener
+        // resumes, but _edTxt stays null -> first touch crashes in _showLabels.
+        // Detaching without cleanup preserves every EditBox's DOM + listener intact;
+        // the returning TestScene re-adds this node as-is.
+        this.removeFromParent(false);
+
         cc.director.runScene(scene);
     },
 
@@ -2589,6 +3091,9 @@ var EditMapSceneNew = cc.Layer.extend({
         }
         this._ctrlDown = false;
         this._shiftDown = false;
+        // Final flush before leaving, then stop the autosave timer.
+        this._autoSave();
+        this.unschedule(this._autoSave);
         this._super();
         // EditMapSceneNew.instance.removeFromParent(true);
     }

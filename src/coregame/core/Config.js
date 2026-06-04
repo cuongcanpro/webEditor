@@ -218,6 +218,21 @@ CoreGame.Config.isMonsterType = function (typeId) {
     return CoreGame.Config.MONSTER_BLOCKER_TYPES.indexOf(typeId) !== -1;
 };
 
+// Objective canonicalisation: a few bosses live as TWO type ids that swap at
+// runtime (a VISIBLE state and a HIDDEN state), e.g. the cat 13000<->13001.
+// For objective tracking we want them to behave like a single-id boss (King
+// Crab 11020): killing it in EITHER state counts toward ONE objective entry,
+// shown with the VISIBLE icon. Map each alias -> its canonical (visible) id.
+CoreGame.Config.OBJECTIVE_CANONICAL = {
+    13001: 13000,  // Mèo ẩn thân: HIDDEN -> VISIBLE
+    13021: 13020   // Mèo ẩn thân bắn PU: ẨN -> LỘ
+};
+
+CoreGame.Config.getObjectiveType = function (typeId) {
+    var c = CoreGame.Config.OBJECTIVE_CANONICAL[typeId];
+    return (c !== undefined) ? c : typeId;
+};
+
 // Tên file icon cho 1 target/objective theo element type.
 // Bình thường là "icon/<type>"; riêng ColorCrab (11010-11015) chưa có icon
 // riêng nên dùng chung "creep_snail". Trả về phần đuôi sau "game/element/"

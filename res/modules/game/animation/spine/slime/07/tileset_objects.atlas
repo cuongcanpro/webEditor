@@ -1,0 +1,48 @@
+
+tileset_objects.png
+size: 251,249
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+obj_01
+  rotate: false
+  xy: 198, 172
+  size: 53, 77
+  orig: 57, 81
+  offset: 2, 2
+  index: -1
+obj_02
+  rotate: true
+  xy: 105, 70
+  size: 85, 94
+  orig: 89, 98
+  offset: 2, 2
+  index: -1
+obj_03
+  rotate: false
+  xy: 105, 157
+  size: 91, 92
+  orig: 95, 96
+  offset: 2, 2
+  index: -1
+obj_04
+  rotate: false
+  xy: 0, 131
+  size: 103, 118
+  orig: 103, 118
+  offset: 0, 0
+  index: -1
+obj_05
+  rotate: false
+  xy: 0, 37
+  size: 94, 92
+  orig: 98, 96
+  offset: 2, 2
+  index: -1
+obj_06
+  rotate: false
+  xy: 96, 12
+  size: 73, 56
+  orig: 77, 60
+  offset: 2, 2
+  index: -1

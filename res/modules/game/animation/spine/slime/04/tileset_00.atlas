@@ -1,0 +1,20 @@
+
+tileset_00.png
+size: 202,202
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+attack_tex
+  rotate: true
+  xy: 0, 0
+  size: 80, 68
+  orig: 80, 87
+  offset: 0, 17
+  index: -1
+tileset_00
+  rotate: false
+  xy: 0, 82
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1

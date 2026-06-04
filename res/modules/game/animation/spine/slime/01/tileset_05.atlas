@@ -1,0 +1,55 @@
+
+tileset_05.png
+size: 202,200
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+attack_tex
+  rotate: false
+  xy: 122, 130
+  size: 80, 70
+  orig: 80, 90
+  offset: 0, 18
+  index: -1
+bubble_1
+  rotate: false
+  xy: 0, 0
+  size: 84, 78
+  orig: 86, 80
+  offset: 1, 1
+  index: -1
+bubble_21
+  rotate: false
+  xy: 86, 5
+  size: 9, 11
+  orig: 11, 13
+  offset: 1, 1
+  index: -1
+bubble_22
+  rotate: false
+  xy: 122, 74
+  size: 61, 54
+  orig: 65, 58
+  offset: 2, 2
+  index: -1
+bubble_3
+  rotate: false
+  xy: 185, 114
+  size: 13, 14
+  orig: 15, 16
+  offset: 1, 1
+  index: -1
+bubble_4
+  rotate: false
+  xy: 86, 18
+  size: 47, 54
+  orig: 49, 56
+  offset: 1, 1
+  index: -1
+tileset_05
+  rotate: false
+  xy: 0, 80
+  size: 120, 120
+  orig: 120, 120
+  offset: 0, 0
+  index: -1

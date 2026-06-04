@@ -1,12 +1,26 @@
 {
-    "description": "Mèo ẩn thân bắn PU (state VISIBLE, 3x3, HP=6): nhận side-match damage bình thường. Mỗi endTurn tăng phaseTurn; khi phaseTurn >= 2 → action_0: AroundSpawnElementAction spawn 1 PU random [101, 106] xung quanh + ReplaceSelfAction sang 13021 (hidden). Finale Saga 2 L170 — combine mechanic Mèo ẩn (L131) + Mèo bắn PU (L150).",
+    "description": "Mèo ẩn thân bắn PU — state LỘ (3x3, HP=16): EXCLUSIVE, ăn side-match damage + PU đập trực tiếp. MỖI endTurn FindAndDestroyPowerUpAction destroy 1 PU random (period=1, shootTime=0 → destroy đúng lúc anim attack ~4s diễn xong). Sau 2 turn LỘ → action_0 swap sang ẨN (13021); ReplaceSelfAction delayFromCue=true → CHỜ hết anim bắn (mất PU) RỒI mới hidden, không cắt anim. phaseTurn reset bắt buộc (customData sống qua swap). Boss cuối Saga 2 (L170).",
+    "dedupPerMatch": true,
     "baseAction": [],
     "unblockAction": [],
     "customAction": {
         "sideMatch": [
             "TakeDamageAction"
         ],
+        "match": [
+            "TakeDamageAction"
+        ],
         "endTurn": [
+            {
+                "name": "FindAndDestroyPowerUpAction",
+                "config": {
+                    "period": 1,
+                    "numDestroy": 1,
+                    "timerField": "_fdpuTimer",
+                    "animKey": "attack",
+                    "shootTime": 0
+                }
+            },
             {
                 "name": "ChangeAttributeAction",
                 "config": {
@@ -26,29 +40,33 @@
         ],
         "action_0": [
             {
-                "name": "AroundSpawnElementAction",
+                "name": "ChangeAttributeAction",
                 "config": {
-                    "type": [101, 106]
+                    "fieldName": "phaseTurn",
+                    "setValue": 0
                 }
             },
             {
                 "name": "ReplaceSelfAction",
                 "config": {
-                    "type": 13021
+                    "type": 13021,
+                    "refillAfterSwap": true,
+                    "delayFromCue": true
                 }
             }
         ]
     },
     "visual": {
-        "path": "res/newBlock/BlockUI/block_hidden_cat_shoot_pu_visible.json",
-        "type": 2
+        "path": "res/newBlock/BlockUI/img/cat_hidden_shoot_pu.png",
+        "type": 0,
+        "uiClass": "CatHiddenShootPuUI"
     },
     "type": "Blocker",
     "width": 3,
     "height": 3,
     "layerBehavior": "EXCLUSIVE",
     "configData": {
-        "hitPoints": 6,
-        "maxHP": 6
+        "hitPoints": 16,
+        "maxHP": 16
     }
 }

@@ -78,7 +78,6 @@ var TargetListUI = cc.Node.extend({
         btnAdd.setAnchorPoint(cc.p(1, 0.5));
         btnAdd.setPosition(W - 4, HEADER_H / 2);
         btnAdd.addTouchEventListener(function (sender, type) {
-            cc.log("lfjsdlfds ======== btnAdd");
             if (type === ccui.Widget.TOUCH_ENDED) {
                 self.targetEntries.push({ id: 1, count: 1 });
                 self._refresh();
@@ -167,9 +166,31 @@ var TargetListUI = cc.Node.extend({
         idxLbl.setColor(cc.color(130, 130, 140));
         bg.addChild(idxLbl);
 
+        // ── Responsive layout anchors ────────────────────────────────────
+        // Everything is positioned relative to W so the row reflows on narrow
+        // panels with NO overlap at any width:
+        //   • the −/count/+ cluster is anchored to the right edge (count
+        //     perfectly centred between the two buttons),
+        //   • the X delete button sits immediately left of the − button,
+        //   • the element icon fills whatever space is left, shrinking on
+        //     narrow panels instead of being overlapped.
+        var BW = 22;        // +/- button size
+        var CW = 38;        // count field width
+        var GAP = 4;
+        var MARGIN = 6;
+        var DEL_W = 20;     // X button size
+        var plusX  = W - MARGIN - BW / 2;                 // right-most
+        var countX = plusX  - BW / 2 - GAP - CW / 2;      // centred between −/+
+        var minusX = countX - CW / 2 - GAP - BW / 2;
+        var minusLeft = minusX - BW / 2;
+        var delX = minusLeft - GAP - DEL_W / 2;           // just left of −
+        var idBtnLeft = 20;
+        var idBtnW = Math.max(24, (delX - DEL_W / 2 - GAP) - idBtnLeft);
+        var idBtnX = idBtnLeft + idBtnW / 2;
+
         // ── Element ID button (tap to pick) ──────────────────────────────
-        var idBtn = this._makeBtn(entry.id ? String(entry.id) : "?", 62, ITEM_H - 8, cc.color(55, 58, 75));
-        idBtn.setPosition(52, ITEM_H / 2);
+        var idBtn = this._makeBtn(entry.id ? String(entry.id) : "?", idBtnW, ITEM_H - 8, cc.color(55, 58, 75));
+        idBtn.setPosition(idBtnX, ITEM_H / 2);
         bg.addChild(idBtn);
 
         // Helper to refresh icon+label on idBtn
@@ -210,11 +231,11 @@ var TargetListUI = cc.Node.extend({
         });
 
         // ── Count: − field + ──────────────────────────────────────────────
-        var btnMinus = this._makeBtn("−", 24, 24, cc.color(150, 240, 160));
-        btnMinus.setPosition(W - 74, ITEM_H / 2);
+        var btnMinus = this._makeBtn("−", BW, BW, cc.color(150, 240, 160));
+        btnMinus.setPosition(minusX, ITEM_H / 2);
         bg.addChild(btnMinus);
 
-        var cntField = new cc.EditBox(cc.size(48, ITEM_H - 8), new cc.Scale9Sprite());
+        var cntField = new cc.EditBox(cc.size(CW, ITEM_H - 8), new cc.Scale9Sprite());
         cntField.setPlaceHolder("1");
         cntField.setPlaceholderFontColor(cc.color(100, 100, 110));
         cntField.setFontColor(cc.color(255, 255, 255));
@@ -223,16 +244,15 @@ var TargetListUI = cc.Node.extend({
         cntField.setInputMode(cc.EDITBOX_INPUT_MODE_NUMERIC);
         cntField.setReturnType(cc.KEYBOARD_RETURNTYPE_DONE);
         cntField.setString(String(entry.count || 1));
-        cntField.setPosition(W - 48, ITEM_H / 2);
+        cntField.setPosition(countX, ITEM_H / 2);
         bg.addChild(cntField);
         entry.countField = cntField;
 
-        var btnPlus = this._makeBtn("+", 24, 24, cc.color(150, 240, 160));
-        btnPlus.setPosition(W - 22, ITEM_H / 2);
+        var btnPlus = this._makeBtn("+", BW, BW, cc.color(150, 240, 160));
+        btnPlus.setPosition(plusX, ITEM_H / 2);
         bg.addChild(btnPlus);
 
         btnMinus.addTouchEventListener(function (sender, type) {
-            cc.log("lfjsdlfds ======== ");
             if (type === ccui.Widget.TOUCH_ENDED) {
                 var v = parseInt(cntField.getString()) || 1;
                 if (v > 1) { v--; cntField.setString(String(v)); entry.count = v; }
@@ -246,9 +266,9 @@ var TargetListUI = cc.Node.extend({
         });
 
         // ── Delete button ─────────────────────────────────────────────────
-        var btnDel = this._makeBtn("X", 22, 22, cc.color(240, 40, 40));
-        // Position between idBtn and count area
-        btnDel.setPosition(120, ITEM_H / 2);
+        var btnDel = this._makeBtn("X", 20, 20, cc.color(240, 40, 40));
+        // Centred in the gap between the icon and the − button (responsive).
+        btnDel.setPosition(delX, ITEM_H / 2);
         bg.addChild(btnDel);
         (function (idx) {
             btnDel.addTouchEventListener(function (sender, type) {
@@ -614,5 +634,65 @@ var TargetListUI = cc.Node.extend({
             result.push({ id: e.id || 0, count: cnt });
         }
         return result;
+    },
+
+    /**
+     * Commit any in-progress EditBox values back into entry.count so a
+     * subsequent rebuild (or programmatic edit) doesn't lose user input.
+     */
+    _commitCounts: function () {
+        for (var i = 0; i < this.targetEntries.length; i++) {
+            var e = this.targetEntries[i];
+            if (e.countField) {
+                var v = parseInt(e.countField.getString()) || 1;
+                if (v < 1) v = 1;
+                e.count = v;
+            }
+        }
+    },
+
+    /** True if an entry with this element id already exists. */
+    hasTarget: function (id) {
+        for (var i = 0; i < this.targetEntries.length; i++) {
+            if (this.targetEntries[i].id === id) return true;
+        }
+        return false;
+    },
+
+    /**
+     * Add a target. No-op (returns false) if the id is already present.
+     * @returns {boolean} true if a new entry was added.
+     */
+    addTarget: function (id, count) {
+        if (this.hasTarget(id)) return false;
+        this._commitCounts();
+        this.targetEntries.push({ id: id, count: count || 1 });
+        this._refresh();
+        return true;
+    },
+
+    /**
+     * Reconcile the list against the current map. `decide(entry)` returns:
+     *   false  → drop the entry
+     *   true   → keep unchanged
+     *   number → keep, overwrite its count
+     * Only rebuilds the UI if something actually changed (so it is cheap to
+     * call on every board edit).
+     * @returns {boolean} true if the list changed.
+     */
+    applySync: function (decide) {
+        this._commitCounts();
+        var kept = [];
+        var changed = false;
+        for (var i = 0; i < this.targetEntries.length; i++) {
+            var e = this.targetEntries[i];
+            var d = decide(e);
+            if (d === false) { changed = true; continue; }
+            if (typeof d === "number" && d !== e.count) { e.count = d; changed = true; }
+            kept.push(e);
+        }
+        this.targetEntries = kept;
+        if (changed) this._refresh();
+        return changed;
     }
 });

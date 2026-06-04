@@ -1,9 +1,13 @@
 {
-    "description": "Mèo ẩn thân (state VISIBLE, 2x2): nhận side-match damage bình thường (HP=4). Đếm turnCount mỗi endTurn; khi turnCount >= 2 → ReplaceSelfAction sang ID 13001 (hidden). Sau ReplaceSelf, customData reset bởi state mới.",
+    "description": "Mèo ẩn thân (state VISIBLE, 2x2): nhận side-match damage bình thường (HP=4). Đếm turnCount mỗi endTurn; khi turnCount == 2 → action_0 reset turnCount=0 rồi ReplaceSelfAction sang ID 13001 (hidden). Reset bắt buộc vì customData sống sót qua ReplaceSelf.",
+    "dedupPerMatch": true,
     "baseAction": [],
     "unblockAction": [],
     "customAction": {
         "sideMatch": [
+            "TakeDamageAction"
+        ],
+        "match": [
             "TakeDamageAction"
         ],
         "endTurn": [
@@ -26,16 +30,25 @@
         ],
         "action_0": [
             {
+                "name": "ChangeAttributeAction",
+                "config": {
+                    "fieldName": "turnCount",
+                    "setValue": 0
+                }
+            },
+            {
                 "name": "ReplaceSelfAction",
                 "config": {
-                    "type": 13001
+                    "type": 13001,
+                    "refillAfterSwap": true
                 }
             }
         ]
     },
     "visual": {
-        "path": "res/newBlock/BlockUI/block_cat_visible.json",
-        "type": 2
+        "path": "res/newBlock/BlockUI/spine/cat/hidden_cat.png",
+        "type": 0,
+        "uiClass": "CatHiddenUI"
     },
     "type": "Blocker",
     "width": 2,

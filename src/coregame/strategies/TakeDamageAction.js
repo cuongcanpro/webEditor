@@ -61,17 +61,22 @@ CoreGame.Strategies.TakeDamageAction = CoreGame.Strategies.NormalAction.extend({
         var actId = context.puActivationId;
 
         if (actId !== undefined) {
-            // Deduplicate: every element takes PU damage exactly once per
-            // activation, no matter how many cells the PU swept past it.
-            // (Monsters previously had this guard; non-monsters need it too
-            // because a rocket's sideMatch events fire on each swept neighbor.)
+            // Deduplicate PU damage. Default: once per ELEMENT per activation, so a
+            // rocket grazing the same single-cell blocker on several swept cells
+            // only deals 1 damage.
+            // puDedupPerCell (multi-cell cell-loss blockers like Slime): once per
+            // CELL per activation, so one bomb removes EVERY slime cell it covers
+            // (spec L91/L100: bomb trùm cả slime = kill 1 phát).
             if (!element._lastPUActivationId) {
                 element._lastPUActivationId = {};
             }
-            if (element._lastPUActivationId[actId]) {
+            var dedupKey = (this.configData && this.configData.puDedupPerCell)
+                ? (actId + ':' + context.row + ',' + context.col)
+                : ('' + actId);
+            if (element._lastPUActivationId[dedupKey]) {
                 return;
             }
-            element._lastPUActivationId[actId] = true;
+            element._lastPUActivationId[dedupKey] = true;
 
             // Monsters get the designer-configured damage; all other elements
             // (factory blockers, standard blockers) take exactly 1 HP.

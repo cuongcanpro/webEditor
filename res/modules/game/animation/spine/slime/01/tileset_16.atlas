@@ -1,0 +1,48 @@
+
+tileset_16.png
+size: 154,152
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+attack_tex
+  rotate: false
+  xy: 0, 2
+  size: 80, 70
+  orig: 80, 90
+  offset: 0, 18
+  index: -1
+bubble_1
+  rotate: false
+  xy: 0, 74
+  size: 84, 78
+  orig: 86, 80
+  offset: 1, 1
+  index: -1
+bubble_21
+  rotate: false
+  xy: 97, 15
+  size: 9, 11
+  orig: 11, 13
+  offset: 1, 1
+  index: -1
+bubble_22
+  rotate: false
+  xy: 86, 28
+  size: 61, 54
+  orig: 65, 58
+  offset: 2, 2
+  index: -1
+bubble_3
+  rotate: false
+  xy: 82, 12
+  size: 13, 14
+  orig: 15, 16
+  offset: 1, 1
+  index: -1
+tileset_16
+  rotate: false
+  xy: 86, 84
+  size: 68, 68
+  orig: 68, 68
+  offset: 0, 0
+  index: -1

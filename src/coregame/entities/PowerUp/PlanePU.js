@@ -115,6 +115,19 @@ CoreGame.PlanePU = CoreGame.PowerUP.extend({
             }
         }
 
+        // [PLANE-DEBUG] Temporary — what did this plane lock onto, and what is in
+        // that slot at PICK time? Compare against the ARRIVE log in onFly.
+        if (this.targetSlot) {
+            var pickTypes = [];
+            for (var pdi = 0; pdi < this.targetSlot.listElement.length; pdi++) {
+                pickTypes.push(this.targetSlot.listElement[pdi].type);
+            }
+            cc.log("[PLANE-DEBUG] PICK target slot(" + this.targetSlot.row + "," + this.targetSlot.col
+                + ") types=" + JSON.stringify(pickTypes));
+        } else {
+            cc.log("[PLANE-DEBUG] PICK target = NULL (no target found)");
+        }
+
         this.ui.startActive(this.targetSlot);
         this.preserveUI = this.ui;
         this.ui = null;
@@ -154,6 +167,15 @@ CoreGame.PlanePU = CoreGame.PowerUP.extend({
             var flyActivationId = CoreGame.PowerUP.nextActivationId();
             cc.log("Time Fly ======= " + timeFly);
             CoreGame.TimedActionMgr.addAction(timeFly, function () {
+                // [PLANE-DEBUG] Temporary — what is actually in the slot when the
+                // plane lands? If this differs from the PICK log, the objective
+                // dropped/cleared mid-flight and the plane is hitting a refilled gem.
+                var arriveTypes = [];
+                for (var adi = 0; adi < this.listElement.length; adi++) {
+                    arriveTypes.push(this.listElement[adi].type);
+                }
+                cc.log("[PLANE-DEBUG] ARRIVE slot(" + this.row + "," + this.col
+                    + ") types=" + JSON.stringify(arriveTypes) + " empty=" + this.isEmpty());
                 if (this.isEmpty()) return;
                 this.matchElement({ type: "normal", puType: puType, damage: damage, puActivationId: flyActivationId, bottleColor: bottleColor });
             }, this.targetSlot);
