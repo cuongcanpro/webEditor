@@ -15,11 +15,12 @@ CoreGame.ElementState = {
 };
 
 CoreGame.LayerBehavior = {
-    BACKGROUND: 10, // Grass
-    CONTENT: 20,    // Gem
-    ATTACHMENT: 30,
-    EXCLUSIVE: 40,   // Box, Cookie, Clears others
-    OVERLAY: 50    // Chain, Cloud
+    UNDER_BACKGROUND: 10, // Hidden boss under grass/gems
+    BACKGROUND: 20,       // Grass
+    CONTENT: 30,          // Gem
+    ATTACHMENT: 40,
+    EXCLUSIVE: 50,        // Box, Cookie, Clears others
+    OVERLAY: 60           // Chain, Cloud
 };
 
 CoreGame.ElementObject = cc.Class.extend({
@@ -36,7 +37,7 @@ CoreGame.ElementObject = cc.Class.extend({
     boardMgr: null,     // Reference to BoardMgr
 
     hitPoints: 1,
-    layerBehavior: 2, // CoreGame.LayerBehavior.CONTENT
+    layerBehavior: CoreGame.LayerBehavior.CONTENT,
 
     // Attachment System
     attachments: null, // List of attached elements (e.g., Soap)

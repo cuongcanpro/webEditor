@@ -132,6 +132,7 @@ CoreGame.BlockerFactory.createBlocker = function (row, col, typeId, hp, cells) {
         // Set Layer Behavior
         if (config.layerBehavior) {
             var layerBehaviorMap = {
+                "UNDER_BACKGROUND": CoreGame.LayerBehavior.UNDER_BACKGROUND,
                 "CONTENT": CoreGame.LayerBehavior.CONTENT,
                 "OVERLAY": CoreGame.LayerBehavior.OVERLAY,
                 "EXCLUSIVE": CoreGame.LayerBehavior.EXCLUSIVE,

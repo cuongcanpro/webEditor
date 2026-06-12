@@ -2132,7 +2132,7 @@ CoreGame.BoardMgr = cc.Class.extend({
         for (var r = 0; r < this.rows; r++) {
             boardData[r] = [];
             for (var c = 0; c < this.cols; c++) {
-                var gridItem = [0, 0, 0, 0]; // [BACKGROUND, CONTENT, OVERLAY, EXCLUSIVE]
+                var gridItem = [0, 0, 0, 0, 0]; // [UNDER_BACKGROUND, BACKGROUND, CONTENT, OVERLAY, EXCLUSIVE]
                 var slot = this.mapGrid[r][c];
                 if (slot && slot.enable) {
                     var elements = slot.listElement;
@@ -2144,22 +2144,24 @@ CoreGame.BoardMgr = cc.Class.extend({
                         if (el.position.x !== r || el.position.y !== c) continue;
 
                         var behavior = el.layerBehavior;
-                        if (behavior === CoreGame.LayerBehavior.BACKGROUND) {
+                        if (behavior === CoreGame.LayerBehavior.UNDER_BACKGROUND) {
                             gridItem[0] = el.type;
-                        } else if (behavior === CoreGame.LayerBehavior.CONTENT) {
+                        } else if (behavior === CoreGame.LayerBehavior.BACKGROUND) {
                             gridItem[1] = el.type;
+                        } else if (behavior === CoreGame.LayerBehavior.CONTENT) {
+                            gridItem[2] = el.type;
                             // Check for OVERLAY in attachments
                             if (el.attachments) {
                                 for (var j = 0; j < el.attachments.length; j++) {
                                     if (el.attachments[j].layerBehavior === CoreGame.LayerBehavior.OVERLAY) {
-                                        gridItem[2] = el.attachments[j].type;
+                                        gridItem[3] = el.attachments[j].type;
                                     }
                                 }
                             }
                         } else if (behavior === CoreGame.LayerBehavior.OVERLAY) {
-                            gridItem[2] = el.type;
-                        } else if (behavior === CoreGame.LayerBehavior.EXCLUSIVE) {
                             gridItem[3] = el.type;
+                        } else if (behavior === CoreGame.LayerBehavior.EXCLUSIVE) {
+                            gridItem[4] = el.type;
                         }
                     }
                 }
@@ -2188,8 +2190,12 @@ CoreGame.BoardMgr = cc.Class.extend({
                 if (c >= this.cols) break;
 
                 var gridItem = boardData[r][c];
-                // Iterate from 3 down to 0: EXCLUSIVE -> OVERLAY -> CONTENT -> BACKGROUND
-                for (var i = 3; i >= 0; i--) {
+                // Backward compatibility: old states are [BACKGROUND, CONTENT, OVERLAY, EXCLUSIVE].
+                if (gridItem && gridItem.length === 4) {
+                    gridItem = [0, gridItem[0], gridItem[1], gridItem[2], gridItem[3]];
+                }
+                // Iterate from top to bottom: EXCLUSIVE -> OVERLAY -> CONTENT -> BACKGROUND -> UNDER_BACKGROUND
+                for (var i = 4; i >= 0; i--) {
                     var type = gridItem[i];
                     if (type > 0) {
                         this.addNewElement(r, c, type);

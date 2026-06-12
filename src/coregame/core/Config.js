@@ -93,6 +93,15 @@ CoreGame.Config.ElementType = {
     PU5_PU: 305,
     PU5_PU5: 306,
 
+    //Plane Merged
+    PUS_PU4: 307,
+    PUS_PU5TL: 308,
+
+    //Disco Merge
+    PU5_PU4: 309,
+    PU5_PU5TL: 310,
+    PU5_PUS: 311,
+
     // Blockers
     GRASS: 500,
     CHAIN: 600,

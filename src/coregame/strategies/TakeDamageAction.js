@@ -73,7 +73,8 @@ CoreGame.Strategies.TakeDamageAction = CoreGame.Strategies.NormalAction.extend({
             var dedupKey = (this.configData && this.configData.puDedupPerCell)
                 ? (actId + ':' + context.row + ',' + context.col)
                 : ('' + actId);
-            if (element._lastPUActivationId[dedupKey]) {
+            if (element._lastPUActivationId[dedupKey]
+                && !(element instanceof CoreGame.DynamicBlocker)) {
                 return;
             }
             element._lastPUActivationId[dedupKey] = true;

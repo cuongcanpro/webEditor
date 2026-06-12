@@ -229,7 +229,8 @@ CoreGame.GridSlot = cc.Class.extend({
                 // cc.log("Exclusive element added, clearing existing elements in slot " + this.row + "," + this.col);
                 this.clearElementsBelowExclusive();
                 // Insert at correct priority position. clearElementsBelowExclusive
-                // intentionally keeps BACKGROUND (e.g. Grass) below; if we just
+                // intentionally keeps terrain layers (UNDER_BACKGROUND/BACKGROUND)
+                // below; if we just
                 // pushed the new EXCLUSIVE to the end, it would sit AFTER the
                 // grass and getFirstInteractable would hit grass first, masking
                 // the blocker (e.g. DropMgr would treat the slot as un-fillable).
@@ -249,7 +250,7 @@ CoreGame.GridSlot = cc.Class.extend({
             } else {
                 // Silent mode: lower-priority elements (Grass/Gem/etc.) may still be present.
                 // Must insert at correct priority position so getFirstInteractable sees EXCLUSIVE
-                // before BACKGROUND. Otherwise the blocker becomes un-swappable/un-interactable
+                // before terrain layers. Otherwise the blocker becomes un-swappable/un-interactable
                 // because Grass.isStopAction(SWAP) short-circuits the lookup.
                 var insertedExc = false;
                 for (var k = 0; k < this.listElement.length; k++) {
@@ -294,7 +295,7 @@ CoreGame.GridSlot = cc.Class.extend({
 
 
         // 2.5. Remove existing element with same layerBehavior
-        // (Each slot can only have one BACKGROUND, one CONTENT, etc.)
+        // (Each slot can only have one UNDER_BACKGROUND, one BACKGROUND, one CONTENT, etc.)
         // OVERLAY is handled separately via attachments above
         if (!silent) {
             for (var i = this.listElement.length - 1; i >= 0; i--) {
@@ -311,9 +312,8 @@ CoreGame.GridSlot = cc.Class.extend({
         }
 
         // 3. Insert based on Priority Descending (Higher Priority = Lower Index = Top of Stack)
-        // Priority: OVERLAY (3) > CONTENT (2) > BACKGROUND (1)
-        // List: [Chain, Gem, Grass]
-        // Chain (3) comes before Gem (2). Gem (2) comes before Grass (1).
+        // Priority: OVERLAY > EXCLUSIVE > ATTACHMENT > CONTENT > BACKGROUND > UNDER_BACKGROUND
+        // List example: [Chain, Boss/Box, Gem, Grass, HiddenBoss]
 
         var inserted = false;
         for (var i = 0; i < this.listElement.length; i++) {
@@ -489,10 +489,11 @@ CoreGame.GridSlot = cc.Class.extend({
         for (var i = this.listElement.length - 1; i >= 0; i--) {
             var behavior = (typeof this.listElement[i].layerBehavior !== 'undefined') ?
                 this.listElement[i].layerBehavior : CoreGame.LayerBehavior.CONTENT;
-            // Keep BACKGROUND (e.g. Grass) — EXCLUSIVE blockers sit ON TOP of
-            // the underlying terrain and reveal it when destroyed. Without this
-            // skip, an Egg/Box/Cookie dropping into a grass cell would silently
-            // remove the grass (no damage flow, no explode VFX).
+            // Keep terrain layers (UNDER_BACKGROUND/BACKGROUND) — EXCLUSIVE
+            // blockers sit ON TOP of the underlying terrain and reveal it when
+            // destroyed. Without this skip, an Egg/Box/Cookie dropping into a
+            // grass cell would silently remove the grass (no damage flow, no
+            // explode VFX).
             if (behavior > CoreGame.LayerBehavior.BACKGROUND
                 && behavior <= CoreGame.LayerBehavior.EXCLUSIVE) {
                 this.listElement[i].remove();

@@ -524,12 +524,14 @@ CoreGame.BoardEditUI = CoreGame.BoardUI.extend({
             return;
         }
 
-        // Priority order: EXCLUSIVE > OVERLAY > CONTENT > BACKGROUND
+        // Priority order:  > OVERLAY > EXCLUSIVE > ATTACHMENT > CONTENT > BACKGROUND > UNDER_BACKGROUND
         var priorityOrder = [
-            CoreGame.LayerBehavior.EXCLUSIVE,  // 4 - Box, Cookie, Cloud
-            CoreGame.LayerBehavior.OVERLAY,    // 3 - Chain, Soap
-            CoreGame.LayerBehavior.CONTENT,    // 2 - Gems
-            CoreGame.LayerBehavior.BACKGROUND  // 1 - Grass
+            CoreGame.LayerBehavior.OVERLAY,          // Chain, Cloud
+            CoreGame.LayerBehavior.EXCLUSIVE,        // Box, Cookie
+            CoreGame.LayerBehavior.ATTACHMENT,       // Soap
+            CoreGame.LayerBehavior.CONTENT,          // Gems
+            CoreGame.LayerBehavior.BACKGROUND,       // Grass
+            CoreGame.LayerBehavior.UNDER_BACKGROUND  // Hidden boss under grass/gems
         ];
 
         // Find element with highest priority
